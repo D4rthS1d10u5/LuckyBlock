@@ -75,7 +75,12 @@ public class LuckyDB {
                         toSave = true;
                     } else {
                         UUID uuid = UUID.fromString(meta[0]);
-                        db.put(uuid, new LuckyDB.BlockData(uuid, Integer.parseInt(meta[1]), timeMillis, Integer.parseInt(meta[3])));
+                        int amount = Integer.parseInt(meta[1]);
+                        if (amount > 64) {
+                            amount = 64;
+                            toSave = true;
+                        }
+                        db.put(uuid, new LuckyDB.BlockData(uuid, amount, timeMillis, Integer.parseInt(meta[3])));
                     }
                 } catch (Exception var9) {
                     LuckyBlock.instance.getLogger().severe("Invalid '" + data + "' in anti-dupe-database.yml");
@@ -110,6 +115,7 @@ public class LuckyDB {
     }
 
     public static void makeLucky(ItemStack item, int amount) {
+        amount = Math.min(64, amount);
         UUID uuid = UUID.randomUUID();
         ItemStackUtils.setMetadata(item, uuid.toString());
 
