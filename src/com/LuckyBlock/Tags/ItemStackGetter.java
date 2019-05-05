@@ -98,8 +98,9 @@ public class ItemStackGetter extends HTag {
                 if (s.equalsIgnoreCase("Amount")) {
                     d = c.getString(s).split("-");
                     item.setAmount(getRandomNumber(d));
-                    if (LuckyDB.getUuidAndAmount(item) != null) {
-                        LuckyDB.setAmount(item, item.getAmount());
+                    LuckyDB.BlockData blockData = LuckyDB.getData(item);
+                    if (blockData != null) {
+                        blockData.setAmount(item.getAmount());
                     }
                 }
 

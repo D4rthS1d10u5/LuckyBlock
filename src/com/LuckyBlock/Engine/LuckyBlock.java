@@ -258,6 +258,17 @@ public class LuckyBlock extends JavaPlugin {
         return false;
     }
 
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+        try {
+            LuckyDB.checkSave();
+            LuckyDB.loadConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String d() {
         return instance.getDataFolder() + File.separator;
     }

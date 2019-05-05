@@ -77,19 +77,13 @@ public class YottaEvents implements Listener {
     public void savePlace(LBPlaceEvent event) {
         ItemStack mainBefore = event.getPlayer().getInventory().getItemInMainHand();
         if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore)) {
-            Pair<UUID, Integer> data = LuckyDB.getUuidAndAmount(mainBefore);
-            if (data != null) {
-                BlockData blockData = (BlockData)LuckyDB.getDB().get(data.getKey());
-                if (blockData == null) {
-                    blockData = new BlockData((Integer)data.getValue(), System.currentTimeMillis(), 0);
-                }
-
+            BlockData blockData = LuckyDB.getData(mainBefore);
+            if (blockData != null) {
                 blockData.setPlace(Math.min(blockData.getPlace() + 1, blockData.getAmount()));
-                LuckyDB.getDB().put(data.getKey(), blockData);
+                LuckyDB.getDB().put(blockData.getUuid(), blockData);
                 LuckyDB.setToSave(true);
             }
         }
-
     }
 
     @EventHandler(
@@ -98,17 +92,14 @@ public class YottaEvents implements Listener {
     public void checkDupe(LBPlaceEvent event) {
         ItemStack mainBefore = event.getPlayer().getInventory().getItemInMainHand();
         if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore)) {
-            Pair<UUID, Integer> data = LuckyDB.getUuidAndAmount(mainBefore);
-            if (data != null) {
-                BlockData blockData = (BlockData)LuckyDB.getDB().get(data.getKey());
-                if (blockData != null && blockData.getPlace() >= blockData.getAmount()) {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage("§cЭтот лаки блок - дюпнутый, такой ставить нельзя :(");
-                    event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
-                }
-            } else {
+            BlockData blockData = LuckyDB.getData(mainBefore);
+            if (blockData == null) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage("§cЭтот лаки блок - устарел, мы обновили плагин, можно открывать только новые лаки блоки.");
+                event.getPlayer().sendMessage("§cЭтот лаки блок уже нельзя октрыть, его время ушло :(");
+                event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
+            } else if (blockData.getPlace() >= blockData.getAmount()) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage("§cЭтот лаки блок - дюпнутый, такой ставить нельзя :(");
                 event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
             }
         }

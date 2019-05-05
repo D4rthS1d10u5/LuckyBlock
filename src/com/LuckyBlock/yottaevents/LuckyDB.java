@@ -14,10 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+
+import com.LuckyBlock.LB.LBType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,7 +47,7 @@ public class LuckyDB {
 
     }
 
-    private static void loadConfig() {
+    public static void loadConfig() {
         if (!dbFile.exists()) {
             try {
                 dbFile.createNewFile();
@@ -75,7 +74,8 @@ public class LuckyDB {
                     if (current - timeMillis > TimeUnit.DAYS.toMillis(60L)) {
                         toSave = true;
                     } else {
-                        db.put(UUID.fromString(meta[0]), new LuckyDB.BlockData(Integer.parseInt(meta[1]), timeMillis, Integer.parseInt(meta[3])));
+                        UUID uuid = UUID.fromString(meta[0]);
+                        db.put(uuid, new LuckyDB.BlockData(uuid, Integer.parseInt(meta[1]), timeMillis, Integer.parseInt(meta[3])));
                     }
                 } catch (Exception var9) {
                     LuckyBlock.instance.getLogger().severe("Invalid '" + data + "' in anti-dupe-database.yml");
@@ -89,45 +89,33 @@ public class LuckyDB {
     }
 
     public static void setToSave(boolean toSave) {
-        toSave = toSave;
+        LuckyDB.toSave = toSave;
     }
 
     public static Map<UUID, LuckyDB.BlockData> getDB() {
         return db;
     }
 
-    public static void makeLucky(ItemStack item, int amount) {
-        ItemStackUtils.setMetadata(item, "luckyblock:" + UUID.randomUUID().toString() + ":" + amount);
-    }
-
-    public static Pair<UUID, Integer> getUuidAndAmount(ItemStack item) {
-        if (ItemStackUtils.isNullOrAir(item)) {
-            return null;
+    public static BlockData getData(ItemStack stack) {
+        if (!ItemStackUtils.isNullOrAir(stack) && LBType.isLB(stack)) {
+            String uuidString = ItemStackUtils.getMetadata(stack);
+            if (uuidString == null) {
+                return null;
+            }
+            UUID uuid = UUID.fromString(uuidString);
+            return getDB().get(uuid);
         } else {
-            String metadata = ItemStackUtils.getMetadata(item);
-            if (metadata == null) {
-                return null;
-            } else if (metadata.startsWith("luckyblock")) {
-                String[] data = metadata.split(":");
-                return new ImmutablePair(UUID.fromString(data[1]), Integer.parseInt(data[2]));
-            } else {
-                return null;
-            }
+            return null;
         }
     }
 
-    public static void setAmount(ItemStack item, int amount) {
-        if (!ItemStackUtils.isNullOrAir(item)) {
-            String metadata = ItemStackUtils.getMetadata(item);
-            if (metadata != null) {
-                if (metadata.startsWith("luckyblock")) {
-                    String[] data = metadata.split(":");
-                    data[2] = String.valueOf(amount);
-                    ItemStackUtils.setMetadata(item, String.join(":", data));
-                }
+    public static void makeLucky(ItemStack item, int amount) {
+        UUID uuid = UUID.randomUUID();
+        ItemStackUtils.setMetadata(item, uuid.toString());
 
-            }
-        }
+        BlockData data = new BlockData(uuid, amount, System.currentTimeMillis(), 0);
+        LuckyDB.getDB().put(uuid, data);
+        LuckyDB.setToSave(true);
     }
 
     static {
@@ -138,14 +126,20 @@ public class LuckyDB {
     }
 
     public static class BlockData {
+        private UUID uuid;
         private int amount;
         private int place;
         private long timeMillis;
 
-        public BlockData(int amount, long timeMillis, int place) {
+        public BlockData(UUID uuid, int amount, long timeMillis, int place) {
+            this.uuid = uuid;
             this.amount = amount;
             this.timeMillis = timeMillis;
             this.place = place;
+        }
+
+        public UUID getUuid() {
+            return uuid;
         }
 
         public int getAmount() {
