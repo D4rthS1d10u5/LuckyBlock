@@ -1,0 +1,89 @@
+# Наши правки:
+# Марк - Был переведен 
+# Lokha - сделал cooldown на открытие лаки блоков (раз в 2 секунды)
+# Lokha - сделал защиту от дюпа, теперь лишние лаки блоки нельзя будет поставить
+name: LuckyBlock
+main: com.LuckyBlock.Engine.LuckyBlock
+version: 2.2.5
+
+load: STARTUP
+
+commands:
+   lb:
+      description: Lucky Block Commands.
+    
+permissions:
+   lb.commands:
+      default: true
+   lb.commands.clearlbs:
+      default: op
+   lb.commands.luckyblock:
+      default: op
+   lb.commands.reload:
+      default: op
+   lb.breakall:
+      default: op
+   lb.usedetector:
+      default: true
+   lb.commands.types:
+      default: op
+   lb.commands.detector:
+      default: op
+   lb.useportal:
+      default: true
+   lb.createportal:
+      default: true
+   lb.commands.world:
+      default: op
+   lb.commands.rules:
+      default: true
+   lb.gui:
+      default: op
+   lb.commands.setdrop:
+      default: op
+   lb.commands.runall:
+      default: op
+   lb.commands.region:
+      default: op
+   lb.commands.lbitem:
+      default: op
+   lb.commands.lbs:
+      default: op
+   lb.commands.spawnegg:
+      default: op
+   lb.commands.dropslist:
+      default: op
+   lb.placelct:
+      default: true
+   lb.breaklct:
+      default: true
+   lb.uselct:
+      default: true
+   lb.upgradelct:
+      default: true
+   lb.chargelct:
+      default: true
+   lb.commands.book:
+      default: op
+   lb.viewlct:
+      default: true
+   lb.commands.placelb:
+      default: op
+   lb.commands.help:
+      default: true
+   lb.commands.info:
+      default: op
+   lb.commands.setlang:
+      default: op
+   lb.commands.resourcepack:
+      default: op
+   lb.commands.generate:
+      default: op
+   lb.commands.savestructure:
+      default: op
+   lb.commands.commanddesc:
+      default: op
+   lb.commands.saveitem:
+      default: op
+   lb.commands.recdeleted:
+      default: op

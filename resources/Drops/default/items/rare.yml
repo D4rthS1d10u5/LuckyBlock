@@ -1,0 +1,741 @@
+# @@@ Written by MCGamer199 @@@
+# Advanced Lucky Block Plugin
+
+DroppedItems:
+  Skulls:
+    Times: 1-4
+    Items:
+      # Skeleton
+      item1:
+        Type: SKULL_ITEM
+      # Wither Skeleton
+      item2:
+        Type: SKULL_ITEM
+        Data: 1
+      # Zombie
+      item3:
+        Type: SKULL_ITEM
+        Data: 2
+      # Creeper
+      item4:
+        Type: SKULL_ITEM
+        Data: 4
+  Tnt:
+    Items:
+      item1:
+        Type: TNT
+        Amount: 16
+      item2:
+        Type: REDSTONE_TORCH_ON
+        Amount: 16
+  RedstoneItems:
+    Items:
+      item1:
+        Type: WOOD_PLATE
+        Amount: 6
+      item2:
+        Type: STONE_PLATE
+        Amount: 6
+      item3:
+        Type: GOLD_PLATE
+        Amount: 6
+      item4:
+        Type: IRON_PLATE
+        Amount: 6
+      item5:
+        Type: LEVER
+        Amount: 16
+      item6:
+        Type: PISTON_BASE
+        Amount: 4
+      item7:
+        Type: PISTON_STICKY_BASE
+        Amount: 4
+      item8:
+        Type: REDSTONE
+        Amount: 16
+      item9:
+        Type: REDSTONE_TORCH_ON
+        Amount: 16
+      item10:
+        Type: DIODE
+        Amount: 12
+      item11:
+        Type: REDSTONE_BLOCK
+        Amount: 2-4
+      item12:
+        Type: STONE_BUTTON
+        Amount: 8
+      item13:
+        Type: WOOD_BUTTON
+        Amount: 8
+      item14:
+        Type: DISPENSER
+        Amount: 4-8
+      item15:
+        Type: REDSTONE_COMPARATOR
+        Amount: 12
+
+  CompassMap:
+    Items:
+      item1:
+        Type: COMPASS
+        Amount: 2-3
+      item2:
+        Chance: 50
+        Type: EMPTY_MAP
+        Amount: 1-3
+
+  Rails:
+    Items:
+      item1:
+        Type: MINECART
+      item2:
+        Type: RAILS
+        Amount: 12
+      item3:
+        Type: POWERED_RAIL
+        Amount: 12
+      item4:
+        Type: DETECTOR_RAIL
+        Amount: 12
+      item5:
+        Type: ACTIVATOR_RAIL
+        Amount: 12
+  Music:
+    Items:
+      item1:
+        Type: JUKEBOX
+        Amount: 1-2
+      item2:
+        Type: NOTE_BLOCK
+        Amount: 1-2
+      item3:
+        Chance: 60
+        Type: GOLD_RECORD
+      item4:
+        Chance: 60
+        Type: GREEN_RECORD
+      item5:
+        Chance: 60
+        Type: RECORD_3
+      item6:
+        Chance: 60
+        Type: RECORD_4
+      item7:
+        Chance: 60
+        Type: RECORD_5
+      item8:
+        Chance: 60
+        Type: RECORD_6
+      item9:
+        Chance: 60
+        Type: RECORD_7
+      item10:
+        Chance: 60
+        Type: RECORD_8
+      item11:
+        Chance: 60
+        Type: RECORD_9
+      item12:
+        Chance: 60
+        Type: RECORD_10
+      item13:
+        Chance: 60
+        Type: RECORD_11
+      item14:
+        Chance: 60
+        Type: RECORD_12
+
+  BrewingItems:
+    Items:
+      item1:
+        Type: BREWING_STAND_ITEM
+      item2:
+        Chance: 82
+        Type: CAULDRON_ITEM
+        Amount: 1-2
+      item3:
+        Type: GLASS_BOTTLE
+        Amount: 7-8
+      item4:
+        Type: POTION
+        Amount: 5-6
+      item5:
+        Type: MAGMA_CREAM
+        Amount: 4-6
+      item6:
+        Type: BLAZE_POWDER
+        Amount: 10-12
+      item7:
+        Type: FERMENTED_SPIDER_EYE
+        Amount: 10-12
+      item8:
+        Type: SPIDER_EYE
+        Amount: 10-12
+      item9:
+        Type: SPECKLED_MELON
+        Amount: 10-12
+      item10:
+        Type: SULPHUR
+        Amount: 10-12
+      item11:
+        Type: GLOWSTONE_DUST
+        Amount: 10-12
+      item12:
+        Type: REDSTONE
+        Amount: 10-12
+      item13:
+        Type: GHAST_TEAR
+        Amount: 10-12
+  Books:
+    Items:
+      item1:
+        Type: BOOK
+        Amount: 4-8
+      item2:
+        Type: BOOK_AND_QUILL
+        Amount: 4-6
+
+  Obsidian:
+    Items:
+      item1:
+        Type: OBSIDIAN
+        Amount: 10
+  EnchantmentTable:
+    Items:
+      item1:
+        Type: ENCHANTMENT_TABLE
+        Amount: 1-2
+  Beacon:
+    Items:
+      item1:
+        Type: BEACON
+  DropperAndGold:
+    Items:
+      item1:
+        Type: DROPPER
+        Amount: 8
+      item2:
+        Type: GOLD_INGOT
+        Amount: 16
+  Buckets:
+    Items:
+      item1:
+        Type: LAVA_BUCKET
+      item2:
+        Type: WATER_BUCKET
+      item3:
+        Type: BUCKET
+  Saddle:
+    Items:
+      item1:
+        Type: SADDLE
+  Cake:
+    Times: 1-5
+    Items:
+      item1:
+        Type: CAKE
+  EnderEyes:
+    Items:
+      item1:
+        Type: ENDER_PEARL
+        Amount: 2-3
+      item2:
+        Type: EYE_OF_ENDER
+        Amount: 2-3
+      item3:
+        Type: BLAZE_ROD
+        Amount: 4
+  HorseArmor:
+    Times: 1-2
+    Items:
+      item1:
+        Type: IRON_BARDING
+      item2:
+        Chance: 60
+        Type: GOLD_BARDING
+      item3:
+        Chance: 40
+        Type: DIAMOND_BARDING
+  EnderChest:
+    Items:
+      item1:
+        Type: ENDER_CHEST
+
+# Random tools with enchantments
+RandomEnchantedTools:
+  IronTools:
+    Chance: 4
+    Items:
+      item1:
+        Type: IRON_PICKAXE
+        # Enchantments added: <Unbreaking, Efficiency>
+        Enchants:
+          Ench1:
+            EnchantmentName: DURABILITY
+            Level: '1:2'
+      item2:
+        Type: IRON_PICKAXE
+        # Enchantments added: <Efficiency> 
+        Enchants:
+          Ench1:
+            EnchantmentName: DIG_SPEED
+            Level: '1:3'
+      item3:
+        Type: IRON_AXE
+        # Enchantments added: <Efficiency>
+        Enchants:
+          Ench1:
+            EnchantmentName: DIG_SPEED
+            Level: '1:3'
+      item4:
+        Type: IRON_SPADE
+        # Enchantments added: <Unbreaking>
+        Enchants:
+          Ench1:
+            EnchantmentName: DURABILITY
+            Level: '1:3'
+      item5:
+        Type: IRON_SPADE
+        # Enchantments added: <Efficiency>
+        Enchants:
+          Ench1:
+            EnchantmentName: DIG_SPEED
+            Level: '1:3'
+
+  DiamondTools:
+    Chance: 1
+    Items:
+      item1:
+        Type: DIAMOND_PICKAXE
+        # Enchantments added: <Unbreaking, Efficiency>
+        Enchants:
+          Ench1:
+            EnchantmentName: DURABILITY
+            Level: '1:2'
+      item2:
+        Type: DIAMOND_PICKAXE
+        # Enchantments added: <Efficiency> 
+        Enchants:
+          Ench1:
+            EnchantmentName: DIG_SPEED
+            Level: '1:3'
+      item3:
+        Type: DIAMOND_AXE
+        # Enchantments added: <Efficiency>
+        Enchants:
+          Ench1:
+            EnchantmentName: DIG_SPEED
+            Level: '1:3'
+      item4:
+        Type: DIAMOND_SPADE
+        # Enchantments added: <Unbreaking>
+        Enchants:
+          Ench1:
+            EnchantmentName: DURABILITY
+            Level: '1:3'
+      item5:
+        Type: DIAMOND_SPADE
+        # Enchantments added: <Efficiency>
+        Enchants:
+          Ench1:
+            EnchantmentName: DIG_SPEED
+            Level: '1:3'
+
+
+# Random Tools without enchantments
+Tools:
+  # Items: <Diamond Pickaxe, Diamond Axe, Diamond Shovel, Diamond Hoe>
+  Collection:
+    Chance: 1
+    Items:
+      item1:
+        Type: DIAMOND_PICKAXE
+      item2:
+        Type: DIAMOND_AXE
+      item3:
+        Type: DIAMOND_SPADE
+      item4:
+        Type: DIAMOND_HOE
+  Shears:
+    Chance: 1
+    Items:
+      item1:
+        Times: 1-4
+        Type: SHEARS
+  FlintAndSteel:
+    Chance: 1
+    Item2:
+      item1:
+        Times: 1-3
+        Type: FLINT_AND_STEEL
+  FishingRod:
+    Chance: 2
+    Items:
+      item1:
+        Times: 1-2
+        Type: FISHING_ROD
+
+Ingots:
+  Collection1:
+    Chance: 2
+    Items:
+      item1:
+        Type: IRON_INGOT
+        Amount: 6
+      item2:
+        Type: GOLD_INGOT
+        Amount: 4-6
+      item3:
+        Type: DIAMOND
+        Amount: 3-4
+      item4:
+        Type: INK_SACK
+        Amount: 4-6
+        Data: 4
+  Collection2:
+    Chance: 1
+    Items:
+      item1:
+        Type: IRON_INGOT
+        Amount: 4-6
+      item2:
+        Type: GOLD_INGOT
+        Amount: 2-4
+      item3:
+        Type: DIAMOND
+        Amount: 2-6
+      item4:
+        Type: EMERALD
+        Amount: 1-4
+
+LuckyBlocks:
+  lucky:
+    Chance: 2
+    Items:
+      item1:
+        LBType: 1
+        Luck: '0:50'
+        Amount: 1-3
+  unlucky:
+    Chance: 1
+    Items:
+      item1:
+        LBType: 1
+        Luck: '-50:-20'
+        Amount: 1-3
+
+Plants:
+  HayBaleAndBoneBlock:
+    Chance: 1
+    Items:
+      item1:
+        Type: HAY_BLOCK
+        Amount: 8
+      item2:
+        Type: BONE_BLOCK
+        Amount: 8
+  Flowers1:
+    Chance: 1
+    Items:
+      item1:
+        Type: YELLOW_FLOWER
+        Amount: 4
+      item2:
+        Type: RED_ROSE
+        Amount: 4
+      # Blue orchid
+      item3:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 1
+      # Allium
+      item4:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 2
+      # Azure Bluet
+      item5:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 3
+      # Red Tulip
+      item6:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 4
+      # Orange Tulip
+      item7:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 5
+      # White Tulip
+      item8:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 6
+      # Pink Tulip
+      item9:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 7
+      # Oxeye Daisy
+      item10:
+        Type: RED_ROSE
+        Amount: 4
+        Data: 8
+  Flowers2:
+    Chance: 1
+    Items:
+      # Sunflower
+      item1:
+        Type: DOUBLE_PLANT
+        Amount: 2
+      # Lilac
+      item2:
+        Type: DOUBLE_PLANT
+        Amount: 2
+        Data: 1
+      # Double Tallgrass
+      item3:
+        Type: DOUBLE_PLANT
+        Amount: 2
+        Data: 2
+      # Large Fern
+      item4:
+        Type: DOUBLE_PLANT
+        Amount: 2
+        Data: 3
+      # Rose Bush
+      item5:
+        Type: DOUBLE_PLANT
+        Amount: 2
+        Data: 4
+      # Peony
+      item6:
+        Type: DOUBLE_PLANT
+        Amount: 2
+        Data: 5
+  Pumpkin:
+    Chance: 1
+    Items:
+      item1:
+        Type: PUMPKIN
+        Amount: 16
+      item2:
+        Type: JACK_O_LANTERN
+        Amount: 16
+  PumpkinAndMelon:
+    Chance: 1
+    Items:
+      item1:
+        Type: PUMPKIN
+        Amount: 14
+      item2:
+        Type: MELON_BLOCK
+        Amoun: 14
+  Seeds:
+    Chance: 1
+    Items:
+      item1:
+        Type: SEEDS
+        Amount: 10
+      item2:
+        Type: BEETROOT_SEEDS
+        Amount: 10
+      item3:
+        Type: MELON_SEEDS
+        Amount: 10
+      item4:
+        Type: PUMPKIN_SEEDS
+        Amount: 10
+  Cactus:
+    Chance: 1
+    Items:
+      item1:
+        Type: CACTUS
+        Amount: 3-9
+
+Decoration:
+  PaintingsItemFramesFlowerPots:
+    Chance: 2
+    Items:
+      item1:
+        Type: PAINTING
+        Amount: 4-6
+      item2:
+        Type: ITEM_FRAME
+        Amount: 4-6
+      item3:
+        Type: FLOWER_POT_ITEM
+        Amount: 4-6
+  Stones:
+    Chance: 1
+    Items:
+      item1:
+        Type: SMOOTH_BRICK
+        Amount: 12
+      item2:
+        Type: SMOOTH_BRICK
+        Amount: 12
+        Data: 1
+      item3:
+        Type: SMOOTH_BRICK
+        Amount: 12
+        Data: 2
+      item4:
+        Type: SMOOTH_BRICK
+        Amount: 12
+        Data: 3
+      item5:
+        Type: COBBLESTONE
+        Amount: 12
+      item6:
+        Type: STONE
+        Amount: 12
+      item7:
+        Type: MOSSY_COBBLESTONE
+        Amount: 12
+  Bookshelf:
+    Chance: 1
+    Items:
+      item1:
+        Type: BOOKSHELF
+        Amount: 16
+      item2:
+        Type: BOOK
+        Amount: 6-9
+      item3:
+        Chance: 40
+        Type: ENCHANTMENT_TABLE
+
+  Wool:
+    Chance: 1
+    Items:
+      Times: 6
+      item1:
+        Type: WOOL
+        Amount: 6
+        Data: 0-15
+
+  Slime:
+    Chance: 1
+    Items:
+      item1:
+        Type: SLIME_BLOCK
+        Amount: 16
+
+Foods:
+  GApples:
+    Chance: 1
+    Times: 1-2
+    Items:
+      not_enchanted:
+        Type: GOLDEN_APPLE
+        Amount: 1-2
+      enchanted:
+        Chance: 25
+        Type: GOLDEN_APPLE
+        Data: 1
+  Meat:
+    Chance: 2
+    Times: 4-8
+    Items:
+      raw_chicken:
+        Type: RAW_CHICKEN
+        Amount: 2-6
+      cooked_chicken:
+        Type: COOKED_CHICKEN
+        Amount: 2-6
+      raw_beef:
+        Type: RAW_BEEF
+        Amount: 2-4
+      cooked_beef:
+        Type: COOKED_BEEF
+        Amount: 2-4
+      raw_mutton:
+        Type: MUTTON
+        Amount: 2-8
+      cooked_mutton:
+        Type: COOKED_MUTTON
+        Amount: 2-8
+      raw_rabbit:
+        Type: RABBIT
+        Amount: 2-6
+      cooked_rabbit:
+        Type: COOKED_RABBIT
+        Amount: 2-6
+  Fish:
+    Chance: 2
+    Times: 1-5
+    Items:
+      raw_fish:
+        Type: RAW_FISH
+        Amount: 3-6
+      raw_salmon:
+        Type: RAW_FISH
+        Amount: 3-6
+        Data: 1
+      clownfish:
+        Type: RAW_FISH
+        Amount: 3-6
+        Data: 2
+      pufferfish:
+        Type: RAW_FISH
+        Amount: 3-6
+        Data: 3
+      cooked_fish:
+        Type: COOKED_FISH
+        Amount: 3-6
+      cooked_salmon:
+        Type: COOKED_FISH
+        Amount: 3-6
+        Data: 1
+  Collection:
+    Chance: 2
+    Items:
+      item1:
+        Type: BREAD
+        Amount: 2-10
+      item2:
+        Type: COOKIE
+        Amount: 2-10
+      item3:
+        Chance: 60
+        Type: MUSHROOM_SOUP
+      item4:
+        Chance: 60
+        Type: BEETROOT_SOUP
+      item5:
+        Chance: 50
+        Type: GOLDEN_CARROT
+        Amount: 2-10
+      item6:
+        Type: PUMPKIN_PIE
+        Amount: 2-10
+
+Bows:
+  BowAndArrows:
+    Chance: 2
+    Items:
+      # Bow
+      item1:
+        Type: BOW
+      
+      # Arrows
+      item2:
+        Type: ARROW
+        Amount: 16
+  EnchantedBow:
+    Chance: 1
+    Items:
+      item1:
+        Type: BOW
+        Enchants:
+          Ench1:
+            EnchantmentName: ARROW_DAMAGE
+            Level: '1:2'
+      item2:
+        Type: ARROW
+        Amount: 16
