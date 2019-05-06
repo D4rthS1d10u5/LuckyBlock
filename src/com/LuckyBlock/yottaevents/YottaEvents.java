@@ -90,20 +90,25 @@ public class YottaEvents implements Listener {
             ignoreCancelled = true
     )
     public void checkDupe(LBPlaceEvent event) {
-        ItemStack mainBefore = event.getPlayer().getInventory().getItemInMainHand();
-        if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore)) {
-            BlockData blockData = LuckyDB.getData(mainBefore);
-            if (blockData == null) {
-                event.setCancelled(true);
-                event.getPlayer().sendMessage("§cЭтот лаки блок уже нельзя октрыть, его время ушло :(");
-                event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
-            } else if (blockData.getPlace() >= blockData.getAmount()) {
-                event.setCancelled(true);
-                event.getPlayer().sendMessage("§cЭтот лаки блок - дюпнутый, такой ставить нельзя :(");
-                event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
+        try {
+            ItemStack mainBefore = event.getPlayer().getInventory().getItemInMainHand();
+            if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore)) {
+                BlockData blockData = LuckyDB.getData(mainBefore);
+                if (blockData == null) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage("§cЭтот лаки блок уже нельзя октрыть, его время ушло :(");
+                    event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
+                } else if (blockData.getPlace() >= blockData.getAmount()) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage("§cЭтот лаки блок - дюпнутый, такой ставить нельзя :(");
+                    event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
+                }
             }
+        } catch (Exception e) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage("§4Произошла ошибка, обратитесь к администратору.");
+            e.printStackTrace();
         }
-
     }
 
     @EventHandler(
