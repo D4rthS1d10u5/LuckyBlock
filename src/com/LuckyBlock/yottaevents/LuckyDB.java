@@ -107,6 +107,10 @@ public class LuckyDB {
             if (uuidString == null) {
                 return null;
             }
+            if (uuidString.startsWith("luckyblock")) {
+                String[] data = uuidString.split(":");
+                uuidString = data[1];
+            }
             UUID uuid = UUID.fromString(uuidString);
             return getDB().get(uuid);
         } else {
