@@ -33,16 +33,16 @@ public class LuckyDB {
     public static void checkSave() {
         if (toSave) {
             toSave = false;
-            YamlConfiguration dbConfig = new YamlConfiguration();
-            dbConfig.set("lb-item-list", db.entrySet().stream().map((e) -> {
-                return ((UUID)e.getKey()).toString() + ":" + ((LuckyDB.BlockData)e.getValue()).amount + ":" + ((LuckyDB.BlockData)e.getValue()).timeMillis + ":" + ((LuckyDB.BlockData)e.getValue()).getPlace();
-            }).collect(Collectors.toList()));
+            Bukkit.getScheduler().runTaskAsynchronously(LuckyBlock.instance, () -> {
+                YamlConfiguration dbConfig = new YamlConfiguration();
+                dbConfig.set("lb-item-list", db.entrySet().stream().map((e) -> e.getKey().toString() + ":" + e.getValue().amount + ":" + e.getValue().timeMillis + ":" + e.getValue().getPlace()).collect(Collectors.toList()));
 
-            try {
-                dbConfig.save(dbFile);
-            } catch (IOException var2) {
-                var2.printStackTrace();
-            }
+                try {
+                    dbConfig.save(dbFile);
+                } catch (IOException var2) {
+                    var2.printStackTrace();
+                }
+            });
         }
 
     }
