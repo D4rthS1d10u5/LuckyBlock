@@ -9,15 +9,9 @@ import com.LuckyBlock.Advanced.LuckyCraftingTable;
 import com.LuckyBlock.Enchantments.Glow;
 import com.LuckyBlock.Enchantments.Lightning;
 import com.LuckyBlock.Enchantments.ReflectProtectionEnchantment;
-import com.LuckyBlock.Event.LB.CraftLB;
-import com.LuckyBlock.Event.LB.EntityEvents;
-import com.LuckyBlock.Event.LB.InteractLB;
-import com.LuckyBlock.Event.LB.LBBossEvents;
-import com.LuckyBlock.Event.LB.LBShootEvent;
-import com.LuckyBlock.Event.LB.LBSpawnBoss;
-import com.LuckyBlock.Event.LB.SomeEvents;
 import com.LuckyBlock.Event.LB.Block.BreakLuckyBlock;
 import com.LuckyBlock.Event.LB.Block.PlaceLuckyBlock;
+import com.LuckyBlock.Event.LB.*;
 import com.LuckyBlock.Inventory.Event.EntitiesGui;
 import com.LuckyBlock.Inventory.Event.Gui;
 import com.LuckyBlock.Inventory.Event.LBGui;
@@ -36,24 +30,9 @@ import com.LuckyBlock.World.Structures.Structure;
 import com.LuckyBlock.command.engine.ConstructTabCompleter;
 import com.LuckyBlock.command.engine.ILBCmd;
 import com.LuckyBlock.command.engine.LBCommand;
-import com.LuckyBlock.customdrop.CustomDropManager;
-import com.LuckyBlock.customdrop.DropInventoryDrop;
-import com.LuckyBlock.customdrop.EffectsDrop;
-import com.LuckyBlock.customdrop.FakeTntDrop;
-import com.LuckyBlock.customdrop.RandomBlockDrop;
-import com.LuckyBlock.customentity.EntityElementalCreeper;
-import com.LuckyBlock.customentity.EntityGuardian;
-import com.LuckyBlock.customentity.EntityKillerSkeleton;
-import com.LuckyBlock.customentity.EntityLuckyVillager;
-import com.LuckyBlock.customentity.EntitySoldier;
-import com.LuckyBlock.customentity.EntitySuperSlime;
-import com.LuckyBlock.customentity.EntitySuperWitherSkeleton;
-import com.LuckyBlock.customentity.EntityTalkingZombie;
-import com.LuckyBlock.customentity.boss.EntityBossWitch;
-import com.LuckyBlock.customentity.boss.EntityFootballPlayer;
-import com.LuckyBlock.customentity.boss.EntityKnight;
-import com.LuckyBlock.customentity.boss.EntityMC;
-import com.LuckyBlock.customentity.boss.EntityUnderwaterBoss;
+import com.LuckyBlock.customdrop.*;
+import com.LuckyBlock.customentity.*;
+import com.LuckyBlock.customentity.boss.*;
 import com.LuckyBlock.logic.IRange;
 import com.LuckyBlock.logic.MyTasks;
 import com.LuckyBlock.title.ITitle;
@@ -61,13 +40,6 @@ import com.LuckyBlock.title.Title_1_12_R1;
 import com.LuckyBlock.yottaevents.LuckyDB;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -90,6 +62,10 @@ import org.core.entity.CustomEntityLoader;
 import org.core.event.SpawnEggEvents;
 import org.core.inventory.ItemMaker;
 import org.core.logic.ITask;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class LuckyBlock extends JavaPlugin {
     public static final String pluginname = "LuckyBlock";
@@ -201,7 +177,6 @@ public class LuckyBlock extends JavaPlugin {
             c.hideBar(false);
         }
 
-        instance = null;
         LuckyDB.checkSave();
         this.getLogger().info("LuckyBlock , 2.2.5 Disabled.");
     }

@@ -6,24 +6,21 @@
 package com.LuckyBlock.yottaevents;
 
 import com.LuckyBlock.Engine.LuckyBlock;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import com.LuckyBlock.LB.LBType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 public class LuckyDB {
     private static File dbFile;
+    public static Boolean fixDupe = null;
     private static Map<UUID, LuckyDB.BlockData> db;
     private static boolean toSave;
 
@@ -35,6 +32,11 @@ public class LuckyDB {
             toSave = false;
             Bukkit.getScheduler().runTaskAsynchronously(LuckyBlock.instance, () -> {
                 YamlConfiguration dbConfig = new YamlConfiguration();
+                if (fixDupe == null) {
+                    dbConfig.set("fix-dupe", true);
+                } else {
+                    dbConfig.set("fix-dupe", fixDupe);
+                }
                 dbConfig.set("lb-item-list", db.entrySet().stream().map((e) -> e.getKey().toString() + ":" + e.getValue().amount + ":" + e.getValue().timeMillis + ":" + e.getValue().getPlace()).collect(Collectors.toList()));
 
                 try {
@@ -61,6 +63,11 @@ public class LuckyDB {
 
         try {
             dbConfig.load(dbFile);
+            fixDupe = (Boolean) dbConfig.get("fix-dupe");
+            if (fixDupe == null) {
+                fixDupe = Boolean.TRUE;
+            }
+
             List<String> datas = dbConfig.getStringList("lb-item-list");
             db = new HashMap(datas.size() + 16);
             Iterator var4 = datas.iterator();

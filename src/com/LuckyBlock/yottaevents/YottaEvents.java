@@ -10,8 +10,6 @@ import com.LuckyBlock.Events.LBBreakEvent;
 import com.LuckyBlock.Events.LBPlaceEvent;
 import com.LuckyBlock.LB.LBType;
 import com.LuckyBlock.yottaevents.LuckyDB.BlockData;
-import java.util.UUID;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
@@ -90,6 +88,9 @@ public class YottaEvents implements Listener {
             ignoreCancelled = true
     )
     public void checkDupe(LBPlaceEvent event) {
+        if (LuckyDB.fixDupe != null && !LuckyDB.fixDupe) {
+            return;
+        }
         try {
             ItemStack mainBefore = event.getPlayer().getInventory().getItemInMainHand();
             if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore)) {

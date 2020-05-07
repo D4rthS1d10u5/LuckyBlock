@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Sever" type="JarApplication" factoryName="JAR Application" singleton="true">
-    <option name="JAR_PATH" value="D:/Server/spigot-1.12.2.jar" />
+  <configuration default="false" name="Sever" type="JarApplication" singleton="true">
+    <option name="JAR_PATH" value="F:/Server/core.jar" />
     <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8" />
-    <option name="WORKING_DIRECTORY" value="D:\Server\" />
+    <option name="WORKING_DIRECTORY" value="F:\Server" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="BuildArtifacts" enabled="true">
