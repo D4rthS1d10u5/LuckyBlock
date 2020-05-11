@@ -14,6 +14,7 @@ import com.LuckyBlock.World.Structures.LuckyWell;
 import com.LuckyBlock.customentity.nametag.EntityFloatingText;
 import com.LuckyBlock.logic.ColorsClass;
 import com.LuckyBlock.logic.MyTasks;
+import com.LuckyBlock.yottaevents.LuckyDB;
 import com.LuckyBlock.yottaevents.YottaEvents;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -95,6 +96,17 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                     }
                 } else if (LB.isLuckyBlock(block)) {
                     lb = LB.getFromBlock(block);
+                }
+            }
+
+            if (lb == null && !LuckyDB.fixDupe) {
+                LBType findType = LBType.getTypes().stream()
+                        .filter(lbType -> lbType.getBlockType() == type)
+                        .findFirst().orElse(null);
+                if (findType != null) {
+                    lb = new LB();
+                    int luck = ((Number) LuckyBlock.instance.getConfig().get("default-luck", 0)).intValue();
+                    lb.init(findType, block, luck, event.getPlayer(), false, true);
                 }
             }
 

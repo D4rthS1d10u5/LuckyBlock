@@ -235,6 +235,7 @@ public class LuckyBlock extends JavaPlugin {
 
     @Override
     public void reloadConfig() {
+        LB.cache.clear();
         super.reloadConfig();
         try {
             LuckyDB.checkSave();

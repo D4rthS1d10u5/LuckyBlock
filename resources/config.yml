@@ -51,3 +51,6 @@ CommandPage:
   color3: green
   color4: blue
   color5: yellow
+
+# удача по умолчанию от -100 до 100
+default-luck: 0

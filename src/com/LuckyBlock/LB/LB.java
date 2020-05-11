@@ -89,90 +89,98 @@ public class LB {
         }
     }
 
+
+    public LB() {
+        this.facing = BlockFace.EAST;
+    }
+
     public LB(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
         this.facing = BlockFace.EAST;
         if (getFromBlock(block) == null) {
             if (canSaveMore()) {
-                this.block = block;
-                this.type = type;
-                this.luck = luck;
-                if (placedBy != null) {
-                    if (placedBy instanceof Entity) {
-                        if (placedBy instanceof Player) {
-                            this.b = "pl=" + ((Player)placedBy).getName();
-                        } else {
-                            this.b = "a=Entity[" + ((Entity)placedBy).getType() + "," + ((Entity)placedBy).getUniqueId().toString() + "]";
-                        }
-                    } else if (placedBy instanceof Block) {
-                        Block blk = (Block)placedBy;
-                        this.b = "a=Block[" + blk.getX() + "," + blk.getY() + "," + blk.getZ() + "]";
-                    } else {
-                        this.b = placedBy;
-                    }
+                init(type, block, luck, placedBy, s, r);
+            }
+        }
+    }
+
+    public void init(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
+        this.block = block;
+        this.type = type;
+        this.luck = luck;
+        if (placedBy != null) {
+            if (placedBy instanceof Entity) {
+                if (placedBy instanceof Player) {
+                    this.b = "pl=" + ((Player)placedBy).getName();
                 } else {
-                    this.b = "a=None";
+                    this.b = "a=Entity[" + ((Entity)placedBy).getType() + "," + ((Entity)placedBy).getUniqueId().toString() + "]";
+                }
+            } else if (placedBy instanceof Block) {
+                Block blk = (Block)placedBy;
+                this.b = "a=Block[" + blk.getX() + "," + blk.getY() + "," + blk.getZ() + "]";
+            } else {
+                this.b = placedBy;
+            }
+        } else {
+            this.b = "a=None";
+        }
+
+        Iterator var8 = lbs.iterator();
+
+        while(var8.hasNext()) {
+            LB lb = (LB)var8.next();
+            if (this.blockToString().equalsIgnoreCase(lb.blockToString())) {
+                return;
+            }
+        }
+
+        this.setFile();
+        if (r) {
+            this.setRandomDrop();
+            if (this.b != null && this.b.toString().startsWith("pl:")) {
+                String[] d = this.b.toString().split("pl:");
+                this.dropOptions.add(new DropOption("Player", new String[]{d[1]}));
+            }
+        }
+
+        LBLoops.loop(this);
+        this.save(s);
+        if (type.isNameVisible() && r) {
+            EntityLBNameTag ent1;
+            if (type.showData) {
+                ent1 = new EntityLBNameTag();
+                EntityLBNameTag ent2 = new EntityLBNameTag();
+                EntityLBNameTag ent3 = new EntityLBNameTag();
+                if (type.hasNameOffset()) {
+                    ent1.a_ = type.getOffset(0);
+                    ent2.a_ = type.getOffset(1);
+                    ent3.a_ = type.getOffset(2);
                 }
 
-                Iterator var8 = lbs.iterator();
-
-                while(var8.hasNext()) {
-                    LB lb = (LB)var8.next();
-                    if (this.blockToString().equalsIgnoreCase(lb.blockToString())) {
-                        return;
-                    }
+                ent1.text = type.getName();
+                ent2.text = type.getLuckString(luck);
+                if (this.hasDropOption("Title")) {
+                    ent3.text = ChatColor.translateAlternateColorCodes('&', this.getDropOption("Title").getValues()[0].toString());
+                } else if (this.customDrop != null) {
+                    ent3.text = ChatColor.RED + this.customDrop.getName();
+                } else {
+                    ent3.text = ChatColor.RED + this.drop.name();
                 }
 
-                this.setFile();
-                if (r) {
-                    this.setRandomDrop();
-                    if (this.b != null && this.b.toString().startsWith("pl:")) {
-                        String[] d = this.b.toString().split("pl:");
-                        this.dropOptions.add(new DropOption("Player", new String[]{d[1]}));
-                    }
+                ent1.setValue("IType", "LBType");
+                ent2.setValue("IType", "Luck");
+                ent3.setValue("IType", "Drop");
+                ent1.spawn(this, 2);
+                ent2.spawn(this, 1);
+                ent3.spawn(this, 0);
+            } else {
+                ent1 = new EntityLBNameTag();
+                if (type.hasNameOffset()) {
+                    ent1.a_ = type.getOffset(0);
                 }
 
-                LBLoops.loop(this);
-                this.save(s);
-                if (type.isNameVisible() && r) {
-                    EntityLBNameTag ent1;
-                    if (type.showData) {
-                        ent1 = new EntityLBNameTag();
-                        EntityLBNameTag ent2 = new EntityLBNameTag();
-                        EntityLBNameTag ent3 = new EntityLBNameTag();
-                        if (type.hasNameOffset()) {
-                            ent1.a_ = type.getOffset(0);
-                            ent2.a_ = type.getOffset(1);
-                            ent3.a_ = type.getOffset(2);
-                        }
-
-                        ent1.text = type.getName();
-                        ent2.text = type.getLuckString(luck);
-                        if (this.hasDropOption("Title")) {
-                            ent3.text = ChatColor.translateAlternateColorCodes('&', this.getDropOption("Title").getValues()[0].toString());
-                        } else if (this.customDrop != null) {
-                            ent3.text = ChatColor.RED + this.customDrop.getName();
-                        } else {
-                            ent3.text = ChatColor.RED + this.drop.name();
-                        }
-
-                        ent1.setValue("IType", "LBType");
-                        ent2.setValue("IType", "Luck");
-                        ent3.setValue("IType", "Drop");
-                        ent1.spawn(this, 2);
-                        ent2.spawn(this, 1);
-                        ent3.spawn(this, 0);
-                    } else {
-                        ent1 = new EntityLBNameTag();
-                        if (type.hasNameOffset()) {
-                            ent1.a_ = type.getOffset(0);
-                        }
-
-                        ent1.text = type.getName();
-                        ent1.setValue("IType", "LBType");
-                        ent1.spawn(this, 1);
-                    }
-                }
-
+                ent1.text = type.getName();
+                ent1.setValue("IType", "LBType");
+                ent1.spawn(this, 1);
             }
         }
     }
@@ -252,10 +260,15 @@ public class LB {
         return this.dropOptions;
     }
 
+    public static Map<LBType, FileConfiguration> cache = new HashMap<>();
+
     public void setFile() {
-        String[] ad = LuckyBlock.instance.configf.getPath().split(LuckyBlock.instance.configf.getName());
-        if (this.type != null) {
-            File[] files = (new File(ad[0] + "/" + this.folder + "/" + this.type.getFolder() + "/")).listFiles();
+        if (this.type == null) {
+            return;
+        }
+        this.file = cache.computeIfAbsent(this.type, lbType -> {
+            String[] ad = LuckyBlock.instance.configf.getPath().split(LuckyBlock.instance.configf.getName());
+            File[] files = (new File(ad[0] + "/" + this.folder + "/" + lbType.getFolder() + "/")).listFiles();
             File[] var6 = files;
             int var5 = files.length;
 
@@ -269,16 +282,16 @@ public class LB {
                             int a1 = Integer.parseInt(d[0]);
                             int a2 = Integer.parseInt(d[1]);
                             if (this.luck >= a1 && this.luck <= a2) {
-                                this.file = YamlConfiguration.loadConfiguration(f);
+                                return YamlConfiguration.loadConfiguration(f);
                             }
                         } else if (this.luck == Integer.parseInt(d[0])) {
-                            this.file = YamlConfiguration.loadConfiguration(f);
+                            return YamlConfiguration.loadConfiguration(f);
                         }
                     }
                 }
             }
-        }
-
+            return null;
+        });
     }
 
     public void setRandomDrop() {
