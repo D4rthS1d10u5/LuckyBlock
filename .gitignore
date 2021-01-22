@@ -6,6 +6,9 @@
 # Файлы IDEA
 dependency-reduced-pom.xml
 *.iml
+/target/**
+*/target/**
+/out/**
 
 # В runConfigurations находятся запускаторы
 /.idea/*
