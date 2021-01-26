@@ -3,7 +3,6 @@
     <output-path>$PROJECT_DIR$/TestServer/plugins</output-path>
     <root id="archive" name="LuckyBlock.jar">
       <element id="module-output" name="LuckyBlock" />
-      <element id="dir-copy" path="$PROJECT_DIR$/resources" />
     </root>
   </artifact>
 </component>

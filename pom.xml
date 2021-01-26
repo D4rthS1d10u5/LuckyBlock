@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mcgamer199</groupId>
+    <artifactId>LuckyBlock</artifactId>
+    <version>1.0-mineland-modify</version>
+
+    <properties>
+        <app.deployDirectory>${project.basedir}/TestServer/plugins</app.deployDirectory>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>mvn-libs</id>
+            <url>https://raw.githubusercontent.com/D4rthS1d10u5/mvn-libs/depend</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.mineland</groupId>
+            <artifactId>core</artifactId>
+            <version>autocraftfix</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mcgamer199</groupId>
+            <artifactId>WorldEdit</artifactId>
+            <version>luckyblock-depend</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mcgamer199</groupId>
+            <artifactId>WorldGuard</artifactId>
+            <version>luckyblock-depend</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-->lombok dependency<-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <compilerVersion>1.8</compilerVersion>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessors>
+                        <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+                        </annotationProcessor>
+                    </annotationProcessors>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <finalName>${project.artifactId}</finalName>
+                    <outputDirectory>${app.deployDirectory}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- Запаковывание зависимостей в один jar файл -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
