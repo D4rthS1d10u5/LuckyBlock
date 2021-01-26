@@ -165,6 +165,6 @@ all:
       Ench6:
         EnchantmentName: DEPTH_STRIDER
         Level: 3
-      Ench6:
+      Ench7:
         EnchantmentName: DURABILITY
         Level: 5
