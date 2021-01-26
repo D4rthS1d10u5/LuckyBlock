@@ -1,14 +1,14 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
 import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
 import com.mcgamer199.luckyblock.tellraw.RawText;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,18 +41,18 @@ public class LBCTypes extends LBCommand {
 
                 int x;
                 LBType t;
-                for(x = (page - 1) * 5; x < page * 5; ++x) {
+                for (x = (page - 1) * 5; x < page * 5; ++x) {
                     if (x < LBType.getTypes().size()) {
-                        t = (LBType)LBType.getTypes().get(x);
+                        t = LBType.getTypes().get(x);
                         types.add(t);
                     }
                 }
 
                 if (sender instanceof Player) {
-                    Player player = (Player)sender;
+                    Player player = (Player) sender;
 
-                    for(int counter = 0; counter < types.size(); ++counter) {
-                        LBType type = (LBType)types.get(counter);
+                    for (int counter = 0; counter < types.size(); ++counter) {
+                        LBType type = types.get(counter);
                         short data = type.getData();
                         if (data < 0) {
                             boolean var16 = false;
@@ -66,13 +66,13 @@ public class LBCTypes extends LBCommand {
 
                         r.addAction(new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, i));
                         r.addAction(new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " lb " + player.getName() + " 1 0 " + type.getId()));
-                        r.sendTo(new Player[]{player});
+                        r.sendTo(player);
                     }
 
                     return true;
                 } else {
-                    for(x = 0; x < types.size(); ++x) {
-                        t = (LBType)types.get(x);
+                    for (x = 0; x < types.size(); ++x) {
+                        t = types.get(x);
                         sender.sendMessage("" + red + t.getId() + green + ", " + t.getName());
                     }
 

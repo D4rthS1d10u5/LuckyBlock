@@ -1,16 +1,16 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.resources.Trophy;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.resources.Trophy;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class EntityTrophyNameTag extends CustomEntity {
     private Trophy t;
@@ -23,7 +23,7 @@ public class EntityTrophyNameTag extends CustomEntity {
         Location l = t.getBlock().getLocation();
         l.add(0.5D, 0.7D, 0.5D);
         if (l != null) {
-            ArmorStand as = (ArmorStand)t.getBlock().getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+            ArmorStand as = (ArmorStand) t.getBlock().getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
             ItemStack item = t.getItemToDrop();
             if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) {
                 this.remove();

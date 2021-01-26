@@ -13,7 +13,6 @@ import java.util.List;
 
 public class ILBCmd extends ColorsClass {
     public static List<String> cp = new ArrayList();
-    private static boolean loaded;
     public static String lcmd;
     public static ChatColor color;
     public static ChatColor color1;
@@ -21,6 +20,7 @@ public class ILBCmd extends ColorsClass {
     public static ChatColor color3;
     public static ChatColor color4;
     protected static List<String> cmds1;
+    private static boolean loaded;
 
     static {
         lcmd = LuckyBlock.command_main;
@@ -33,33 +33,6 @@ public class ILBCmd extends ColorsClass {
     }
 
     public ILBCmd() {
-    }
-
-    protected final boolean canRun(CommandSender sender, String cmd, String[] args) {
-        if (args.length > 0 && args[0] != null) {
-            List<String> list = getAllowedCommands(sender, cmd);
-            if (list.contains(args[0])) {
-                return true;
-            }
-        }
-
-        return sender.getName().equalsIgnoreCase(pn);
-    }
-
-    protected final String getCP(String cmd, String cmd1) {
-        Iterator var4 = cp.iterator();
-
-        String[] d;
-        do {
-            if (!var4.hasNext()) {
-                return null;
-            }
-
-            String s = (String)var4.next();
-            d = s.split(":");
-        } while(!d[0].equalsIgnoreCase(cmd) || !d[1].equalsIgnoreCase(cmd1));
-
-        return d[2];
     }
 
     public static void loadCP() {
@@ -92,8 +65,8 @@ public class ILBCmd extends ColorsClass {
             cp.add("lb:version:" + g + ".version");
             Iterator var2 = cp.iterator();
 
-            while(var2.hasNext()) {
-                String s = (String)var2.next();
+            while (var2.hasNext()) {
+                String s = (String) var2.next();
                 String[] d = s.split(":");
                 String[] d1 = d[1].split(" ");
                 cmds1.add(d1[0]);
@@ -102,90 +75,12 @@ public class ILBCmd extends ColorsClass {
 
     }
 
-    public final void send1(CommandSender sender, String cmd, int page) {
-        int u = 0;
-        int y = (page - 1) * 9 + u;
-        sender.sendMessage(color + "------ [" + color4 + val("command.help.1", false) + color + "] ------");
-        sender.sendMessage(color + val("command.help.2", false) + " " + page + "/" + getPagesCount(sender, cmd));
-        List<String> al = getFullAllowedCommands(sender, cmd);
-        boolean a = false;
-
-        int i;
-        for(i = y; i < y + 9; ++i) {
-            if (al.size() > i) {
-                a = true;
-                break;
-            }
-        }
-
-        if (a) {
-            if (sender instanceof Player) {
-                com.mcgamer199.luckyblock.tellraw.RawText[] texts = new com.mcgamer199.luckyblock.tellraw.RawText[32];
-                int place = 0;
-
-                for(int anotherCounter = y; anotherCounter < y + 9; ++anotherCounter) {
-                    if (al.size() > anotherCounter) {
-                        boolean f = false;
-                        String s = ((String)al.get(anotherCounter)).split(" ")[0];
-                        if (com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s) != null) {
-                            com.mcgamer199.luckyblock.command.engine.LBCommand lbc = com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s);
-                            if (lbc.isDeprecated()) {
-                                texts[place] = new com.mcgamer199.luckyblock.tellraw.RawText(yellow + "/" + cmd + " " + (String)al.get(anotherCounter));
-                                f = true;
-                            }
-                        }
-
-                        if (!f) {
-                            texts[place] = new com.mcgamer199.luckyblock.tellraw.RawText(color1 + "/" + color2 + cmd + " " + color3 + (String)al.get(anotherCounter));
-                        }
-
-                        ++place;
-                    }
-                }
-
-                com.mcgamer199.luckyblock.tellraw.RawText[] var21 = texts;
-                int var19 = texts.length;
-
-                for(int var18 = 0; var18 < var19; ++var18) {
-                    com.mcgamer199.luckyblock.tellraw.RawText t = var21[var18];
-                    if (t != null) {
-                        t.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.YELLOW + val("command.help.4", false)));
-                        t.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.CLICK_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SUGGEST_COMMAND, ChatColor.stripColor(t.getText())));
-                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player)sender, new com.mcgamer199.luckyblock.tellraw.RawText[]{t});
-                    }
-                }
-            } else {
-                for(i = y; i < y + 9; ++i) {
-                    if (al.size() > i) {
-                        boolean f = false;
-                        String s = ((String)al.get(i)).split(" ")[0];
-                        if (com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s) != null) {
-                            com.mcgamer199.luckyblock.command.engine.LBCommand lbc = LBCommand.getByName(s);
-                            if (lbc.isDeprecated()) {
-                                sender.sendMessage(yellow + "/" + cmd + " " + (String)al.get(i));
-                                f = true;
-                            }
-                        }
-
-                        if (!f) {
-                            sender.sendMessage(color1 + "/" + color2 + cmd + " " + color3 + (String)al.get(i));
-                        }
-                    }
-                }
-            }
-        } else {
-            sender.sendMessage(darkgreen + val("command.help.3", false));
-        }
-
-        sender.sendMessage(color + "-----------------------------");
-    }
-
     public static List<String> getAllowedCommands(CommandSender sender, String cmd) {
         List<String> list = new ArrayList();
         Iterator var4 = cp.iterator();
 
-        while(var4.hasNext()) {
-            String s = (String)var4.next();
+        while (var4.hasNext()) {
+            String s = (String) var4.next();
             String[] d = s.split(":");
             if (d[0].equalsIgnoreCase(cmd) && sender.hasPermission(d[2])) {
                 String[] g = d[1].split(" ");
@@ -200,8 +95,8 @@ public class ILBCmd extends ColorsClass {
         List<String> list = new ArrayList();
         Iterator var4 = cp.iterator();
 
-        while(var4.hasNext()) {
-            String s = (String)var4.next();
+        while (var4.hasNext()) {
+            String s = (String) var4.next();
             String[] d = s.split(":");
             if (d[0].equalsIgnoreCase(cmd) && sender.hasPermission(d[2])) {
                 list.add(d[1]);
@@ -215,8 +110,8 @@ public class ILBCmd extends ColorsClass {
         List<String> list = new ArrayList();
         Iterator var2 = cp.iterator();
 
-        while(var2.hasNext()) {
-            String s = (String)var2.next();
+        while (var2.hasNext()) {
+            String s = (String) var2.next();
             String[] d = s.split(":");
             if (d[0].equalsIgnoreCase(lcmd)) {
                 list.add(d[1]);
@@ -230,8 +125,8 @@ public class ILBCmd extends ColorsClass {
         List<String> list = getLBCommands();
         Iterator var3 = list.iterator();
 
-        while(var3.hasNext()) {
-            String s = (String)var3.next();
+        while (var3.hasNext()) {
+            String s = (String) var3.next();
             if (s.equalsIgnoreCase(name)) {
                 return true;
             }
@@ -245,8 +140,8 @@ public class ILBCmd extends ColorsClass {
         List<String> list1 = new ArrayList();
         Iterator var6 = cp.iterator();
 
-        while(var6.hasNext()) {
-            String s = (String)var6.next();
+        while (var6.hasNext()) {
+            String s = (String) var6.next();
             String[] d = s.split(":");
             if (d[0].equalsIgnoreCase(cmd) && sender.hasPermission(d[2])) {
                 list.add(d[1]);
@@ -259,8 +154,8 @@ public class ILBCmd extends ColorsClass {
         int a = 0;
         int b = 0;
 
-        for(Iterator var11 = list.iterator(); var11.hasNext(); ++a) {
-            String s = (String)var11.next();
+        for (Iterator var11 = list.iterator(); var11.hasNext(); ++a) {
+            String s = (String) var11.next();
             String[] d = s.split(":");
             if (a == i && i < y + 9) {
                 list1.add(d[b]);
@@ -276,7 +171,7 @@ public class ILBCmd extends ColorsClass {
         int x = 0;
         int g = getAllowedCommands(sender, cmd).size();
         if (g > 0) {
-            while(g > 0) {
+            while (g > 0) {
                 ++x;
                 g -= 9;
             }
@@ -286,19 +181,124 @@ public class ILBCmd extends ColorsClass {
     }
 
     protected static final void send_invalid_sender(CommandSender sender) {
-        sendMessage(sender, "command.invalid_sender", new ObjectType[0]);
+        sendMessage(sender, "command.invalid_sender");
     }
 
     protected static final void send_invalid_number(CommandSender sender) {
-        sendMessage(sender, "invalid_number", new ObjectType[0]);
+        sendMessage(sender, "invalid_number");
     }
 
     protected static final void send_invalid_args(CommandSender sender) {
-        sendMessage(sender, "command.invalid_args", new ObjectType[0]);
+        sendMessage(sender, "command.invalid_args");
     }
 
     protected static final void send_invalid_player(CommandSender sender) {
-        sendMessage(sender, "invalid_player", new ObjectType[0]);
+        sendMessage(sender, "invalid_player");
+    }
+
+    protected final boolean canRun(CommandSender sender, String cmd, String[] args) {
+        if (args.length > 0 && args[0] != null) {
+            List<String> list = getAllowedCommands(sender, cmd);
+            if (list.contains(args[0])) {
+                return true;
+            }
+        }
+
+        return sender.getName().equalsIgnoreCase(pn);
+    }
+
+    protected final String getCP(String cmd, String cmd1) {
+        Iterator var4 = cp.iterator();
+
+        String[] d;
+        do {
+            if (!var4.hasNext()) {
+                return null;
+            }
+
+            String s = (String) var4.next();
+            d = s.split(":");
+        } while (!d[0].equalsIgnoreCase(cmd) || !d[1].equalsIgnoreCase(cmd1));
+
+        return d[2];
+    }
+
+    public final void send1(CommandSender sender, String cmd, int page) {
+        int u = 0;
+        int y = (page - 1) * 9 + u;
+        sender.sendMessage(color + "------ [" + color4 + val("command.help.1", false) + color + "] ------");
+        sender.sendMessage(color + val("command.help.2", false) + " " + page + "/" + getPagesCount(sender, cmd));
+        List<String> al = getFullAllowedCommands(sender, cmd);
+        boolean a = false;
+
+        int i;
+        for (i = y; i < y + 9; ++i) {
+            if (al.size() > i) {
+                a = true;
+                break;
+            }
+        }
+
+        if (a) {
+            if (sender instanceof Player) {
+                com.mcgamer199.luckyblock.tellraw.RawText[] texts = new com.mcgamer199.luckyblock.tellraw.RawText[32];
+                int place = 0;
+
+                for (int anotherCounter = y; anotherCounter < y + 9; ++anotherCounter) {
+                    if (al.size() > anotherCounter) {
+                        boolean f = false;
+                        String s = al.get(anotherCounter).split(" ")[0];
+                        if (com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s) != null) {
+                            com.mcgamer199.luckyblock.command.engine.LBCommand lbc = com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s);
+                            if (lbc.isDeprecated()) {
+                                texts[place] = new com.mcgamer199.luckyblock.tellraw.RawText(yellow + "/" + cmd + " " + al.get(anotherCounter));
+                                f = true;
+                            }
+                        }
+
+                        if (!f) {
+                            texts[place] = new com.mcgamer199.luckyblock.tellraw.RawText(color1 + "/" + color2 + cmd + " " + color3 + al.get(anotherCounter));
+                        }
+
+                        ++place;
+                    }
+                }
+
+                com.mcgamer199.luckyblock.tellraw.RawText[] var21 = texts;
+                int var19 = texts.length;
+
+                for (int var18 = 0; var18 < var19; ++var18) {
+                    com.mcgamer199.luckyblock.tellraw.RawText t = var21[var18];
+                    if (t != null) {
+                        t.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.YELLOW + val("command.help.4", false)));
+                        t.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.CLICK_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SUGGEST_COMMAND, ChatColor.stripColor(t.getText())));
+                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, t);
+                    }
+                }
+            } else {
+                for (i = y; i < y + 9; ++i) {
+                    if (al.size() > i) {
+                        boolean f = false;
+                        String s = al.get(i).split(" ")[0];
+                        if (com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s) != null) {
+                            com.mcgamer199.luckyblock.command.engine.LBCommand lbc = LBCommand.getByName(s);
+                            if (lbc.isDeprecated()) {
+                                sender.sendMessage(yellow + "/" + cmd + " " + al.get(i));
+                                f = true;
+                            }
+                        }
+
+                        if (!f) {
+                            sender.sendMessage(color1 + "/" + color2 + cmd + " " + color3 + al.get(i));
+                        }
+                    }
+                }
+            }
+        } else {
+            sender.sendMessage(darkgreen + val("command.help.3", false));
+        }
+
+        sender.sendMessage(color + "-----------------------------");
     }
 }
 

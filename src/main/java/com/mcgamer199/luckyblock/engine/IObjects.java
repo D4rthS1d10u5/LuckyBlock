@@ -1,10 +1,11 @@
 package com.mcgamer199.luckyblock.engine;
 
-import com.mcgamer199.luckyblock.events.LanguageChangedEvent;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.events.LanguageChangedEvent;
+import com.mcgamer199.luckyblock.lb.LBDrop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,7 +13,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,18 +22,18 @@ import java.util.Iterator;
 import java.util.List;
 
 public class IObjects {
-    private static boolean loaded = false;
-    private static boolean loaded1 = false;
-    private static List<Object> objects = new ArrayList();
-    private static HashMap<String, Object> options = new HashMap();
-    private static HashMap<String, File> storedFiles = new HashMap();
-    private static HashMap<String, String> storedSounds = new HashMap();
-    private static HashMap<String, String> storedStrings = new HashMap();
-    private static boolean MISSING_STRINGS = false;
-    private static boolean MISSING_SOUNDS = false;
+    public static final ItemStack ITEM_SPAWN_ENTITY;
     public static FileConfiguration fLang;
     static List<String> missing = new ArrayList();
-    public static final ItemStack ITEM_SPAWN_ENTITY;
+    private static boolean loaded = false;
+    private static boolean loaded1 = false;
+    private static final List<Object> objects = new ArrayList();
+    private static final HashMap<String, Object> options = new HashMap();
+    private static final HashMap<String, File> storedFiles = new HashMap();
+    private static final HashMap<String, String> storedSounds = new HashMap();
+    private static final HashMap<String, String> storedStrings = new HashMap();
+    private static boolean MISSING_STRINGS = false;
+    private static boolean MISSING_SOUNDS = false;
 
     static {
         ITEM_SPAWN_ENTITY = ItemMaker.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity");
@@ -50,7 +50,7 @@ public class IObjects {
         if (objects.size() > place) {
             Object o = objects.get(place);
             if (o instanceof LBCommand) {
-                return (LBCommand)o;
+                return (LBCommand) o;
             } else {
                 throw new Error("Couldn't find object!");
             }
@@ -62,10 +62,10 @@ public class IObjects {
     public static List<LBCommand> getCommands() {
         List<LBCommand> c = new ArrayList();
 
-        for(int x = 0; x < objects.size(); ++x) {
+        for (int x = 0; x < objects.size(); ++x) {
             Object o = objects.get(x);
             if (o instanceof LBCommand) {
-                c.add((LBCommand)o);
+                c.add((LBCommand) o);
             }
         }
 
@@ -81,7 +81,7 @@ public class IObjects {
     }
 
     public static File getStoredFile(String name) {
-        return storedFiles.containsKey(name) ? (File)storedFiles.get(name) : null;
+        return storedFiles.containsKey(name) ? storedFiles.get(name) : null;
     }
 
     public static void load() {
@@ -367,8 +367,8 @@ public class IObjects {
         if (c.getConfigurationSection("desc.drop") != null) {
             Iterator var3 = c.getConfigurationSection("desc.drop").getKeys(false).iterator();
 
-            while(var3.hasNext()) {
-                String s = (String)var3.next();
+            while (var3.hasNext()) {
+                String s = (String) var3.next();
                 if (!LBDrop.isValid(s) && !CustomDropManager.isValid(s)) {
                     throw new Error("Could not add string for " + s + " (invalid drop exception)");
                 }
@@ -404,7 +404,7 @@ public class IObjects {
     }
 
     public static String getSound(String key) {
-        return storedSounds.containsKey(key) ? (String)storedSounds.get(key) : null;
+        return storedSounds.containsKey(key) ? storedSounds.get(key) : null;
     }
 
     public static String getString(String key) {
@@ -413,7 +413,7 @@ public class IObjects {
 
     public static String getString(String key, boolean log) {
         if (storedStrings.containsKey(key)) {
-            String s = (String)storedStrings.get(key);
+            String s = storedStrings.get(key);
             s = s.replace("%!", "'");
             return s;
         } else {

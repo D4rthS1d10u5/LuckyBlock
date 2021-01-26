@@ -1,14 +1,14 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.resources.LBItem;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.util.Arrays;
 
@@ -25,9 +25,9 @@ public class LBCDetector extends LBCommand {
                 return true;
             }
 
-            target = (Player)sender;
+            target = (Player) sender;
             item = LBItem.DETECTOR.getItem();
-            target.getInventory().addItem(new ItemStack[]{item});
+            target.getInventory().addItem(item);
             send(sender, "command.detector.success");
         } else if (args.length == 2) {
             target = Bukkit.getPlayer(args[1]);
@@ -36,8 +36,8 @@ public class LBCDetector extends LBCommand {
                 return true;
             }
 
-            item = ItemMaker.createItem(Material.PISTON_BASE, 1, (short)0, "" + blue + bold + "Detector", Arrays.asList(gray + "Place it"));
-            target.getInventory().addItem(new ItemStack[]{item});
+            item = ItemMaker.createItem(Material.PISTON_BASE, 1, (short) 0, "" + blue + bold + "Detector", Arrays.asList(gray + "Place it"));
+            target.getInventory().addItem(item);
             send(sender, "command.detector.success");
             return true;
         }

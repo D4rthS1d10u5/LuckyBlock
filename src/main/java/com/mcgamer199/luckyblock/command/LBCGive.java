@@ -5,9 +5,9 @@
 
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.LBOption;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -27,7 +27,7 @@ public class LBCGive extends LBCommand {
                 return false;
             }
 
-            target = (Player)sender;
+            target = (Player) sender;
         }
 
         if (target == null) {
@@ -74,11 +74,11 @@ public class LBCGive extends LBCommand {
 
                 LBType type = LBType.fromId(id);
                 if (type == null) {
-                    sendMessage(sender, "lb.invalid_type", new ObjectType[0]);
+                    sendMessage(sender, "lb.invalid_type");
                     return false;
                 } else if (luck <= type.getMaxLuck() && luck >= type.getMinLuck()) {
                     if (type.disabled) {
-                        sendMessage(sender, "lb.type_disabled", new ObjectType[0]);
+                        sendMessage(sender, "lb.type_disabled");
                         return false;
                     } else {
                         LBOption[] options = new LBOption[16];
@@ -87,7 +87,7 @@ public class LBCGive extends LBCommand {
                             String[] d = a.split(",");
                             int i = 0;
 
-                            for(int x = 0; x < d.length; ++x) {
+                            for (int x = 0; x < d.length; ++x) {
                                 if (d[x] != null) {
                                     try {
                                         options[i] = LBOption.valueOf(d[x].toUpperCase());
@@ -105,9 +105,9 @@ public class LBCGive extends LBCommand {
                             b = true;
                         }
 
-                        ItemStack item = type.toItemStack(luck, options, (String)null, b, amount);
+                        ItemStack item = type.toItemStack(luck, options, null, b, amount);
                         item.setAmount(amount);
-                        target.getInventory().addItem(new ItemStack[]{item});
+                        target.getInventory().addItem(item);
                         String a = val("command.givelb.success", false);
                         a = a.replace("%amount%", String.valueOf(amount));
                         if (!b) {
@@ -123,7 +123,7 @@ public class LBCGive extends LBCommand {
                         return true;
                     }
                 } else {
-                    sendMessage(sender, "command.givelb.invalid_luck", new ObjectType[0]);
+                    sendMessage(sender, "command.givelb.invalid_luck");
                     return false;
                 }
             }

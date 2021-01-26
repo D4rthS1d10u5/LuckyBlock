@@ -3,6 +3,7 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.newstr.FileStructure;
 import org.bukkit.Location;
@@ -17,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,15 +38,16 @@ public class LBSpawnBoss implements Listener {
                     boolean f = false;
                     Iterator var7 = event.getPotion().getEffects().iterator();
 
-                    label58: {
+                    label58:
+                    {
                         PotionEffect e;
                         do {
                             if (!var7.hasNext()) {
                                 break label58;
                             }
 
-                            e = (PotionEffect)var7.next();
-                        } while(e.getType().getName() != PotionEffectType.INVISIBILITY.getName() && e.getType().getName() != PotionEffectType.NIGHT_VISION.getName());
+                            e = (PotionEffect) var7.next();
+                        } while (e.getType().getName() != PotionEffectType.INVISIBILITY.getName() && e.getType().getName() != PotionEffectType.NIGHT_VISION.getName());
 
                         f = true;
                     }
@@ -56,10 +57,10 @@ public class LBSpawnBoss implements Listener {
                         List<Item> item = new ArrayList();
                         Iterator var9 = event.getPotion().getNearbyEntities(2.0D, 2.0D, 2.0D).iterator();
 
-                        while(var9.hasNext()) {
-                            Entity e = (Entity)var9.next();
+                        while (var9.hasNext()) {
+                            Entity e = (Entity) var9.next();
                             if (e instanceof Item) {
-                                Item i = (Item)e;
+                                Item i = (Item) e;
                                 if (i.getItemStack() != null && i.getItemStack().getType() == Material.SUGAR) {
                                     ++a;
                                     item.add(i);
@@ -71,8 +72,8 @@ public class LBSpawnBoss implements Listener {
                             lb.remove(true);
                             var9 = item.iterator();
 
-                            while(var9.hasNext()) {
-                                Item i = (Item)var9.next();
+                            while (var9.hasNext()) {
+                                Item i = (Item) var9.next();
                                 i.remove();
                             }
 
@@ -96,9 +97,9 @@ public class LBSpawnBoss implements Listener {
                     SoundManager.playFixedSound(loc, MyTasks.getSound("ritual_witch_particles"), 1.0F, 0.0F, 59);
                     --this.i;
                 } else {
-                    for(int x = -1; x < 2; ++x) {
-                        for(int z = -1; z < 2; ++z) {
-                            Location l = new Location(loc.getWorld(), loc.getX() + (double)x, loc.getY() - 1.0D, loc.getZ() + (double)z);
+                    for (int x = -1; x < 2; ++x) {
+                        for (int z = -1; z < 2; ++z) {
+                            Location l = new Location(loc.getWorld(), loc.getX() + (double) x, loc.getY() - 1.0D, loc.getZ() + (double) z);
                             l.getBlock().setType(Material.OBSIDIAN);
                         }
                     }

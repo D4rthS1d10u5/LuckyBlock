@@ -27,7 +27,7 @@ public class RecipeLB implements Listener {
         Inventory inv = Bukkit.createInventory(player, 45, ChatColor.BLUE + "LB Recipes#ID:" + id + "#Page:" + page);
         ItemStack itemN = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 15, ChatColor.RED + "Locked");
 
-        for(int x = 0; x < inv.getSize(); ++x) {
+        for (int x = 0; x < inv.getSize(); ++x) {
             inv.setItem(x, itemN);
         }
 
@@ -43,10 +43,10 @@ public class RecipeLB implements Listener {
         inv.setItem(25, null);
         List<ShapedRecipe> recipes = new ArrayList();
 
-        for(int x = 0; x < Bukkit.getRecipesFor(item).size(); ++x) {
+        for (int x = 0; x < Bukkit.getRecipesFor(item).size(); ++x) {
             Recipe recipe = Bukkit.getRecipesFor(item).get(x);
             if (recipe instanceof ShapedRecipe) {
-                ShapedRecipe r = (ShapedRecipe)recipe;
+                ShapedRecipe r = (ShapedRecipe) recipe;
                 recipes.add(r);
             }
         }
@@ -64,7 +64,7 @@ public class RecipeLB implements Listener {
             Recipe r = recipes.get(page - 1);
             inv.setItem(25, r.getResult());
             if (r instanceof ShapedRecipe) {
-                ShapedRecipe s = (ShapedRecipe)r;
+                ShapedRecipe s = (ShapedRecipe) r;
                 inv.setItem(12, s.getIngredientMap().get(s.getShape()[0].charAt(0)));
                 inv.setItem(13, s.getIngredientMap().get(s.getShape()[0].charAt(1)));
                 inv.setItem(14, s.getIngredientMap().get(s.getShape()[0].charAt(2)));
@@ -80,6 +80,17 @@ public class RecipeLB implements Listener {
         player.openInventory(inv);
     }
 
+    static int getPage(String title) {
+        title = ChatColor.stripColor(title);
+        String[] d = title.split("#");
+        if (d.length == 3) {
+            String[] s = d[2].split("Page:");
+            return Integer.parseInt(s[1]);
+        } else {
+            return 0;
+        }
+    }
+
     @EventHandler
     private void onClickItem(InventoryClickEvent event) {
         Inventory inv = event.getInventory();
@@ -90,7 +101,7 @@ public class RecipeLB implements Listener {
                 String[] d1 = d[1].split("ID:");
                 event.setCancelled(true);
                 if (event.getWhoClicked() instanceof Player) {
-                    Player player = (Player)event.getWhoClicked();
+                    Player player = (Player) event.getWhoClicked();
                     ItemStack item = event.getCurrentItem();
                     if (item != null && item.getType() != Material.AIR) {
                         if (item.getType() == Material.ARROW) {
@@ -112,17 +123,6 @@ public class RecipeLB implements Listener {
             }
         }
 
-    }
-
-    static int getPage(String title) {
-        title = ChatColor.stripColor(title);
-        String[] d = title.split("#");
-        if (d.length == 3) {
-            String[] s = d[2].split("Page:");
-            return Integer.parseInt(s[1]);
-        } else {
-            return 0;
-        }
     }
 }
 

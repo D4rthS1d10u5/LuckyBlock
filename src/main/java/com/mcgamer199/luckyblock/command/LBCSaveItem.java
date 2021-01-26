@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +26,7 @@ public class LBCSaveItem extends LBCommand {
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
         String path = args[1];
-        Player player = (Player)sender;
+        Player player = (Player) sender;
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item != null && item.getType() != Material.AIR) {
             file.set(path, item);

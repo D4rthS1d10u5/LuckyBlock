@@ -12,7 +12,11 @@ import java.util.Map;
 
 public class PlayerData {
 
-    private static Plugin plugin;
+    private static final Plugin plugin;
+
+    static {
+        plugin = LuckyBlock.instance;
+    }
 
     public PlayerData() {
     }
@@ -28,15 +32,11 @@ public class PlayerData {
     public static Map<String, Object> getMetadata(Player player) {
         List<MetadataValue> luckydata = player.getMetadata("luckydata");
         if (!luckydata.isEmpty()) {
-            return (Map)((MetadataValue)luckydata.get(0)).value();
+            return (Map) luckydata.get(0).value();
         } else {
             Map<String, Object> result = new HashMap(8);
             player.setMetadata("luckydata", new FixedMetadataValue(plugin, result));
             return result;
         }
-    }
-
-    static {
-        plugin = LuckyBlock.instance;
     }
 }

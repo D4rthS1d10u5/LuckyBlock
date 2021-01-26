@@ -1,5 +1,8 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,9 +15,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EntitySoldier extends CustomEntity {
-    private List<String> skulls = new ArrayList();
     EntitySoldier.SoldierType type;
+    private final List<String> skulls = new ArrayList();
     private int xp;
 
     public EntitySoldier() {
@@ -32,7 +32,7 @@ public class EntitySoldier extends CustomEntity {
     }
 
     public Entity spawnFunction(Location loc) {
-        Zombie zombie = (Zombie)loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+        Zombie zombie = (Zombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
         zombie.setBaby(false);
         zombie.getEquipment().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
         zombie.getEquipment().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
@@ -73,8 +73,8 @@ public class EntitySoldier extends CustomEntity {
     }
 
     protected List<String> getNames() {
-        LivingEntity living = (LivingEntity)this.entity;
-        return Arrays.asList("" + ChatColor.DARK_RED + ChatColor.BOLD + "Soldier " + (int)living.getHealth(), "" + ChatColor.RED + ChatColor.BOLD + "Soldier " + (int)living.getHealth(), "" + ChatColor.GOLD + ChatColor.BOLD + "Soldier " + (int)living.getHealth(), "" + ChatColor.YELLOW + ChatColor.BOLD + "Soldier " + (int)living.getHealth());
+        LivingEntity living = (LivingEntity) this.entity;
+        return Arrays.asList("" + ChatColor.DARK_RED + ChatColor.BOLD + "Soldier " + (int) living.getHealth(), "" + ChatColor.RED + ChatColor.BOLD + "Soldier " + (int) living.getHealth(), "" + ChatColor.GOLD + ChatColor.BOLD + "Soldier " + (int) living.getHealth(), "" + ChatColor.YELLOW + ChatColor.BOLD + "Soldier " + (int) living.getHealth());
     }
 
     protected int getNamesDelay() {
@@ -90,7 +90,7 @@ public class EntitySoldier extends CustomEntity {
     }
 
     public ItemStack[] getDrops() {
-        return new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(Material.CAKE), new ItemStack(Material.INK_SACK, this.random.nextInt(4) + 1, (short)3), new ItemStack(Material.WEB, this.random.nextInt(6) + 1)};
+        return new ItemStack[]{new ItemStack(Material.BUCKET), new ItemStack(Material.CAKE), new ItemStack(Material.INK_SACK, this.random.nextInt(4) + 1, (short) 3), new ItemStack(Material.WEB, this.random.nextInt(6) + 1)};
     }
 
     protected int[] getPercents() {
@@ -109,8 +109,8 @@ public class EntitySoldier extends CustomEntity {
         if (this.skulls.size() > 0) {
             Iterator var3 = this.skulls.iterator();
 
-            while(var3.hasNext()) {
-                String s = (String)var3.next();
+            while (var3.hasNext()) {
+                String s = (String) var3.next();
                 if (!s.startsWith("Entity")) {
                     ItemStack item = ItemMaker.createItem(Material.SKULL_ITEM, 1, 3);
                     item = ItemMaker.setSkullOwner(item, s);
@@ -129,7 +129,7 @@ public class EntitySoldier extends CustomEntity {
     }
 
     protected void onKillPlayer(EntityDamageByEntityEvent event) {
-        Player player = (Player)event.getEntity();
+        Player player = (Player) event.getEntity();
         if (!this.skulls.contains(player.getName())) {
             this.skulls.add(player.getName());
             this.save_def();
@@ -148,7 +148,7 @@ public class EntitySoldier extends CustomEntity {
         }
 
         if (event.getEntity() instanceof Skeleton) {
-            Skeleton sk = (Skeleton)event.getEntity();
+            Skeleton sk = (Skeleton) event.getEntity();
             if (sk.getSkeletonType() == SkeletonType.NORMAL) {
                 this.skulls.add("Entity_0");
             } else if (sk.getSkeletonType() == SkeletonType.WITHER) {
@@ -174,8 +174,8 @@ public class EntitySoldier extends CustomEntity {
         if (c.getStringList("Skulls") != null && c.getStringList("Skulls").size() > 0) {
             Iterator var3 = c.getStringList("Skulls").iterator();
 
-            while(var3.hasNext()) {
-                String a = (String)var3.next();
+            while (var3.hasNext()) {
+                String a = (String) var3.next();
                 this.skulls.add(a);
             }
         }
@@ -194,11 +194,11 @@ public class EntitySoldier extends CustomEntity {
         return "Zombie";
     }
 
-    public static enum SoldierType {
+    public enum SoldierType {
         DEFAULT,
         MONSTER_KILLER;
 
-        private SoldierType() {
+        SoldierType() {
         }
     }
 }

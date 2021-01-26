@@ -30,8 +30,8 @@ public class ItemStackTags extends HTag {
             } else {
                 Iterator var4 = c.getKeys(false).iterator();
 
-                while(var4.hasNext()) {
-                    String s = (String)var4.next();
+                while (var4.hasNext()) {
+                    String s = (String) var4.next();
                     int timesA = 1;
                     if (c.getString("Loc") != null) {
                         return getItems(getSection(c.getString("Loc")));
@@ -43,11 +43,11 @@ public class ItemStackTags extends HTag {
                     }
 
                     if (s.equalsIgnoreCase("Items") && c.getConfigurationSection(s) != null) {
-                        for(int i = 0; i < timesA; ++i) {
+                        for (int i = 0; i < timesA; ++i) {
                             Iterator var8 = c.getConfigurationSection(s).getKeys(false).iterator();
 
-                            while(var8.hasNext()) {
-                                String t = (String)var8.next();
+                            while (var8.hasNext()) {
+                                String t = (String) var8.next();
                                 ConfigurationSection f = c.getConfigurationSection(s).getConfigurationSection(t);
                                 int times = 1;
                                 if (f.getString("Times") != null) {
@@ -55,7 +55,7 @@ public class ItemStackTags extends HTag {
                                     times = getRandomNumber(d);
                                 }
 
-                                for(int e = times; e > 0; --e) {
+                                for (int e = times; e > 0; --e) {
                                     ItemStack item = ItemStackGetter.getItemStack(f);
                                     int chance = 100;
                                     if (f.getInt("Chance") > 0) {

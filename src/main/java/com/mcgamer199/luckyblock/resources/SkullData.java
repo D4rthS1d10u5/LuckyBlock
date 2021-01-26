@@ -14,9 +14,9 @@ public class SkullData {
     public static final SkullData KNIGHT = new SkullData("f8336e18-6a34-4442-a718-ce20dfe2b5e0", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDYyNTJhN2RkNDMwMjBlYzI3Y2Y3MTU4ZDFmODgzNzc0NDJlMmRhNGRlN2VhYTU0NWZjMjY1Zjc2YTkzNTkifX19", true, "BOSS", "Knight");
     public static final SkullData FOOTBALL_PLAYER_1 = new SkullData("37f198b8-7bdf-4f39-a350-c82c518be70b", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg3NTg2NTAyMDNhZWRmMDY4OGZlYjRiZWY1ZjIyNzgyMzZiNWUxN2QyNmRjNTdkMTVhMTk2OTIyODQ3ZjExIn19fQ==", true, "FP", "Player1");
     public static final SkullData FOOTBALL_PLAYER_2 = new SkullData("c33a8b2f-3a67-4ba1-a7f4-a9bbf2b56c96", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzdhY2Q0ZDZlNTU0NzEwMWY2YmJlNTgyZTUzNDhlN2UxNmRjNGU3YjcxNDQ1NjY0OWNkYzIyZTNiNTQ2YiJ9fX0=", true, "FP", "Player2");
-    private String tag;
-    private String id;
-    private String data;
+    private final String tag;
+    private final String id;
+    private final String data;
     private String name;
 
     public SkullData(String id, String data) {
@@ -24,11 +24,11 @@ public class SkullData {
     }
 
     public SkullData(String id, String data, boolean save) {
-        this(id, data, save, (String)null);
+        this(id, data, save, null);
     }
 
     public SkullData(String id, String data, boolean save, String tag) {
-        this(id, data, save, tag, (String)null);
+        this(id, data, save, tag, null);
     }
 
     public SkullData(String id, String data, boolean save, String tag, String name) {
@@ -39,6 +39,35 @@ public class SkullData {
             skulls.add(this);
         }
 
+    }
+
+    public static SkullData getRandomSkullData(String tag) {
+        Random rnd = new Random();
+        List<SkullData> sk = new ArrayList();
+
+        for (int x = 0; x < skulls.size(); ++x) {
+            if (tag != null) {
+                SkullData s = skulls.get(x);
+                if (s.tag != null && tag.equalsIgnoreCase(s.tag)) {
+                    sk.add(s);
+                }
+            } else {
+                sk.add(skulls.get(x));
+            }
+        }
+
+        return sk.get(rnd.nextInt(sk.size()));
+    }
+
+    public static SkullData getSkullByName(String name) {
+        for (int x = 0; x < skulls.size(); ++x) {
+            SkullData sd = skulls.get(x);
+            if (sd.name != null && sd.name.equalsIgnoreCase(name)) {
+                return sd;
+            }
+        }
+
+        return null;
     }
 
     public String getId() {
@@ -55,34 +84,5 @@ public class SkullData {
 
     public String getTag() {
         return this.tag;
-    }
-
-    public static SkullData getRandomSkullData(String tag) {
-        Random rnd = new Random();
-        List<SkullData> sk = new ArrayList();
-
-        for(int x = 0; x < skulls.size(); ++x) {
-            if (tag != null) {
-                SkullData s = (SkullData)skulls.get(x);
-                if (s.tag != null && tag.equalsIgnoreCase(s.tag)) {
-                    sk.add(s);
-                }
-            } else {
-                sk.add((SkullData)skulls.get(x));
-            }
-        }
-
-        return (SkullData)sk.get(rnd.nextInt(sk.size()));
-    }
-
-    public static SkullData getSkullByName(String name) {
-        for(int x = 0; x < skulls.size(); ++x) {
-            SkullData sd = (SkullData)skulls.get(x);
-            if (sd.name != null && sd.name.equalsIgnoreCase(name)) {
-                return sd;
-            }
-        }
-
-        return null;
     }
 }

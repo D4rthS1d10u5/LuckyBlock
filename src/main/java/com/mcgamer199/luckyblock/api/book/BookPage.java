@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.api.book;
 import com.mcgamer199.luckyblock.tellraw.RawText;
 
 public class BookPage {
-    private RawText[] texts;
+    private final RawText[] texts;
 
     public BookPage(RawText... texts) {
         this.texts = texts;
@@ -14,7 +14,7 @@ public class BookPage {
     }
 
     public void addText(RawText text) {
-        for(int x = 0; x < this.texts.length; ++x) {
+        for (int x = 0; x < this.texts.length; ++x) {
             if (this.texts[x] == null) {
                 this.texts[x] = text;
                 break;

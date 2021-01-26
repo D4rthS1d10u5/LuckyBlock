@@ -1,6 +1,7 @@
 package com.mcgamer199.luckyblock.entity;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,7 +9,6 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,26 @@ import java.util.Random;
 public class CustomEntityEvents implements Listener {
 
     public CustomEntityEvents() {
+    }
+
+    public static void onSpawn(Entity entity) {
+        if (com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(entity.getUniqueId()) != null) {
+            final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(entity.getUniqueId());
+            if (c.entity != null && c.getTickTime() > -1) {
+                final SchedulerTask task = new SchedulerTask();
+                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+                    public void run() {
+                        if (c.entity != null && !c.entity.isDead()) {
+                            c.onTick();
+                        } else {
+                            task.run();
+                        }
+
+                    }
+                }, c.getTickTime(), c.getTickTime()));
+            }
+        }
+
     }
 
     @EventHandler
@@ -34,7 +54,7 @@ public class CustomEntityEvents implements Listener {
 
             c.onDamage(event);
             if (event instanceof EntityDamageByEntityEvent) {
-                EntityDamageByEntityEvent e = (EntityDamageByEntityEvent)event;
+                EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
                 c.onDamageByEntity(e);
                 if (e.getDamager() instanceof Player) {
                     c.onDamageByPlayer(e);
@@ -54,7 +74,7 @@ public class CustomEntityEvents implements Listener {
                         double x1 = c.particleOptions()[0];
                         double y1 = c.particleOptions()[1];
                         double z1 = c.particleOptions()[2];
-                        event.getEntity().getWorld().spawnParticle(c.getDeathParticles(), event.getEntity().getLocation().add(x1, y1, z1), (int)c.particleOptions()[3], c.particleOptions()[6], c.particleOptions()[7], c.particleOptions()[8], c.particleOptions()[9]);
+                        event.getEntity().getWorld().spawnParticle(c.getDeathParticles(), event.getEntity().getLocation().add(x1, y1, z1), (int) c.particleOptions()[3], c.particleOptions()[6], c.particleOptions()[7], c.particleOptions()[8], c.particleOptions()[9]);
                     }
                 } else {
                     event.getEntity().getWorld().spawnParticle(c.getDeathParticles(), event.getEntity().getLocation(), 25, 0.3D, 0.3D, 0.3D, 0.0D);
@@ -66,7 +86,7 @@ public class CustomEntityEvents implements Listener {
                 if (!c.itemsEdited()) {
                     ItemStack[] items = c.getRandomItems();
 
-                    for(int s = 0; s < items.length; ++s) {
+                    for (int s = 0; s < items.length; ++s) {
                         if (items[s] != null && c.getDrops()[s] != null) {
                             event.getDrops().add(items[s]);
                         }
@@ -75,7 +95,7 @@ public class CustomEntityEvents implements Listener {
                     List<Item> itemEntities = new ArrayList();
                     ItemStack[] items = c.getRandomItems();
 
-                    for(int x = 0; x < items.length; ++x) {
+                    for (int x = 0; x < items.length; ++x) {
                         if (items[x] != null && c.getDrops()[x] != null) {
                             Item i = event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), items[x]);
                             itemEntities.add(i);
@@ -85,8 +105,8 @@ public class CustomEntityEvents implements Listener {
                     if (itemEntities.size() > 0) {
                         Item[] it = new Item[itemEntities.size()];
 
-                        for(int x = 0; x < itemEntities.size(); ++x) {
-                            it[x] = (Item)itemEntities.get(x);
+                        for (int x = 0; x < itemEntities.size(); ++x) {
+                            it[x] = itemEntities.get(x);
                         }
 
                         c.itemsToDrop(it);
@@ -107,9 +127,9 @@ public class CustomEntityEvents implements Listener {
 
                 List<ExperienceOrb> xps = new ArrayList();
 
-                for(int x = 0; x < xp; ++x) {
+                for (int x = 0; x < xp; ++x) {
                     if (xp > s) {
-                        ExperienceOrb orb = (ExperienceOrb)event.getEntity().getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.EXPERIENCE_ORB);
+                        ExperienceOrb orb = (ExperienceOrb) event.getEntity().getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.EXPERIENCE_ORB);
                         orb.setExperience(s);
                         xp -= s;
                         xps.add(orb);
@@ -119,7 +139,7 @@ public class CustomEntityEvents implements Listener {
                 }
 
                 if (xp > 0) {
-                    ExperienceOrb orb = (ExperienceOrb)event.getEntity().getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.EXPERIENCE_ORB);
+                    ExperienceOrb orb = (ExperienceOrb) event.getEntity().getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.EXPERIENCE_ORB);
                     orb.setExperience(xp);
                     xps.add(orb);
                 }
@@ -127,8 +147,8 @@ public class CustomEntityEvents implements Listener {
                 if (xps.size() > 0) {
                     ExperienceOrb[] e = new ExperienceOrb[xps.size()];
 
-                    for(int x = 0; x < xps.size(); ++x) {
-                        e[x] = (ExperienceOrb)xps.get(x);
+                    for (int x = 0; x < xps.size(); ++x) {
+                        e[x] = xps.get(x);
                     }
 
                     c.xpToDrop(e);
@@ -232,9 +252,9 @@ public class CustomEntityEvents implements Listener {
     @EventHandler
     public void onDamagePlayerWithProjectile(EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-            Projectile proj = (Projectile)event.getDamager();
+            Projectile proj = (Projectile) event.getDamager();
             if (proj.getShooter() instanceof Entity) {
-                Entity e = (Entity)proj.getShooter();
+                Entity e = (Entity) proj.getShooter();
                 com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(e.getUniqueId());
                 if (c != null && c.entity != null) {
                     if (c.getProjectileDamage() > 0.0D) {
@@ -259,28 +279,8 @@ public class CustomEntityEvents implements Listener {
             if (c.entity != null) {
                 c.onDamageEntity(event);
                 if (c.getAttackDamage() > 0) {
-                    event.setDamage((double)c.getAttackDamage());
+                    event.setDamage(c.getAttackDamage());
                 }
-            }
-        }
-
-    }
-
-    public static void onSpawn(Entity entity) {
-        if (com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(entity.getUniqueId()) != null) {
-            final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(entity.getUniqueId());
-            if (c.entity != null && c.getTickTime() > -1) {
-                final SchedulerTask task = new SchedulerTask();
-                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
-                    public void run() {
-                        if (c.entity != null && !c.entity.isDead()) {
-                            c.onTick();
-                        } else {
-                            task.run();
-                        }
-
-                    }
-                }, (long)c.getTickTime(), (long)c.getTickTime()));
             }
         }
 
@@ -289,13 +289,13 @@ public class CustomEntityEvents implements Listener {
     @EventHandler
     public void onKillEntityWithProjectile(EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
-            Projectile proj = (Projectile)event.getDamager();
+            Projectile proj = (Projectile) event.getDamager();
             if (proj.getShooter() instanceof Entity) {
-                Entity e = (Entity)proj.getShooter();
+                Entity e = (Entity) proj.getShooter();
                 com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(e.getUniqueId());
                 if (c != null && c.entity != null && event.getEntity() instanceof LivingEntity) {
-                    LivingEntity l = (LivingEntity)event.getEntity();
-                    if ((int)(l.getHealth() - event.getFinalDamage()) <= 0) {
+                    LivingEntity l = (LivingEntity) event.getEntity();
+                    if ((int) (l.getHealth() - event.getFinalDamage()) <= 0) {
                         c.onKillEntityWithProjectile(event);
                     }
                 }
@@ -328,7 +328,7 @@ public class CustomEntityEvents implements Listener {
         if (com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getDamager().getUniqueId()) != null && event.getEntity() instanceof Player) {
             final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getDamager().getUniqueId());
             if (c.entity != null) {
-                final Player player = (Player)event.getEntity();
+                final Player player = (Player) event.getEntity();
                 SchedulerTask task = new SchedulerTask();
                 task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
                     public void run() {
@@ -400,12 +400,12 @@ public class CustomEntityEvents implements Listener {
             if (c.entity != null) {
                 c.onCombust(event);
                 if (event instanceof EntityCombustByBlockEvent) {
-                    EntityCombustByBlockEvent b = (EntityCombustByBlockEvent)event;
+                    EntityCombustByBlockEvent b = (EntityCombustByBlockEvent) event;
                     c.onCombustByBlock(b);
                 }
 
                 if (event instanceof EntityCombustByEntityEvent) {
-                    EntityCombustByEntityEvent b = (EntityCombustByEntityEvent)event;
+                    EntityCombustByEntityEvent b = (EntityCombustByEntityEvent) event;
                     c.onCombustByEntity(b);
                 }
             }
@@ -526,7 +526,7 @@ public class CustomEntityEvents implements Listener {
         if (com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getEntity().getUniqueId()) != null && event.getDamager() instanceof Player) {
             final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getEntity().getUniqueId());
             if (c.entity != null) {
-                final Player player = (Player)event.getDamager();
+                final Player player = (Player) event.getDamager();
                 SchedulerTask task = new SchedulerTask();
                 task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
                     public void run() {
@@ -566,7 +566,7 @@ public class CustomEntityEvents implements Listener {
             Entity[] var5;
             int var4 = (var5 = event.getChunk().getEntities()).length;
 
-            for(int var3 = 0; var3 < var4; ++var3) {
+            for (int var3 = 0; var3 < var4; ++var3) {
                 Entity e = var5[var3];
                 if (com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(e.getUniqueId()) != null) {
                     com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(e.getUniqueId());
@@ -581,7 +581,7 @@ public class CustomEntityEvents implements Listener {
     @EventHandler
     public void onProjectileSpawn(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() != null && event.getEntity().getShooter() instanceof Entity) {
-            Entity e = (Entity)event.getEntity().getShooter();
+            Entity e = (Entity) event.getEntity().getShooter();
             if (com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getEntity().getUniqueId()) != null) {
                 com.mcgamer199.luckyblock.entity.CustomEntity c = CustomEntity.getByUUID(e.getUniqueId());
                 if (c.entity != null) {

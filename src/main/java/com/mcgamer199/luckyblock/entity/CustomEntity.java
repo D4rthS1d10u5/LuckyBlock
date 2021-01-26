@@ -1,6 +1,9 @@
 package com.mcgamer199.luckyblock.entity;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemNBT;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BossBar;
@@ -10,19 +13,16 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.api.item.ItemNBT;
 
 import java.util.*;
 
 public class CustomEntity {
 
-    protected Entity entity;
-    private UUID uuid;
     public static final List<CustomEntity> entities = new ArrayList();
-    protected Random random = new Random();
     public static final List<CustomEntity> classes = new ArrayList();
+    protected Entity entity;
+    protected Random random = new Random();
+    private UUID uuid;
     private BossBar bossBar;
 
     public CustomEntity() {
@@ -33,8 +33,8 @@ public class CustomEntity {
         Iterator var2 = classes.iterator();
 
         CustomEntity c;
-        while(var2.hasNext()) {
-            c = (CustomEntity)var2.next();
+        while (var2.hasNext()) {
+            c = (CustomEntity) var2.next();
             if (c.getClass().getName().equalsIgnoreCase(name)) {
                 return true;
             }
@@ -56,9 +56,9 @@ public class CustomEntity {
     }
 
     public static CustomEntity getByReplacedEntity(EntityType entitytype) {
-        for(int x = 0; x < classes.size(); ++x) {
-            if (((CustomEntity)classes.get(x)).replaceEntity() == entitytype) {
-                return (CustomEntity)classes.get(x);
+        for (int x = 0; x < classes.size(); ++x) {
+            if (classes.get(x).replaceEntity() == entitytype) {
+                return classes.get(x);
             }
         }
 
@@ -70,8 +70,8 @@ public class CustomEntity {
         name = name.replace("LB_", "com.LuckyBlock.customentity.");
         Iterator var2 = classes.iterator();
 
-        while(var2.hasNext()) {
-            CustomEntity e = (CustomEntity)var2.next();
+        while (var2.hasNext()) {
+            CustomEntity e = (CustomEntity) var2.next();
             if (e.getClass().getName().equalsIgnoreCase(name)) {
                 return e;
             }
@@ -81,9 +81,9 @@ public class CustomEntity {
     }
 
     public static CustomEntity getByUUID(UUID uuid) {
-        for(int x = 0; x < entities.size(); ++x) {
-            if (((CustomEntity)entities.get(x)).getUuid().toString().equalsIgnoreCase(uuid.toString())) {
-                return (CustomEntity)entities.get(x);
+        for (int x = 0; x < entities.size(); ++x) {
+            if (entities.get(x).getUuid().toString().equalsIgnoreCase(uuid.toString())) {
+                return entities.get(x);
             }
         }
 
@@ -111,7 +111,7 @@ public class CustomEntity {
             public void run() {
                 if (!CustomEntity.this.entity.isDead()) {
                     if (CustomEntity.this.isAnimated() && CustomEntity.this.getNames() != null && CustomEntity.this.getNames().size() > 0) {
-                        CustomEntity.this.entity.setCustomName((String)CustomEntity.this.getNames().get(this.x));
+                        CustomEntity.this.entity.setCustomName(CustomEntity.this.getNames().get(this.x));
                         if (this.x < CustomEntity.this.getNames().size() - 1) {
                             ++this.x;
                         } else {
@@ -124,12 +124,12 @@ public class CustomEntity {
                 }
 
             }
-        }, 1L, (long)this.getNamesDelay()));
+        }, 1L, this.getNamesDelay()));
     }
 
     private void c() {
         if (this.entity != null && this.entity instanceof Creature) {
-            final Creature cr = (Creature)this.entity;
+            final Creature cr = (Creature) this.entity;
             final ITask task = new ITask();
             task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
                 public void run() {
@@ -138,8 +138,8 @@ public class CustomEntity {
                             List<Entity> entities = new ArrayList();
                             Iterator var3 = CustomEntity.this.entity.getNearbyEntities(15.0D, 10.0D, 15.0D).iterator();
 
-                            while(true) {
-                                while(true) {
+                            while (true) {
+                                while (true) {
                                     Entity ex;
                                     do {
                                         LivingEntity l;
@@ -157,15 +157,15 @@ public class CustomEntity {
                                                             } else if (!CustomEntity.this.useOldSystem()) {
                                                                 uuid = CustomEntity.this.getNearestEntity(entities).getUniqueId();
                                                             } else {
-                                                                uuid = ((Entity)entities.get(CustomEntity.this.random.nextInt(entities.size()))).getUniqueId();
+                                                                uuid = entities.get(CustomEntity.this.random.nextInt(entities.size())).getUniqueId();
                                                             }
 
                                                             Iterator var8 = CustomEntity.this.entity.getNearbyEntities(25.0D, 20.0D, 25.0D).iterator();
 
-                                                            while(var8.hasNext()) {
-                                                                Entity e = (Entity)var8.next();
+                                                            while (var8.hasNext()) {
+                                                                Entity e = (Entity) var8.next();
                                                                 if (e.getUniqueId() == uuid) {
-                                                                    cr.setTarget((LivingEntity)e);
+                                                                    cr.setTarget((LivingEntity) e);
                                                                 }
                                                             }
                                                         }
@@ -173,23 +173,23 @@ public class CustomEntity {
                                                         return;
                                                     }
 
-                                                    ex = (Entity)var3.next();
-                                                } while(!(ex instanceof LivingEntity));
+                                                    ex = (Entity) var3.next();
+                                                } while (!(ex instanceof LivingEntity));
 
-                                                l = (LivingEntity)ex;
-                                            } while(!l.hasAI());
-                                        } while(ex == CustomEntity.this.entity);
-                                    } while(!CustomEntity.this.containsTarget(ex.getType()));
+                                                l = (LivingEntity) ex;
+                                            } while (!l.hasAI());
+                                        } while (ex == CustomEntity.this.entity);
+                                    } while (!CustomEntity.this.containsTarget(ex.getType()));
 
                                     if (!(ex instanceof Player)) {
                                         entities.add(ex);
-                                    } else if (((Player)ex).getGameMode() == GameMode.SURVIVAL || ((Player)ex).getGameMode() == GameMode.ADVENTURE) {
+                                    } else if (((Player) ex).getGameMode() == GameMode.SURVIVAL || ((Player) ex).getGameMode() == GameMode.ADVENTURE) {
                                         entities.add(ex);
                                     }
                                 }
                             }
                         } else if (CustomEntity.this.entity.getLocation().distance(cr.getTarget().getLocation()) > 20.0D || !cr.getTarget().isValid()) {
-                            cr.setTarget((LivingEntity)null);
+                            cr.setTarget(null);
                         }
                     } else {
                         CustomEntity.this.remove();
@@ -211,9 +211,9 @@ public class CustomEntity {
                         if (CustomEntity.this.hasBossBar() && CustomEntity.this.getBossBar() != null && CustomEntity.this.getBossBarRange() > 0 && CustomEntity.this.getBossBarRange() < 225) {
                             Iterator var2 = CustomEntity.this.entity.getWorld().getPlayers().iterator();
 
-                            while(var2.hasNext()) {
-                                Player p = (Player)var2.next();
-                                int d = (int)CustomEntity.this.entity.getLocation().distance(p.getLocation());
+                            while (var2.hasNext()) {
+                                Player p = (Player) var2.next();
+                                int d = (int) CustomEntity.this.entity.getLocation().distance(p.getLocation());
                                 if (d <= CustomEntity.this.getBossBarRange()) {
                                     if (CustomEntity.this.getBossBar().getPlayers() != null && !CustomEntity.this.getBossBar().getPlayers().contains(p)) {
                                         CustomEntity.this.getBossBar().addPlayer(p);
@@ -239,7 +239,7 @@ public class CustomEntity {
         EntityType[] var5;
         int var4 = (var5 = this.getTargets()).length;
 
-        for(int var3 = 0; var3 < var4; ++var3) {
+        for (int var3 = 0; var3 < var4; ++var3) {
             EntityType t = var5[var3];
             if (entitytype.name().equalsIgnoreCase(t.name())) {
                 return true;
@@ -288,8 +288,8 @@ public class CustomEntity {
             this.getEntity().remove();
         }
 
-        for(int x = 0; x < entities.size(); ++x) {
-            if (((CustomEntity)entities.get(x)).getUuid() == this.getUuid()) {
+        for (int x = 0; x < entities.size(); ++x) {
+            if (entities.get(x).getUuid() == this.getUuid()) {
                 entities.remove(x);
             }
         }
@@ -321,7 +321,7 @@ public class CustomEntity {
         ItemStack[] its = new ItemStack[64];
         int p = 0;
         if (this.getDrops() != null && this.getPercents() != null) {
-            for(int x = 0; x < this.getDrops().length; ++x) {
+            for (int x = 0; x < this.getDrops().length; ++x) {
                 if (this.getDrops()[x] != null && this.getPercents()[x] > 0) {
                     int r = this.random.nextInt(100) + 1;
                     if (r <= this.getPercents()[x]) {
@@ -486,7 +486,7 @@ public class CustomEntity {
 
     public final boolean isImmuneTo(EntityDamageEvent.DamageCause cause) {
         if (this.getImmuneTo() != null) {
-            for(int x = 0; x < this.getImmuneTo().length; ++x) {
+            for (int x = 0; x < this.getImmuneTo().length; ++x) {
                 if (this.getImmuneTo()[x].getName().equalsIgnoreCase(cause.name())) {
                     return true;
                 }
@@ -521,7 +521,7 @@ public class CustomEntity {
             Biome[] var5;
             int var4 = (var5 = this.getSpawnBiomes()).length;
 
-            for(int var3 = 0; var3 < var4; ++var3) {
+            for (int var3 = 0; var3 < var4; ++var3) {
                 Biome b = var5[var3];
                 if (biome == b) {
                     return true;
@@ -550,7 +550,7 @@ public class CustomEntity {
             int[] var5;
             int var4 = (var5 = this.getPriorities()).length;
 
-            for(int var3 = 0; var3 < var4; ++var3) {
+            for (int var3 = 0; var3 < var4; ++var3) {
                 int i = var5[var3];
                 if (i > h) {
                     h = i;
@@ -568,8 +568,8 @@ public class CustomEntity {
             int h = 0;
             Iterator var4 = entities.iterator();
 
-            while(var4.hasNext()) {
-                Entity e = (Entity)var4.next();
+            while (var4.hasNext()) {
+                Entity e = (Entity) var4.next();
                 if (this.getPriorityByTarget(e.getType()) > h) {
                     h = this.getPriorityByTarget(e.getType());
                 }
@@ -583,7 +583,7 @@ public class CustomEntity {
 
     private int getPriorityByTarget(EntityType entitytype) {
         if (this.getTargets() != null && this.getPriorities() != null && this.getTargets().length == this.getPriorities().length) {
-            for(int x = 0; x < this.getTargets().length; ++x) {
+            for (int x = 0; x < this.getTargets().length; ++x) {
                 if (this.getTargets()[x] == entitytype) {
                     return this.getPriorities()[x];
                 }
@@ -595,7 +595,7 @@ public class CustomEntity {
 
     private EntityType getTargetByPriority(int priority) {
         if (this.getTargets() != null && this.getPriorities() != null && this.getTargets().length == this.getPriorities().length) {
-            for(int x = 0; x < this.getPriorities().length; ++x) {
+            for (int x = 0; x < this.getPriorities().length; ++x) {
                 if (priority == this.getPriorities()[x]) {
                     return this.getTargets()[x];
                 }
@@ -611,8 +611,8 @@ public class CustomEntity {
         EntityType target = this.getTargetByPriority(highest);
         Iterator var6 = entities.iterator();
 
-        while(var6.hasNext()) {
-            Entity e = (Entity)var6.next();
+        while (var6.hasNext()) {
+            Entity e = (Entity) var6.next();
             if (e.getType() == target) {
                 list.add(e);
             }
@@ -627,8 +627,8 @@ public class CustomEntity {
             Entity choosen = null;
             Iterator var6 = entities.iterator();
 
-            while(var6.hasNext()) {
-                Entity e = (Entity)var6.next();
+            while (var6.hasNext()) {
+                Entity e = (Entity) var6.next();
                 if (this.entity.getLocation().distance(e.getLocation()) < distance) {
                     distance = this.entity.getLocation().distance(e.getLocation());
                     choosen = e;
@@ -645,7 +645,9 @@ public class CustomEntity {
         return false;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected boolean useOldSystem() {
         return false;
@@ -714,8 +716,8 @@ public class CustomEntity {
             if (pl) {
                 Iterator var3 = this.getBossBar().getPlayers().iterator();
 
-                while(var3.hasNext()) {
-                    Player p = (Player)var3.next();
+                while (var3.hasNext()) {
+                    Player p = (Player) var3.next();
                     this.getBossBar().removePlayer(p);
                 }
             }

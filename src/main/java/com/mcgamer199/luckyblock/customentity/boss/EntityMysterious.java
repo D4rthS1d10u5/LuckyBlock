@@ -1,6 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,8 +11,6 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class EntityMysterious extends CustomEntity {
     String status = "none";
@@ -21,7 +21,7 @@ public class EntityMysterious extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        ArmorStand boss = (ArmorStand)loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+        ArmorStand boss = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
         boss.setArms(false);
         boss.setBasePlate(false);
         boss.setVisible(false);
@@ -44,7 +44,7 @@ public class EntityMysterious extends CustomEntity {
         task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
             public void run() {
                 if (!EntityMysterious.this.boss.isDead()) {
-                    Enderman e1 = (Enderman)EntityMysterious.this.boss.getWorld().spawnEntity(EntityMysterious.this.boss.getLocation(), EntityType.ENDERMAN);
+                    Enderman e1 = (Enderman) EntityMysterious.this.boss.getWorld().spawnEntity(EntityMysterious.this.boss.getLocation(), EntityType.ENDERMAN);
                     MyTasks.followEntity(EntityMysterious.this.boss.getLocation().add(10.0D, 0.0D, 0.0D), e1, 0.3D);
                 } else {
                     task.run();

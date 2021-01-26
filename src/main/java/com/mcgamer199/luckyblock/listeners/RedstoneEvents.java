@@ -12,14 +12,6 @@ public class RedstoneEvents implements Listener {
     public RedstoneEvents() {
     }
 
-    @EventHandler
-    public void OnRedstone(BlockRedstoneEvent event) {
-        if (event.getNewCurrent() > 0) {
-            testForBlock(event.getBlock(), event.getNewCurrent());
-        }
-
-    }
-
     public static void testForBlock(Block block, int newCurrent) {
         if (newCurrent > 0) {
             Block where = null;
@@ -55,8 +47,16 @@ public class RedstoneEvents implements Listener {
             }
 
             if (done) {
-                BreakLuckyBlock.openLB(LB.getFromBlock(where), (Player)null);
+                BreakLuckyBlock.openLB(LB.getFromBlock(where), null);
             }
+        }
+
+    }
+
+    @EventHandler
+    public void OnRedstone(BlockRedstoneEvent event) {
+        if (event.getNewCurrent() > 0) {
+            testForBlock(event.getBlock(), event.getNewCurrent());
         }
 
     }

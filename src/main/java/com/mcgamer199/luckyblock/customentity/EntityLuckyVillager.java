@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.entity.CustomEntity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,7 +12,6 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class EntityLuckyVillager extends CustomEntity {
     }
 
     public Entity spawnFunction(Location loc) {
-        Villager villager = (Villager)loc.getWorld().spawnEntity(loc, EntityType.VILLAGER);
+        Villager villager = (Villager) loc.getWorld().spawnEntity(loc, EntityType.VILLAGER);
         villager.setCustomName(ChatColor.YELLOW + "Lucky Villager");
         villager.setCustomNameVisible(true);
         List<MerchantRecipe> recipes = new ArrayList();

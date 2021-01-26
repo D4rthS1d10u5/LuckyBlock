@@ -1,17 +1,23 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemNBT;
+import com.mcgamer199.luckyblock.api.item.ItemReflection;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.command.engine.ILBCmd;
+import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.events.LBCraftEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.TitleSender;
-import com.mcgamer199.luckyblock.command.engine.ILBCmd;
-import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -36,15 +42,208 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.api.item.ItemNBT;
-import com.mcgamer199.luckyblock.api.item.ItemReflection;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class CraftLB extends ColorsClass implements Listener {
     public CraftLB() {
+    }
+
+    public static boolean isRandom(ItemStack item) {
+        return ItemReflection.getBoolean(item, "hasRandomLuck");
+    }
+
+    public static int getTotalLuck(Inventory inv) {
+        int total = 0;
+
+        for (int x = 0; x < inv.getSize(); ++x) {
+            if (x < 45 && x % 9 > 3 && inv.getItem(x) != null) {
+                ItemStack item = inv.getItem(x);
+                if (CraftLB.LuckItem.getFromItem(item) != null && !LBType.isLB(item)) {
+                    CraftLB.LuckItem i = CraftLB.LuckItem.getFromItem(item);
+                    int luck = i.luck;
+                    if (i == CraftLB.LuckItem.POTION || i == CraftLB.LuckItem.SPLASH_POTION || i == CraftLB.LuckItem.LINGERING_POTION) {
+                        PotionMeta potion = (PotionMeta) item.getItemMeta();
+                        luck += getPotionLuck(potion);
+                    }
+
+                    if (i == CraftLB.LuckItem.ENCHANTED_BOOK) {
+                        EnchantmentStorageMeta m = (EnchantmentStorageMeta) item.getItemMeta();
+                        luck += getBookLuck(m);
+                    }
+
+                    luck *= item.getAmount();
+                    total += luck;
+                }
+
+                if (LBType.isLB(item)) {
+                    int luck = getLuck(item);
+                    luck *= item.getAmount();
+                    total += luck;
+                }
+            }
+        }
+
+        if (total > 9999) {
+            total = 9999;
+        }
+
+        if (total < -9999) {
+            total = -9999;
+        }
+
+        return total;
+    }
+
+    public static int getLuck(ItemStack item) {
+        return LBType.isLB(item) ? LBType.getLuck(item) : 0;
+    }
+
+    public static void removeItems(Inventory inv) {
+        int x;
+        ItemStack item;
+        for (x = 0; x < inv.getSize(); ++x) {
+            if (x < 45 && x % 9 > 3 && inv.getItem(x) != null && CraftLB.LuckItem.isValid(inv.getItem(x))) {
+                item = inv.getItem(x);
+                if (!LBType.isLB(item)) {
+                    inv.removeItem(inv.getItem(x));
+                }
+            }
+        }
+
+        for (x = 0; x < inv.getSize(); ++x) {
+            if (x < 45 && x % 9 > 3 && inv.getItem(x) != null && LBType.isLB(inv.getItem(x))) {
+                item = inv.getItem(x);
+                LBType.changeLuck(LBType.fromItem(item), item, 0);
+            }
+        }
+
+    }
+
+    private static int getPotionLuck(PotionMeta potion) {
+        int luck = 0;
+        byte plus;
+        if (potion.getBasePotionData() != null) {
+            PotionData data = potion.getBasePotionData();
+            PotionType type = data.getType();
+            plus = 0;
+            int multiply = 1;
+            if (data.isUpgraded()) {
+                multiply = 2;
+            }
+
+            if (type == PotionType.FIRE_RESISTANCE) {
+                plus = 12;
+            } else if (type == PotionType.INSTANT_DAMAGE) {
+                plus = -16;
+            } else if (type == PotionType.INSTANT_HEAL) {
+                plus = 16;
+            } else if (type == PotionType.INVISIBILITY) {
+                plus = 12;
+            } else if (type == PotionType.JUMP) {
+                plus = 8;
+            } else if (type == PotionType.POISON) {
+                plus = -12;
+            } else if (type == PotionType.REGEN) {
+                plus = 12;
+            } else if (type == PotionType.SLOWNESS) {
+                plus = -8;
+            } else if (type == PotionType.SPEED) {
+                plus = 8;
+            } else if (type == PotionType.STRENGTH) {
+                plus = 12;
+            } else if (type == PotionType.WATER_BREATHING) {
+                plus = 4;
+            } else if (type == PotionType.WEAKNESS) {
+                plus = -8;
+            } else if (type.name().equalsIgnoreCase("luck")) {
+                plus = 12;
+            }
+
+            int p = plus * multiply;
+            luck += p;
+        }
+
+        int plusv20;
+        if (potion.hasCustomEffects()) {
+            for (Iterator var8 = potion.getCustomEffects().iterator(); var8.hasNext(); luck += plusv20) {
+                PotionEffect effect = (PotionEffect) var8.next();
+                plusv20 = 0;
+                PotionEffectType type = effect.getType();
+                String name = type.getName();
+                if (name.equalsIgnoreCase("absorption")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("blindness")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("confusion")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("damage_resistance")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("fast_digging")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("fire_resistance")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("harm")) {
+                    plusv20 = -2;
+                } else if (name.equalsIgnoreCase("heal")) {
+                    plusv20 = 2;
+                } else if (name.equalsIgnoreCase("health_boost")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("hunger")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("increase_damage")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("invisibility")) {
+                    plusv20 = 2;
+                } else if (name.equalsIgnoreCase("jump")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("poison")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("regeneration")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("saturation")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("slow")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("slow_digging")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("speed")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("water_breathing")) {
+                    plusv20 = 1;
+                } else if (name.equalsIgnoreCase("weakness")) {
+                    plusv20 = -1;
+                } else if (name.equalsIgnoreCase("wither")) {
+                    plusv20 = -2;
+                }
+
+                plusv20 = plusv20 * (effect.getAmplifier() + 1) * (effect.getDuration() / 100);
+            }
+        }
+
+        return luck;
+    }
+
+    private static int getBookLuck(EnchantmentStorageMeta e) {
+        int luck = 0;
+        Enchantment c;
+        if (e.hasStoredEnchants()) {
+            for (Iterator var3 = e.getStoredEnchants().keySet().iterator(); var3.hasNext(); luck += 3 * e.getStoredEnchantLevel(c)) {
+                c = (Enchantment) var3.next();
+            }
+        }
+
+        return luck;
+    }
+
+    private static void TestSend(Player player, String path) {
+        if (LuckyBlock.action_bar_messages()) {
+            TitleSender.send_1(player, path);
+        } else {
+            send_no(player, path);
+        }
+
     }
 
     @EventHandler
@@ -77,7 +276,7 @@ public class CraftLB extends ColorsClass implements Listener {
             }
 
             if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR && event.getWhoClicked() instanceof Player) {
-                Player player = (Player)event.getWhoClicked();
+                Player player = (Player) event.getWhoClicked();
                 ItemStack item = event.getCurrentItem();
                 Inventory inv = event.getInventory();
                 if (rawSlot % 9 < 3 && rawSlot < 26 && this.getLTable(inv.getItem(inv.getSize() - 17)) != null) {
@@ -154,8 +353,8 @@ public class CraftLB extends ColorsClass implements Listener {
                             p = 0;
                             Iterator var12 = inv.getViewers().iterator();
 
-                            while(var12.hasNext()) {
-                                HumanEntity h = (HumanEntity)var12.next();
+                            while (var12.hasNext()) {
+                                HumanEntity h = (HumanEntity) var12.next();
                                 if (h != player) {
                                     if (p == 0) {
                                         s = gold + h.getName();
@@ -171,7 +370,7 @@ public class CraftLB extends ColorsClass implements Listener {
                         }
 
                         raw.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, s));
-                        raw.sendTo(new Player[]{player});
+                        raw.sendTo(player);
                     }
 
                     if (item.getType() == Material.REDSTONE) {
@@ -253,7 +452,7 @@ public class CraftLB extends ColorsClass implements Listener {
     String canCraft(Inventory inv) {
         boolean found = false;
 
-        for(int x = 0; x < inv.getSize(); ++x) {
+        for (int x = 0; x < inv.getSize(); ++x) {
             if (x < 45 && x % 9 > 3) {
                 ItemStack item = inv.getItem(x);
                 if (item != null) {
@@ -280,7 +479,7 @@ public class CraftLB extends ColorsClass implements Listener {
     String canCraft1(Inventory inv) {
         String found = "NULL -1";
 
-        for(int x = 0; x < inv.getSize(); ++x) {
+        for (int x = 0; x < inv.getSize(); ++x) {
             if (x < 26 && x % 9 < 3 && inv.getItem(x) != null) {
                 ItemStack item = inv.getItem(x);
                 if (!LBType.isLB(item)) {
@@ -302,59 +501,9 @@ public class CraftLB extends ColorsClass implements Listener {
         return found;
     }
 
-    public static boolean isRandom(ItemStack item) {
-        return ItemReflection.getBoolean(item, "hasRandomLuck");
-    }
-
-    public static int getTotalLuck(Inventory inv) {
-        int total = 0;
-
-        for(int x = 0; x < inv.getSize(); ++x) {
-            if (x < 45 && x % 9 > 3 && inv.getItem(x) != null) {
-                ItemStack item = inv.getItem(x);
-                if (CraftLB.LuckItem.getFromItem(item) != null && !LBType.isLB(item)) {
-                    CraftLB.LuckItem i = CraftLB.LuckItem.getFromItem(item);
-                    int luck = i.luck;
-                    if (i == CraftLB.LuckItem.POTION || i == CraftLB.LuckItem.SPLASH_POTION || i == CraftLB.LuckItem.LINGERING_POTION) {
-                        PotionMeta potion = (PotionMeta)item.getItemMeta();
-                        luck += getPotionLuck(potion);
-                    }
-
-                    if (i == CraftLB.LuckItem.ENCHANTED_BOOK) {
-                        EnchantmentStorageMeta m = (EnchantmentStorageMeta)item.getItemMeta();
-                        luck += getBookLuck(m);
-                    }
-
-                    luck *= item.getAmount();
-                    total += luck;
-                }
-
-                if (LBType.isLB(item)) {
-                    int luck = getLuck(item);
-                    luck *= item.getAmount();
-                    total += luck;
-                }
-            }
-        }
-
-        if (total > 9999) {
-            total = 9999;
-        }
-
-        if (total < -9999) {
-            total = -9999;
-        }
-
-        return total;
-    }
-
-    public static int getLuck(ItemStack item) {
-        return LBType.isLB(item) ? LBType.getLuck(item) : 0;
-    }
-
     LuckyCraftingTable getLTable(ItemStack item) {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(yellow + val("lct.display_name", false)) && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0) != null) {
-            String s = (String)item.getItemMeta().getLore().get(0);
+            String s = item.getItemMeta().getLore().get(0);
             if (stringToBlock(s) != null) {
                 return LuckyCraftingTable.getByBlock(stringToBlock(s));
             }
@@ -383,33 +532,12 @@ public class CraftLB extends ColorsClass implements Listener {
         e.spawn(c.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
         Iterator var8 = inv.getViewers().iterator();
 
-        while(var8.hasNext()) {
-            HumanEntity h = (HumanEntity)var8.next();
+        while (var8.hasNext()) {
+            HumanEntity h = (HumanEntity) var8.next();
             if (h instanceof Player) {
-                Player p = (Player)h;
+                Player p = (Player) h;
                 p.playSound(p.getLocation(), getSound("lct_insert"), 0.4F, 2.0F);
                 c.open(p);
-            }
-        }
-
-    }
-
-    public static void removeItems(Inventory inv) {
-        int x;
-        ItemStack item;
-        for(x = 0; x < inv.getSize(); ++x) {
-            if (x < 45 && x % 9 > 3 && inv.getItem(x) != null && CraftLB.LuckItem.isValid(inv.getItem(x))) {
-                item = inv.getItem(x);
-                if (!LBType.isLB(item)) {
-                    inv.removeItem(new ItemStack[]{inv.getItem(x)});
-                }
-            }
-        }
-
-        for(x = 0; x < inv.getSize(); ++x) {
-            if (x < 45 && x % 9 > 3 && inv.getItem(x) != null && LBType.isLB(inv.getItem(x))) {
-                item = inv.getItem(x);
-                LBType.changeLuck(LBType.fromItem(item), item, 0);
             }
         }
 
@@ -449,9 +577,9 @@ public class CraftLB extends ColorsClass implements Listener {
     )
     private void CraftLBEvent(LBCraftEvent event) {
         LBType type = event.getLBType();
-        Player player = (Player)event.getHuman();
+        Player player = (Player) event.getHuman();
         if (LuckyBlock.isDebugEnabled()) {
-            Debug("Lucky block crafted", new DebugData[]{new DebugData("LBType", type.getId() + ", " + ChatColor.stripColor(type.getName())), new DebugData("Item crafted", event.getItem().getType().name()), new DebugData("Crafted By", player.getName()), new DebugData("Luck", String.valueOf(LBType.getLuck(event.getItem())))});
+            Debug("Lucky block crafted", new DebugData("LBType", type.getId() + ", " + ChatColor.stripColor(type.getName())), new DebugData("Item crafted", event.getItem().getType().name()), new DebugData("Crafted By", player.getName()), new DebugData("Luck", String.valueOf(LBType.getLuck(event.getItem()))));
         }
 
     }
@@ -467,10 +595,10 @@ public class CraftLB extends ColorsClass implements Listener {
                 int z;
                 if (item.getItemMeta().getDisplayName().equalsIgnoreCase(yellow + "Lucky Crafting Table")) {
                     if (player.hasPermission("lb.placelct")) {
-                        for(int x = -1; x < 2; ++x) {
-                            for(y = 0; y < 2; ++y) {
-                                for(z = -1; z < 2; ++z) {
-                                    if ((x != 0 || z != 0 || y != 0) && block.getLocation().add((double)x, (double)y, (double)z).getBlock().getType() != Material.AIR) {
+                        for (int x = -1; x < 2; ++x) {
+                            for (y = 0; y < 2; ++y) {
+                                for (z = -1; z < 2; ++z) {
+                                    if ((x != 0 || z != 0 || y != 0) && block.getLocation().add(x, y, z).getBlock().getType() != Material.AIR) {
                                         event.setCancelled(true);
                                         TestSend(player, "lct.place.no_place");
                                         return;
@@ -500,7 +628,7 @@ public class CraftLB extends ColorsClass implements Listener {
                             }
 
                             LuckyCraftingTable lc = new LuckyCraftingTable(block, p, true);
-                            lc.setLevel((byte)y);
+                            lc.setLevel((byte) y);
                             lc.setExtraLuck(z);
                             lc.setFuel(fuel);
                             lc.setStoredLuck(stored, false);
@@ -549,7 +677,7 @@ public class CraftLB extends ColorsClass implements Listener {
             Item i;
             int x;
             ItemStack item;
-            for(x = 0; x < cr.i().getSize(); ++x) {
+            for (x = 0; x < cr.i().getSize(); ++x) {
                 if (x < 26 && x % 9 < 3 && cr.i().getItem(x) != null) {
                     item = cr.i().getItem(x);
                     i = cr.getBlock().getWorld().dropItem(cr.getBlock().getLocation().add(0.5D, 1.0D, 0.5D), item);
@@ -557,7 +685,7 @@ public class CraftLB extends ColorsClass implements Listener {
                 }
             }
 
-            for(x = 0; x < cr.i().getSize(); ++x) {
+            for (x = 0; x < cr.i().getSize(); ++x) {
                 if (x < 45 && x % 9 > 3 && cr.i().getItem(x) != null) {
                     item = cr.i().getItem(x);
                     i = cr.getBlock().getWorld().dropItem(cr.getBlock().getLocation().add(0.5D, 1.0D, 0.5D), item);
@@ -581,7 +709,7 @@ public class CraftLB extends ColorsClass implements Listener {
                     if (player.hasPermission("lb.upgradelct")) {
                         if (table.getLevel() < 10) {
                             event.setCancelled(true);
-                            table.setLevel((byte)(table.getLevel() + 1));
+                            table.setLevel((byte) (table.getLevel() + 1));
                             table.save(true);
                             table.refresh();
                             SoundManager.playFixedSound(table.getBlock().getLocation(), getSound("lct_upgrade"), 1.0F, 0.0F, 7);
@@ -593,7 +721,7 @@ public class CraftLB extends ColorsClass implements Listener {
                             if (event.getItem().getAmount() > 8) {
                                 event.getItem().setAmount(event.getItem().getAmount() - 8);
                             } else {
-                                player.getInventory().removeItem(new ItemStack[]{event.getItem()});
+                                player.getInventory().removeItem(event.getItem());
                             }
                         } else {
                             TestSend(player, "lct.upgrade.max_level");
@@ -623,7 +751,7 @@ public class CraftLB extends ColorsClass implements Listener {
                             if (event.getItem().getAmount() > 1) {
                                 event.getItem().setAmount(event.getItem().getAmount() - 1);
                             } else {
-                                player.getInventory().removeItem(new ItemStack[]{event.getItem()});
+                                player.getInventory().removeItem(event.getItem());
                             }
                         } else {
                             TestSend(player, "lct.charge.no_permission");
@@ -635,157 +763,14 @@ public class CraftLB extends ColorsClass implements Listener {
 
     }
 
-    private static int getPotionLuck(PotionMeta potion) {
-        int luck = 0;
-        byte plus;
-        if (potion.getBasePotionData() != null) {
-            PotionData data = potion.getBasePotionData();
-            PotionType type = data.getType();
-            plus = 0;
-            int multiply = 1;
-            if (data.isUpgraded()) {
-                multiply = 2;
-            }
-
-            if (type == PotionType.FIRE_RESISTANCE) {
-                plus = 12;
-            } else if (type == PotionType.INSTANT_DAMAGE) {
-                plus = -16;
-            } else if (type == PotionType.INSTANT_HEAL) {
-                plus = 16;
-            } else if (type == PotionType.INVISIBILITY) {
-                plus = 12;
-            } else if (type == PotionType.JUMP) {
-                plus = 8;
-            } else if (type == PotionType.POISON) {
-                plus = -12;
-            } else if (type == PotionType.REGEN) {
-                plus = 12;
-            } else if (type == PotionType.SLOWNESS) {
-                plus = -8;
-            } else if (type == PotionType.SPEED) {
-                plus = 8;
-            } else if (type == PotionType.STRENGTH) {
-                plus = 12;
-            } else if (type == PotionType.WATER_BREATHING) {
-                plus = 4;
-            } else if (type == PotionType.WEAKNESS) {
-                plus = -8;
-            } else if (type.name().equalsIgnoreCase("luck")) {
-                plus = 12;
-            }
-
-            int p = plus * multiply;
-            luck += p;
-        }
-
-        int plusv20;
-        if (potion.hasCustomEffects()) {
-            for(Iterator var8 = potion.getCustomEffects().iterator(); var8.hasNext(); luck += plusv20) {
-                PotionEffect effect = (PotionEffect)var8.next();
-                plusv20 = 0;
-                PotionEffectType type = effect.getType();
-                String name = type.getName();
-                if (name.equalsIgnoreCase("absorption")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("blindness")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("confusion")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("damage_resistance")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("fast_digging")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("fire_resistance")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("harm")) {
-                    plusv20 = -2;
-                } else if (name.equalsIgnoreCase("heal")) {
-                    plusv20 = 2;
-                } else if (name.equalsIgnoreCase("health_boost")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("hunger")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("increase_damage")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("invisibility")) {
-                    plusv20 = 2;
-                } else if (name.equalsIgnoreCase("jump")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("poison")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("regeneration")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("saturation")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("slow")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("slow_digging")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("speed")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("water_breathing")) {
-                    plusv20 = 1;
-                } else if (name.equalsIgnoreCase("weakness")) {
-                    plusv20 = -1;
-                } else if (name.equalsIgnoreCase("wither")) {
-                    plusv20 = -2;
-                }
-
-                plusv20 = plusv20 * (effect.getAmplifier() + 1) * (effect.getDuration() / 100);
-            }
-        }
-
-        return luck;
-    }
-
-    private static int getBookLuck(EnchantmentStorageMeta e) {
-        int luck = 0;
-        Enchantment c;
-        if (e.hasStoredEnchants()) {
-            for(Iterator var3 = e.getStoredEnchants().keySet().iterator(); var3.hasNext(); luck += 3 * e.getStoredEnchantLevel(c)) {
-                c = (Enchantment)var3.next();
-            }
-        }
-
-        return luck;
-    }
-
-    private static void TestSend(Player player, String path) {
-        if (LuckyBlock.action_bar_messages()) {
-            TitleSender.send_1(player, path);
-        } else {
-            send_no(player, path);
-        }
-
-    }
-
-    public static class DataTag {
-        private Object[] values;
-        private CraftLB.DataTagType type;
-
-        public DataTag(CraftLB.DataTagType type, Object[] values) {
-            this.type = type;
-            this.values = values;
-        }
-
-        public Object[] getValues() {
-            return this.values;
-        }
-
-        public CraftLB.DataTagType getType() {
-            return this.type;
-        }
-    }
-
-    public static enum DataTagType {
+    public enum DataTagType {
         DISPLAY_NAME;
 
-        private DataTagType() {
+        DataTagType() {
         }
     }
 
-    public static enum FuelItem {
+    public enum FuelItem {
         COAL(15),
         COAL_BLOCK(130),
         LAVA_BUCKET(175),
@@ -794,21 +779,17 @@ public class CraftLB extends ColorsClass implements Listener {
         BONE(5),
         BONE_BLOCK(40);
 
-        private int value;
+        private final int value;
 
-        private FuelItem(int value) {
+        FuelItem(int value) {
             this.value = value;
-        }
-
-        public int getValue() {
-            return this.value;
         }
 
         public static CraftLB.FuelItem getByItem(ItemStack item) {
             CraftLB.FuelItem[] var4;
             int var3 = (var4 = values()).length;
 
-            for(int var2 = 0; var2 < var3; ++var2) {
+            for (int var2 = 0; var2 < var3; ++var2) {
                 CraftLB.FuelItem i = var4[var2];
                 if (i.name().equalsIgnoreCase(item.getType().name())) {
                     return i;
@@ -817,17 +798,21 @@ public class CraftLB extends ColorsClass implements Listener {
 
             return null;
         }
+
+        public int getValue() {
+            return this.value;
+        }
     }
 
-    public static enum LuckItem {
+    public enum LuckItem {
         DIAMOND(Material.DIAMOND, 10),
         EMERALD(Material.EMERALD, 11),
         GOLD_INGOT(Material.GOLD_INGOT, 9),
         GOLD_NUGGET(Material.GOLD_NUGGET, 1),
         IRON_INGOT(Material.IRON_INGOT, 5),
         QUARTZ(Material.QUARTZ, 3),
-        GOLDEN_APPLE(Material.GOLDEN_APPLE, 30, 0, new CraftLB.DataTag[0]),
-        ENCHANTED_GOLDEN_APPLE(Material.GOLDEN_APPLE, 100, 1, new CraftLB.DataTag[0]),
+        GOLDEN_APPLE(Material.GOLDEN_APPLE, 30, 0),
+        ENCHANTED_GOLDEN_APPLE(Material.GOLDEN_APPLE, 100, 1),
         NETHER_STAR(Material.NETHER_STAR, 100),
         IRON_HORSE_ARMOR(Material.IRON_BARDING, 6),
         GOLD_HORSE_ARMOR(Material.GOLD_BARDING, 10),
@@ -837,43 +822,43 @@ public class CraftLB extends ColorsClass implements Listener {
         ROTTEN_FLESH(Material.ROTTEN_FLESH, -2),
         POISONOUS_POTATO(Material.POISONOUS_POTATO, -3),
         FERMENTED_SPIDER_EYE(Material.FERMENTED_SPIDER_EYE, -3),
-        FISH(Material.RAW_FISH, -5, 3, new CraftLB.DataTag[0]),
+        FISH(Material.RAW_FISH, -5, 3),
         NETHER_BRICK(Material.NETHER_BRICK_ITEM, 3),
         BONE(Material.BONE, -2),
         XP_BOTTLE(Material.EXP_BOTTLE, 6),
         GOLDEN_CARROT(Material.GOLDEN_CARROT, 7),
         LAVA_BUCKET(Material.LAVA_BUCKET, -10),
-        LAPIS_LAZULI(Material.INK_SACK, 5, 4, new CraftLB.DataTag[0]),
+        LAPIS_LAZULI(Material.INK_SACK, 5, 4),
         ENDER_PEARL(Material.ENDER_PEARL, 6),
         EYE_OF_ENDER(Material.EYE_OF_ENDER, 10),
         ENCHANTED_BOOK(Material.ENCHANTED_BOOK, 4),
-        IRON_HELMET(Material.IRON_HELMET, 20, 0, new CraftLB.DataTag[0]),
-        IRON_CHESTPLATE(Material.IRON_CHESTPLATE, 30, 0, new CraftLB.DataTag[0]),
-        IRON_LEGGINGS(Material.IRON_LEGGINGS, 25, 0, new CraftLB.DataTag[0]),
-        IRON_BOOTS(Material.IRON_BOOTS, 15, 0, new CraftLB.DataTag[0]),
-        GOLD_HELMET(Material.GOLD_HELMET, 25, 0, new CraftLB.DataTag[0]),
-        GOLD_CHESTPLATE(Material.GOLD_CHESTPLATE, 35, 0, new CraftLB.DataTag[0]),
-        GOLD_LEGGINGS(Material.GOLD_LEGGINGS, 30, 0, new CraftLB.DataTag[0]),
-        GOLD_BOOTS(Material.GOLD_BOOTS, 20, 0, new CraftLB.DataTag[0]),
-        DIAMOND_HELMET(Material.DIAMOND_HELMET, 30, 0, new CraftLB.DataTag[0]),
-        DIAMOND_CHESTPLATE(Material.DIAMOND_CHESTPLATE, 40, 0, new CraftLB.DataTag[0]),
-        DIAMOND_LEGGINGS(Material.DIAMOND_LEGGINGS, 35, 0, new CraftLB.DataTag[0]),
-        DIAMOND_BOOTS(Material.DIAMOND_BOOTS, 25, 0, new CraftLB.DataTag[0]),
+        IRON_HELMET(Material.IRON_HELMET, 20, 0),
+        IRON_CHESTPLATE(Material.IRON_CHESTPLATE, 30, 0),
+        IRON_LEGGINGS(Material.IRON_LEGGINGS, 25, 0),
+        IRON_BOOTS(Material.IRON_BOOTS, 15, 0),
+        GOLD_HELMET(Material.GOLD_HELMET, 25, 0),
+        GOLD_CHESTPLATE(Material.GOLD_CHESTPLATE, 35, 0),
+        GOLD_LEGGINGS(Material.GOLD_LEGGINGS, 30, 0),
+        GOLD_BOOTS(Material.GOLD_BOOTS, 20, 0),
+        DIAMOND_HELMET(Material.DIAMOND_HELMET, 30, 0),
+        DIAMOND_CHESTPLATE(Material.DIAMOND_CHESTPLATE, 40, 0),
+        DIAMOND_LEGGINGS(Material.DIAMOND_LEGGINGS, 35, 0),
+        DIAMOND_BOOTS(Material.DIAMOND_BOOTS, 25, 0),
         REDSTONE(Material.REDSTONE, 2),
         POTION(Material.POTION, 0),
         SPLASH_POTION(Material.getMaterial("SPLASH_POTION"), 0),
         LINGERING_POTION(Material.getMaterial("LINGERING_POTION"), 0),
         CAKE(Material.CAKE, 4),
-        PUMPKIN_PIE(Material.PUMPKIN_PIE, 3, 0, new CraftLB.DataTag[0]),
+        PUMPKIN_PIE(Material.PUMPKIN_PIE, 3, 0),
         ENCHANTMENT_TABLE(Material.ENCHANTMENT_TABLE, 15),
         ENDER_CHEST(Material.ENDER_CHEST, 15),
         NETHERRACK(Material.NETHERRACK, -5),
-        SKELETON_SKULL(Material.SKULL_ITEM, -7, 0, new CraftLB.DataTag[0]),
-        WITHER_SKELETON_SKULL(Material.SKULL_ITEM, -15, 1, new CraftLB.DataTag[0]),
-        ZOMBIE_SKULL(Material.SKULL_ITEM, -7, 2, new CraftLB.DataTag[0]),
-        CREEPER_SKULL(Material.SKULL_ITEM, -10, 4, new CraftLB.DataTag[0]),
-        SPELL_OF_FORTUNE(Material.GHAST_TEAR, 1000, 0, new CraftLB.DataTag[]{new CraftLB.DataTag(CraftLB.DataTagType.DISPLAY_NAME, new String[]{"" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune"})}),
-        LB_BOSS_HEAD(Material.SKULL_ITEM, 2500, 3, new CraftLB.DataTag[]{new CraftLB.DataTag(CraftLB.DataTagType.DISPLAY_NAME, new String[]{ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "LBBoss"})}),
+        SKELETON_SKULL(Material.SKULL_ITEM, -7, 0),
+        WITHER_SKELETON_SKULL(Material.SKULL_ITEM, -15, 1),
+        ZOMBIE_SKULL(Material.SKULL_ITEM, -7, 2),
+        CREEPER_SKULL(Material.SKULL_ITEM, -10, 4),
+        SPELL_OF_FORTUNE(Material.GHAST_TEAR, 1000, 0, new DataTag(DataTagType.DISPLAY_NAME, new String[]{"" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune"})),
+        LB_BOSS_HEAD(Material.SKULL_ITEM, 2500, 3, new DataTag(DataTagType.DISPLAY_NAME, new String[]{ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "LBBoss"})),
         BEACON(Material.BEACON, 65),
         CACTUS(Material.CACTUS, -5),
         DEAD_BUSH(Material.DEAD_BUSH, -3),
@@ -881,24 +866,37 @@ public class CraftLB extends ColorsClass implements Listener {
         SUGAR(Material.SUGAR, 1),
         DIRT(Material.DIRT, -3),
         OBSIDIAN(Material.OBSIDIAN, 15),
-        FULL_ANVIL(Material.ANVIL, 45, 0, new CraftLB.DataTag[0]),
-        SEMI_BROKEN_ANVIL(Material.ANVIL, 30, 1, new CraftLB.DataTag[0]),
-        BROKEN_ANVIL(Material.ANVIL, 15, 2, new CraftLB.DataTag[0]),
+        FULL_ANVIL(Material.ANVIL, 45, 0),
+        SEMI_BROKEN_ANVIL(Material.ANVIL, 30, 1),
+        BROKEN_ANVIL(Material.ANVIL, 15, 2),
         PRISMARINE(Material.PRISMARINE, 7),
         MAGMA_BLOCK(Material.MAGMA, -13),
         GUN_POWDER(Material.SULPHUR, -3),
-        DRAGON_HEAD(Material.SKULL_ITEM, 250, 5, new CraftLB.DataTag[0]);
+        DRAGON_HEAD(Material.SKULL_ITEM, 250, 5);
 
-        private int luck;
-        private short data;
-        private Material material;
+        private final int luck;
+        private final short data;
+        private final Material material;
         private CraftLB.DataTag[] tags;
+
+        LuckItem(Material material, int luck) {
+            this.material = material;
+            this.luck = luck;
+            this.data = 0;
+        }
+
+        LuckItem(Material material, int luck, int data, CraftLB.DataTag... tags) {
+            this.material = material;
+            this.luck = luck;
+            this.data = (short) data;
+            this.tags = tags;
+        }
 
         public static CraftLB.LuckItem getFromItem(ItemStack item) {
             CraftLB.LuckItem[] var4;
             int var3 = (var4 = values()).length;
 
-            for(int var2 = 0; var2 < var3; ++var2) {
+            for (int var2 = 0; var2 < var3; ++var2) {
                 CraftLB.LuckItem i = var4[var2];
                 if (item.getType() == i.material && item.getDurability() == i.data) {
                     if (!i.hasTags()) {
@@ -907,7 +905,7 @@ public class CraftLB extends ColorsClass implements Listener {
 
                     boolean success = true;
 
-                    for(int x = 0; x < i.tags.length; ++x) {
+                    for (int x = 0; x < i.tags.length; ++x) {
                         CraftLB.DataTag t = i.tags[x];
                         if (t.type == CraftLB.DataTagType.DISPLAY_NAME && (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().getDisplayName().equalsIgnoreCase(t.values[0].toString()))) {
                             success = false;
@@ -928,7 +926,7 @@ public class CraftLB extends ColorsClass implements Listener {
             CraftLB.LuckItem[] var4;
             int var3 = (var4 = values()).length;
 
-            for(int var2 = 0; var2 < var3; ++var2) {
+            for (int var2 = 0; var2 < var3; ++var2) {
                 CraftLB.LuckItem i = var4[var2];
                 if (mat == i.material) {
                     return true;
@@ -942,7 +940,7 @@ public class CraftLB extends ColorsClass implements Listener {
             CraftLB.LuckItem[] var4;
             int var3 = (var4 = values()).length;
 
-            for(int var2 = 0; var2 < var3; ++var2) {
+            for (int var2 = 0; var2 < var3; ++var2) {
                 CraftLB.LuckItem i = var4[var2];
                 if (item.getType() == i.material && item.getDurability() == i.data) {
                     return true;
@@ -950,19 +948,6 @@ public class CraftLB extends ColorsClass implements Listener {
             }
 
             return false;
-        }
-
-        private LuckItem(Material material, int luck) {
-            this.material = material;
-            this.luck = luck;
-            this.data = 0;
-        }
-
-        private LuckItem(Material material, int luck, int data, CraftLB.DataTag... tags) {
-            this.material = material;
-            this.luck = luck;
-            this.data = (short)data;
-            this.tags = tags;
         }
 
         public short getData() {
@@ -983,7 +968,7 @@ public class CraftLB extends ColorsClass implements Listener {
 
         public boolean hasTags() {
             if (this.tags != null) {
-                for(int x = 0; x < this.tags.length; ++x) {
+                for (int x = 0; x < this.tags.length; ++x) {
                     if (this.tags[x] != null) {
                         return true;
                     }
@@ -991,6 +976,24 @@ public class CraftLB extends ColorsClass implements Listener {
             }
 
             return false;
+        }
+    }
+
+    public static class DataTag {
+        private final Object[] values;
+        private final CraftLB.DataTagType type;
+
+        public DataTag(CraftLB.DataTagType type, Object[] values) {
+            this.type = type;
+            this.values = values;
+        }
+
+        public Object[] getValues() {
+            return this.values;
+        }
+
+        public CraftLB.DataTagType getType() {
+            return this.type;
         }
     }
 }

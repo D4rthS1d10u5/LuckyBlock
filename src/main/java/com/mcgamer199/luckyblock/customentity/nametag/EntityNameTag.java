@@ -1,6 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
@@ -8,17 +10,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Iterator;
 import java.util.UUID;
 
 public class EntityNameTag extends CustomEntity {
-    private Entity attachedEntity;
-    protected ArmorStand armorStand;
-    private double[] offset = new double[3];
     public boolean hideInvis = true;
+    protected ArmorStand armorStand;
+    private Entity attachedEntity;
+    private double[] offset = new double[3];
 
     public EntityNameTag() {
     }
@@ -27,7 +27,7 @@ public class EntityNameTag extends CustomEntity {
         this.attachedEntity = attachedEntity;
         this.offset = offset;
         Location loc = attachedEntity.getLocation();
-        final ArmorStand as = (ArmorStand)attachedEntity.getWorld().spawnEntity(loc.add(offset[0], offset[1], offset[2]), EntityType.ARMOR_STAND);
+        final ArmorStand as = (ArmorStand) attachedEntity.getWorld().spawnEntity(loc.add(offset[0], offset[1], offset[2]), EntityType.ARMOR_STAND);
         as.setMarker(true);
         as.setGravity(false);
         as.setVisible(false);
@@ -46,8 +46,8 @@ public class EntityNameTag extends CustomEntity {
     protected void onChunkLoad() {
         Iterator var2 = this.entity.getWorld().getEntitiesByClass(this.attachedEntity.getClass()).iterator();
 
-        while(var2.hasNext()) {
-            Entity e = (Entity)var2.next();
+        while (var2.hasNext()) {
+            Entity e = (Entity) var2.next();
             if (e.getUniqueId().toString().equalsIgnoreCase(this.attachedEntity.getUniqueId().toString())) {
                 this.attachedEntity = e;
                 break;
@@ -66,10 +66,8 @@ public class EntityNameTag extends CustomEntity {
 
     private boolean isInvisible() {
         if (this.attachedEntity instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)this.attachedEntity;
-            if (l.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                return true;
-            }
+            LivingEntity l = (LivingEntity) this.attachedEntity;
+            return l.hasPotionEffect(PotionEffectType.INVISIBILITY);
         }
 
         return false;
@@ -116,7 +114,7 @@ public class EntityNameTag extends CustomEntity {
         this.offset[0] = c.getDouble("Offset.X");
         this.offset[1] = c.getDouble("Offset.Y");
         this.offset[2] = c.getDouble("Offset.Z");
-        this.armorStand = (ArmorStand)this.entity;
+        this.armorStand = (ArmorStand) this.entity;
         ITask task = new ITask();
         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
             public void run() {

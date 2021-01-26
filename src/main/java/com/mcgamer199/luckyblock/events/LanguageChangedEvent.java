@@ -5,10 +5,14 @@ import org.bukkit.event.HandlerList;
 
 public class LanguageChangedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private String lang;
+    private final String lang;
 
     public LanguageChangedEvent(String lang) {
         this.lang = lang;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public String getLang() {
@@ -16,10 +20,6 @@ public class LanguageChangedEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

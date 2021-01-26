@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,11 +27,11 @@ public class LBCLang extends LBCommand {
                 String a = "";
                 List<String> l = IObjects.listM();
 
-                for(int x = 0; x < l.size(); ++x) {
+                for (int x = 0; x < l.size(); ++x) {
                     if (x == 0) {
-                        a = (String)l.get(x);
+                        a = l.get(x);
                     } else {
-                        a = a + ", " + (String)l.get(x);
+                        a = a + ", " + l.get(x);
                     }
                 }
 

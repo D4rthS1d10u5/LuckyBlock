@@ -21,7 +21,7 @@ public class IDebug {
         text3.bold = true;
         String a = "";
         if (msgs != null && msgs.length > 0) {
-            for(int x = 0; x < msgs.length; ++x) {
+            for (int x = 0; x < msgs.length; ++x) {
                 if (x > 0) {
                     a = a + "\n";
                 }
@@ -36,7 +36,7 @@ public class IDebug {
 
         a = ChatColor.stripColor(a);
         text3.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.BLUE + a));
-        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, new com.mcgamer199.luckyblock.tellraw.RawText[]{text1, text2, text3});
+        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text1, text2, text3);
     }
 
     public static void sendDebug(String name, DebugData... datas) {
@@ -49,7 +49,7 @@ public class IDebug {
             DebugData[] var7 = datas;
             int var6 = datas.length;
 
-            for(int var5 = 0; var5 < var6; ++var5) {
+            for (int var5 = 0; var5 < var6; ++var5) {
                 DebugData d = var7[var5];
                 c.sendMessage(ChatColor.AQUA + d.dataName + ": " + ChatColor.YELLOW + d.dataValue);
             }

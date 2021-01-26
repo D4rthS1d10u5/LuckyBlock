@@ -25,9 +25,9 @@ public enum Immunity {
     VOID("void"),
     WITHER("wither");
 
-    private String name;
+    private final String name;
 
-    private Immunity(String name) {
+    Immunity(String name) {
         this.name = name;
     }
 

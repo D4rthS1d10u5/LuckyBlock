@@ -1,12 +1,12 @@
 package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.util.Random;
 
@@ -17,7 +17,7 @@ public class Meteor {
     }
 
     public void spawn(Location loc) {
-        Fireball ball = (Fireball)loc.getWorld().spawnEntity(loc, EntityType.FIREBALL);
+        Fireball ball = (Fireball) loc.getWorld().spawnEntity(loc, EntityType.FIREBALL);
         this.particles(ball);
         ball.setBounce(true);
         ball.setYield(15.0F);
@@ -26,7 +26,7 @@ public class Meteor {
 
     private double randomDir() {
         int h = this.random.nextInt(24) - 12;
-        double g = (double)h / 10.0D;
+        double g = (double) h / 10.0D;
         return g;
     }
 

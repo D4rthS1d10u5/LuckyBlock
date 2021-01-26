@@ -56,21 +56,21 @@ public class HTag extends ColorsClass {
                 random = (new Random()).nextInt(tot) + 1;
                 Iterator var5 = c.getKeys(false).iterator();
 
-                while(true) {
+                while (true) {
                     String s;
                     do {
                         if (!var5.hasNext()) {
                             return null;
                         }
 
-                        s = (String)var5.next();
-                    } while(c.getConfigurationSection(s) == null);
+                        s = (String) var5.next();
+                    } while (c.getConfigurationSection(s) == null);
 
                     ConfigurationSection f = c.getConfigurationSection(s);
                     Iterator var8 = f.getKeys(false).iterator();
 
-                    while(var8.hasNext()) {
-                        String t = (String)var8.next();
+                    while (var8.hasNext()) {
+                        String t = (String) var8.next();
                         if (t.equalsIgnoreCase("Chance")) {
                             if (f.getInt(t) + x >= random) {
                                 return s;
@@ -95,21 +95,21 @@ public class HTag extends ColorsClass {
         if (cs != null) {
             Iterator var3 = cs.getKeys(false).iterator();
 
-            while(true) {
+            while (true) {
                 String s;
                 do {
                     if (!var3.hasNext()) {
                         return total;
                     }
 
-                    s = (String)var3.next();
-                } while(cs.getConfigurationSection(s) == null);
+                    s = (String) var3.next();
+                } while (cs.getConfigurationSection(s) == null);
 
                 ConfigurationSection c = cs.getConfigurationSection(s);
                 Iterator var6 = c.getKeys(false).iterator();
 
-                while(var6.hasNext()) {
-                    String t = (String)var6.next();
+                while (var6.hasNext()) {
+                    String t = (String) var6.next();
                     if (t.equalsIgnoreCase("Chance")) {
                         total += c.getInt(t);
                     }
@@ -137,7 +137,7 @@ public class HTag extends ColorsClass {
         a = a.replace("%s%", "'");
         String[] d = a.split("%TRANSLATE%");
 
-        for(int x = 1; x < d.length; ++x) {
+        for (int x = 1; x < d.length; ++x) {
             String[] d1 = d[x].split("!");
             String pth = d1[0];
             String z = c(IObjects.fLang.getString(pth));
@@ -149,7 +149,7 @@ public class HTag extends ColorsClass {
         int var13 = d.length;
 
         int var12;
-        for(var12 = 0; var12 < var13; ++var12) {
+        for (var12 = 0; var12 < var13; ++var12) {
             String b = var14[var12];
             a = a + b;
         }
@@ -158,12 +158,12 @@ public class HTag extends ColorsClass {
             HTag.IDataType[] var15 = data;
             var13 = data.length;
 
-            for(var12 = 0; var12 < var13; ++var12) {
+            for (var12 = 0; var12 < var13; ++var12) {
                 HTag.IDataType dat = var15[var12];
                 Object o = dat.object;
                 if (o != null) {
                     if (o instanceof Entity) {
-                        Entity entity = (Entity)o;
+                        Entity entity = (Entity) o;
                         if (entity.getCustomName() != null) {
                             a = a.replace("%ENTITY_CUSTOMNAME%", entity.getCustomName());
                         }
@@ -177,23 +177,23 @@ public class HTag extends ColorsClass {
                         a = a.replace("%ENTITY_UUID%", "" + entity.getUniqueId());
                         a = a.replace("%ENTITY_TYPE%", entity.getType().name());
                         if (o instanceof LivingEntity) {
-                            LivingEntity living = (LivingEntity)o;
+                            LivingEntity living = (LivingEntity) o;
                             a = a.replace("%ENTITY_HEALTH%", String.valueOf(living.getHealth()));
                             a = a.replace("%ENTITY_MAXHEALTH%", String.valueOf(living.getMaxHealth()));
                         }
 
                         if (o instanceof Player) {
-                            Player player = (Player)o;
+                            Player player = (Player) o;
                             a = a.replace("%PLAYER%", player.getName());
                             a = a.replace("%PLAYER_XP%", String.valueOf(player.getExp()));
                             a = a.replace("%PLAYER_DISPLAY_NAME%", player.getDisplayName());
                             a = a.replace("%PLAYER_GAMEMODE%", player.getGameMode().name());
                         }
                     } else if (o instanceof Block) {
-                        Block block = (Block)o;
+                        Block block = (Block) o;
                         a = a.replace("%BLOCK_BIOME%", block.getBiome().name());
                     } else if (o instanceof ItemStack) {
-                        ItemStack item = (ItemStack)o;
+                        ItemStack item = (ItemStack) o;
                         a = a.replace("%ITEM_TYPE%", item.getType().name());
                     }
                 }
@@ -204,9 +204,20 @@ public class HTag extends ColorsClass {
         return a;
     }
 
+    public enum TDataType {
+        PLAYER,
+        ENTITY,
+        BLOCK,
+        LIVING,
+        ITEM;
+
+        TDataType() {
+        }
+    }
+
     public static class IDataType {
-        private HTag.TDataType dataType;
-        private Object object;
+        private final HTag.TDataType dataType;
+        private final Object object;
 
         public IDataType(HTag.TDataType dataType, Object object) {
             this.dataType = dataType;
@@ -219,17 +230,6 @@ public class HTag extends ColorsClass {
 
         public Object getObject() {
             return this.object;
-        }
-    }
-
-    public static enum TDataType {
-        PLAYER,
-        ENTITY,
-        BLOCK,
-        LIVING,
-        ITEM;
-
-        private TDataType() {
         }
     }
 }

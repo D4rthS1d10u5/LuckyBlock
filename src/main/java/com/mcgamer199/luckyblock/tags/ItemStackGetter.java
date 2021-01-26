@@ -8,15 +8,12 @@ package com.mcgamer199.luckyblock.tags;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,19 +21,15 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class ItemStackGetter extends HTag {
     public ItemStackGetter() {
@@ -61,8 +54,8 @@ public class ItemStackGetter extends HTag {
         if (c != null) {
             Iterator var4 = c.getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                String s = (String)var4.next();
+            while (var4.hasNext()) {
+                String s = (String) var4.next();
                 if (s.equalsIgnoreCase("BuiltIn")) {
                     String[] d = c.getString(s).split(",");
                     FileConfiguration a = getFileByLoc(d[0]);
@@ -90,8 +83,8 @@ public class ItemStackGetter extends HTag {
             ItemMeta itemM = item.getItemMeta();
             Iterator var16 = c.getKeys(false).iterator();
 
-            while(var16.hasNext()) {
-                String s = (String)var16.next();
+            while (var16.hasNext()) {
+                String s = (String) var16.next();
                 String[] d;
                 if (s.equalsIgnoreCase("Amount")) {
                     d = c.getString(s).split("-");
@@ -113,11 +106,11 @@ public class ItemStackGetter extends HTag {
 
                 if (s.equalsIgnoreCase("Data")) {
                     d = c.getString(s).split("-");
-                    item.setDurability((short)getRandomNumber(d));
+                    item.setDurability((short) getRandomNumber(d));
                 }
 
                 if (s.equalsIgnoreCase("DisplayName")) {
-                    itemM.setDisplayName(translateString(c.getString(s), new IDataType[]{new IDataType(TDataType.ITEM, item)}));
+                    itemM.setDisplayName(translateString(c.getString(s), new IDataType(TDataType.ITEM, item)));
                     item.setItemMeta(itemM);
                 }
 
@@ -131,10 +124,10 @@ public class ItemStackGetter extends HTag {
                         f = getSection(c.getString(s));
                         var8 = f.getKeys(false).iterator();
 
-                        while(var8.hasNext()) {
-                            g = (String)var8.next();
+                        while (var8.hasNext()) {
+                            g = (String) var8.next();
                             o = getEnchantment(f.getConfigurationSection(g));
-                            ench = (Enchantment)o[0];
+                            ench = (Enchantment) o[0];
                             if (ench != null) {
                                 itemM.addEnchant(ench, Integer.parseInt(o[1].toString()), true);
                             }
@@ -142,10 +135,10 @@ public class ItemStackGetter extends HTag {
                     } else {
                         Iterator var20 = c.getConfigurationSection(s).getKeys(false).iterator();
 
-                        while(var20.hasNext()) {
-                            String next = (String)var20.next();
+                        while (var20.hasNext()) {
+                            String next = (String) var20.next();
                             Object[] enchantment = getEnchantment(c.getConfigurationSection(s).getConfigurationSection(next));
-                            Enchantment enchantment1 = (Enchantment)enchantment[0];
+                            Enchantment enchantment1 = (Enchantment) enchantment[0];
                             if (enchantment1 != null) {
                                 itemM.addEnchant(enchantment1, Integer.parseInt(enchantment[1].toString()), true);
                             }
@@ -158,8 +151,8 @@ public class ItemStackGetter extends HTag {
                 if (s.equalsIgnoreCase("Lore") && c.getStringList(s) != null && c.getStringList(s).size() > 0) {
                     List<String> lore = new ArrayList();
 
-                    for(x = 0; x < c.getStringList(s).size(); ++x) {
-                        lore.add(translateString((String)c.getStringList(s).get(x), new IDataType[]{new IDataType(TDataType.ITEM, item)}));
+                    for (x = 0; x < c.getStringList(s).size(); ++x) {
+                        lore.add(translateString(c.getStringList(s).get(x), new IDataType(TDataType.ITEM, item)));
                     }
 
                     itemM.setLore(lore);
@@ -167,24 +160,24 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("ItemFlags") && c.getStringList(s) != null && c.getStringList(s).size() > 0) {
-                    for(int i = 0; i < c.getStringList(s).size(); ++i) {
-                        itemM.addItemFlags(new ItemFlag[]{ItemFlag.valueOf(((String)c.getStringList(s).get(i)).toUpperCase())});
+                    for (int i = 0; i < c.getStringList(s).size(); ++i) {
+                        itemM.addItemFlags(ItemFlag.valueOf(c.getStringList(s).get(i).toUpperCase()));
                     }
                 }
 
                 if (item.getType() == Material.BOOK_AND_QUILL) {
-                    BookMeta book = (BookMeta)itemM;
+                    BookMeta book = (BookMeta) itemM;
                     if (s.equalsIgnoreCase("Author")) {
                         book.setAuthor(ChatColor.translateAlternateColorCodes('&', c.getString(s)));
                     }
 
                     if (s.equalsIgnoreCase("Title")) {
-                        book.setTitle(translateString(c.getString(s), new IDataType[]{new IDataType(TDataType.ITEM, item)}));
+                        book.setTitle(translateString(c.getString(s), new IDataType(TDataType.ITEM, item)));
                     }
 
                     if (s.equalsIgnoreCase("Pages") && c.getStringList(s) != null && c.getStringList(s).size() > 0) {
-                        for(x = 0; x < c.getStringList(s).size(); ++x) {
-                            book.addPage(new String[]{translateString((String)c.getStringList(s).get(x), new IDataType[]{new IDataType(TDataType.ITEM, item)})});
+                        for (x = 0; x < c.getStringList(s).size(); ++x) {
+                            book.addPage(translateString(c.getStringList(s).get(x), new IDataType(TDataType.ITEM, item)));
                         }
                     }
 
@@ -192,15 +185,15 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("StoredEnchants") && c.getConfigurationSection(s) != null) {
-                    EnchantmentStorageMeta m = (EnchantmentStorageMeta)itemM;
+                    EnchantmentStorageMeta m = (EnchantmentStorageMeta) itemM;
                     if (c.getConfigurationSection(s).getString("Loc") != null) {
                         f = getSection(c.getString(s));
                         Iterator var31 = f.getKeys(false).iterator();
 
-                        while(var31.hasNext()) {
-                            String next = (String)var31.next();
+                        while (var31.hasNext()) {
+                            String next = (String) var31.next();
                             Object[] enchantment = getEnchantment(f.getConfigurationSection(next));
-                            Enchantment enchantment1 = (Enchantment)enchantment[0];
+                            Enchantment enchantment1 = (Enchantment) enchantment[0];
                             if (enchantment1 != null) {
                                 m.addStoredEnchant(enchantment1, Integer.parseInt(enchantment[1].toString()), true);
                             }
@@ -208,10 +201,10 @@ public class ItemStackGetter extends HTag {
                     } else {
                         var8 = c.getConfigurationSection(s).getKeys(false).iterator();
 
-                        while(var8.hasNext()) {
-                            g = (String)var8.next();
+                        while (var8.hasNext()) {
+                            g = (String) var8.next();
                             o = getEnchantment(c.getConfigurationSection(s).getConfigurationSection(g));
-                            ench = (Enchantment)o[0];
+                            ench = (Enchantment) o[0];
                             if (ench != null) {
                                 m.addStoredEnchant(ench, Integer.parseInt(o[1].toString()), true);
                             }
@@ -222,14 +215,14 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("SkullOwner")) {
-                    SkullMeta skull = (SkullMeta)itemM;
+                    SkullMeta skull = (SkullMeta) itemM;
                     skull.setOwner(c.getString(s));
                     item.setItemMeta(skull);
                 }
 
                 PotionMeta pot;
                 if (s.equalsIgnoreCase("BasePotionData") && c.getConfigurationSection(s) != null) {
-                    pot = (PotionMeta)itemM;
+                    pot = (PotionMeta) itemM;
                     PotionType p = null;
                     boolean colorR = false;
                     boolean colorG = false;
@@ -247,11 +240,11 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("CustomPotionEffects") && c.getConfigurationSection(s) != null) {
-                    pot = (PotionMeta)itemM;
+                    pot = (PotionMeta) itemM;
                     var8 = c.getConfigurationSection(s).getKeys(false).iterator();
 
-                    while(var8.hasNext()) {
-                        g = (String)var8.next();
+                    while (var8.hasNext()) {
+                        g = (String) var8.next();
                         ConfigurationSection configurationSection = c.getConfigurationSection(s).getConfigurationSection(g);
                         PotionEffect p = getPotionEffect(configurationSection);
                         if (p != null) {
@@ -263,7 +256,7 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("LeatherArmor") && c.getConfigurationSection(s) != null && itemM instanceof LeatherArmorMeta) {
-                    LeatherArmorMeta lea = (LeatherArmorMeta)itemM;
+                    LeatherArmorMeta lea = (LeatherArmorMeta) itemM;
                     ConfigurationSection section = c.getConfigurationSection(s);
                     int colorr = section.getInt("Red");
                     int colorg = section.getInt("Green");
@@ -273,7 +266,7 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("Firework") && c.getConfigurationSection(s) != null && itemM instanceof FireworkMeta) {
-                    FireworkMeta fw = (FireworkMeta)itemM;
+                    FireworkMeta fw = (FireworkMeta) itemM;
                     fw = getFireworkMeta(c.getConfigurationSection(s), fw);
                     item.setItemMeta(fw);
                 }
@@ -284,14 +277,14 @@ public class ItemStackGetter extends HTag {
                 }
 
                 if (s.equalsIgnoreCase("SpawnEgg")) {
-                    SpawnEggMeta sp = (SpawnEggMeta)itemM;
+                    SpawnEggMeta sp = (SpawnEggMeta) itemM;
                     sp.setSpawnedType(EntityType.valueOf(c.getString(s).toUpperCase()));
                     item.setItemMeta(sp);
                 }
 
                 if (s.equalsIgnoreCase("SpawnedType") && item.getType() == Material.MOB_SPAWNER) {
-                    BlockStateMeta b = (BlockStateMeta)itemM;
-                    CreatureSpawner b1 = (CreatureSpawner)b.getBlockState();
+                    BlockStateMeta b = (BlockStateMeta) itemM;
+                    CreatureSpawner b1 = (CreatureSpawner) b.getBlockState();
                     b1.setSpawnedType(EntityType.valueOf(c.getString(s).toUpperCase()));
                     b.setBlockState(b1);
                     item.setItemMeta(b);
@@ -325,8 +318,8 @@ public class ItemStackGetter extends HTag {
             if (itemM.hasEnchants()) {
                 x = 1;
 
-                for(var7 = itemM.getEnchants().keySet().iterator(); var7.hasNext(); ++x) {
-                    Enchantment e = (Enchantment)var7.next();
+                for (var7 = itemM.getEnchants().keySet().iterator(); var7.hasNext(); ++x) {
+                    Enchantment e = (Enchantment) var7.next();
                     file.set(loc + ".Enchants.Ench" + x + ".EnchantmentName", e.getName());
                     file.set(loc + ".Enchants.Ench" + x + ".Level", itemM.getEnchants().get(e));
                 }
@@ -336,8 +329,8 @@ public class ItemStackGetter extends HTag {
                 List<String> list = new ArrayList();
                 var7 = itemM.getItemFlags().iterator();
 
-                while(var7.hasNext()) {
-                    ItemFlag flag = (ItemFlag)var7.next();
+                while (var7.hasNext()) {
+                    ItemFlag flag = (ItemFlag) var7.next();
                     list.add(flag.name());
                 }
 
@@ -345,25 +338,25 @@ public class ItemStackGetter extends HTag {
             }
 
             if (item.getType() == Material.SKULL_ITEM) {
-                SkullMeta skull = (SkullMeta)itemM;
+                SkullMeta skull = (SkullMeta) itemM;
                 if (skull.hasOwner()) {
                     file.set(loc + ".SkullOwner", skull.getOwner());
                 }
             }
 
             if (item.getType() == Material.ENCHANTED_BOOK) {
-                EnchantmentStorageMeta em = (EnchantmentStorageMeta)itemM;
+                EnchantmentStorageMeta em = (EnchantmentStorageMeta) itemM;
                 x = 1;
 
-                for(Iterator var8 = em.getStoredEnchants().keySet().iterator(); var8.hasNext(); ++x) {
-                    Enchantment e = (Enchantment)var8.next();
+                for (Iterator var8 = em.getStoredEnchants().keySet().iterator(); var8.hasNext(); ++x) {
+                    Enchantment e = (Enchantment) var8.next();
                     file.set(loc + ".StoredEnchants.Ench" + x + ".EnchantmentName", e.getName());
                     file.set(loc + ".StoredEnchants.Ench" + x + ".Level", em.getStoredEnchants().get(e));
                 }
             }
 
             if (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.BOOK_AND_QUILL) {
-                BookMeta book = (BookMeta)itemM;
+                BookMeta book = (BookMeta) itemM;
                 if (book.hasAuthor()) {
                     file.set(loc + ".Author", book.getAuthor());
                 }
@@ -378,10 +371,10 @@ public class ItemStackGetter extends HTag {
             }
 
             if (itemM instanceof PotionMeta) {
-                PotionMeta p = (PotionMeta)itemM;
+                PotionMeta p = (PotionMeta) itemM;
                 if (p.hasCustomEffects()) {
-                    for(x = 0; x < p.getCustomEffects().size(); ++x) {
-                        PotionEffect e = (PotionEffect)p.getCustomEffects().get(x);
+                    for (x = 0; x < p.getCustomEffects().size(); ++x) {
+                        PotionEffect e = p.getCustomEffects().get(x);
                         file.set(loc + ".PotionEffects.Effect" + x + ".PotionEffectType", e.getType().getName());
                         file.set(loc + ".PotionEffects.Effect" + x + ".Duration", e.getDuration());
                         file.set(loc + ".PotionEffects.Effect" + x + ".Amplifier", e.getAmplifier());
@@ -396,7 +389,7 @@ public class ItemStackGetter extends HTag {
             }
 
             if (itemM instanceof LeatherArmorMeta) {
-                LeatherArmorMeta lea = (LeatherArmorMeta)itemM;
+                LeatherArmorMeta lea = (LeatherArmorMeta) itemM;
                 file.set(loc + ".LeatherArmor.Red", lea.getColor().getRed());
                 file.set(loc + ".LeatherArmor.Green", lea.getColor().getGreen());
                 file.set(loc + ".LeatherArmor.Blue", lea.getColor().getBlue());
@@ -432,8 +425,8 @@ public class ItemStackGetter extends HTag {
             if (itemM.hasEnchants()) {
                 x = 1;
 
-                for(var6 = itemM.getEnchants().keySet().iterator(); var6.hasNext(); ++x) {
-                    Enchantment e = (Enchantment)var6.next();
+                for (var6 = itemM.getEnchants().keySet().iterator(); var6.hasNext(); ++x) {
+                    Enchantment e = (Enchantment) var6.next();
                     c.set("Enchants.Ench" + x + ".EnchantmentName", e.getName());
                     c.set("Enchants.Ench" + x + ".Level", itemM.getEnchants().get(e));
                 }
@@ -443,8 +436,8 @@ public class ItemStackGetter extends HTag {
                 List<String> list = new ArrayList();
                 var6 = itemM.getItemFlags().iterator();
 
-                while(var6.hasNext()) {
-                    ItemFlag flag = (ItemFlag)var6.next();
+                while (var6.hasNext()) {
+                    ItemFlag flag = (ItemFlag) var6.next();
                     list.add(flag.name());
                 }
 
@@ -452,25 +445,25 @@ public class ItemStackGetter extends HTag {
             }
 
             if (item.getType() == Material.SKULL_ITEM) {
-                SkullMeta skull = (SkullMeta)itemM;
+                SkullMeta skull = (SkullMeta) itemM;
                 if (skull.hasOwner()) {
                     c.set("SkullOwner", skull.getOwner());
                 }
             }
 
             if (item.getType() == Material.ENCHANTED_BOOK) {
-                EnchantmentStorageMeta em = (EnchantmentStorageMeta)itemM;
+                EnchantmentStorageMeta em = (EnchantmentStorageMeta) itemM;
                 x = 1;
 
-                for(Iterator var7 = em.getStoredEnchants().keySet().iterator(); var7.hasNext(); ++x) {
-                    Enchantment e = (Enchantment)var7.next();
+                for (Iterator var7 = em.getStoredEnchants().keySet().iterator(); var7.hasNext(); ++x) {
+                    Enchantment e = (Enchantment) var7.next();
                     c.set("StoredEnchants.Ench" + x + ".EnchantmentName", e.getName());
                     c.set("StoredEnchants.Ench" + x + ".Level", em.getStoredEnchants().get(e));
                 }
             }
 
             if (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.BOOK_AND_QUILL) {
-                BookMeta book = (BookMeta)itemM;
+                BookMeta book = (BookMeta) itemM;
                 if (book.hasAuthor()) {
                     c.set("Author", book.getAuthor());
                 }
@@ -485,10 +478,10 @@ public class ItemStackGetter extends HTag {
             }
 
             if (itemM instanceof PotionMeta) {
-                PotionMeta p = (PotionMeta)itemM;
+                PotionMeta p = (PotionMeta) itemM;
                 if (p.hasCustomEffects()) {
-                    for(x = 0; x < p.getCustomEffects().size(); ++x) {
-                        PotionEffect e = (PotionEffect)p.getCustomEffects().get(x);
+                    for (x = 0; x < p.getCustomEffects().size(); ++x) {
+                        PotionEffect e = p.getCustomEffects().get(x);
                         c.set("PotionEffects.Effect" + x + ".PotionEffectType", e.getType().getName());
                         c.set("PotionEffects.Effect" + x + ".Duration", e.getDuration());
                         c.set("PotionEffects.Effect" + x + ".Amplifier", e.getAmplifier());
@@ -503,7 +496,7 @@ public class ItemStackGetter extends HTag {
             }
 
             if (itemM instanceof LeatherArmorMeta) {
-                LeatherArmorMeta lea = (LeatherArmorMeta)itemM;
+                LeatherArmorMeta lea = (LeatherArmorMeta) itemM;
                 c.set("LeatherArmor.Red", lea.getColor().getRed());
                 c.set("LeatherArmor.Green", lea.getColor().getGreen());
                 c.set("LeatherArmor.Blue", lea.getColor().getBlue());
@@ -520,11 +513,11 @@ public class ItemStackGetter extends HTag {
         int b = 1;
         ConfigurationSection c = file.getConfigurationSection(loc);
         if (c != null) {
-            file.set(loc, (Object)null);
+            file.set(loc, null);
             Iterator var7 = c.getKeys(false).iterator();
 
-            while(var7.hasNext()) {
-                String s = (String)var7.next();
+            while (var7.hasNext()) {
+                String s = (String) var7.next();
                 if (s.startsWith("Item")) {
                     String[] d = s.split("Item");
                     if (d.length == 2) {
@@ -534,14 +527,13 @@ public class ItemStackGetter extends HTag {
                                 b = num;
                             }
                         } catch (NumberFormatException var10) {
-                            ;
                         }
                     }
                 }
             }
         }
 
-        for(int x = 0; x < items.length; ++x) {
+        for (int x = 0; x < items.length; ++x) {
             if (items[x] != null) {
                 if (slot) {
                     saveToFile(items[x], file, loc + ".Item" + b, x);
@@ -560,8 +552,8 @@ public class ItemStackGetter extends HTag {
         if (c != null) {
             Iterator var4 = c.getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                String s = (String)var4.next();
+            while (var4.hasNext()) {
+                String s = (String) var4.next();
                 if (s.startsWith("Item")) {
                     String[] d = s.split("Item");
                     if (d.length == 2) {
@@ -571,14 +563,13 @@ public class ItemStackGetter extends HTag {
                                 b = num;
                             }
                         } catch (NumberFormatException var7) {
-                            ;
                         }
                     }
                 }
             }
         }
 
-        for(int x = 0; x < items.length; ++x) {
+        for (int x = 0; x < items.length; ++x) {
             if (items[x] != null) {
                 ConfigurationSection cc = c.createSection("Item" + b);
                 saveToFileF(items[x], cc, x);
@@ -641,8 +632,8 @@ public class ItemStackGetter extends HTag {
 
         Builder b;
         if (c.getConfigurationSection("Effects") != null) {
-            for(Iterator var3 = c.getConfigurationSection("Effects").getKeys(false).iterator(); var3.hasNext(); m.addEffect(b.build())) {
-                String s = (String)var3.next();
+            for (Iterator var3 = c.getConfigurationSection("Effects").getKeys(false).iterator(); var3.hasNext(); m.addEffect(b.build())) {
+                String s = (String) var3.next();
                 ConfigurationSection f = c.getConfigurationSection("Effects." + s);
                 b = FireworkEffect.builder();
                 if (f.getBoolean("Flicker")) {
@@ -674,8 +665,8 @@ public class ItemStackGetter extends HTag {
         Color[] colors = new Color[64];
         int x = 0;
 
-        for(Iterator var4 = c.getKeys(false).iterator(); var4.hasNext(); ++x) {
-            String s = (String)var4.next();
+        for (Iterator var4 = c.getKeys(false).iterator(); var4.hasNext(); ++x) {
+            String s = (String) var4.next();
             ConfigurationSection f = c.getConfigurationSection(s);
             Color color = null;
             String name = null;
@@ -710,7 +701,7 @@ public class ItemStackGetter extends HTag {
         Color[] fixedColors = new Color[x];
         int a = 0;
 
-        for(int i = 0; i < colors.length; ++i) {
+        for (int i = 0; i < colors.length; ++i) {
             if (colors[i] != null) {
                 fixedColors[a] = colors[i];
                 ++a;

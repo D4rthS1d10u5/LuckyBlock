@@ -1,5 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,20 +11,18 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 public class EntityKillerSkeleton extends EntityKiller {
     public EntityKillerSkeleton() {
     }
 
     public Entity spawnFunction(Location loc) {
-        WitherSkeleton skeleton = (WitherSkeleton)loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+        WitherSkeleton skeleton = (WitherSkeleton) loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
         skeleton.setMaxHealth(120.0D);
         skeleton.setHealth(120.0D);
         skeleton.setCustomName(ChatColor.RED + "Killer Skeleton");
         skeleton.setCustomNameVisible(true);
-        skeleton.getEquipment().setItemInMainHand(ItemMaker.addEnchants(new ItemStack(Material.BOW), new int[]{3}, new Enchantment[]{Enchantment.ARROW_DAMAGE}));
+        skeleton.getEquipment().setItemInMainHand(ItemMaker.addEnchants(new ItemStack(Material.BOW), new int[]{3}, Enchantment.ARROW_DAMAGE));
         skeleton.getEquipment().setHelmet(new ItemStack(Material.GLASS));
         skeleton.getEquipment().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
         skeleton.getEquipment().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));

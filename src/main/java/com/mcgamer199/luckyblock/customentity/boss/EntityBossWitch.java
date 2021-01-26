@@ -1,10 +1,14 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -24,30 +28,27 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
-    private Witch w;
-    private BossBar bar;
     private static final ItemStack head;
-    private int fire_damage = 7;
 
     static {
         head = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.DARK_PURPLE + "Witch", Arrays.asList("", ChatColor.GRAY + "Obtained by killing witch bosses.")), "0a9e8efb-9191-4c81-80f5-e27ca5433156", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIyZDhlNzUxYzhmMmZkNGM4OTQyYzQ0YmRiMmY1Y2E0ZDhhZThlNTc1ZWQzZWIzNGMxOGE4NmU5M2IifX19");
     }
 
+    private Witch w;
+    private BossBar bar;
+    private int fire_damage = 7;
+
     public EntityBossWitch() {
     }
 
     protected Entity spawnFunction(Location loc) {
-        Witch witch = (Witch)loc.getWorld().spawnEntity(loc, EntityType.WITCH);
+        Witch witch = (Witch) loc.getWorld().spawnEntity(loc, EntityType.WITCH);
         witch.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(90.0D);
         witch.setHealth(90.0D);
         witch.setCustomName(ChatColor.LIGHT_PURPLE + "Witch");
@@ -63,12 +64,12 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     private void load_bar() {
-        this.bar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "Witch", BarColor.BLUE, BarStyle.SOLID, new BarFlag[0]);
+        this.bar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "Witch", BarColor.BLUE, BarStyle.SOLID);
     }
 
     public ItemStack[] getDrops() {
         ItemStack potion = ItemMaker.createItem(Material.POTION, 1, 0, "" + ChatColor.RED + ChatColor.BOLD + "Super Potion");
-        PotionMeta pM = (PotionMeta)potion.getItemMeta();
+        PotionMeta pM = (PotionMeta) potion.getItemMeta();
         pM.addCustomEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 4000, 0), true);
         pM.addCustomEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 4000, 2), true);
         pM.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 4000, 0), true);
@@ -164,16 +165,16 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
                     int i = EntityBossWitch.this.random.nextInt(13) + 1;
                     Object s;
                     if (i > 1) {
-                        s = (SplashPotion)EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.SPLASH_POTION);
+                        s = EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.SPLASH_POTION);
                     } else {
-                        s = (LingeringPotion)EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.LINGERING_POTION);
+                        s = EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.LINGERING_POTION);
                         isLingering = true;
                     }
 
-                    ((ThrownPotion)s).setShooter(EntityBossWitch.this.w);
-                    ((ThrownPotion)s).setVelocity(EntityBossWitch.this.getRandomVelocity());
-                    ((ThrownPotion)s).setBounce(true);
-                    ((ThrownPotion)s).setItem(EntityBossWitch.this.getRandomPotion(isLingering));
+                    ((ThrownPotion) s).setShooter(EntityBossWitch.this.w);
+                    ((ThrownPotion) s).setVelocity(EntityBossWitch.this.getRandomVelocity());
+                    ((ThrownPotion) s).setBounce(true);
+                    ((ThrownPotion) s).setItem(EntityBossWitch.this.getRandomPotion(isLingering));
                 } else {
                     task.run();
                 }
@@ -219,9 +220,9 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
                         EntityBossWitch.this.spawn_fire_block(1.0D, -1.0D);
                         EntityBossWitch.this.spawn_fire_block(-1.0D, -1.0D);
 
-                        for(int i = 10; i > 0; --i) {
-                            double x1 = (double)(EntityBossWitch.this.random.nextInt(200) - 100);
-                            double z1 = (double)(EntityBossWitch.this.random.nextInt(200) - 100);
+                        for (int i = 10; i > 0; --i) {
+                            double x1 = EntityBossWitch.this.random.nextInt(200) - 100;
+                            double z1 = EntityBossWitch.this.random.nextInt(200) - 100;
                             double x2 = x1 / 100.0D;
                             double z2 = z1 / 100.0D;
                             EntityBossWitch.this.spawn_fire_block(x2, z2);
@@ -239,7 +240,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void spawn_fire_block(double x, double z) {
         Location l = new Location(this.w.getWorld(), this.w.getLocation().getX(), this.w.getLocation().getY() + 1.0D, this.w.getLocation().getZ());
-        double r = (double)(this.random.nextInt(30) + 10);
+        double r = this.random.nextInt(30) + 10;
         double d = r / 100.0D;
         FallingBlock fb = this.w.getWorld().spawnFallingBlock(l, new MaterialData(Material.FIRE));
         Vector v = new Vector(x, d, z);
@@ -256,12 +257,12 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
                 if (fb.isValid()) {
                     Iterator var2 = fb.getNearbyEntities(1.0D, 1.0D, 1.0D).iterator();
 
-                    while(var2.hasNext()) {
-                        Entity e = (Entity)var2.next();
+                    while (var2.hasNext()) {
+                        Entity e = (Entity) var2.next();
                         if (e instanceof LivingEntity) {
-                            LivingEntity l = (LivingEntity)e;
+                            LivingEntity l = (LivingEntity) e;
                             if (e != EntityBossWitch.this.w) {
-                                l.damage((double)dmg);
+                                l.damage(dmg);
                                 e.setFireTicks(100);
                             }
                         }
@@ -313,8 +314,8 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     private Vector getRandomVelocity() {
-        double x1 = (double)(this.random.nextInt(60) - 30);
-        double z1 = (double)(this.random.nextInt(60) - 30);
+        double x1 = this.random.nextInt(60) - 30;
+        double z1 = this.random.nextInt(60) - 30;
         double x2 = x1 / 100.0D;
         double z2 = z1 / 100.0D;
         Vector v = new Vector(x2, 0.5D, z2);
@@ -329,7 +330,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
             item = new ItemStack(Material.SPLASH_POTION);
         }
 
-        PotionMeta meta = (PotionMeta)item.getItemMeta();
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
         meta.addCustomEffect(this.getRandomEffect(), true);
         Color[] colors = new Color[]{Color.BLACK, Color.AQUA, Color.BLUE, Color.FUCHSIA, Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW};
         meta.setColor(colors[this.random.nextInt(colors.length)]);
@@ -393,7 +394,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     protected void onDamageByEntity(EntityDamageByEntityEvent event) {
         Entity e = event.getDamager();
         if (e instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)e;
+            LivingEntity l = (LivingEntity) e;
             if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() == Material.GOLD_SWORD) {
                 event.setDamage(event.getDamage() * 5.0D);
             }
@@ -425,7 +426,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
         Item[] var5 = items;
         int var4 = items.length;
 
-        for(int var3 = 0; var3 < var4; ++var3) {
+        for (int var3 = 0; var3 < var4; ++var3) {
             Item i = var5[var3];
             i.setInvulnerable(true);
         }
@@ -437,7 +438,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onLoad(ConfigurationSection c) {
-        this.w = (Witch)this.entity;
+        this.w = (Witch) this.entity;
         this.fire_damage = c.getInt("FireDamage");
         this.load_bar();
         this.func_all();

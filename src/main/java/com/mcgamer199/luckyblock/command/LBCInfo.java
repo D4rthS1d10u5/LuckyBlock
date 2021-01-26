@@ -20,7 +20,7 @@ public class LBCInfo extends LBCommand {
             com.mcgamer199.luckyblock.tellraw.RawText text4 = new com.mcgamer199.luckyblock.tellraw.RawText("" + ChatColor.BLUE + ChatColor.BOLD + "MCGamer199");
             text4.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.YELLOW + "Click here to open website"));
             text4.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.CLICK_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.OPEN_URL, "https://dev.bukkit.org/profiles/MCGamer199/"));
-            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player)sender, new com.mcgamer199.luckyblock.tellraw.RawText[]{text1, text2, text3, text4});
+            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, text1, text2, text3, text4);
         } else {
             sender.sendMessage(ChatColor.GREEN + "LuckyBlock" + " " + ChatColor.YELLOW + "2.2.5" + ChatColor.GREEN + " Created by " + ChatColor.BLUE + ChatColor.BOLD + "MCGamer199");
         }

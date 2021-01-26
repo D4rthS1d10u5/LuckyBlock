@@ -11,16 +11,20 @@ import org.bukkit.event.HandlerList;
 public class LBPreGenerateEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
-    private World world;
-    private Chunk chunk;
-    private Block block;
-    private LBType lbType;
+    private final World world;
+    private final Chunk chunk;
+    private final Block block;
+    private final LBType lbType;
 
     public LBPreGenerateEvent(Block block, World world, Chunk chunk, LBType lbType) {
         this.world = world;
         this.chunk = chunk;
         this.block = block;
         this.lbType = lbType;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public boolean isCancelled() {
@@ -48,10 +52,6 @@ public class LBPreGenerateEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

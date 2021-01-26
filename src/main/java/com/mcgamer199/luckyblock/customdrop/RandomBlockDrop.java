@@ -3,10 +3,10 @@ package com.mcgamer199.luckyblock.customdrop;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Random;
 
@@ -37,7 +37,7 @@ public class RandomBlockDrop implements CustomDrop {
 
     public void function(LB lb, Player player) {
         if (lb.hasDropOption("Materials")) {
-            final String[] mats = (String[])lb.getDropOption("Materials").getValues();
+            final String[] mats = (String[]) lb.getDropOption("Materials").getValues();
             final ITask task = new ITask();
             final Block b = lb.getBlock();
             final Random random = new Random();

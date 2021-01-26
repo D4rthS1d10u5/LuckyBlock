@@ -17,7 +17,7 @@ public class ChatComponentUtils {
 
     private static final HashMap<String, String> mapFormatting = loadFomatting();
     private static final HashMap<String, String> mapColor = loadColor();
-    private static Pattern color    = Pattern.compile("[&§].");
+    private static final Pattern color = Pattern.compile("[&§].");
 
     private static HashMap<String, String> loadFomatting() {
         HashMap<String, String> map = new HashMap<>();
@@ -52,25 +52,26 @@ public class ChatComponentUtils {
 
     /**
      * Достать из серилизированого ChatComponent'a текст сохраняя цвета
+     *
      * @param json json дата
      * @return текст
      */
     public static String jsonToText(String json) {
-        if(json.length() < 33) {
+        if (json.length() < 33) {
             return "";
         }
-        if(json.contains("{\"extra\":[{\"text\":\"")) {
+        if (json.contains("{\"extra\":[{\"text\":\"")) {
             json = json.substring(10, json.length() - 12);
         }
         StringBuilder newLine = new StringBuilder();
-        char value[] = json.toCharArray();
+        char[] value = json.toCharArray();
 
         int posStart = -1;
         StringBuilder read = new StringBuilder();
         boolean readText = false;
-        for(int pos = 0; pos < value.length; pos++) {
-            if(value[pos] == '\"') {
-                if(posStart == -1) {
+        for (int pos = 0; pos < value.length; pos++) {
+            if (value[pos] == '\"') {
+                if (posStart == -1) {
                     posStart = pos + 1;
                 } else {
                     char[] temp = new char[pos - posStart];
@@ -78,19 +79,19 @@ public class ChatComponentUtils {
                     posStart = -1;
 
                     String text = new String(temp);
-                    if(readText) {
+                    if (readText) {
                         newLine.append(newLine.length() > 0 ? "§r" : "").append(read).append(text);
                         read = new StringBuilder();
                         readText = false;
-                    } else if(text.equals("text")) {
+                    } else if (text.equals("text")) {
                         readText = true;
                     } else {
                         String color = mapColor.get(text);
-                        if(color != null) {
+                        if (color != null) {
                             read.insert(0, "§" + color);
                         } else {
                             String type = mapFormatting.get(text);
-                            if(type != null) {
+                            if (type != null) {
                                 read.append("§").append(type);
                             }
                         }
@@ -103,6 +104,7 @@ public class ChatComponentUtils {
 
     /**
      * Преобразовать текст в json, как бы это сделал ChatComponent
+     *
      * @param text текст
      * @return json
      */
@@ -112,6 +114,7 @@ public class ChatComponentUtils {
 
     /**
      * Удалить цвета
+     *
      * @param text текст
      * @return текст без цвета
      */
@@ -121,18 +124,19 @@ public class ChatComponentUtils {
 
     /**
      * Фиксануть компонент на переносы
+     *
      * @param component компонент
      */
     public static void fixComponent(BaseComponent component) {
-        if(component.getExtra() != null) {
+        if (component.getExtra() != null) {
             component.getExtra().forEach(ChatComponentUtils::fixComponent);
         }
-        if(component instanceof TextComponent) {
+        if (component instanceof TextComponent) {
             TextComponent text = (TextComponent) component;
-            if(StringUtils.contains(text.getText(), '§')) {
+            if (StringUtils.contains(text.getText(), '§')) {
                 BaseComponent[] components = TextComponent.fromLegacyText(text.getText());
                 List<BaseComponent> extra = text.getExtra();
-                if(extra == null) {
+                if (extra == null) {
                     extra = Lists.newArrayList(components);
                 } else {
                     extra.addAll(0, Lists.newArrayList(components));
@@ -145,14 +149,14 @@ public class ChatComponentUtils {
 
     public static void fixVisibleColors(BaseComponent component) {
         List<BaseComponent> extra = component.getExtra();
-        if(extra != null) {
+        if (extra != null) {
             extra.forEach(ChatComponentUtils::fixVisibleColors);
         }
         HoverEvent hoverEvent = component.getHoverEvent();
-        if(hoverEvent != null) {
+        if (hoverEvent != null) {
             Arrays.stream(hoverEvent.getValue()).forEach(ChatComponentUtils::fixVisibleColors);
         }
-        if(component instanceof TextComponent) {
+        if (component instanceof TextComponent) {
             TextComponent textComponent = (TextComponent) component;
             textComponent.setText(ChatComponentUtils.fixVisibleColors(textComponent.getText()));
         }
@@ -160,9 +164,9 @@ public class ChatComponentUtils {
 
     public static String fixVisibleColors(String text) {
         char[] chars = text.toCharArray();
-        for(int i = 0; i < chars.length - 1; i++) {
+        for (int i = 0; i < chars.length - 1; i++) {
             char c = chars[i];
-            if(c == '§') {
+            if (c == '§') {
                 chars[i + 1] = replaceColor0(chars[i + 1]);
             }
         }
@@ -170,7 +174,7 @@ public class ChatComponentUtils {
     }
 
     private static char replaceColor0(char c) {
-        switch(c) {
+        switch (c) {
             case 'f':
                 return '0';
             case 'a':

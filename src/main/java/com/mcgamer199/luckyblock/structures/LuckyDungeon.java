@@ -26,26 +26,26 @@ public class LuckyDungeon extends Structure {
 
             int x;
             int r;
-            for(x = -3; x < 4; ++x) {
-                for(x = -3; x < 4; ++x) {
-                    for(r = -3; r < 4; ++r) {
-                        block.getLocation().add((double)x, (double)x, (double)r).getBlock().setType(Material.AIR);
+            for (x = -3; x < 4; ++x) {
+                for (x = -3; x < 4; ++x) {
+                    for (r = -3; r < 4; ++r) {
+                        block.getLocation().add(x, x, r).getBlock().setType(Material.AIR);
                     }
                 }
             }
 
-            for(x = -3; x < 4; ++x) {
-                for(x = -3; x < 4; ++x) {
-                    block.getLocation().add((double)x, -4.0D, (double)x).getBlock().setType(Material.MOSSY_COBBLESTONE);
+            for (x = -3; x < 4; ++x) {
+                for (x = -3; x < 4; ++x) {
+                    block.getLocation().add(x, -4.0D, x).getBlock().setType(Material.MOSSY_COBBLESTONE);
                 }
             }
 
             block.getLocation().add(0.0D, -3.0D, -2.0D).getBlock().setType(Material.CHEST);
             block.getLocation().add(1.0D, -3.0D, -2.0D).getBlock().setType(Material.TORCH);
             block.getLocation().add(-1.0D, -3.0D, -2.0D).getBlock().setType(Material.TORCH);
-            Chest chest = (Chest)block.getLocation().add(0.0D, -3.0D, -2.0D).getBlock().getState();
+            Chest chest = (Chest) block.getLocation().add(0.0D, -3.0D, -2.0D).getBlock().getState();
 
-            for(x = 0; x < this.random.nextInt(7) + 10; ++x) {
+            for (x = 0; x < this.random.nextInt(7) + 10; ++x) {
                 r = this.random.nextInt(10) + 1;
                 if (r == 1) {
                     chest.getBlockInventory().setItem(this.random.nextInt(27), new ItemStack(Material.DIAMOND, this.random.nextInt(3) + 1));
@@ -63,11 +63,11 @@ public class LuckyDungeon extends Structure {
                         item = t.toItemStack(t.getRandomP(), this.random.nextInt(6) + 1);
                         chest.getBlockInventory().setItem(this.random.nextInt(27), item);
                     } else {
-                        t = (LBType)LBType.getTypes().get(0);
-                        Iterator var7 = ((List)LuckyBlockWorld.worlds.get(loc.getWorld().getName())).iterator();
+                        t = LBType.getTypes().get(0);
+                        Iterator var7 = ((List) LuckyBlockWorld.worlds.get(loc.getWorld().getName())).iterator();
 
-                        while(var7.hasNext()) {
-                            WorldOptions o = (WorldOptions)var7.next();
+                        while (var7.hasNext()) {
+                            WorldOptions o = (WorldOptions) var7.next();
                             if (o == WorldOptions.ID) {
                                 t = LBType.fromId(o.getId());
                             }

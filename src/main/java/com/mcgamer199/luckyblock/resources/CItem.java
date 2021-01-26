@@ -23,11 +23,11 @@ public class CItem {
             File[] var6;
             int var5 = (var6 = folder.listFiles()).length;
 
-            for(int var4 = 0; var4 < var5; ++var4) {
+            for (int var4 = 0; var4 < var5; ++var4) {
                 File file = var6[var4];
                 if (file.exists() && file.getName().endsWith(".yml")) {
                     FileConfiguration f = YamlConfiguration.loadConfiguration(file);
-                    addItem(a + file.getName(), getItem((FileConfiguration)f));
+                    addItem(a + file.getName(), getItem(f));
                 }
             }
         }
@@ -52,6 +52,6 @@ public class CItem {
     }
 
     public static ItemStack getItem(String name) {
-        return customItems.containsKey(name) ? (ItemStack)customItems.get(name) : null;
+        return customItems.containsKey(name) ? customItems.get(name) : null;
     }
 }

@@ -1,6 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.resources.SkullData;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -14,24 +16,23 @@ import org.bukkit.entity.Husk;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 public class EntityFootballPlayer extends CustomEntity {
-    private ItemStack baseball;
-    private static Color[] colors;
+    private static final Color[] colors;
 
     static {
         colors = new Color[]{Color.RED, Color.BLUE};
     }
 
+    private final ItemStack baseball;
+
     public EntityFootballPlayer() {
-        this.baseball = ItemMaker.addEnchants(ItemMaker.createItem(Material.WOOD_SPADE, 1, 0, ChatColor.LIGHT_PURPLE + "Baseball Bat"), new int[]{1, 2}, new Enchantment[]{LuckyBlock.enchantment_glow, Enchantment.KNOCKBACK});
+        this.baseball = ItemMaker.addEnchants(ItemMaker.createItem(Material.WOOD_SPADE, 1, 0, ChatColor.LIGHT_PURPLE + "Baseball Bat"), new int[]{1, 2}, LuckyBlock.enchantment_glow, Enchantment.KNOCKBACK);
     }
 
     protected Entity spawnFunction(Location loc) {
-        this.baseball.setDurability((short)this.random.nextInt(this.baseball.getType().getMaxDurability()));
-        Husk husk = (Husk)loc.getWorld().spawnEntity(loc, EntityType.HUSK);
+        this.baseball.setDurability((short) this.random.nextInt(this.baseball.getType().getMaxDurability()));
+        Husk husk = (Husk) loc.getWorld().spawnEntity(loc, EntityType.HUSK);
         SkullData sk = SkullData.getRandomSkullData("FP");
         husk.getEquipment().setHelmet(ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3), sk.getId(), sk.getData()));
         int r = sk == SkullData.FOOTBALL_PLAYER_1 ? 0 : 1;

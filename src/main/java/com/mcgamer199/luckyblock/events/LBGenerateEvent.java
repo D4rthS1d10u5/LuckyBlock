@@ -10,9 +10,9 @@ import org.bukkit.event.HandlerList;
 public class LBGenerateEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private World world;
-    private Chunk chunk;
-    private LB lb;
+    private final World world;
+    private final Chunk chunk;
+    private final LB lb;
 
     public LBGenerateEvent(LB lb, World world, Chunk chunk) {
         this.world = world;
@@ -20,11 +20,11 @@ public class LBGenerateEvent extends Event {
         this.lb = lb;
     }
 
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
         return handlers;
     }
 

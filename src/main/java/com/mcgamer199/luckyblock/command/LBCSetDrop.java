@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LB;
-import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.lb.DropOption;
+import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LBDrop;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -25,9 +25,9 @@ public class LBCSetDrop extends LBCommand {
             return true;
         } else {
             if (args.length > 1) {
-                Player player = (Player)sender;
-                if (player.getTargetBlock((Set)null, 100) != null && player.getTargetBlock((Set)null, 100).getType() != Material.AIR) {
-                    Block block = player.getTargetBlock((Set)null, 100);
+                Player player = (Player) sender;
+                if (player.getTargetBlock(null, 100) != null && player.getTargetBlock(null, 100).getType() != Material.AIR) {
+                    Block block = player.getTargetBlock(null, 100);
                     if (LB.isLuckyBlock(block)) {
                         LB lb = LB.getFromBlock(block);
                         boolean x = false;
@@ -67,13 +67,13 @@ public class LBCSetDrop extends LBCommand {
                             s = s.replace("{", "").replace("}", "").replace("'", "");
                             String[] c = s.split(";");
 
-                            for(int v = 0; v < c.length; ++v) {
+                            for (int v = 0; v < c.length; ++v) {
                                 String[] u = c[v].split(":");
                                 if (u.length == 2) {
                                     String[] g = u[1].split(",");
                                     String[] op = new String[64];
 
-                                    for(int ii = 0; ii < g.length; ++ii) {
+                                    for (int ii = 0; ii < g.length; ++ii) {
                                         String[] cc = g[ii].split("!");
                                         if (cc.length == 2) {
                                             try {

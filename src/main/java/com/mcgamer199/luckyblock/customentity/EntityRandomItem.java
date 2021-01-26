@@ -1,8 +1,9 @@
 package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.tags.ItemStackGetter;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.tags.ItemStackGetter;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,19 +19,19 @@ import java.util.Random;
 
 public class EntityRandomItem extends CustomEntity {
     public List<ItemStack> items = new ArrayList();
-    private Random random = new Random();
     int x = 0;
     int f = 0;
+    private final Random random = new Random();
 
     public EntityRandomItem() {
     }
 
     public Entity spawnFunction(Location loc) {
         if (this.items.size() > 0) {
-            ArmorStand armor = (ArmorStand)loc.getWorld().spawnEntity(loc.add(0.5D, 0.0D, 0.5D), EntityType.ARMOR_STAND);
+            ArmorStand armor = (ArmorStand) loc.getWorld().spawnEntity(loc.add(0.5D, 0.0D, 0.5D), EntityType.ARMOR_STAND);
             armor.setVisible(false);
             armor.setSmall(true);
-            this.x = this.random.nextInt((int)((double)this.items.size() * 1.5D));
+            this.x = this.random.nextInt((int) ((double) this.items.size() * 1.5D));
             return armor;
         } else {
             return null;
@@ -44,16 +44,16 @@ public class EntityRandomItem extends CustomEntity {
 
     protected void onTick() {
         if (this.entity.isValid()) {
-            ArmorStand as = (ArmorStand)this.entity;
+            ArmorStand as = (ArmorStand) this.entity;
             if (this.items.size() == 1) {
-                this.entity.getWorld().dropItem(this.entity.getLocation(), (ItemStack)this.items.get(0));
+                this.entity.getWorld().dropItem(this.entity.getLocation(), this.items.get(0));
             } else if (this.items.size() > 1) {
                 EulerAngle angle = new EulerAngle(0.0D, 0.0D, 0.0D);
                 int l = this.items.size();
                 Location lo = this.entity.getLocation();
                 if (this.x > 0) {
                     if (this.items.get(this.f) != null) {
-                        if (((ItemStack)this.items.get(this.f)).getType().isBlock()) {
+                        if (this.items.get(this.f).getType().isBlock()) {
                             angle.setX(-15.0D);
                             angle.setY(-45.0D);
                             angle.setZ(0.0D);
@@ -65,7 +65,7 @@ public class EntityRandomItem extends CustomEntity {
                     }
 
                     as.setRightArmPose(angle);
-                    as.setItemInHand((ItemStack)this.items.get(this.f));
+                    as.setItemInHand(this.items.get(this.f));
                     SoundManager.playFixedSound(lo, MyTasks.getSound("lb_drop_randomitem1"), 1.0F, 0.0F, 20);
                     --this.x;
                     ++this.f;
@@ -74,9 +74,9 @@ public class EntityRandomItem extends CustomEntity {
                     }
                 } else {
                     if (this.f > 0) {
-                        this.entity.getWorld().dropItem(lo, (ItemStack)this.items.get(this.f - 1));
+                        this.entity.getWorld().dropItem(lo, this.items.get(this.f - 1));
                     } else {
-                        this.entity.getWorld().dropItem(lo, (ItemStack)this.items.get(this.items.size() - 1));
+                        this.entity.getWorld().dropItem(lo, this.items.get(this.items.size() - 1));
                     }
 
                     SoundManager.playFixedSound(lo, MyTasks.getSound("lb_drop_randomitem2"), 1.0F, 2.0F, 20);
@@ -91,8 +91,8 @@ public class EntityRandomItem extends CustomEntity {
         int i = 0;
         Iterator var4 = this.items.iterator();
 
-        while(var4.hasNext()) {
-            ItemStack item = (ItemStack)var4.next();
+        while (var4.hasNext()) {
+            ItemStack item = (ItemStack) var4.next();
             if (item != null) {
                 if (c.getConfigurationSection("Items.item" + i) == null) {
                     c.createSection("Items.item" + i);
@@ -111,8 +111,8 @@ public class EntityRandomItem extends CustomEntity {
         if (c.getConfigurationSection("Items") != null) {
             Iterator var3 = c.getConfigurationSection("Items").getKeys(false).iterator();
 
-            while(var3.hasNext()) {
-                String s = (String)var3.next();
+            while (var3.hasNext()) {
+                String s = (String) var3.next();
                 ItemStack item = ItemStackGetter.getItemStack(c.getConfigurationSection("Items").getConfigurationSection(s));
                 this.items.add(item);
             }

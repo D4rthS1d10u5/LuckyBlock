@@ -1,5 +1,8 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,9 +13,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.util.UUID;
 
@@ -23,13 +23,13 @@ public class EntitySuperWitherSkeleton extends CustomEntity {
     }
 
     public Entity spawnFunction(Location loc) {
-        WitherSkeleton skeleton = (WitherSkeleton)loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+        WitherSkeleton skeleton = (WitherSkeleton) loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
         skeleton.setGlowing(true);
         skeleton.setCustomName(ChatColor.GOLD + "LB Army");
         skeleton.setCustomNameVisible(true);
         skeleton.setMaxHealth(100.0D);
         skeleton.setHealth(100.0D);
-        skeleton.getEquipment().setItemInMainHand(ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{4, 2}, new Enchantment[]{Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT}));
+        skeleton.getEquipment().setItemInMainHand(ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{4, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT));
         skeleton.getEquipment().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
         return skeleton;
     }

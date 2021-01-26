@@ -1,11 +1,15 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
 import com.mcgamer199.luckyblock.listeners.LBGui;
-import com.mcgamer199.luckyblock.lb.LB;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
+import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
+import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,10 +17,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
-import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 
 public class LBCOther extends LBCommand {
     public LBCOther() {
@@ -31,7 +31,7 @@ public class LBCOther extends LBCommand {
                     return false;
                 }
 
-                target = (Player)sender;
+                target = (Player) sender;
                 LBGui.open(target);
                 send(sender, "command.gui.success");
                 return true;
@@ -115,7 +115,7 @@ public class LBCOther extends LBCommand {
                 }
             } else if (args[0].equalsIgnoreCase("lct")) {
                 if (sender instanceof Player && sender.isOp()) {
-                    ((Player)sender).getInventory().addItem(new ItemStack[]{ItemMaker.createItem(Material.NOTE_BLOCK, 1, 0, yellow + "Lucky Crafting Table")});
+                    ((Player) sender).getInventory().addItem(ItemMaker.createItem(Material.NOTE_BLOCK, 1, 0, yellow + "Lucky Crafting Table"));
                     return true;
                 }
             } else {
@@ -125,9 +125,9 @@ public class LBCOther extends LBCommand {
                         return false;
                     }
 
-                    for(byte blocks = 0; blocks < LB.lbs.size() && blocks < 65; blocks = 0) {
-                        LB lb = (LB)LB.lbs.get(blocks);
-                        BreakLuckyBlock.openLB(lb, (Player)null);
+                    for (byte blocks = 0; blocks < LB.lbs.size() && blocks < 65; blocks = 0) {
+                        LB lb = LB.lbs.get(blocks);
+                        BreakLuckyBlock.openLB(lb, null);
                     }
 
                     send(sender, "command.runall.success");
@@ -143,10 +143,10 @@ public class LBCOther extends LBCommand {
 
                 if (args[0].equalsIgnoreCase("illuminati")) {
                     if (sender instanceof Player) {
-                        target = (Player)sender;
+                        target = (Player) sender;
                         target.damage(500.0D);
 
-                        for(int count = 0; count < 100; ++count) {
+                        for (int count = 0; count < 100; ++count) {
                             target.sendMessage("");
                         }
                     }
@@ -156,7 +156,7 @@ public class LBCOther extends LBCommand {
                         if (target != null) {
                             String s = "";
 
-                            for(x = 2; x < args.length; ++x) {
+                            for (x = 2; x < args.length; ++x) {
                                 s = s + args[x];
                                 if (args.length > x + 1) {
                                     s = s + " ";
@@ -167,7 +167,7 @@ public class LBCOther extends LBCommand {
                         }
                     }
                 } else {
-                    sendMessage(sender, "invalid_command", new TextAction[]{new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, yellow + "/" + lcmd + " help"), new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " help")}, new ObjectType[0]);
+                    sendMessage(sender, "invalid_command", new TextAction[]{new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, yellow + "/" + lcmd + " help"), new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " help")});
                 }
             }
         }

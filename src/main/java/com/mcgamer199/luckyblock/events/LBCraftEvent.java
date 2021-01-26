@@ -10,15 +10,19 @@ import org.bukkit.inventory.ItemStack;
 public class LBCraftEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
-    private HumanEntity human;
+    private final HumanEntity human;
     private boolean cancelled;
-    private ItemStack item;
-    private LBType lbtype;
+    private final ItemStack item;
+    private final LBType lbtype;
 
     public LBCraftEvent(HumanEntity human, ItemStack item, LBType lbtype) {
         this.human = human;
         this.item = item;
         this.lbtype = lbtype;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public LBType getLBType() {
@@ -42,10 +46,6 @@ public class LBCraftEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

@@ -1,17 +1,17 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.events.LBInteractEvent;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
+import com.mcgamer199.luckyblock.structures.BossDungeon;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
-import com.mcgamer199.luckyblock.structures.BossDungeon;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -43,8 +43,8 @@ public class SomeEvents extends ColorsClass implements Listener {
         if (player.getInventory().getItemInMainHand() != null) {
             ItemStack item = player.getInventory().getItemInMainHand();
             if (item.getType() == Material.CHEST && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equals("" + green + bold + italic + "Random Chest")) {
-                Chest chest = (Chest)block.getState();
-                ChestFiller c = new ChestFiller(LBType.getFile((LBType)LBType.getTypes().get(0), 0).getConfigurationSection("Chests"), chest);
+                Chest chest = (Chest) block.getState();
+                ChestFiller c = new ChestFiller(LBType.getFile(LBType.getTypes().get(0), 0).getConfigurationSection("Chests"), chest);
                 c.fill();
             }
         }
@@ -89,7 +89,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                         }
 
                         if ((lb.getDrop() != null || lb.customDrop != null) && lb.getDropOption("Title") != null && lb.getDropOption("Title").getValues().length > 0) {
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String)lb.getDropOption("Title").getValues()[0]));
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) lb.getDropOption("Title").getValues()[0]));
                         }
 
                         if (lb.getDropOptions().size() > 1) {
@@ -97,8 +97,8 @@ public class SomeEvents extends ColorsClass implements Listener {
                             String r = "";
                             int g = 0;
 
-                            for(int x = 0; x < lb.getDropOptions().size(); ++x) {
-                                DropOption dr = (DropOption)lb.getDropOptions().get(x);
+                            for (int x = 0; x < lb.getDropOptions().size(); ++x) {
+                                DropOption dr = lb.getDropOptions().get(x);
                                 if (!LB.isHidden(dr.getName())) {
                                     if (g == 0) {
                                         r = lightpurple + dr.getName() + ": ";
@@ -106,7 +106,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                                         r = r + lightpurple + "\n" + lightpurple + dr.getName() + ": ";
                                     }
 
-                                    for(int i = 0; i < dr.getValues().length; ++i) {
+                                    for (int i = 0; i < dr.getValues().length; ++i) {
                                         if (dr.getValues()[i] != null) {
                                             if (i == 0) {
                                                 r = r + blue + ChatColor.translateAlternateColorCodes('&', dr.getValues()[i].toString());
@@ -122,7 +122,7 @@ public class SomeEvents extends ColorsClass implements Listener {
 
                             if (g > 0) {
                                 text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, r));
-                                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, new com.mcgamer199.luckyblock.tellraw.RawText[]{text});
+                                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text);
                             }
                         }
                     } else {
@@ -145,8 +145,8 @@ public class SomeEvents extends ColorsClass implements Listener {
                     List<UUID> uuids = new ArrayList();
                     Iterator var6 = player.getNearbyEntities(20.0D, 20.0D, 20.0D).iterator();
 
-                    while(var6.hasNext()) {
-                        Entity e = (Entity)var6.next();
+                    while (var6.hasNext()) {
+                        Entity e = (Entity) var6.next();
                         if (e instanceof LivingEntity) {
                             uuids.add(e.getUniqueId());
                         }
@@ -156,8 +156,8 @@ public class SomeEvents extends ColorsClass implements Listener {
                         int thing = LuckyBlock.randoms.nextInt(uuids.size());
                         Iterator var7 = player.getNearbyEntities(20.0D, 20.0D, 20.0D).iterator();
 
-                        while(var7.hasNext()) {
-                            Entity e = (Entity)var7.next();
+                        while (var7.hasNext()) {
+                            Entity e = (Entity) var7.next();
                             if (e.getUniqueId() == uuids.get(thing)) {
                                 Location loc = e.getLocation();
                                 Location loca = player.getLocation();
@@ -167,7 +167,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                                     if (item.getAmount() > 1) {
                                         item.setAmount(item.getAmount() - 1);
                                     } else {
-                                        player.getInventory().removeItem(new ItemStack[]{item});
+                                        player.getInventory().removeItem(item);
                                     }
                                 }
                             }
@@ -181,9 +181,9 @@ public class SomeEvents extends ColorsClass implements Listener {
 
     @EventHandler
     public void onExplodeSuperLuckyBlock(EntityExplodeEvent event) {
-        for(int x = 0; x < event.blockList().size(); ++x) {
-            if (LB.getFromBlock((Block)event.blockList().get(x)) != null && LB.getFromBlock((Block)event.blockList().get(x)).getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
-                ((Block)event.blockList().get(x)).getWorld().spawnParticle(Particle.CRIT_MAGIC, ((Block)event.blockList().get(x)).getLocation(), 150, 0.5D, 0.5D, 0.5D, 0.0D);
+        for (int x = 0; x < event.blockList().size(); ++x) {
+            if (LB.getFromBlock(event.blockList().get(x)) != null && LB.getFromBlock(event.blockList().get(x)).getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
+                event.blockList().get(x).getWorld().spawnParticle(Particle.CRIT_MAGIC, event.blockList().get(x).getLocation(), 150, 0.5D, 0.5D, 0.5D, 0.0D);
                 event.blockList().remove(x);
             }
         }
@@ -196,7 +196,7 @@ public class SomeEvents extends ColorsClass implements Listener {
             ItemStack item = event.getItem();
             if (item.hasItemMeta() && item.getItemMeta().hasEnchant(LuckyBlock.enchantment_lightning)) {
                 Player player = event.getPlayer();
-                if (player.getTargetBlock((Set)null, 200) != null && player.getTargetBlock((Set)null, 100).getType() != Material.AIR) {
+                if (player.getTargetBlock(null, 200) != null && player.getTargetBlock(null, 100).getType() != Material.AIR) {
                     int level = item.getEnchantmentLevel(LuckyBlock.enchantment_lightning);
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         if (level < 2) {
@@ -210,7 +210,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                         player.sendMessage(val("event.item.thoraxe.1") + ": " + gold + (level - 1));
                     }
 
-                    player.getWorld().strikeLightning(player.getTargetBlock((Set)null, 200).getLocation());
+                    player.getWorld().strikeLightning(player.getTargetBlock(null, 200).getLocation());
                 } else {
                     send_no(player, "event.item.thoraxe.2");
                 }
@@ -228,12 +228,12 @@ public class SomeEvents extends ColorsClass implements Listener {
                 Detector detector = null;
                 Iterator var6 = LuckyBlockAPI.detectors.iterator();
 
-                while(var6.hasNext()) {
-                    Detector det = (Detector)var6.next();
+                while (var6.hasNext()) {
+                    Detector det = (Detector) var6.next();
                     String[] var10;
                     int var9 = (var10 = det.getBlocks()).length;
 
-                    for(int var8 = 0; var8 < var9; ++var8) {
+                    for (int var8 = 0; var8 < var9; ++var8) {
                         String s = var10[var8];
                         if (s != null && LB.blockToString(stringToBlock(s)).equalsIgnoreCase(LB.blockToString(block))) {
                             detector = det;
@@ -264,10 +264,10 @@ public class SomeEvents extends ColorsClass implements Listener {
         if (BossDungeon.baseBlocks.contains(LB.blockToString(block))) {
             BossDungeon.baseBlocks.remove(LB.blockToString(block));
 
-            for(int i = -40; i < 1; ++i) {
-                for(int x = -6; x < 7; ++x) {
-                    for(int z = -6; z < 7; ++z) {
-                        block.getLocation().add((double)x, (double)i, (double)z).getBlock().setType(Material.AIR);
+            for (int i = -40; i < 1; ++i) {
+                for (int x = -6; x < 7; ++x) {
+                    for (int z = -6; z < 7; ++z) {
+                        block.getLocation().add(x, i, z).getBlock().setType(Material.AIR);
                     }
                 }
             }
@@ -279,15 +279,15 @@ public class SomeEvents extends ColorsClass implements Listener {
     private void onRightClickMap(PlayerInteractEvent event) {
         if (event.getItem() != null && event.getItem().getType() != Material.AIR) {
             ItemStack item = event.getItem();
-            if (item.getType() == Material.MAP && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase("" + green + italic + "Treasure Map") && item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() > 0 && ((String)item.getItemMeta().getLore().get(0)).startsWith(blue + "Location:")) {
-                String[] d = ChatColor.stripColor((String)item.getItemMeta().getLore().get(0)).split("Location: ");
+            if (item.getType() == Material.MAP && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase("" + green + italic + "Treasure Map") && item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() > 0 && item.getItemMeta().getLore().get(0).startsWith(blue + "Location:")) {
+                String[] d = ChatColor.stripColor(item.getItemMeta().getLore().get(0)).split("Location: ");
                 String[] d1 = d[1].split(",");
                 Player player = event.getPlayer();
                 if (LuckyBlockWorld.equals(player.getWorld().getGenerator())) {
                     int x = Integer.parseInt(d1[0]);
                     int y = Integer.parseInt(d1[1]) + 3;
                     int z = Integer.parseInt(d1[2]);
-                    Location loc = new Location(player.getWorld(), (double)x, (double)y, (double)z);
+                    Location loc = new Location(player.getWorld(), x, y, z);
                     if (loc.getBlock().getType() == Material.BEDROCK) {
                         loc.getBlock().setType(Material.AIR);
                     }
@@ -305,8 +305,8 @@ public class SomeEvents extends ColorsClass implements Listener {
         int x;
         Block block;
         LB lb;
-        for(x = 0; x < effected.size(); ++x) {
-            block = (Block)effected.get(x);
+        for (x = 0; x < effected.size(); ++x) {
+            block = effected.get(x);
             if (LB.isLuckyBlock(block)) {
                 lb = LB.getFromBlock(block);
                 if (!lb.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
@@ -316,8 +316,8 @@ public class SomeEvents extends ColorsClass implements Listener {
             }
         }
 
-        for(x = 0; x < blks.size(); ++x) {
-            block = (Block)blks.get(x);
+        for (x = 0; x < blks.size(); ++x) {
+            block = blks.get(x);
             if (LB.isLuckyBlock(block)) {
                 lb = LB.getFromBlock(block);
                 lb.remove();
@@ -347,9 +347,9 @@ public class SomeEvents extends ColorsClass implements Listener {
                         boolean setFire = LuckyBlock.instance.config.getBoolean("Allow.ExplosionFire");
                         boolean damage = LuckyBlock.instance.config.getBoolean("Allow.ExplosionDamage");
                         if (damage) {
-                            block.getWorld().createExplosion((double)x, (double)y, (double)z, 4.0F, setFire, breakBlocks);
+                            block.getWorld().createExplosion(x, y, z, 4.0F, setFire, breakBlocks);
                         } else {
-                            block.getWorld().createExplosion((double)x, (double)y, (double)z, 0.0F, setFire, breakBlocks);
+                            block.getWorld().createExplosion(x, y, z, 0.0F, setFire, breakBlocks);
                         }
                     } catch (Exception var7) {
                         var7.printStackTrace();
@@ -357,7 +357,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
 
             }
-        }, (long)i);
+        }, i);
     }
 
     @EventHandler

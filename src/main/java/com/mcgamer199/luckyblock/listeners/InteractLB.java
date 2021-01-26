@@ -38,10 +38,10 @@ public class InteractLB implements Listener {
         Player player = event.getPlayer();
         if (lb != null) {
             if (lb.getLuck() == lb.getType().getMaxLuck() && block.getRelative(BlockFace.UP).getType() == Material.CHEST && block.getRelative(BlockFace.DOWN).getType() == Material.EMERALD_BLOCK && LuckyBlockWorld.equals(player.getWorld().getGenerator())) {
-                Chest chest = (Chest)block.getRelative(BlockFace.UP).getState();
+                Chest chest = (Chest) block.getRelative(BlockFace.UP).getState();
                 int total = 0;
 
-                for(int x = 0; x < chest.getInventory().getSize(); ++x) {
+                for (int x = 0; x < chest.getInventory().getSize(); ++x) {
                     if (chest.getInventory().getItem(x) != null && chest.getInventory().getItem(x).getType() != Material.AIR) {
                         ItemStack item = chest.getInventory().getItem(x);
                         if (InteractLB.ItemWorth.getByMaterial(item.getType()) != null) {
@@ -62,7 +62,7 @@ public class InteractLB implements Listener {
         }
     }
 
-    public static enum ItemWorth {
+    public enum ItemWorth {
         IRON_INGOT(10),
         GOLD_INGOT(18),
         DIAMOND(22),
@@ -76,14 +76,10 @@ public class InteractLB implements Listener {
         NETHER_STAR(350),
         GOLDEN_APPLE(100);
 
-        private int value;
+        private final int value;
 
-        private ItemWorth(int value) {
+        ItemWorth(int value) {
             this.value = value;
-        }
-
-        public int getValue() {
-            return this.value;
         }
 
         public static InteractLB.ItemWorth getByMaterial(Material mat) {
@@ -94,7 +90,7 @@ public class InteractLB implements Listener {
             InteractLB.ItemWorth[] var4;
             int var3 = (var4 = values()).length;
 
-            for(int var2 = 0; var2 < var3; ++var2) {
+            for (int var2 = 0; var2 < var3; ++var2) {
                 InteractLB.ItemWorth item = var4[var2];
                 if (item.name().equalsIgnoreCase(name)) {
                     return item;
@@ -102,6 +98,10 @@ public class InteractLB implements Listener {
             }
 
             return null;
+        }
+
+        public int getValue() {
+            return this.value;
         }
     }
 }

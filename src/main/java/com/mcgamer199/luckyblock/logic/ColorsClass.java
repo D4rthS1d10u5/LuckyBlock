@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.logic;
 
+import com.mcgamer199.luckyblock.api.item.ItemFactory;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.api.item.ItemFactory;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
@@ -46,8 +46,8 @@ public class ColorsClass {
     protected static String pn;
     protected static Random random;
     protected static List<Material> swords;
-    private static List<UUID> wait;
-    private static long delay;
+    private static final List<UUID> wait;
+    private static final long delay;
 
     static {
         red = ChatColor.RED;
@@ -140,11 +140,11 @@ public class ColorsClass {
                 ColorsClass.ObjectType[] var8 = objs;
                 int var7 = objs.length;
 
-                for(int var6 = 0; var6 < var7; ++var6) {
+                for (int var6 = 0; var6 < var7; ++var6) {
                     ColorsClass.ObjectType obj = var8[var6];
                     if (obj != null) {
                         if (obj == ColorsClass.ObjectType.ITEM && obj.getObj() != null && obj.getObj() instanceof ItemStack) {
-                            ItemStack item = (ItemStack)obj.getObj();
+                            ItemStack item = (ItemStack) obj.getObj();
                             s = s.replace("{itemType}", item.getType().name());
                             if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
                                 s = s.replace("{itemName}", item.getItemMeta().getDisplayName());
@@ -155,7 +155,7 @@ public class ColorsClass {
                         }
 
                         if (obj == ColorsClass.ObjectType.BLOCK && obj.getObj() != null && obj.getObj() instanceof Block) {
-                            Block block = (Block)obj.getObj();
+                            Block block = (Block) obj.getObj();
                             s = s.replace("{blockType}", block.getType().name());
                             s = s.replace("{blockLightLevel}", String.valueOf(block.getLightLevel()));
                         }
@@ -165,19 +165,6 @@ public class ColorsClass {
 
             return s;
         }
-    }
-
-    protected final boolean isMainHand(PlayerInteractEvent event) {
-        try {
-            Method method = event.getClass().getMethod("getHand");
-            Object o = method.invoke(event);
-            if (o.toString().equalsIgnoreCase("OFF_HAND")) {
-                return false;
-            }
-        } catch (Exception var4) {
-        }
-
-        return true;
     }
 
     protected static final void addToList(final UUID uuid) {
@@ -197,10 +184,6 @@ public class ColorsClass {
         return !wait.contains(uuid);
     }
 
-    protected final boolean isSword(ItemStack item) {
-        return item != null && item.getType() != Material.AIR ? ItemFactory.isSword(item) : false;
-    }
-
     protected static final Sound getSound(String name) {
         Sound s = null;
         String n = IObjects.getSound(name);
@@ -214,7 +197,9 @@ public class ColorsClass {
         return s;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected static final Sound _deprecated_getSound(String name) {
         Sound s = null;
@@ -232,7 +217,7 @@ public class ColorsClass {
             File[] var6;
             int var5 = (var6 = folder.listFiles()).length;
 
-            for(int var4 = 0; var4 < var5; ++var4) {
+            for (int var4 = 0; var4 < var5; ++var4) {
                 File file = var6[var4];
                 if (file.getName().endsWith(".yml")) {
                     FileConfiguration c = YamlConfiguration.loadConfiguration(file);
@@ -279,7 +264,7 @@ public class ColorsClass {
     }
 
     protected static final void send_no(CommandSender sender, String loc) {
-        send_no(sender, loc, (String)null);
+        send_no(sender, loc, null);
     }
 
     protected static final void send_no(CommandSender sender, String loc, String ap) {
@@ -295,7 +280,7 @@ public class ColorsClass {
     }
 
     protected static final void sendMessage(CommandSender sender, String loc, ColorsClass.ObjectType... objectTypes) {
-        msg_a(sender, loc, (String)null, objectTypes);
+        msg_a(sender, loc, null, objectTypes);
     }
 
     protected static final void sendMessage(CommandSender sender, String loc, com.mcgamer199.luckyblock.tellraw.TextAction[] actions, ColorsClass.ObjectType... objectTypes) {
@@ -310,14 +295,14 @@ public class ColorsClass {
                 com.mcgamer199.luckyblock.tellraw.TextAction[] var12 = actions;
                 int var11 = actions.length;
 
-                for(int var10 = 0; var10 < var11; ++var10) {
+                for (int var10 = 0; var10 < var11; ++var10) {
                     com.mcgamer199.luckyblock.tellraw.TextAction a = var12[var10];
                     if (a != null) {
                         text2.addAction(a);
                     }
                 }
 
-                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player)sender, new com.mcgamer199.luckyblock.tellraw.RawText[]{_a, pl, text1, text2});
+                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, _a, pl, text1, text2);
             } else {
                 sender.sendMessage(green + "[" + yellow + "LB" + green + "]" + reset + ": " + s);
             }
@@ -338,7 +323,7 @@ public class ColorsClass {
                 pl.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "Lucky Block"));
                 com.mcgamer199.luckyblock.tellraw.RawText text1 = new com.mcgamer199.luckyblock.tellraw.RawText(": ");
                 com.mcgamer199.luckyblock.tellraw.RawText text2 = new com.mcgamer199.luckyblock.tellraw.RawText(s);
-                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player)sender, new com.mcgamer199.luckyblock.tellraw.RawText[]{_a, pl, text1, text2});
+                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, _a, pl, text1, text2);
             } else {
                 sender.sendMessage(green + "[" + yellow + "LB" + green + "]" + reset + ": " + s);
             }
@@ -356,7 +341,7 @@ public class ColorsClass {
                     pl.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "Lucky Block"));
                     com.mcgamer199.luckyblock.tellraw.RawText text1 = new com.mcgamer199.luckyblock.tellraw.RawText(": ");
                     com.mcgamer199.luckyblock.tellraw.RawText text2 = new com.mcgamer199.luckyblock.tellraw.RawText(string);
-                    com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player)sender, new com.mcgamer199.luckyblock.tellraw.RawText[]{_a, pl, text1, text2});
+                    com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, _a, pl, text1, text2);
                 } else {
                     sender.sendMessage(green + "[" + yellow + "LB" + green + "]" + reset + ": " + string);
                 }
@@ -387,9 +372,7 @@ public class ColorsClass {
                         return false;
                     }
 
-                    if (item2.getItemMeta().hasDisplayName() && (!item1.getItemMeta().hasDisplayName() || !item1.getItemMeta().getDisplayName().equalsIgnoreCase(item2.getItemMeta().getDisplayName()))) {
-                        return false;
-                    }
+                    return !item2.getItemMeta().hasDisplayName() || (item1.getItemMeta().hasDisplayName() && item1.getItemMeta().getDisplayName().equalsIgnoreCase(item2.getItemMeta().getDisplayName()));
                 }
 
                 return true;
@@ -399,7 +382,24 @@ public class ColorsClass {
         }
     }
 
-    protected static enum ObjectType {
+    protected final boolean isMainHand(PlayerInteractEvent event) {
+        try {
+            Method method = event.getClass().getMethod("getHand");
+            Object o = method.invoke(event);
+            if (o.toString().equalsIgnoreCase("OFF_HAND")) {
+                return false;
+            }
+        } catch (Exception var4) {
+        }
+
+        return true;
+    }
+
+    protected final boolean isSword(ItemStack item) {
+        return (item != null && item.getType() != Material.AIR) && ItemFactory.isSword(item);
+    }
+
+    protected enum ObjectType {
         BLOCK,
         ENTITY,
         ITEM,
@@ -407,22 +407,14 @@ public class ColorsClass {
 
         private Object obj;
 
-        private ObjectType() {
-        }
-
-        public void setObj(Object obj) {
-            this.obj = obj;
-        }
-
-        public Object getObj() {
-            return this.obj;
+        ObjectType() {
         }
 
         public static ColorsClass.ObjectType getByName(String name) {
             ColorsClass.ObjectType[] var4;
             int var3 = (var4 = values()).length;
 
-            for(int var2 = 0; var2 < var3; ++var2) {
+            for (int var2 = 0; var2 < var3; ++var2) {
                 ColorsClass.ObjectType obj = var4[var2];
                 if (obj.name().equalsIgnoreCase(name)) {
                     return obj;
@@ -430,6 +422,14 @@ public class ColorsClass {
             }
 
             return null;
+        }
+
+        public Object getObj() {
+            return this.obj;
+        }
+
+        public void setObj(Object obj) {
+            this.obj = obj;
         }
     }
 }

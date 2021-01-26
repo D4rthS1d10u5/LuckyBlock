@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.DropEvents;
 import com.mcgamer199.luckyblock.resources.MapEndCastle;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.structures.Structure;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -28,7 +28,7 @@ public class LBCGenerate extends LBCommand {
             return false;
         } else {
             String s = args[1];
-            Player player = (Player)sender;
+            Player player = (Player) sender;
             boolean b = false;
             if (Structure.isStructure(s)) {
                 DropEvents.b(s, player.getLocation());
@@ -64,15 +64,15 @@ public class LBCGenerate extends LBCommand {
         ItemStack[] var6 = is;
         int var5 = is.length;
 
-        for(int var4 = 0; var4 < var5; ++var4) {
+        for (int var4 = 0; var4 < var5; ++var4) {
             ItemStack i = var6[var4];
             if (i != null && i.getType() == Material.MAP && i.hasItemMeta() && i.getItemMeta().hasDisplayName() && i.getItemMeta().getDisplayName().equalsIgnoreCase("Test")) {
                 short d = i.getDurability();
                 MapView map = Bukkit.getServer().getMap(d);
                 Iterator var10 = map.getRenderers().iterator();
 
-                while(var10.hasNext()) {
-                    MapRenderer r = (MapRenderer)var10.next();
+                while (var10.hasNext()) {
+                    MapRenderer r = (MapRenderer) var10.next();
                     map.removeRenderer(r);
                 }
 

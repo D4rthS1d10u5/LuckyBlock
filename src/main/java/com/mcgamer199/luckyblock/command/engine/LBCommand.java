@@ -1,27 +1,52 @@
 package com.mcgamer199.luckyblock.command.engine;
 
+import com.mcgamer199.luckyblock.command.LBCOther;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.command.LBCOther;
+import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
+import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
+import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
-import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 
 import java.util.List;
 
 public class LBCommand extends ILBCmd implements CommandExecutor {
-    private boolean strict;
+    private final boolean strict;
 
     public LBCommand() {
         this.strict = LuckyBlock.instance.config.getBoolean("strict_commands");
     }
 
+    public static LBCommand getByName(String name) {
+        List<LBCommand> c = IObjects.getCommands();
+
+        for (int x = 0; x < c.size(); ++x) {
+            LBCommand l = c.get(x);
+            if (l.getCommandNames() != null) {
+                String[] var7;
+                int var6 = (var7 = l.getCommandNames()).length;
+
+                for (int var5 = 0; var5 < var6; ++var5) {
+                    String s = var7[var5];
+                    if (s.equalsIgnoreCase(name)) {
+                        return l;
+                    }
+                }
+            }
+
+            if (l.getCommandName() != null && l.getCommandName().equalsIgnoreCase(name)) {
+                return l;
+            }
+        }
+
+        return null;
+    }
+
     public final boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof Player && this.strict && !canRun(((Player)sender).getUniqueId())) {
+        if (sender instanceof Player && this.strict && !canRun(((Player) sender).getUniqueId())) {
             return false;
         } else if (args.length > 0 && args[0] != null && cmds1.contains(args[0]) && !this.canRun(sender, "lb", args)) {
             send(sender, "command.no_perm");
@@ -31,7 +56,7 @@ public class LBCommand extends ILBCmd implements CommandExecutor {
             return false;
         } else {
             if (args.length < 1) {
-                sendMessage(sender, "invalid_command", new TextAction[]{new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, yellow + "/" + lcmd + " help"), new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " help")}, new ObjectType[0]);
+                sendMessage(sender, "invalid_command", new TextAction[]{new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, yellow + "/" + lcmd + " help"), new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " help")});
             } else {
                 String a = args[0];
                 if (getByName(a) != null) {
@@ -58,7 +83,7 @@ public class LBCommand extends ILBCmd implements CommandExecutor {
                 int a = args.length;
                 boolean f = false;
 
-                for(int x = 0; x < clss.getRequiredArgs().length; ++x) {
+                for (int x = 0; x < clss.getRequiredArgs().length; ++x) {
                     if (clss.getRequiredArgs()[x] == a) {
                         f = true;
                     }
@@ -104,31 +129,6 @@ public class LBCommand extends ILBCmd implements CommandExecutor {
 
     public boolean isDeprecated() {
         return false;
-    }
-
-    public static LBCommand getByName(String name) {
-        List<LBCommand> c = IObjects.getCommands();
-
-        for(int x = 0; x < c.size(); ++x) {
-            LBCommand l = (LBCommand)c.get(x);
-            if (l.getCommandNames() != null) {
-                String[] var7;
-                int var6 = (var7 = l.getCommandNames()).length;
-
-                for(int var5 = 0; var5 < var6; ++var5) {
-                    String s = var7[var5];
-                    if (s.equalsIgnoreCase(name)) {
-                        return l;
-                    }
-                }
-            }
-
-            if (l.getCommandName() != null && l.getCommandName().equalsIgnoreCase(name)) {
-                return l;
-            }
-        }
-
-        return null;
     }
 
     public final String toString() {

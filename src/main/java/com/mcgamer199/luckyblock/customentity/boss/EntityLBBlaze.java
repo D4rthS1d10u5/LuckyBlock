@@ -1,10 +1,16 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,9 +18,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,15 +25,15 @@ import java.util.List;
 public class EntityLBBlaze extends CustomEntity {
     Blaze blaze;
     private boolean ai = false;
-    private int startHealth = 20;
+    private final int startHealth = 20;
 
     public EntityLBBlaze() {
     }
 
     public Entity spawnFunction(Location loc) {
-        Blaze blaze = (Blaze)loc.getWorld().spawnEntity(loc, EntityType.BLAZE);
-        blaze.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue((double)this.startHealth);
-        blaze.setHealth((double)this.startHealth);
+        Blaze blaze = (Blaze) loc.getWorld().spawnEntity(loc, EntityType.BLAZE);
+        blaze.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.startHealth);
+        blaze.setHealth(this.startHealth);
         blaze.setCustomNameVisible(true);
         blaze.setAI(false);
         blaze.setInvulnerable(true);
@@ -50,7 +53,7 @@ public class EntityLBBlaze extends CustomEntity {
     }
 
     protected void onDamageEntityWithProjectile(EntityDamageByEntityEvent event) {
-        event.setDamage(event.getDamage() * (double)(this.random.nextInt(3) + 2));
+        event.setDamage(event.getDamage() * (double) (this.random.nextInt(3) + 2));
         event.getEntity().setFallDistance(25.0F);
     }
 
@@ -91,9 +94,9 @@ public class EntityLBBlaze extends CustomEntity {
             if (event.getDamager() instanceof Arrow) {
                 if (this.random.nextInt(100) + 1 > 90) {
                     event.setCancelled(true);
-                    Arrow arrow = (Arrow)event.getDamager();
+                    Arrow arrow = (Arrow) event.getDamager();
                     arrow.remove();
-                    Arrow a = (Arrow)this.blaze.launchProjectile(Arrow.class);
+                    Arrow a = this.blaze.launchProjectile(Arrow.class);
                     a.setVelocity(arrow.getVelocity().multiply(-1));
                 }
             } else if (event.getDamager() instanceof ShulkerBullet) {
@@ -122,19 +125,19 @@ public class EntityLBBlaze extends CustomEntity {
                 if (!EntityLBBlaze.this.blaze.isDead()) {
                     if (EntityLBBlaze.this.ai && EntityLBBlaze.this.blaze.getTarget() != null) {
                         if (EntityLBBlaze.this.random.nextInt(100) > 50) {
-                            SmallFireball s = (SmallFireball)EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
+                            SmallFireball s = EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
                             s.setDirection(EntityLBBlaze.this.blaze.getLocation().getDirection());
 
-                            for(int x = 3; x > 0; --x) {
+                            for (int x = 3; x > 0; --x) {
                                 EntityLBBlaze.this.shoot(s);
                             }
                         } else {
                             com.mcgamer199.luckyblock.customentity.EntityElementalCreeper c = new EntityElementalCreeper();
                             c.life = 85;
                             c.spawn(EntityLBBlaze.this.blaze.getLocation());
-                            c.changeMaterial(Material.STONE, (byte)0);
-                            ((Creeper)c.getEntity()).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.38D);
-                            ((Creeper)c.getEntity()).setTarget(EntityLBBlaze.this.blaze.getTarget());
+                            c.changeMaterial(Material.STONE, (byte) 0);
+                            ((Creeper) c.getEntity()).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.38D);
+                            ((Creeper) c.getEntity()).setTarget(EntityLBBlaze.this.blaze.getTarget());
                         }
                     }
                 } else {
@@ -154,14 +157,14 @@ public class EntityLBBlaze extends CustomEntity {
 
             public void run() {
                 if (this.x > 0) {
-                    double a1 = (double)(EntityLBBlaze.this.random.nextInt(20) - 10);
-                    double a2 = (double)(EntityLBBlaze.this.random.nextInt(20) - 10);
-                    double a3 = (double)(EntityLBBlaze.this.random.nextInt(20) - 10);
+                    double a1 = EntityLBBlaze.this.random.nextInt(20) - 10;
+                    double a2 = EntityLBBlaze.this.random.nextInt(20) - 10;
+                    double a3 = EntityLBBlaze.this.random.nextInt(20) - 10;
                     double x1 = a1 / 70.0D;
                     double x2 = a2 / 70.0D;
                     double x3 = a3 / 70.0D;
                     Vector v1 = new Vector(v.getX() + x1, v.getY() + x2, v.getZ() + x3);
-                    SmallFireball b = (SmallFireball)EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
+                    SmallFireball b = EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
                     b.setShooter(EntityLBBlaze.this.blaze);
                     b.setVelocity(v1);
                     --this.x;
@@ -181,8 +184,8 @@ public class EntityLBBlaze extends CustomEntity {
 
     protected List<String> getNames() {
         if (this.ai) {
-            double f = this.blaze.getHealth() / (double)this.startHealth * 100.0D;
-            return Arrays.asList(ChatColor.YELLOW + "Health " + ChatColor.GREEN + (int)f + ChatColor.WHITE + "%");
+            double f = this.blaze.getHealth() / (double) this.startHealth * 100.0D;
+            return Arrays.asList(ChatColor.YELLOW + "Health " + ChatColor.GREEN + (int) f + ChatColor.WHITE + "%");
         } else {
             return Arrays.asList(ChatColor.LIGHT_PURPLE + "Blaze");
         }
@@ -201,7 +204,7 @@ public class EntityLBBlaze extends CustomEntity {
     }
 
     protected void onLoad(ConfigurationSection c) {
-        this.blaze = (Blaze)this.entity;
+        this.blaze = (Blaze) this.entity;
         this.ai = c.getBoolean("ai");
         this.task1();
     }

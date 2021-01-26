@@ -18,7 +18,7 @@ public class ActionPerformer {
         String val = value.toString();
         Object obj = objectType.getObj();
         if (obj instanceof Entity) {
-            Entity entity = (Entity)obj;
+            Entity entity = (Entity) obj;
             if (name.equalsIgnoreCase("set_custom_name")) {
                 entity.setCustomName(val);
             }
@@ -43,23 +43,23 @@ public class ActionPerformer {
             name.equalsIgnoreCase("set_invulnerable");
             name.equalsIgnoreCase("set_silent");
             if (obj instanceof LivingEntity) {
-                LivingEntity living = (LivingEntity)entity;
+                LivingEntity living = (LivingEntity) entity;
                 if (name.equalsIgnoreCase("clear_inventory")) {
                     living.getEquipment().clear();
                 }
 
                 if (name.equalsIgnoreCase("set_health")) {
-                    living.setHealth((double)Integer.parseInt(val));
+                    living.setHealth(Integer.parseInt(val));
                 }
 
                 if (name.equalsIgnoreCase("set_max_health")) {
-                    living.setMaxHealth((double)Integer.parseInt(val));
+                    living.setMaxHealth(Integer.parseInt(val));
                 }
 
                 name.equalsIgnoreCase("set_collidable");
                 name.equalsIgnoreCase("set_ai");
                 if (obj instanceof Player) {
-                    Player player = (Player)obj;
+                    Player player = (Player) obj;
                     if (name.equalsIgnoreCase("set_allow_flight")) {
                         player.setAllowFlight(Boolean.parseBoolean(val));
                     }
@@ -112,11 +112,11 @@ public class ActionPerformer {
                     }
 
                     if (name.equalsIgnoreCase("open_crafting")) {
-                        player.openWorkbench((Location)null, true);
+                        player.openWorkbench(null, true);
                     }
 
                     if (name.equalsIgnoreCase("open_enchant_table")) {
-                        player.openEnchanting((Location)null, true);
+                        player.openEnchanting(null, true);
                     }
                 }
             }

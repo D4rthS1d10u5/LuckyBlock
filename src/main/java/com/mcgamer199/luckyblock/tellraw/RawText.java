@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 public class RawText {
 
-    private String text;
     public ChatColor color;
     public boolean bold;
     public boolean underline;
@@ -13,6 +12,7 @@ public class RawText {
     public boolean italic;
     public boolean magic;
     protected TextAction[] actions = new TextAction[2];
+    private final String text;
 
     public RawText(String text) {
         this.text = text;
@@ -43,9 +43,9 @@ public class RawText {
         Player[] var5 = players;
         int var4 = players.length;
 
-        for(int var3 = 0; var3 < var4; ++var3) {
+        for (int var3 = 0; var3 < var4; ++var3) {
             Player p = var5[var3];
-            TellRawSender.sendTo(p, new RawText[]{this});
+            TellRawSender.sendTo(p, this);
         }
 
     }

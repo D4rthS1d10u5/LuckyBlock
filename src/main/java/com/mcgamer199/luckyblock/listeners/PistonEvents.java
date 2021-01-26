@@ -4,6 +4,7 @@ import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Iterator;
 
@@ -26,8 +26,8 @@ public class PistonEvents implements Listener {
     public void onPistonExtend(BlockPistonExtendEvent event) {
         Iterator var3 = event.getBlocks().iterator();
 
-        while(var3.hasNext()) {
-            final Block block = (Block)var3.next();
+        while (var3.hasNext()) {
+            final Block block = (Block) var3.next();
             if (LB.isLuckyBlock(block)) {
                 final LB lb = LB.getFromBlock(block);
                 if (!lb.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH) && !lb.getType().hasProperty(BlockProperty.CAN_BE_THROWN)) {
@@ -46,7 +46,7 @@ public class PistonEvents implements Listener {
                         public void run() {
                             lb.freeze();
                             block.getRelative(BlockFace.UP).setType(Material.AIR);
-                            FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), lb.getType().getType(), (byte)lb.getType().getData());
+                            FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), lb.getType().getType(), (byte) lb.getType().getData());
                             fb.setVelocity(new Vector(0.0D, 1.2D, 0.0D));
                             PistonEvents.this.fb_run(fb, lb);
                             task.run();
@@ -61,7 +61,7 @@ public class PistonEvents implements Listener {
                 }
 
                 if (lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
-                    BreakLuckyBlock.openLB(lb, (Player)null);
+                    BreakLuckyBlock.openLB(lb, null);
                 }
             } else if (LBType.isAdditionalBlocksFound() && LB.getByABlock(block) != null) {
                 event.setCancelled(true);
@@ -75,8 +75,8 @@ public class PistonEvents implements Listener {
     public void onPistonRetract(BlockPistonRetractEvent event) {
         Iterator var3 = event.getBlocks().iterator();
 
-        while(var3.hasNext()) {
-            Block block = (Block)var3.next();
+        while (var3.hasNext()) {
+            Block block = (Block) var3.next();
             if (LB.isLuckyBlock(block)) {
                 LB lb = LB.getFromBlock(block);
                 if (!lb.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
@@ -96,7 +96,7 @@ public class PistonEvents implements Listener {
                 }
 
                 if (lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
-                    BreakLuckyBlock.openLB(lb, (Player)null);
+                    BreakLuckyBlock.openLB(lb, null);
                 }
             } else if (LBType.isAdditionalBlocksFound() && LB.getByABlock(block) != null) {
                 event.setCancelled(true);

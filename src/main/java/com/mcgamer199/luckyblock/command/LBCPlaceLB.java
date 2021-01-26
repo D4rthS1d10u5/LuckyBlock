@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
@@ -21,13 +21,13 @@ public class LBCPlaceLB extends LBCommand {
         int id = LBType.getDefaultType().getId();
         Object b = null;
         if (sender instanceof Player) {
-            Player player = (Player)sender;
+            Player player = (Player) sender;
             loc = player.getLocation();
             b = player;
         } else if (sender instanceof ProxiedCommandSender) {
-            ProxiedCommandSender p = (ProxiedCommandSender)sender;
+            ProxiedCommandSender p = (ProxiedCommandSender) sender;
             if (p.getCallee() instanceof Entity) {
-                Entity entity = (Entity)p.getCallee();
+                Entity entity = (Entity) p.getCallee();
                 loc = entity.getLocation();
                 b = entity;
             }
@@ -37,7 +37,7 @@ public class LBCPlaceLB extends LBCommand {
                 return false;
             }
 
-            BlockCommandSender bcs = (BlockCommandSender)sender;
+            BlockCommandSender bcs = (BlockCommandSender) sender;
             loc = bcs.getBlock().getLocation();
             b = bcs.getBlock();
         }
@@ -83,12 +83,12 @@ public class LBCPlaceLB extends LBCommand {
                     }
                 }
             } catch (Exception var16) {
-                sendMessage(sender, "invalid_number", new ObjectType[0]);
+                sendMessage(sender, "invalid_number");
                 return false;
             }
 
             if (loc != null) {
-                Location l = new Location(loc.getWorld(), (double)x, (double)y, (double)z);
+                Location l = new Location(loc.getWorld(), x, y, z);
                 LBType type = LBType.fromId(id);
                 if (type == null) {
                     send(sender, "lb.invalid_type");
@@ -101,12 +101,12 @@ public class LBCPlaceLB extends LBCommand {
                 }
 
                 if (LB.getFromBlock(l.getBlock()) == null) {
-                    LB.placeLB(l, type, (ItemStack)null, b);
-                    sendMessage(sender, "command.placelb.success", new ObjectType[0]);
+                    LB.placeLB(l, type, null, b);
+                    sendMessage(sender, "command.placelb.success");
                     return true;
                 }
 
-                sendMessage(sender, "command.placelb.error", new ObjectType[0]);
+                sendMessage(sender, "command.placelb.error");
             }
 
             return false;

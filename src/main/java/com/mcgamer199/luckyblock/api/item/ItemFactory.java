@@ -10,51 +10,11 @@ import java.lang.reflect.Method;
 
 public class ItemFactory {
 
-    private ItemStack bukkitItem;
     private static final String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private ItemStack bukkitItem;
 
     public ItemFactory(ItemStack item) {
         this.bukkitItem = item.clone();
-    }
-
-    public ItemStack getItem() {
-        return this.bukkitItem;
-    }
-
-    public void setString(String key, String value) {
-        this.bukkitItem = ItemReflection.setString(this.bukkitItem, key, value);
-    }
-
-    public String getString(String key) {
-        return ItemReflection.getString(this.bukkitItem, key);
-    }
-
-    public void setInteger(String key, int value) {
-        this.bukkitItem = ItemReflection.setInt(this.bukkitItem, key, value);
-    }
-
-    public Integer getInteger(String key) {
-        return ItemReflection.getInt(this.bukkitItem, key);
-    }
-
-    public void setDouble(String key, double value) {
-        this.bukkitItem = ItemReflection.setDouble(this.bukkitItem, key, value);
-    }
-
-    public double getDouble(String key) {
-        return ItemReflection.getDouble(this.bukkitItem, key);
-    }
-
-    public void setBoolean(String key, boolean value) {
-        this.bukkitItem = ItemReflection.setBoolean(this.bukkitItem, key, value);
-    }
-
-    public boolean getBoolean(String key) {
-        return ItemReflection.getBoolean(this.bukkitItem, key);
-    }
-
-    public boolean hasKey(String key) {
-        return ItemReflection.hasKey(this.bukkitItem, key);
     }
 
     public static boolean isSword(ItemStack item) {
@@ -145,5 +105,45 @@ public class ItemFactory {
     public static Block stringToBlock(String s) {
         String[] d = s.split(",");
         return Bukkit.getWorld(d[0]).getBlockAt(Integer.parseInt(d[1]), Integer.parseInt(d[2]), Integer.parseInt(d[3]));
+    }
+
+    public ItemStack getItem() {
+        return this.bukkitItem;
+    }
+
+    public void setString(String key, String value) {
+        this.bukkitItem = ItemReflection.setString(this.bukkitItem, key, value);
+    }
+
+    public String getString(String key) {
+        return ItemReflection.getString(this.bukkitItem, key);
+    }
+
+    public void setInteger(String key, int value) {
+        this.bukkitItem = ItemReflection.setInt(this.bukkitItem, key, value);
+    }
+
+    public Integer getInteger(String key) {
+        return ItemReflection.getInt(this.bukkitItem, key);
+    }
+
+    public void setDouble(String key, double value) {
+        this.bukkitItem = ItemReflection.setDouble(this.bukkitItem, key, value);
+    }
+
+    public double getDouble(String key) {
+        return ItemReflection.getDouble(this.bukkitItem, key);
+    }
+
+    public void setBoolean(String key, boolean value) {
+        this.bukkitItem = ItemReflection.setBoolean(this.bukkitItem, key, value);
+    }
+
+    public boolean getBoolean(String key) {
+        return ItemReflection.getBoolean(this.bukkitItem, key);
+    }
+
+    public boolean hasKey(String key) {
+        return ItemReflection.hasKey(this.bukkitItem, key);
     }
 }

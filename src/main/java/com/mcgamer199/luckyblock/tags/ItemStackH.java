@@ -6,8 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Random;
 
 public class ItemStackH {
-    private ItemStack[] items = new ItemStack[64];
-    private int[] chances = new int[64];
+    private final ItemStack[] items = new ItemStack[64];
+    private final int[] chances = new int[64];
 
     public ItemStackH() {
     }
@@ -31,7 +31,7 @@ public class ItemStackH {
     public int removeItem(ItemStack item) {
         int total = 0;
 
-        for(int x = 0; x < this.items.length; ++x) {
+        for (int x = 0; x < this.items.length; ++x) {
             if (this.items[x] != null && this.items[x] == item) {
                 this.items[x] = null;
                 ++total;
@@ -44,7 +44,7 @@ public class ItemStackH {
     public int removeItem(Material mat) {
         int total = 0;
 
-        for(int x = 0; x < this.items.length; ++x) {
+        for (int x = 0; x < this.items.length; ++x) {
             if (this.items[x] != null && this.items[x].getType() == mat) {
                 this.items[x] = null;
                 ++total;
@@ -57,7 +57,7 @@ public class ItemStackH {
     public int getTotal() {
         int i = 0;
 
-        for(int x = 0; x < this.chances.length; ++x) {
+        for (int x = 0; x < this.chances.length; ++x) {
             i += this.chances[x];
         }
 
@@ -68,7 +68,7 @@ public class ItemStackH {
         int random = (new Random()).nextInt(this.getTotal()) + 1;
         int prev = 0;
 
-        for(int x = 0; x < this.chances.length; ++x) {
+        for (int x = 0; x < this.chances.length; ++x) {
             if (this.chances[x] + prev >= random) {
                 return this.items[x];
             }

@@ -8,12 +8,16 @@ import org.bukkit.event.HandlerList;
 public class LuckyBlockWorldChunkEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private World world;
-    private Chunk chunk;
+    private final World world;
+    private final Chunk chunk;
 
     public LuckyBlockWorldChunkEvent(World w, Chunk ch) {
         this.world = w;
         this.chunk = ch;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public World getWorld() {
@@ -25,10 +29,6 @@ public class LuckyBlockWorldChunkEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

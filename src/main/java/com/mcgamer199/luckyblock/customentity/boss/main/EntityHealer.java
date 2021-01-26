@@ -1,8 +1,11 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityTagHealer;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,9 +15,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,11 +24,11 @@ import java.util.UUID;
 public class EntityHealer extends CustomEntity {
     public double healValue = 0.0D;
     public int delay = 0;
+    public boolean damageNearby = true;
+    public int health = 100;
     private boolean running;
     private LivingEntity healEntity;
     private EnderCrystal ender;
-    public boolean damageNearby = true;
-    public int health = 100;
     private boolean damageable = true;
 
     public EntityHealer() {
@@ -41,10 +41,10 @@ public class EntityHealer extends CustomEntity {
     protected void onChunkLoad() {
         Iterator var2 = this.entity.getWorld().getEntitiesByClass(this.healEntity.getClass()).iterator();
 
-        while(var2.hasNext()) {
-            Entity e = (Entity)var2.next();
+        while (var2.hasNext()) {
+            Entity e = (Entity) var2.next();
             if (e.getUniqueId().toString().equalsIgnoreCase(this.healEntity.getUniqueId().toString())) {
-                this.healEntity = (LivingEntity)e;
+                this.healEntity = (LivingEntity) e;
                 break;
             }
         }
@@ -52,7 +52,7 @@ public class EntityHealer extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        EnderCrystal e = (EnderCrystal)loc.getWorld().spawnEntity(loc, EntityType.ENDER_CRYSTAL);
+        EnderCrystal e = (EnderCrystal) loc.getWorld().spawnEntity(loc, EntityType.ENDER_CRYSTAL);
         e.setInvulnerable(true);
         e.setShowingBottom(true);
         this.ender = e;
@@ -105,7 +105,7 @@ public class EntityHealer extends CustomEntity {
                     }
 
                 }
-            }, (long)this.delay, (long)this.delay));
+            }, this.delay, this.delay));
         }
 
     }
@@ -140,8 +140,8 @@ public class EntityHealer extends CustomEntity {
                             MyTasks.playEffects(Particle.CRIT, EntityHealer.this.ender.getLocation(), 250, new double[]{1.5D, 0.0D, 1.5D}, 0.0F);
                             Iterator var3 = l.iterator();
 
-                            while(var3.hasNext()) {
-                                LivingEntity e = (LivingEntity)var3.next();
+                            while (var3.hasNext()) {
+                                LivingEntity e = (LivingEntity) var3.next();
                                 e.damage(3.0D);
                             }
                         }
@@ -162,10 +162,10 @@ public class EntityHealer extends CustomEntity {
         List<LivingEntity> list = new ArrayList();
         Iterator var4 = l.iterator();
 
-        while(var4.hasNext()) {
-            Entity e = (Entity)var4.next();
+        while (var4.hasNext()) {
+            Entity e = (Entity) var4.next();
             if (e instanceof Player) {
-                list.add((LivingEntity)e);
+                list.add((LivingEntity) e);
             }
         }
 
@@ -178,11 +178,11 @@ public class EntityHealer extends CustomEntity {
 
     protected void onDamageByPlayer(EntityDamageByEntityEvent event) {
         if (this.running && this.damageable) {
-            Player p = (Player)event.getDamager();
+            Player p = (Player) event.getDamager();
             if (p.getInventory().getItemInMainHand() != null) {
                 ItemStack i = p.getInventory().getItemInMainHand();
                 if (i.hasItemMeta() && i.getItemMeta().hasEnchant(Enchantment.DIG_SPEED) && i.getItemMeta().getEnchantLevel(Enchantment.DIG_SPEED) > 4) {
-                    int d = (int)(event.getDamage() / 5.0D);
+                    int d = (int) (event.getDamage() / 5.0D);
                     if (this.health - d > 0) {
                         this.health -= d;
                     } else {
@@ -191,7 +191,7 @@ public class EntityHealer extends CustomEntity {
 
                     MyTasks.playEffects(Particle.FLAME, this.ender.getLocation().add(0.0D, 0.5D, 0.0D), 30, new double[]{0.2D, 0.0D, 0.2D}, 1.0F);
                     if (this.health < 1) {
-                        for(int x = LuckyBlock.randoms.nextInt(5) + 100; x > 0; --x) {
+                        for (int x = LuckyBlock.randoms.nextInt(5) + 100; x > 0; --x) {
                             Item a = this.ender.getWorld().dropItem(this.ender.getLocation(), new ItemStack(Material.GLASS, 1));
                             a.setPickupDelay(2000);
                             this.remove(a, (LuckyBlock.randoms.nextInt(20) + 6) * 3);
@@ -216,7 +216,7 @@ public class EntityHealer extends CustomEntity {
             public void run() {
                 i.remove();
             }
-        }, (long)time);
+        }, time);
     }
 
     private void func_wait_damage() {
@@ -240,7 +240,7 @@ public class EntityHealer extends CustomEntity {
     }
 
     protected void onLoad(final ConfigurationSection c) {
-        this.ender = (EnderCrystal)this.entity;
+        this.ender = (EnderCrystal) this.entity;
         this.healValue = c.getDouble("HealValue");
         this.delay = c.getInt("Delay");
         this.running = c.getBoolean("Running");

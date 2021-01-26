@@ -8,7 +8,7 @@ public enum WorldOptions {
 
     private int blkid;
 
-    private WorldOptions() {
+    WorldOptions() {
     }
 
     public int getId() {

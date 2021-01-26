@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.tags.StructureSaver;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ public class LBCSaveStructure extends LBCommand {
     }
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player)sender;
+        Player player = (Player) sender;
 
         int x1;
         int x2;
@@ -75,8 +75,8 @@ public class LBCSaveStructure extends LBCommand {
                         send(sender, "command.savestructure.file_exists");
                         return false;
                     } else {
-                        Location loc1 = new Location(player.getWorld(), (double)x1, (double)y1, (double)z1);
-                        Location loc2 = new Location(player.getWorld(), (double)x2, (double)y2, (double)z2);
+                        Location loc1 = new Location(player.getWorld(), x1, y1, z1);
+                        Location loc2 = new Location(player.getWorld(), x2, y2, z2);
                         int total = StructureSaver.saveStructureFixed(file, loc1, loc2, withAir);
                         String a = val("command.savestructure.success", true);
                         a = a.replace("%count%", "" + total);

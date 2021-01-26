@@ -10,13 +10,17 @@ import org.bukkit.event.HandlerList;
 public class LBBreakEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
+    private final Player player;
     private boolean cancelled;
-    private LB lb;
+    private final LB lb;
 
     public LBBreakEvent(LB lb, Player player) {
         this.lb = lb;
         this.player = player;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public boolean isCancelled() {
@@ -40,10 +44,6 @@ public class LBBreakEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

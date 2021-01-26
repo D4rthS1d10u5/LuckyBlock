@@ -1,13 +1,15 @@
 package com.mcgamer199.luckyblock.tags;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.logic.IDirection;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.resources.Schematic;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.Pattern;
@@ -18,8 +20,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.logic.IDirection;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
 import java.util.Arrays;
@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class BlockTags extends HTag {
-    static int inventory_size = 96;
     private static final List<Material> PREVENTED;
+    static int inventory_size = 96;
 
     static {
         PREVENTED = Arrays.asList(Material.BEDROCK, Material.BARRIER, Material.COMMAND, Material.COMMAND_CHAIN, Material.COMMAND_REPEATING, Material.STRUCTURE_BLOCK, Material.END_GATEWAY, Material.ENDER_PORTAL, Material.ENDER_PORTAL_FRAME, Material.ANVIL, Material.ENCHANTMENT_TABLE, Material.OBSIDIAN, Material.ENDER_CHEST);
@@ -52,8 +52,8 @@ public class BlockTags extends HTag {
             Iterator var6 = c1.getKeys(false).iterator();
 
             String t;
-            while(var6.hasNext()) {
-                t = (String)var6.next();
+            while (var6.hasNext()) {
+                t = (String) var6.next();
                 if (t.equalsIgnoreCase("Type")) {
                     block.setType(Material.getMaterial(c1.getString(t)));
                 }
@@ -64,30 +64,30 @@ public class BlockTags extends HTag {
 
                 if (t.equalsIgnoreCase("Data")) {
                     String[] d = c1.getString(t).split("-");
-                    block.setData((byte)getRandomNumber(d));
+                    block.setData((byte) getRandomNumber(d));
                 }
             }
 
             var6 = c1.getKeys(false).iterator();
 
-            while(var6.hasNext()) {
-                t = (String)var6.next();
+            while (var6.hasNext()) {
+                t = (String) var6.next();
                 CommandBlock commandBlock;
                 if (t.equalsIgnoreCase("Command") && block.getType() == Material.COMMAND) {
-                    commandBlock = (CommandBlock)block.getState();
+                    commandBlock = (CommandBlock) block.getState();
                     commandBlock.setCommand(c1.getString(t));
                     commandBlock.update(true);
                 }
 
                 if (t.equalsIgnoreCase("Name") && block.getType() == Material.COMMAND) {
-                    commandBlock = (CommandBlock)block.getState();
+                    commandBlock = (CommandBlock) block.getState();
                     commandBlock.setName(c1.getString(t));
                     commandBlock.update(true);
                 }
 
                 String a;
                 if (t.equalsIgnoreCase("Sign") && (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN)) {
-                    Sign sign = (Sign)block.getState();
+                    Sign sign = (Sign) block.getState();
                     if (c1.getString("Sign.Text1") != null) {
                         sign.setLine(0, c(c1.getString("Sign.Text1")));
                     }
@@ -106,7 +106,7 @@ public class BlockTags extends HTag {
 
                     if (c1.getString("Sign.Facing") != null) {
                         a = c1.getString("Sign.Facing");
-                        org.bukkit.material.Sign si = (org.bukkit.material.Sign)sign.getData();
+                        org.bukkit.material.Sign si = (org.bukkit.material.Sign) sign.getData();
                         if (a.equalsIgnoreCase("player")) {
                             a = IDirection.getByLoc(l, location).name();
                         }
@@ -120,13 +120,13 @@ public class BlockTags extends HTag {
 
                 CreatureSpawner b;
                 if (t.equalsIgnoreCase("CreatureType") && block.getType() == Material.MOB_SPAWNER) {
-                    b = (CreatureSpawner)block.getState();
+                    b = (CreatureSpawner) block.getState();
                     b.setCreatureTypeByName(c1.getString(t).toUpperCase());
                     b.update(true);
                 }
 
                 if (t.equalsIgnoreCase("Delay") && block.getType() == Material.MOB_SPAWNER) {
-                    b = (CreatureSpawner)block.getState();
+                    b = (CreatureSpawner) block.getState();
                     b.setDelay(c1.getInt(t));
                     b.update(true);
                 }
@@ -137,8 +137,8 @@ public class BlockTags extends HTag {
                     if (c1.getConfigurationSection(t) != null) {
                         var18 = c1.getConfigurationSection(t).getKeys(false).iterator();
 
-                        while(var18.hasNext()) {
-                            a = (String)var18.next();
+                        while (var18.hasNext()) {
+                            a = (String) var18.next();
                             String[] slotT = c1.getConfigurationSection(t).getConfigurationSection(a).getString("Slot").split("-");
                             int slot = getRandomNumber(slotT);
                             if (slot < inventory_size) {
@@ -152,49 +152,49 @@ public class BlockTags extends HTag {
 
                     int i;
                     if (block.getType() == Material.CHEST) {
-                        Chest chest = (Chest)block.getState();
+                        Chest chest = (Chest) block.getState();
 
-                        for(i = 0; i < items.length; ++i) {
+                        for (i = 0; i < items.length; ++i) {
                             if (i < chest.getInventory().getSize() && items[i] != null) {
                                 chest.getInventory().setItem(i, items[i]);
                             }
                         }
                     } else if (block.getType() == Material.HOPPER) {
-                        Hopper hopper = (Hopper)block.getState();
+                        Hopper hopper = (Hopper) block.getState();
 
-                        for(i = 0; i < items.length; ++i) {
+                        for (i = 0; i < items.length; ++i) {
                             if (i < hopper.getInventory().getSize() && items[i] != null) {
                                 hopper.getInventory().setItem(i, items[i]);
                             }
                         }
                     } else if (block.getType() == Material.DROPPER) {
-                        Dropper dropper = (Dropper)block.getState();
+                        Dropper dropper = (Dropper) block.getState();
 
-                        for(i = 0; i < items.length; ++i) {
+                        for (i = 0; i < items.length; ++i) {
                             if (i < dropper.getInventory().getSize() && items[i] != null) {
                                 dropper.getInventory().setItem(i, items[i]);
                             }
                         }
                     } else if (block.getType() == Material.DISPENSER) {
-                        Dispenser dispenser = (Dispenser)block.getState();
+                        Dispenser dispenser = (Dispenser) block.getState();
 
-                        for(i = 0; i < items.length; ++i) {
+                        for (i = 0; i < items.length; ++i) {
                             if (i < dispenser.getInventory().getSize() && items[i] != null) {
                                 dispenser.getInventory().setItem(i, items[i]);
                             }
                         }
                     } else if (block.getType() == Material.BREWING_STAND) {
-                        BrewingStand brewer = (BrewingStand)block.getState();
+                        BrewingStand brewer = (BrewingStand) block.getState();
 
-                        for(i = 0; i < items.length; ++i) {
+                        for (i = 0; i < items.length; ++i) {
                             if (i < brewer.getInventory().getSize() && items[i] != null) {
                                 brewer.getInventory().setItem(i, items[i]);
                             }
                         }
                     } else if (block.getType() == Material.FURNACE) {
-                        Furnace furn = (Furnace)block.getState();
+                        Furnace furn = (Furnace) block.getState();
 
-                        for(i = 0; i < items.length; ++i) {
+                        for (i = 0; i < items.length; ++i) {
                             if (i < furn.getInventory().getSize() && items[i] != null) {
                                 furn.getInventory().setItem(i, items[i]);
                             }
@@ -205,7 +205,7 @@ public class BlockTags extends HTag {
                 }
 
                 if (t.equalsIgnoreCase("Item") && block.getType() == Material.JUKEBOX) {
-                    Jukebox juke = (Jukebox)block.getState();
+                    Jukebox juke = (Jukebox) block.getState();
                     if (c1.getString(t) != null) {
                         juke.setPlaying(Material.getMaterial(c1.getString(t).toUpperCase()));
                         juke.update(true);
@@ -214,7 +214,7 @@ public class BlockTags extends HTag {
 
                 Note.Tone tone;
                 if (block.getType() == Material.NOTE_BLOCK) {
-                    NoteBlock note = (NoteBlock)block.getState();
+                    NoteBlock note = (NoteBlock) block.getState();
                     if (t.equalsIgnoreCase("Note") && c1.getConfigurationSection(t) != null) {
                         ConfigurationSection f = c1.getConfigurationSection(t);
                         String g = f.getString("Type");
@@ -237,7 +237,7 @@ public class BlockTags extends HTag {
                 }
 
                 if (block.getType() == Material.SKULL) {
-                    Skull skull = (Skull)block.getState();
+                    Skull skull = (Skull) block.getState();
                     if (t.equalsIgnoreCase("SkullOwner")) {
                         skull.setOwner(c1.getString(t));
                     }
@@ -255,21 +255,21 @@ public class BlockTags extends HTag {
 
                 ConfigurationSection c2;
                 if (block.getType() == Material.BANNER) {
-                    Banner banner = (Banner)block.getState();
+                    Banner banner = (Banner) block.getState();
                     if (t.equalsIgnoreCase("BaseColor")) {
-                        banner.setBaseColor(DyeColor.getByDyeData((byte)c1.getInt(t)));
+                        banner.setBaseColor(DyeColor.getByDyeData((byte) c1.getInt(t)));
                     }
 
                     if (t.equalsIgnoreCase("Patterns") && c1.getConfigurationSection(t) != null) {
                         var18 = c1.getConfigurationSection(t).getKeys(false).iterator();
 
-                        while(var18.hasNext()) {
-                            a = (String)var18.next();
+                        while (var18.hasNext()) {
+                            a = (String) var18.next();
                             c2 = c1.getConfigurationSection(t).getConfigurationSection(a);
                             if (c2 != null) {
                                 tone = null;
                                 PatternType type = null;
-                                DyeColor color = DyeColor.getByDyeData((byte)c2.getInt("Color"));
+                                DyeColor color = DyeColor.getByDyeData((byte) c2.getInt("Color"));
                                 if (c2.getString("PatternType") != null) {
                                     type = PatternType.valueOf(c2.getString("PatternType").toUpperCase());
                                 }
@@ -291,8 +291,8 @@ public class BlockTags extends HTag {
                         LBType type = LBType.fromId(luck);
                         if (!type.disabled) {
                             block.setType(LBType.fromId(luck).getType());
-                            block.setData((byte)LBType.fromId(luck).getData());
-                            LB lb = new LB(type, block, 0, (Object)null, true, true);
+                            block.setData((byte) LBType.fromId(luck).getData());
+                            LB lb = new LB(type, block, 0, null, true, true);
                             lb.playEffects();
                         }
                     }
@@ -324,8 +324,8 @@ public class BlockTags extends HTag {
                     LB lb = LB.getFromBlock(block);
                     var18 = c1.getConfigurationSection(t).getKeys(false).iterator();
 
-                    while(var18.hasNext()) {
-                        a = (String)var18.next();
+                    while (var18.hasNext()) {
+                        a = (String) var18.next();
                         c2 = c1.getConfigurationSection(t).getConfigurationSection(a);
                         String name = c2.getString("Name");
                         List<String> list = c2.getStringList("Values");
@@ -338,7 +338,7 @@ public class BlockTags extends HTag {
                 }
 
                 if (t.equalsIgnoreCase("Chest") && block.getState() instanceof Chest) {
-                    Chest chest = (Chest)block.getState();
+                    Chest chest = (Chest) block.getState();
                     ChestFiller c = new ChestFiller(c1.getConfigurationSection(t), chest);
                     c.fill();
                 }
@@ -376,15 +376,15 @@ public class BlockTags extends HTag {
         if (c.getConfigurationSection("Schematics") != null) {
             Iterator var3 = c.getConfigurationSection("Schematics").getKeys(false).iterator();
 
-            while(var3.hasNext()) {
-                String s = (String)var3.next();
+            while (var3.hasNext()) {
+                String s = (String) var3.next();
                 ConfigurationSection f = c.getConfigurationSection("Schematics").getConfigurationSection(s);
                 if (f != null) {
                     String[] d = f.getString("Loc").split(",");
                     int x = Integer.parseInt(d[0]);
                     int y = Integer.parseInt(d[1]);
                     int z = Integer.parseInt(d[2]);
-                    Location l = new Location(location.getWorld(), location.getX() + (double)x, location.getY() + (double)y, location.getZ() + (double)z);
+                    Location l = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) y, location.getZ() + (double) z);
                     File file = new File(LuckyBlock.d() + "Drops/" + f.getString("File") + ".schematic");
                     int ticks = getTicks(f);
                     if (ticks > 0) {
@@ -404,7 +404,7 @@ public class BlockTags extends HTag {
             int x = Integer.parseInt(d[0]);
             int y = Integer.parseInt(d[1]);
             int z = Integer.parseInt(d[2]);
-            location = new Location(location.getWorld(), location.getX() + (double)x, location.getY() + (double)y, location.getZ() + (double)z);
+            location = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) y, location.getZ() + (double) z);
         }
 
         return location;
@@ -415,8 +415,8 @@ public class BlockTags extends HTag {
             ConfigurationSection f = c.getConfigurationSection("Pieces");
             Iterator var4 = f.getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                String s = (String)var4.next();
+            while (var4.hasNext()) {
+                String s = (String) var4.next();
                 ConfigurationSection f1 = f.getConfigurationSection(s);
                 if (f1 != null) {
                     String fil = f1.getString("File");
@@ -453,8 +453,8 @@ public class BlockTags extends HTag {
         if (c.getConfigurationSection("Blocks") != null) {
             var4 = c.getConfigurationSection("Blocks").getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                s = (String)var4.next();
+            while (var4.hasNext()) {
+                s = (String) var4.next();
                 s1 = c.getConfigurationSection("Blocks").getConfigurationSection(s);
                 if (s1 != null) {
                     int ticks = getTicks(s1);
@@ -470,8 +470,8 @@ public class BlockTags extends HTag {
         if (c.getConfigurationSection("Entities") != null) {
             var4 = c.getConfigurationSection("Entities").getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                s = (String)var4.next();
+            while (var4.hasNext()) {
+                s = (String) var4.next();
                 s1 = c.getConfigurationSection("Entities").getConfigurationSection(s);
                 Location l = getLocation(s1.getConfigurationSection("Location"), location, locationType);
                 if (l != null) {
@@ -479,7 +479,7 @@ public class BlockTags extends HTag {
                     if (ticks > 0) {
                         perform_spawnentity(s1, c, location, ticks);
                     } else {
-                        EntityTags.spawnEntity(s1, l, c.getConfigurationSection("Entities"), true, (Player)null);
+                        EntityTags.spawnEntity(s1, l, c.getConfigurationSection("Entities"), true, null);
                     }
                 }
             }
@@ -491,7 +491,7 @@ public class BlockTags extends HTag {
         String s = getRandomL(file, loc);
         ItemStack[] items = getRandomChestItems(file, loc + "." + s);
 
-        for(int i = 0; i < items.length; ++i) {
+        for (int i = 0; i < items.length; ++i) {
             if (i < chest.getInventory().getSize() && items[i] != null) {
                 chest.getInventory().setItem(i, items[i]);
             }
@@ -519,7 +519,7 @@ public class BlockTags extends HTag {
 
                 if (c.getString("Data") != null) {
                     String[] d = c.getString("Data").split("-");
-                    data = (byte)getRandomNumber(d);
+                    data = (byte) getRandomNumber(d);
                 }
 
                 FallingBlock fb = location.getWorld().spawnFallingBlock(location, mat, data);
@@ -543,7 +543,7 @@ public class BlockTags extends HTag {
             }
 
             if (c.getConfigurationSection(i) != null) {
-                for(int x = times; x > 0; --x) {
+                for (int x = times; x > 0; --x) {
                     String s = getRandomLoc(file, loc + "." + i);
                     ConfigurationSection f = c.getConfigurationSection(i).getConfigurationSection(s);
                     int slot = getRandomNumber(new String[]{"0", "26"});
@@ -562,8 +562,8 @@ public class BlockTags extends HTag {
                         if (f.getStringList("With") != null && f.getStringList("With").size() > 0) {
                             List<String> list = f.getStringList("With");
 
-                            for(int z = 0; z < list.size(); ++z) {
-                                String a = (String)list.get(z);
+                            for (int z = 0; z < list.size(); ++z) {
+                                String a = list.get(z);
                                 ConfigurationSection h = c.getConfigurationSection(i).getConfigurationSection(a);
                                 int slot1 = getRandomNumber(new String[]{"0", "26"});
                                 if (h.getString("Slot") != null) {
@@ -592,8 +592,8 @@ public class BlockTags extends HTag {
         if (c != null && c.getConfigurationSection(l) != null) {
             Iterator var4 = c.getConfigurationSection(l).getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                String g = (String)var4.next();
+            while (var4.hasNext()) {
+                String g = (String) var4.next();
                 String[] slotT = c.getConfigurationSection(l).getConfigurationSection(g).getString("Slot").split("-");
                 int slot = getRandomNumber(slotT);
                 if (slot < inventory_size) {
@@ -616,8 +616,8 @@ public class BlockTags extends HTag {
             if (c.getConfigurationSection(i) != null) {
                 Iterator var6 = c.getConfigurationSection(i).getKeys(false).iterator();
 
-                while(var6.hasNext()) {
-                    String g = (String)var6.next();
+                while (var6.hasNext()) {
+                    String g = (String) var6.next();
                     String[] slotT = c.getConfigurationSection(i).getConfigurationSection(g).getString("Slot").split("-");
                     int slot = getRandomNumber(slotT);
                     if (slot < inventory_size) {
@@ -639,8 +639,8 @@ public class BlockTags extends HTag {
         if (c != null) {
             Iterator var5 = c.getKeys(false).iterator();
 
-            while(var5.hasNext()) {
-                String g = (String)var5.next();
+            while (var5.hasNext()) {
+                String g = (String) var5.next();
                 String[] slotT = c.getConfigurationSection(g).getString("Slot").split("-");
                 int slot = getRandomNumber(slotT);
                 if (slot < inventory_size) {
@@ -698,7 +698,7 @@ public class BlockTags extends HTag {
             if (world != null) {
                 l = Bukkit.getWorld(world).getBlockAt(x, y, z).getLocation();
             } else {
-                Location locat = new Location(location.getWorld(), (double)x, (double)y, (double)z);
+                Location locat = new Location(location.getWorld(), x, y, z);
                 l = locat;
             }
         }
@@ -711,8 +711,8 @@ public class BlockTags extends HTag {
             ConfigurationSection f = c.getConfigurationSection("Fillers");
             Iterator var4 = f.getKeys(false).iterator();
 
-            while(true) {
-                while(true) {
+            while (true) {
+                while (true) {
                     ConfigurationSection f1;
                     Material blockMat;
                     int xM;
@@ -730,9 +730,9 @@ public class BlockTags extends HTag {
                                 return;
                             }
 
-                            String s = (String)var4.next();
+                            String s = (String) var4.next();
                             f1 = f.getConfigurationSection(s);
-                        } while(f1 == null);
+                        } while (f1 == null);
 
                         int sizeX = 0;
                         int sizeY = 0;
@@ -742,7 +742,7 @@ public class BlockTags extends HTag {
                             blockMat = Material.getMaterial(f1.getString("Material"));
                         }
 
-                        blockData = (byte)f1.getInt("Data");
+                        blockData = (byte) f1.getInt("Data");
                         if (f1.getConfigurationSection("Size") != null) {
                             sizeX = f1.getInt("Size.X");
                             sizeY = f1.getInt("Size.Y");
@@ -756,8 +756,8 @@ public class BlockTags extends HTag {
                         yL = sizeY + 1;
                         zL = sizeZ + 1;
                         if (f1.getStringList("Values") != null) {
-                            for(ticks = 0; ticks < f1.getStringList("Values").size(); ++ticks) {
-                                String[] d = ((String)f1.getStringList("Values").get(ticks)).split("=");
+                            for (ticks = 0; ticks < f1.getStringList("Values").size(); ++ticks) {
+                                String[] d = f1.getStringList("Values").get(ticks).split("=");
                                 i = Integer.parseInt(d[1]);
                                 if (d.length == 2) {
                                     if (d[0].equalsIgnoreCase("xM")) {
@@ -776,16 +776,16 @@ public class BlockTags extends HTag {
                                 }
                             }
                         }
-                    } while(blockMat == null);
+                    } while (blockMat == null);
 
                     ticks = getTicks(f1);
                     if (ticks > 0) {
                         perform_filler(location, blockMat, blockData, xM, yM, zM, xL, yL, zL, ticks);
                     } else {
-                        for(int x = xM; x < xL; ++x) {
-                            for(i = yM; i < yL; ++i) {
-                                for(int z = zM; z < zL; ++z) {
-                                    Location newL = new Location(location.getWorld(), location.getX() + (double)x, location.getY() + (double)i, location.getZ() + (double)z);
+                        for (int x = xM; x < xL; ++x) {
+                            for (i = yM; i < yL; ++i) {
+                                for (int z = zM; z < zL; ++z) {
+                                    Location newL = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) i, location.getZ() + (double) z);
                                     Block b = newL.getBlock();
                                     b.setType(blockMat);
                                     b.setData(blockData);
@@ -804,7 +804,7 @@ public class BlockTags extends HTag {
             public void run() {
                 Schematic.loadArea(file, location);
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     private static void perform_piece(final ConfigurationSection c, final Location location, int ticks) {
@@ -813,7 +813,7 @@ public class BlockTags extends HTag {
             public void run() {
                 BlockTags.setBlocks(c, location);
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     private static void perform_setblock(final ConfigurationSection c, final Location location, final String locationType, int ticks) {
@@ -822,26 +822,26 @@ public class BlockTags extends HTag {
             public void run() {
                 BlockTags.setBlock(c, location, locationType);
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     private static void perform_spawnentity(final ConfigurationSection c1, final ConfigurationSection c2, final Location location, int ticks) {
         ITask task = new ITask();
         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
             public void run() {
-                EntityTags.spawnEntity(c1, location, c2.getConfigurationSection("Entities"), true, (Player)null);
+                EntityTags.spawnEntity(c1, location, c2.getConfigurationSection("Entities"), true, null);
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     private static void perform_filler(final Location location, final Material blockMat, final byte blockData, final int xM, final int yM, final int zM, final int xL, final int yL, final int zL, int ticks) {
         ITask task = new ITask();
         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
             public void run() {
-                for(int x = xM; x < xL; ++x) {
-                    for(int y = yM; y < yL; ++y) {
-                        for(int z = zM; z < zL; ++z) {
-                            Location newL = new Location(location.getWorld(), location.getX() + (double)x, location.getY() + (double)y, location.getZ() + (double)z);
+                for (int x = xM; x < xL; ++x) {
+                    for (int y = yM; y < yL; ++y) {
+                        for (int z = zM; z < zL; ++z) {
+                            Location newL = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) y, location.getZ() + (double) z);
                             Block b = newL.getBlock();
                             b.setType(blockMat);
                             b.setData(blockData);
@@ -850,6 +850,6 @@ public class BlockTags extends HTag {
                 }
 
             }
-        }, (long)ticks));
+        }, ticks));
     }
 }

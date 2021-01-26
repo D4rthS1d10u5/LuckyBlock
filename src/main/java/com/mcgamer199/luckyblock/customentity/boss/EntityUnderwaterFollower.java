@@ -1,6 +1,9 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,9 +13,6 @@ import org.bukkit.entity.Guardian;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class EntityUnderwaterFollower extends CustomEntity {
     public int age;
@@ -22,7 +22,7 @@ public class EntityUnderwaterFollower extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        Guardian g = (Guardian)loc.getWorld().spawnEntity(loc, EntityType.GUARDIAN);
+        Guardian g = (Guardian) loc.getWorld().spawnEntity(loc, EntityType.GUARDIAN);
         g.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(37.0D);
         g.setHealth(37.0D);
         g.setCollidable(false);
@@ -42,7 +42,7 @@ public class EntityUnderwaterFollower extends CustomEntity {
                 public void run() {
                     EntityUnderwaterFollower.this.remove();
                 }
-            }, (long)this.age));
+            }, this.age));
         }
 
     }

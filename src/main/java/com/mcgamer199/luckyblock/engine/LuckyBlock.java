@@ -6,32 +6,33 @@
 package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.enchantments.Glow;
-import com.mcgamer199.luckyblock.enchantments.Lightning;
-import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.listeners.*;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
+import com.mcgamer199.luckyblock.command.engine.ILBCmd;
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.EntitySuperWitherSkeleton;
 import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
+import com.mcgamer199.luckyblock.enchantments.Glow;
+import com.mcgamer199.luckyblock.enchantments.Lightning;
+import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.CustomEntityEvents;
+import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
+import com.mcgamer199.luckyblock.listeners.*;
+import com.mcgamer199.luckyblock.logic.IRange;
+import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.Trophy;
-import com.mcgamer199.luckyblock.tags.EntityTags;
-import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
-import com.mcgamer199.luckyblock.listeners.WorldGenerateLB;
 import com.mcgamer199.luckyblock.structures.Structure;
-import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
-import com.mcgamer199.luckyblock.command.engine.ILBCmd;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.logic.IRange;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.tags.EntityTags;
 import com.mcgamer199.luckyblock.title.ITitle;
 import com.mcgamer199.luckyblock.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
@@ -53,11 +54,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.CustomEntityEvents;
-import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -66,24 +62,24 @@ import java.util.*;
 public class LuckyBlock extends JavaPlugin {
     public static final String pluginname = "LuckyBlock";
     public static final String version = "2.2.5";
-    static final List<String> no_versions = Arrays.asList("2.2.4");
     public static final int version_number = 225;
+    static final List<String> no_versions = Arrays.asList("2.2.4");
     public static LuckyBlock instance;
     public static Random randoms = new Random();
-    public File detectorsF;
-    public FileConfiguration detectors;
-    public File configf;
-    public FileConfiguration config;
-    public File folder1;
     public static Glow enchantment_glow = new Glow(23);
     public static Lightning enchantment_lightning = new Lightning(25);
     public static ReflectProtectionEnchantment enchantment_reflect_prot = new ReflectProtectionEnchantment(27);
     public static String lang = "en_US";
     public static String command_main = "lb";
-    private static ITitle title;
     public static int[] dungeon_loc = new int[]{1, 0};
     public static String sounds_file = "sounds";
     public static boolean allowLBGeneration;
+    private static ITitle title;
+    public File detectorsF;
+    public FileConfiguration detectors;
+    public File configf;
+    public FileConfiguration config;
+    public File folder1;
 
     public LuckyBlock() {
         this.detectorsF = new File(this.getDataFolder() + File.separator + "Data/detectors.yml");
@@ -91,6 +87,46 @@ public class LuckyBlock extends JavaPlugin {
         this.configf = new File(this.getDataFolder() + File.separator + "config.yml");
         this.config = YamlConfiguration.loadConfiguration(this.configf);
         this.folder1 = new File(this.getDataFolder() + File.separator + "Types/");
+    }
+
+    static boolean contains(String s) {
+        for (int x = 0; x < no_versions.size(); ++x) {
+            if (no_versions.get(x).equalsIgnoreCase(s)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static String d() {
+        return instance.getDataFolder() + File.separator;
+    }
+
+    public static boolean isWorldEditValid() {
+        Plugin p = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+        return p != null;
+    }
+
+    public static boolean isWorldGuardValid() {
+        Plugin p = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        return p != null;
+    }
+
+    public static boolean reload_lang() {
+        return MyTasks.reloadLang();
+    }
+
+    public static ITitle getTitle() {
+        return title;
+    }
+
+    public static boolean isDebugEnabled() {
+        return IObjects.getValue("debug_enabled").equals(true);
+    }
+
+    public static boolean action_bar_messages() {
+        return IObjects.getValue("actionbar_messages").toString().equalsIgnoreCase("true");
     }
 
     public void onEnable() {
@@ -168,8 +204,8 @@ public class LuckyBlock extends JavaPlugin {
     public void onDisable() {
         Iterator var2 = CustomEntity.entities.iterator();
 
-        while(var2.hasNext()) {
-            CustomEntity c = (CustomEntity)var2.next();
+        while (var2.hasNext()) {
+            CustomEntity c = (CustomEntity) var2.next();
             c.hideBar(false);
         }
 
@@ -181,11 +217,11 @@ public class LuckyBlock extends JavaPlugin {
         try {
             ConfigurationSection section = this.detectors.getConfigurationSection("Detectors");
 
-            for(int x = 0; x < section.getKeys(false).size(); ++x) {
+            for (int x = 0; x < section.getKeys(false).size(); ++x) {
                 ConfigurationSection cs = section.getConfigurationSection(section.getKeys(false).toArray()[x].toString());
                 Detector detector = null;
 
-                for(int y = 0; y < cs.getKeys(false).size(); ++y) {
+                for (int y = 0; y < cs.getKeys(false).size(); ++y) {
                     String s = cs.getKeys(false).toArray()[y].toString();
                     if (s.equalsIgnoreCase("ID")) {
                         detector = new Detector(cs.getInt(s));
@@ -203,8 +239,8 @@ public class LuckyBlock extends JavaPlugin {
                     if (s.equalsIgnoreCase("Blocks")) {
                         List<String> bs = cs.getStringList(s);
 
-                        for(i = 0; i < bs.size(); ++i) {
-                            detector.addBlock((String)bs.get(i));
+                        for (i = 0; i < bs.size(); ++i) {
+                            detector.addBlock(bs.get(i));
                         }
                     }
 
@@ -214,19 +250,8 @@ public class LuckyBlock extends JavaPlugin {
                 }
             }
         } catch (Exception var11) {
-            ;
         }
 
-    }
-
-    static boolean contains(String s) {
-        for(int x = 0; x < no_versions.size(); ++x) {
-            if (((String)no_versions.get(x)).equalsIgnoreCase(s)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
@@ -239,10 +264,6 @@ public class LuckyBlock extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static String d() {
-        return instance.getDataFolder() + File.separator;
     }
 
     public void Loops(final LB lb) {
@@ -266,7 +287,7 @@ public class LuckyBlock extends JavaPlugin {
         this.detectors.options().copyDefaults(true);
         Calendar calendar = Calendar.getInstance();
         if (calendar.get(2) == 9 && calendar.get(5) == 31 && LBType.getDefaultType() != null) {
-            LBEffects.md(LBType.getDefaultType(), Material.PUMPKIN, (short)0);
+            LBEffects.md(LBType.getDefaultType(), Material.PUMPKIN, (short) 0);
         }
 
         LBType.load();
@@ -278,7 +299,7 @@ public class LuckyBlock extends JavaPlugin {
             try {
                 Field f = Enchantment.class.getDeclaredField("acceptingNew");
                 f.setAccessible(true);
-                f.set((Object)null, true);
+                f.set(null, true);
             } catch (Exception var3) {
                 var3.printStackTrace();
             }
@@ -288,7 +309,6 @@ public class LuckyBlock extends JavaPlugin {
                 Enchantment.registerEnchantment(enchantment_lightning);
                 Enchantment.registerEnchantment(enchantment_reflect_prot);
             } catch (IllegalArgumentException var2) {
-                ;
             }
         } catch (Exception var4) {
             var4.printStackTrace();
@@ -323,29 +343,19 @@ public class LuckyBlock extends JavaPlugin {
 
     public WorldEditPlugin getWorldEdit() {
         Plugin p = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-        return p instanceof WorldEditPlugin ? (WorldEditPlugin)p : null;
+        return p instanceof WorldEditPlugin ? (WorldEditPlugin) p : null;
     }
 
     public WorldGuardPlugin getWorldGuard() {
         Plugin p = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        return p instanceof WorldGuardPlugin ? (WorldGuardPlugin)p : null;
-    }
-
-    public static boolean isWorldEditValid() {
-        Plugin p = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-        return p != null;
-    }
-
-    public static boolean isWorldGuardValid() {
-        Plugin p = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-        return p != null;
+        return p instanceof WorldGuardPlugin ? (WorldGuardPlugin) p : null;
     }
 
     private void loadRecipes() {
         ItemStack craftLB = ItemMaker.createItem(Material.NOTE_BLOCK, 1, 0, ChatColor.YELLOW + "Lucky Crafting Table");
         NamespacedKey k = new NamespacedKey(this, "lucky_crafting_table");
         ShapedRecipe sh = new ShapedRecipe(k, craftLB);
-        sh.shape(new String[]{"cac", "aba", "cac"});
+        sh.shape("cac", "aba", "cac");
         sh.setIngredient('a', Material.GOLD_BLOCK);
         sh.setIngredient('b', Material.WORKBENCH);
         sh.setIngredient('c', Material.LAPIS_BLOCK);
@@ -359,7 +369,7 @@ public class LuckyBlock extends JavaPlugin {
         ItemStack adv = LBItem.A_LUCKY_TOOL.getItem();
         NamespacedKey k1 = new NamespacedKey(this, "advanced_lucky_tool");
         ShapedRecipe sh1 = new ShapedRecipe(k1, adv);
-        sh1.shape(new String[]{" B ", "BCB", "AAA"});
+        sh1.shape(" B ", "BCB", "AAA");
         sh1.setIngredient('A', Material.DIAMOND_BLOCK);
         sh1.setIngredient('B', Material.NETHER_STAR);
         sh1.setIngredient('C', Material.SPONGE);
@@ -406,18 +416,6 @@ public class LuckyBlock extends JavaPlugin {
 
     }
 
-    public static boolean reload_lang() {
-        return MyTasks.reloadLang();
-    }
-
-    public static ITitle getTitle() {
-        return title;
-    }
-
-    public static boolean isDebugEnabled() {
-        return IObjects.getValue("debug_enabled").equals(true);
-    }
-
     private boolean s_title() {
         String version;
         try {
@@ -431,10 +429,6 @@ public class LuckyBlock extends JavaPlugin {
         }
 
         return title != null;
-    }
-
-    public static boolean action_bar_messages() {
-        return IObjects.getValue("actionbar_messages").toString().equalsIgnoreCase("true");
     }
 
     private void loadCustomEntities1() {

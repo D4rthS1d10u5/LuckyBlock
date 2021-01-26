@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,7 +19,7 @@ public class LBCLbItem extends LBCommand {
                 return false;
             }
 
-            target = (Player)sender;
+            target = (Player) sender;
         } else {
             if (args.length != 3) {
                 send_invalid_args(sender);

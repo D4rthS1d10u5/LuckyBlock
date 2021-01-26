@@ -1,5 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,17 +12,15 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class EntityElementalCreeper extends CustomEntity {
+    public int life;
     Material blockMaterial;
     byte blockData;
-    public int life;
 
     public EntityElementalCreeper() {
         this.blockMaterial = Material.DIRT;
@@ -29,7 +29,7 @@ public class EntityElementalCreeper extends CustomEntity {
     }
 
     public Entity spawnFunction(Location loc) {
-        Creeper creeper = (Creeper)loc.getWorld().spawnEntity(loc, EntityType.CREEPER);
+        Creeper creeper = (Creeper) loc.getWorld().spawnEntity(loc, EntityType.CREEPER);
         creeper.setCustomName(ChatColor.RED + "Elemental Creeper");
         creeper.setCustomNameVisible(true);
         creeper.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(70.0D);
@@ -76,16 +76,16 @@ public class EntityElementalCreeper extends CustomEntity {
         Iterator var4 = event.blockList().iterator();
 
         Block block;
-        while(var4.hasNext()) {
-            block = (Block)var4.next();
+        while (var4.hasNext()) {
+            block = (Block) var4.next();
             blocks.add(block);
         }
 
         event.blockList().clear();
         var4 = blocks.iterator();
 
-        while(var4.hasNext()) {
-            block = (Block)var4.next();
+        while (var4.hasNext()) {
+            block = (Block) var4.next();
             block.setType(this.blockMaterial);
             block.setData(this.blockData);
         }
@@ -100,7 +100,7 @@ public class EntityElementalCreeper extends CustomEntity {
 
     protected void onLoad(ConfigurationSection c) {
         this.blockMaterial = Material.getMaterial(c.getString("BlockMaterial").toUpperCase());
-        this.blockData = (byte)c.getInt("BlockData");
+        this.blockData = (byte) c.getInt("BlockData");
         this.life = c.getInt("Life");
     }
 

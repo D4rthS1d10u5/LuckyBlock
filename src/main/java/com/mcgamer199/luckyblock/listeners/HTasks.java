@@ -5,6 +5,8 @@ import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.entity.*;
@@ -13,14 +15,12 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.util.Iterator;
 import java.util.Random;
 
 public class HTasks extends ColorsClass {
-    private static Random randoms = new Random();
+    private static final Random randoms = new Random();
 
     public HTasks() {
     }
@@ -33,7 +33,7 @@ public class HTasks extends ColorsClass {
         final Location loc = block.getLocation().add(0.5D, 0.0D, 0.5D);
         block.getWorld().playEffect(loc, Effect.POTION_BREAK, dmg);
         int[] i1 = tower_rblock(type);
-        FallingBlock fb = block.getWorld().spawnFallingBlock(loc.add(0.0D, 10.0D, 0.0D), i1[0], (byte)i1[1]);
+        FallingBlock fb = block.getWorld().spawnFallingBlock(loc.add(0.0D, 10.0D, 0.0D), i1[0], (byte) i1[1]);
         fb.setDropItem(false);
         final SchedulerTask task = new SchedulerTask();
         task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
@@ -46,10 +46,10 @@ public class HTasks extends ColorsClass {
             public void run() {
                 if (this.loop > 1) {
                     int[] i2 = HTasks.tower_rblock(type);
-                    block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, i2[0], (byte)i2[1]).setDropItem(false);
+                    block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, i2[0], (byte) i2[1]).setDropItem(false);
                     --this.loop;
                 } else if (this.loop == 1) {
-                    FallingBlock bb = block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, Material.DIAMOND_BLOCK, (byte)0);
+                    FallingBlock bb = block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, Material.DIAMOND_BLOCK, (byte) 0);
                     HTasks.Tower1(bb);
                     --this.loop;
                 } else if (this.loop < 1) {
@@ -124,14 +124,14 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.i > 0) {
-                    FallingBlock fb = loc.getWorld().spawnFallingBlock(loc.add(0.0D, 1.0D, 0.0D), Material.COBBLESTONE, (byte)0);
+                    FallingBlock fb = loc.getWorld().spawnFallingBlock(loc.add(0.0D, 1.0D, 0.0D), Material.COBBLESTONE, (byte) 0);
                     fb.setDropItem(false);
                     int h = HTasks.randoms.nextInt(6) - 3;
-                    double g = (double)h / 5.0D;
+                    double g = (double) h / 5.0D;
                     int h1 = HTasks.randoms.nextInt(6) - 3;
-                    double g1 = (double)h1 / 5.0D;
+                    double g1 = (double) h1 / 5.0D;
                     int h2 = HTasks.randoms.nextInt(15) + 14;
-                    double g2 = (double)h2 / 10.0D;
+                    double g2 = (double) h2 / 10.0D;
                     fb.setVelocity(new Vector(g, g2, g1));
                     HTasks.Meteor(fb, 15.0F);
                     --this.i;
@@ -154,8 +154,8 @@ public class HTasks extends ColorsClass {
                     fb.getWorld().spawnParticle(Particle.SMOKE_LARGE, fb.getLocation(), 170, 0.3D, 0.2D, 0.3D, 0.0D);
                     Iterator var2 = fb.getNearbyEntities(6.0D, 6.0D, 6.0D).iterator();
 
-                    while(var2.hasNext()) {
-                        Entity e = (Entity)var2.next();
+                    while (var2.hasNext()) {
+                        Entity e = (Entity) var2.next();
                         if (e instanceof LivingEntity) {
                             e.setFireTicks(100);
                             e.setFallDistance(15.0F);
@@ -181,7 +181,7 @@ public class HTasks extends ColorsClass {
                     try {
                         boolean breakBlocks = LuckyBlock.instance.config.getBoolean("Allow.ExplosionGrief");
                         boolean setFire = LuckyBlock.instance.config.getBoolean("Allow.ExplosionFire");
-                        fb.getWorld().createExplosion((double)xx, (double)y, (double)z, explosionPower, setFire, breakBlocks);
+                        fb.getWorld().createExplosion(xx, y, z, explosionPower, setFire, breakBlocks);
                     } catch (Exception var6) {
                         var6.printStackTrace();
                     }
@@ -211,8 +211,8 @@ public class HTasks extends ColorsClass {
                 if (item.isValid()) {
                     Iterator var2 = item.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
 
-                    while(var2.hasNext()) {
-                        Entity e = (Entity)var2.next();
+                    while (var2.hasNext()) {
+                        Entity e = (Entity) var2.next();
                         if (e instanceof LivingEntity) {
                             e.setFireTicks(600);
                         }
@@ -270,12 +270,12 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    TNTPrimed tnt = (TNTPrimed)loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+                    TNTPrimed tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
                     tnt.setFuseTicks(fuse);
                     int h = HTasks.randoms.nextInt(4) - 2;
-                    double g = (double)h / 10.0D;
+                    double g = (double) h / 10.0D;
                     int h1 = HTasks.randoms.nextInt(4) - 2;
-                    double g1 = (double)h1 / 10.0D;
+                    double g1 = (double) h1 / 10.0D;
                     tnt.setVelocity(new Vector(g, 1.0D, g1));
                     SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
                     --this.x;
@@ -301,7 +301,7 @@ public class HTasks extends ColorsClass {
         short d = 0;
 
         int x;
-        for(x = 0; x < mats.length; ++x) {
+        for (x = 0; x < mats.length; ++x) {
             if (mats[x] != null) {
                 ++i;
             } else {
@@ -339,7 +339,7 @@ public class HTasks extends ColorsClass {
         int i = 0;
 
         int x;
-        for(x = 0; x < mats.length; ++x) {
+        for (x = 0; x < mats.length; ++x) {
             if (mats[x] != null) {
                 ++i;
             } else {
@@ -355,12 +355,12 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, m, (byte)0);
+                    FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, m, (byte) 0);
                     fb.setDropItem(false);
                     int h = HTasks.randoms.nextInt(4) - 2;
-                    double g = (double)h / 5.0D;
+                    double g = (double) h / 5.0D;
                     int h1 = HTasks.randoms.nextInt(4) - 2;
-                    double g1 = (double)h1 / 5.0D;
+                    double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
                     SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
                     HTasks.b1(fb);
@@ -395,11 +395,11 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    Arrow a = (Arrow)loc.getWorld().spawnEntity(loc, EntityType.ARROW);
+                    Arrow a = (Arrow) loc.getWorld().spawnEntity(loc, EntityType.ARROW);
                     int h = HTasks.randoms.nextInt(16) - 8;
-                    double g = (double)h / 50.0D;
+                    double g = (double) h / 50.0D;
                     int h1 = HTasks.randoms.nextInt(16) - 8;
-                    double g1 = (double)h1 / 50.0D;
+                    double g1 = (double) h1 / 50.0D;
                     a.setVelocity(new Vector(g, 1.2D, g1));
                     a.setCritical(critical);
                     a.setBounce(bounce);
@@ -415,7 +415,7 @@ public class HTasks extends ColorsClass {
 
     static void d(Location loc) {
         final SchedulerTask task = new SchedulerTask();
-        final ArmorStand s = (ArmorStand)loc.getWorld().spawnEntity(new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0D, loc.getZ()), EntityType.ARMOR_STAND);
+        final ArmorStand s = (ArmorStand) loc.getWorld().spawnEntity(new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0D, loc.getZ()), EntityType.ARMOR_STAND);
         s.teleport(loc);
         s.setMetadata("hrocket", new FixedMetadataValue(LuckyBlock.instance, "" + s.getUniqueId()));
         s.setVisible(false);
@@ -437,8 +437,8 @@ public class HTasks extends ColorsClass {
                     s.getWorld().spawnParticle(Particle.SMOKE_LARGE, s.getLocation(), 35, 1.0D, 0.5D, 1.0D, 0.0D);
                     Iterator var3 = s.getNearbyEntities(2.0D, 4.0D, 2.0D).iterator();
 
-                    while(var3.hasNext()) {
-                        Entity e = (Entity)var3.next();
+                    while (var3.hasNext()) {
+                        Entity e = (Entity) var3.next();
                         if (!(e instanceof Player)) {
                             e.setFireTicks(60);
                         }
@@ -468,11 +468,11 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    ThrownExpBottle xp = (ThrownExpBottle)loc.getWorld().spawnEntity(loc, EntityType.THROWN_EXP_BOTTLE);
+                    ThrownExpBottle xp = (ThrownExpBottle) loc.getWorld().spawnEntity(loc, EntityType.THROWN_EXP_BOTTLE);
                     int h = HTasks.randoms.nextInt(8) - 4;
-                    double g = (double)h / 50.0D;
+                    double g = (double) h / 50.0D;
                     int h1 = HTasks.randoms.nextInt(8) - 4;
-                    double g1 = (double)h1 / 60.0D;
+                    double g1 = (double) h1 / 60.0D;
                     xp.setVelocity(new Vector(g, 0.9D, g1));
                     xp.setBounce(true);
                     --this.x;
@@ -495,7 +495,7 @@ public class HTasks extends ColorsClass {
                 if (dispenser.getInventory().contains(Material.ARROW)) {
                     dispenser.dispense();
                 } else {
-                    dispenser.getBlock().breakNaturally((ItemStack)null);
+                    dispenser.getBlock().breakNaturally(null);
                     task.run();
                 }
 
@@ -520,7 +520,7 @@ public class HTasks extends ColorsClass {
                 }
 
             }
-        }, (long)ticks, (long)ticks));
+        }, ticks, ticks));
     }
 
     static void FireWorks(final Block block) {
@@ -534,8 +534,8 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    for(int x = LuckyBlock.randoms.nextInt(18) + 8; x > 0; --x) {
-                        Firework fwork = (Firework)block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
+                    for (int x = LuckyBlock.randoms.nextInt(18) + 8; x > 0; --x) {
+                        Firework fwork = (Firework) block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
                         FireworkMeta fwm = fwork.getFireworkMeta();
                         Random r = new Random();
                         int rt = r.nextInt(4) + 1;
@@ -600,7 +600,7 @@ public class HTasks extends ColorsClass {
                 item.remove();
                 task.run();
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     static void Trap(Player player, int ticks) {
@@ -615,9 +615,9 @@ public class HTasks extends ColorsClass {
 
         int c;
         int d;
-        for(c = 5; c > 0; --c) {
-            for(d = 5; d > 0; --d) {
-                block.getLocation().add((double)a, -1.0D, (double)b).getBlock().setType(Material.SMOOTH_BRICK);
+        for (c = 5; c > 0; --c) {
+            for (d = 5; d > 0; --d) {
+                block.getLocation().add(a, -1.0D, b).getBlock().setType(Material.SMOOTH_BRICK);
                 ++a;
             }
 
@@ -657,9 +657,9 @@ public class HTasks extends ColorsClass {
 
         int e;
         int f;
-        for(e = 5; e > 0; --e) {
-            for(f = 5; f > 0; --f) {
-                block.getLocation().add((double)c, 2.0D, (double)d).getBlock().setType(Material.SMOOTH_BRICK);
+        for (e = 5; e > 0; --e) {
+            for (f = 5; f > 0; --f) {
+                block.getLocation().add(c, 2.0D, d).getBlock().setType(Material.SMOOTH_BRICK);
                 ++c;
             }
 
@@ -670,9 +670,9 @@ public class HTasks extends ColorsClass {
         e = -1;
         f = -1;
 
-        for(int x = 3; x > 0; --x) {
-            for(int y = 3; y > 0; --y) {
-                block.getLocation().add((double)e, 3.0D, (double)f).getBlock().setType(Material.SMOOTH_BRICK);
+        for (int x = 3; x > 0; --x) {
+            for (int y = 3; y > 0; --y) {
+                block.getLocation().add(e, 3.0D, f).getBlock().setType(Material.SMOOTH_BRICK);
                 ++e;
             }
 
@@ -691,7 +691,7 @@ public class HTasks extends ColorsClass {
                 block.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().setType(Material.AIR);
                 task.run();
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     static void Bedrock(final Block block) {
@@ -701,7 +701,7 @@ public class HTasks extends ColorsClass {
                 block.setType(Material.BEDROCK);
                 if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
                     block.getRelative(BlockFace.UP).setType(Material.SIGN_POST);
-                    Sign sign = (Sign)block.getRelative(BlockFace.UP).getState();
+                    Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
                     sign.setLine(1, "Well, there's");
                     sign.setLine(2, "your problem");
                     sign.update(true);
@@ -720,7 +720,7 @@ public class HTasks extends ColorsClass {
             s = lb.getDrop().name();
         }
 
-        final ItemStack it = lb.getType().toItemStack(lb.getLuck(), (LBType.LBOption[])null, s);
+        final ItemStack it = lb.getType().toItemStack(lb.getLuck(), null, s);
         final ITask task = new ITask();
         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
             public void run() {
@@ -748,10 +748,10 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.r > 0) {
-                    for(int x = this.g * -1; x < this.g + 1; ++x) {
-                        for(int y = -4; y < 5; ++y) {
-                            for(int z = this.g * -1; z < this.g + 1; ++z) {
-                                Location l = new Location(loc.getWorld(), loc.getX() + (double)x, loc.getY() + (double)y, loc.getZ() + (double)z);
+                    for (int x = this.g * -1; x < this.g + 1; ++x) {
+                        for (int y = -4; y < 5; ++y) {
+                            for (int z = this.g * -1; z < this.g + 1; ++z) {
+                                Location l = new Location(loc.getWorld(), loc.getX() + (double) x, loc.getY() + (double) y, loc.getZ() + (double) z);
                                 if (l.getBlock().getType().isSolid() && l.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR) {
                                     l.getBlock().getRelative(BlockFace.UP).setType(Material.FIRE);
                                 }
@@ -779,9 +779,9 @@ public class HTasks extends ColorsClass {
                     if (items[this.x] != null) {
                         Item item = loc.getWorld().dropItem(loc, items[this.x]);
                         int h = HTasks.randoms.nextInt(4) - 2;
-                        double g = (double)h / 50.0D;
+                        double g = (double) h / 50.0D;
                         int h1 = HTasks.randoms.nextInt(4) - 2;
-                        double g1 = (double)h1 / 50.0D;
+                        double g1 = (double) h1 / 50.0D;
                         item.setVelocity(new Vector(g, 0.4D, g1));
                         if (lb.hasDropOption("ShowItemName") && lb.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && items[this.x].hasItemMeta() && items[this.x].getItemMeta().hasDisplayName()) {
                             item.setCustomName(items[this.x].getItemMeta().getDisplayName());
@@ -821,10 +821,10 @@ public class HTasks extends ColorsClass {
 
                 public void run() {
                     if (this.r > 0) {
-                        for(int x = this.g * -1; x < this.g + 1; ++x) {
-                            for(int y = -4; y < 5; ++y) {
-                                for(int z = this.g * -1; z < this.g + 1; ++z) {
-                                    Location l = new Location(loc.getWorld(), loc.getX() + (double)x, loc.getY() + (double)y, loc.getZ() + (double)z);
+                        for (int x = this.g * -1; x < this.g + 1; ++x) {
+                            for (int y = -4; y < 5; ++y) {
+                                for (int z = this.g * -1; z < this.g + 1; ++z) {
+                                    Location l = new Location(loc.getWorld(), loc.getX() + (double) x, loc.getY() + (double) y, loc.getZ() + (double) z);
                                     if (l.getBlock().getType().isSolid() && l.getBlock().getRelative(BlockFace.UP).getType() == Material.AIR) {
                                         l.getBlock().setType(mat);
                                         l.getBlock().setData(data);
@@ -840,7 +840,7 @@ public class HTasks extends ColorsClass {
                     }
 
                 }
-            }, (long)delay, (long)delay));
+            }, delay, delay));
         } else if (mode.equalsIgnoreCase("all")) {
             int finalRange = range;
             task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
@@ -849,10 +849,10 @@ public class HTasks extends ColorsClass {
 
                 public void run() {
                     if (this.r > 0) {
-                        for(int x = this.g * -1; x < this.g + 1; ++x) {
-                            for(int y = this.g * -1; y < this.g + 1; ++y) {
-                                for(int z = this.g * -1; z < this.g + 1; ++z) {
-                                    Location l = new Location(loc.getWorld(), loc.getX() + (double)x, loc.getY() + (double)y, loc.getZ() + (double)z);
+                        for (int x = this.g * -1; x < this.g + 1; ++x) {
+                            for (int y = this.g * -1; y < this.g + 1; ++y) {
+                                for (int z = this.g * -1; z < this.g + 1; ++z) {
+                                    Location l = new Location(loc.getWorld(), loc.getX() + (double) x, loc.getY() + (double) y, loc.getZ() + (double) z);
                                     if (l.getBlock().getType().isSolid() && l.getBlock().getType() != Material.AIR) {
                                         l.getBlock().setType(mat);
                                         l.getBlock().setData(data);
@@ -868,7 +868,7 @@ public class HTasks extends ColorsClass {
                     }
 
                 }
-            }, (long)delay, (long)delay));
+            }, delay, delay));
         }
 
     }
@@ -898,7 +898,7 @@ public class HTasks extends ColorsClass {
                 if (dropper.getInventory().contains(Material.DIAMOND)) {
                     dropper.drop();
                 } else {
-                    dropper.getBlock().breakNaturally((ItemStack)null);
+                    dropper.getBlock().breakNaturally(null);
                     task.run();
                 }
 
@@ -913,15 +913,15 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, type.getType(), (byte)type.getData());
+                    FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, type.getType(), (byte) type.getData());
                     fb.setDropItem(false);
                     int h = HTasks.randoms.nextInt(4) - 2;
-                    double g = (double)h / 5.0D;
+                    double g = (double) h / 5.0D;
                     int h1 = HTasks.randoms.nextInt(4) - 2;
-                    double g1 = (double)h1 / 5.0D;
+                    double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
                     SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
-                    HTasks.m_1(fb, type.getType(), (byte)type.getData());
+                    HTasks.m_1(fb, type.getType(), (byte) type.getData());
                     --this.x;
                 } else {
                     task.run();
@@ -938,7 +938,7 @@ public class HTasks extends ColorsClass {
                 if (!b.isValid()) {
                     Block block = b.getLocation().getBlock();
                     if (block.getType() == type) {
-                        LB lb = new LB(LBType.fromMaterialAndData(type, data), block, 0, (Object)null, true, true);
+                        LB lb = new LB(LBType.fromMaterialAndData(type, data), block, 0, null, true, true);
                         lb.playEffects();
                     }
 
@@ -955,23 +955,23 @@ public class HTasks extends ColorsClass {
             public void run() {
                 loc.getBlock().setType(Material.LAVA);
             }
-        }, (long)ticks));
+        }, ticks));
     }
 
     static void rip(Player player, Block block) {
         block.setType(Material.SKULL);
-        block.setData((byte)1);
+        block.setData((byte) 1);
         block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
         block.getRelative(BlockFace.DOWN).getRelative(BlockFace.SOUTH).setType(Material.DIRT);
         block.getRelative(BlockFace.NORTH).setType(Material.STONE);
         block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP).setType(Material.STONE);
         block.getRelative(BlockFace.UP).setType(Material.WALL_SIGN);
-        block.getRelative(BlockFace.UP).setData((byte)3);
-        Sign sign = (Sign)block.getRelative(BlockFace.UP).getState();
+        block.getRelative(BlockFace.UP).setData((byte) 3);
+        Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
         sign.setLine(0, "RIP");
         sign.setLine(2, player.getName());
         sign.update(true);
-        Skull skull = (Skull)block.getState();
+        Skull skull = (Skull) block.getState();
         skull.setSkullType(SkullType.PLAYER);
         skull.setRotation(BlockFace.SOUTH);
         skull.setOwningPlayer(player);

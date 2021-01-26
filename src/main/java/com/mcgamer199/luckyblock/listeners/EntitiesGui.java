@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,15 +22,15 @@ public class EntitiesGui implements Listener {
     }
 
     public static void open(Player player) {
-        Inventory inv = Bukkit.createInventory((InventoryHolder)null, 54, ChatColor.BLUE + "Lucky Block: Entities");
+        Inventory inv = Bukkit.createInventory(null, 54, ChatColor.BLUE + "Lucky Block: Entities");
         Gui.fill_glass(inv);
-        inv.addItem(new ItemStack[]{ItemMaker.addEnchant(ItemMaker.createItem(Material.LAVA_BUCKET, 1, 0, ChatColor.GOLD + "Hell Hound", Arrays.asList("", ChatColor.GRAY + "Click to spawn")), LuckyBlock.enchantment_glow, 1)});
-        inv.addItem(new ItemStack[]{ItemMaker.createItem(Material.ENDER_PEARL, 1, 0, ChatColor.DARK_PURPLE + "Karl", Arrays.asList("", ChatColor.GRAY + "Click to spawn"))});
-        inv.addItem(new ItemStack[]{ItemMaker.createItem(Material.ROTTEN_FLESH, 1, 0, ChatColor.YELLOW + "Bob", Arrays.asList("", ChatColor.GRAY + "Click to spawn"))});
-        inv.addItem(new ItemStack[]{ItemMaker.createItem(Material.BONE, 1, 0, ChatColor.BLUE + "Peter", Arrays.asList("", ChatColor.GRAY + "Click to spawn"))});
-        inv.addItem(new ItemStack[]{ItemMaker.createItem(Material.SULPHUR, 1, 0, ChatColor.RED + "Elemental Creeper", Arrays.asList("", ChatColor.GRAY + "Click to spawn"))});
-        inv.addItem(new ItemStack[]{ItemMaker.createItem(Material.EMERALD, 1, 0, ChatColor.YELLOW + "Lucky Villager", Arrays.asList("", ChatColor.GRAY + "Click to spawn"))});
-        inv.addItem(new ItemStack[]{ItemMaker.createItem(Material.SLIME_BALL, 1, 0, ChatColor.GREEN + "Super Slime", Arrays.asList("", ChatColor.GRAY + "Click to spawn"))});
+        inv.addItem(ItemMaker.addEnchant(ItemMaker.createItem(Material.LAVA_BUCKET, 1, 0, ChatColor.GOLD + "Hell Hound", Arrays.asList("", ChatColor.GRAY + "Click to spawn")), LuckyBlock.enchantment_glow, 1));
+        inv.addItem(ItemMaker.createItem(Material.ENDER_PEARL, 1, 0, ChatColor.DARK_PURPLE + "Karl", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
+        inv.addItem(ItemMaker.createItem(Material.ROTTEN_FLESH, 1, 0, ChatColor.YELLOW + "Bob", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
+        inv.addItem(ItemMaker.createItem(Material.BONE, 1, 0, ChatColor.BLUE + "Peter", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
+        inv.addItem(ItemMaker.createItem(Material.SULPHUR, 1, 0, ChatColor.RED + "Elemental Creeper", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
+        inv.addItem(ItemMaker.createItem(Material.EMERALD, 1, 0, ChatColor.YELLOW + "Lucky Villager", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
+        inv.addItem(ItemMaker.createItem(Material.SLIME_BALL, 1, 0, ChatColor.GREEN + "Super Slime", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
         inv.setItem(inv.getSize() - 11, Gui.getIItem("back"));
         player.openInventory(inv);
     }
@@ -40,7 +40,7 @@ public class EntitiesGui implements Listener {
         if (event.getInventory().getTitle() != null) {
             Inventory inv = event.getInventory();
             if (inv.getTitle().equalsIgnoreCase(ChatColor.BLUE + "Lucky Block: Entities") && event.getWhoClicked() instanceof Player) {
-                Player player = (Player)event.getWhoClicked();
+                Player player = (Player) event.getWhoClicked();
                 event.setCancelled(true);
                 int slot = event.getRawSlot();
                 if (slot < 44) {

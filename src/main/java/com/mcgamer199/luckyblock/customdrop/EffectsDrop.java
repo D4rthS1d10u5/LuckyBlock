@@ -4,9 +4,9 @@ import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.util.Random;
 
@@ -36,7 +36,7 @@ public class EffectsDrop implements CustomDrop {
 
     public void function(final LB lb, Player player) {
         if (lb.hasDropOption("Particles")) {
-            final String[] s = (String[])lb.getDropOption("Particles").getValues();
+            final String[] s = (String[]) lb.getDropOption("Particles").getValues();
             final SchedulerTask task = new SchedulerTask();
             task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
                 int x = 10;

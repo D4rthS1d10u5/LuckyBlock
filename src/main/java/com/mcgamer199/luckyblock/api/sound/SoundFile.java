@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class SoundFile {
 
-    private Sound sound;
+    private final Sound sound;
     private float pitch = 1.0F;
     private float volume = 1.0F;
 
@@ -32,15 +32,15 @@ public class SoundFile {
         return this.pitch;
     }
 
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
     public float getVolume() {
         return this.volume;
     }
 
     public void setVolume(float volume) {
         this.volume = volume;
-    }
-
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
     }
 }

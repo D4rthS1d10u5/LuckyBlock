@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,6 +13,30 @@ import java.util.List;
 
 public class LBCLbs extends LBCommand {
     public LBCLbs() {
+    }
+
+    static void sendLB(CommandSender sender, LB lb) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            ChatColor color = ChatColor.GOLD;
+            String dr = ChatColor.RED + "null";
+            if (lb.hasDropOption("Title")) {
+                dr = c(lb.getDropOption("Title").getValues()[0].toString());
+            }
+
+            com.mcgamer199.luckyblock.tellraw.RawText text = new com.mcgamer199.luckyblock.tellraw.RawText("" + color + bold + "LB " + ChatColor.BLUE + "(" + val("command.lbs.data.hover", false) + ")");
+            text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, green + lb.blockToString() + "\n" + aqua + val("command.lbs.data.drop", false) + ": " + lightpurple + dr + "\n" + aqua + val("command.lbs.data.placedby", false) + ": " + blue + lb.getPlacedByClass() + "\n" + aqua + val("command.lbs.data.luck", false) + ": " + gold + lb.getType().getLuckString(lb.getLuck()) + "\n" + aqua + val("command.lbs.data.type", false) + ": " + lb.getType().getName()));
+            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text);
+        } else {
+            ChatColor color = ChatColor.GOLD;
+            String dr = ChatColor.RED + "null";
+            if (lb.hasDropOption("Title")) {
+                dr = c(lb.getDropOption("Title").getValues()[0].toString());
+            }
+
+            sender.sendMessage("" + color + bold + "LB" + aqua + "," + green + lb.blockToString() + aqua + "," + val("command.lbs.data.drop", false) + ":" + lightpurple + dr + aqua + "," + val("command.lbs.data.placedby", false) + ":" + blue + lb.getPlacedByClass() + aqua + "," + val("command.lbs.data.luck", false) + ":" + lb.getType().getLuckString(lb.getLuck()) + aqua + "," + val("command.lbs.data.type", false) + ":" + lb.getType().getName());
+        }
+
     }
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
@@ -36,9 +60,9 @@ public class LBCLbs extends LBCommand {
             List<LB> lbs = new ArrayList();
 
             int x;
-            for(x = (page - 1) * 10; x < page * 10; ++x) {
+            for (x = (page - 1) * 10; x < page * 10; ++x) {
                 if (x < LB.lbs.size()) {
-                    lbs.add((LB)LB.lbs.get(x));
+                    lbs.add(LB.lbs.get(x));
                 }
             }
 
@@ -49,8 +73,8 @@ public class LBCLbs extends LBCommand {
                 sender.sendMessage(white + val("command.lbs.page", false) + " " + page);
                 sender.sendMessage("Total: " + LB.lbs.size());
 
-                for(x = 0; x < lbs.size(); ++x) {
-                    LB lb = (LB)lbs.get(x);
+                for (x = 0; x < lbs.size(); ++x) {
+                    LB lb = lbs.get(x);
                     sendLB(sender, lb);
                 }
 
@@ -70,29 +94,5 @@ public class LBCLbs extends LBCommand {
 
     public String getDescription() {
         return val("desc.cmd.lbs");
-    }
-
-    static void sendLB(CommandSender sender, LB lb) {
-        if (sender instanceof Player) {
-            Player player = (Player)sender;
-            ChatColor color = ChatColor.GOLD;
-            String dr = ChatColor.RED + "null";
-            if (lb.hasDropOption("Title")) {
-                dr = c(lb.getDropOption("Title").getValues()[0].toString());
-            }
-
-            com.mcgamer199.luckyblock.tellraw.RawText text = new com.mcgamer199.luckyblock.tellraw.RawText("" + color + bold + "LB " + ChatColor.BLUE + "(" + val("command.lbs.data.hover", false) + ")");
-            text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, green + lb.blockToString() + "\n" + aqua + val("command.lbs.data.drop", false) + ": " + lightpurple + dr + "\n" + aqua + val("command.lbs.data.placedby", false) + ": " + blue + lb.getPlacedByClass() + "\n" + aqua + val("command.lbs.data.luck", false) + ": " + gold + lb.getType().getLuckString(lb.getLuck()) + "\n" + aqua + val("command.lbs.data.type", false) + ": " + lb.getType().getName()));
-            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, new com.mcgamer199.luckyblock.tellraw.RawText[]{text});
-        } else {
-            ChatColor color = ChatColor.GOLD;
-            String dr = ChatColor.RED + "null";
-            if (lb.hasDropOption("Title")) {
-                dr = c(lb.getDropOption("Title").getValues()[0].toString());
-            }
-
-            sender.sendMessage("" + color + bold + "LB" + aqua + "," + green + lb.blockToString() + aqua + "," + val("command.lbs.data.drop", false) + ":" + lightpurple + dr + aqua + "," + val("command.lbs.data.placedby", false) + ":" + blue + lb.getPlacedByClass() + aqua + "," + val("command.lbs.data.luck", false) + ":" + lb.getType().getLuckString(lb.getLuck()) + aqua + "," + val("command.lbs.data.type", false) + ":" + lb.getType().getName());
-        }
-
     }
 }

@@ -1,17 +1,22 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
-import com.mcgamer199.luckyblock.lb.LBDrop;
-import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
-import com.mcgamer199.luckyblock.resources.Schematic;
-import com.mcgamer199.luckyblock.structures.LuckyWell;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.logic.ActionPerformer;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
+import com.mcgamer199.luckyblock.resources.Schematic;
+import com.mcgamer199.luckyblock.structures.LuckyWell;
+import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
+import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
+import com.mcgamer199.luckyblock.tellraw.RawText;
+import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,11 +28,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
-import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
-import com.mcgamer199.luckyblock.tellraw.RawText;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 
 import java.io.File;
 import java.util.Arrays;
@@ -96,18 +96,18 @@ public class DropEvents1 extends ColorsClass {
                         fuseTicks = Integer.parseInt(lb.getDropOption("Height").getValues()[0].toString());
                     }
 
-                    Location l = bloc.add(0.0D, (double)fuseTicks, 0.0D);
+                    Location l = bloc.add(0.0D, fuseTicks, 0.0D);
                     if (lb.hasDropOption("LocationType") && lb.getDropOption("LocationType").getValues()[0].toString().equalsIgnoreCase("player") && player != null) {
-                        l = player.getLocation().add(0.0D, (double)fuseTicks, 0.0D);
+                        l = player.getLocation().add(0.0D, fuseTicks, 0.0D);
                     }
 
                     if (lb.hasDropOption("AnvilData")) {
                         blockType = Byte.parseByte(lb.getDropOption("AnvilData").getValues()[0].toString());
                     }
 
-                    for(playerX = -1; playerX < 2; ++playerX) {
-                        for(playerY = -1; playerY < 2; ++playerY) {
-                            FallingBlock b = l.getWorld().spawnFallingBlock(new Location(l.getWorld(), l.getX() + (double)playerX + 0.5D, l.getY(), l.getZ() + (double)playerY + 0.5D), Material.ANVIL, blockType);
+                    for (playerX = -1; playerX < 2; ++playerX) {
+                        for (playerY = -1; playerY < 2; ++playerY) {
+                            FallingBlock b = l.getWorld().spawnFallingBlock(new Location(l.getWorld(), l.getX() + (double) playerX + 0.5D, l.getY(), l.getZ() + (double) playerY + 0.5D), Material.ANVIL, blockType);
                             b.setDropItem(false);
                         }
                     }
@@ -115,8 +115,8 @@ public class DropEvents1 extends ColorsClass {
                     int fuse;
                     if (drop == LBDrop.DISPENSER) {
                         block.setType(Material.DISPENSER);
-                        block.setData((byte)1);
-                        Dispenser d = (Dispenser)block.getState();
+                        block.setData((byte) 1);
+                        Dispenser d = (Dispenser) block.getState();
                         fuse = 64;
                         if (lb.hasDropOption("Times")) {
                             fuse = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
@@ -124,12 +124,12 @@ public class DropEvents1 extends ColorsClass {
 
                         fuse = fuse;
 
-                        while(fuse > 0) {
+                        while (fuse > 0) {
                             if (fuse > 63) {
-                                d.getInventory().addItem(new ItemStack[]{new ItemStack(Material.ARROW, 64)});
+                                d.getInventory().addItem(new ItemStack(Material.ARROW, 64));
                                 fuse -= 64;
                             } else {
-                                d.getInventory().addItem(new ItemStack[]{new ItemStack(Material.ARROW, fuse)});
+                                d.getInventory().addItem(new ItemStack(Material.ARROW, fuse));
                                 fuse = 0;
                             }
                         }
@@ -143,7 +143,7 @@ public class DropEvents1 extends ColorsClass {
                                 Object[] var30 = d;
                                 playerX = d.length;
 
-                                for(fuse = 0; fuse < playerX; ++fuse) {
+                                for (fuse = 0; fuse < playerX; ++fuse) {
                                     Object b = var30[fuse];
                                     String s = b.toString();
                                     if (s != null) {
@@ -234,47 +234,47 @@ public class DropEvents1 extends ColorsClass {
 
                                         int y;
                                         Location blockLocation;
-                                        for(wtfIsThisInt = rad * -1 - 1; wtfIsThisInt < rad + 2; ++wtfIsThisInt) {
-                                            for(z = rad * -1 - 1; z < rad + 2; ++z) {
-                                                for(y = fuse - 1; y > 0; --y) {
-                                                    blockLocation = new Location(player.getLocation().getWorld(), (double)(t + wtfIsThisInt), (double)y, (double)(fuse + z));
+                                        for (wtfIsThisInt = rad * -1 - 1; wtfIsThisInt < rad + 2; ++wtfIsThisInt) {
+                                            for (z = rad * -1 - 1; z < rad + 2; ++z) {
+                                                for (y = fuse - 1; y > 0; --y) {
+                                                    blockLocation = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, y, fuse + z);
                                                     blockLocation.getBlock().setType(ma);
                                                     blockLocation.getBlock().setData(data);
                                                 }
                                             }
                                         }
 
-                                        for(wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
-                                            for(z = rad * -1; z < rad + 1; ++z) {
-                                                for(y = fuse; y > 0; --y) {
-                                                    blockLocation = new Location(player.getLocation().getWorld(), (double)(t + wtfIsThisInt), (double)y, (double)(fuse + z));
+                                        for (wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
+                                            for (z = rad * -1; z < rad + 1; ++z) {
+                                                for (y = fuse; y > 0; --y) {
+                                                    blockLocation = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, y, fuse + z);
                                                     blockLocation.getBlock().setType(Material.AIR);
                                                 }
                                             }
                                         }
 
                                         if (cobs) {
-                                            for(wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
-                                                for(z = rad * -1; z < rad + 1; ++z) {
-                                                    blockLocation = new Location(player.getLocation().getWorld(), (double)(t + wtfIsThisInt), 4.0D, (double)(fuse + z));
+                                            for (wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
+                                                for (z = rad * -1; z < rad + 1; ++z) {
+                                                    blockLocation = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, 4.0D, fuse + z);
                                                     blockLocation.getBlock().setType(Material.WEB);
                                                 }
                                             }
                                         }
 
-                                        Location loc = new Location(player.getLocation().getWorld(), (double)(t - rad), 5.0D, (double)fuse);
+                                        Location loc = new Location(player.getLocation().getWorld(), t - rad, 5.0D, fuse);
                                         Material mat = Material.WALL_SIGN;
                                         if (loc.getBlock().getRelative(BlockFace.WEST).getType() == Material.AIR) {
                                             loc.getBlock().getRelative(BlockFace.WEST).setType(Material.STONE);
                                         }
 
                                         loc.getBlock().setType(mat);
-                                        loc.getBlock().setData((byte)5);
-                                        Sign sign = (Sign)loc.getBlock().getState();
+                                        loc.getBlock().setData((byte) 5);
+                                        Sign sign = (Sign) loc.getBlock().getState();
                                         if (lb.hasDropOption("Texts")) {
                                             Object[] text = lb.getDropOption("Texts").getValues();
 
-                                            for(int x = 0; x < text.length; ++x) {
+                                            for (int x = 0; x < text.length; ++x) {
                                                 if (text[x] != null) {
                                                     sign.setLine(x, ChatColor.translateAlternateColorCodes('&', text[x].toString()));
                                                 }
@@ -283,10 +283,10 @@ public class DropEvents1 extends ColorsClass {
 
                                         sign.update();
 
-                                        for(wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
-                                            for(z = rad * -1; z < rad + 1; ++z) {
-                                                for(y = 2; y > 0; --y) {
-                                                    loc = new Location(player.getLocation().getWorld(), (double)(t + wtfIsThisInt), (double)y, (double)(fuse + z));
+                                        for (wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
+                                            for (z = rad * -1; z < rad + 1; ++z) {
+                                                for (y = 2; y > 0; --y) {
+                                                    loc = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, y, fuse + z);
                                                     loc.getBlock().setType(Material.LAVA);
                                                 }
                                             }
@@ -318,10 +318,10 @@ public class DropEvents1 extends ColorsClass {
                                         int playerZ = player.getLocation().getBlockZ();
                                         int x;
                                         if (blockMaterial != Material.AIR) {
-                                            for(x = blockType * -1 - 1; x < blockType + 2; ++x) {
-                                                for(x = blockType * -1 - 1; x < blockType + 2; ++x) {
-                                                    for(z = playerY; z > -1; --z) {
-                                                        location = new Location(player.getLocation().getWorld(), (double)(playerX + x), (double)z, (double)(playerZ + x));
+                                            for (x = blockType * -1 - 1; x < blockType + 2; ++x) {
+                                                for (x = blockType * -1 - 1; x < blockType + 2; ++x) {
+                                                    for (z = playerY; z > -1; --z) {
+                                                        location = new Location(player.getLocation().getWorld(), playerX + x, z, playerZ + x);
                                                         location.getBlock().setType(blockMaterial);
                                                         location.getBlock().setData(data);
                                                     }
@@ -329,10 +329,10 @@ public class DropEvents1 extends ColorsClass {
                                             }
                                         }
 
-                                        for(x = blockType * -1; x < blockType + 1; ++x) {
-                                            for(x = blockType * -1; x < blockType + 1; ++x) {
-                                                for(z = playerY; z > -1; --z) {
-                                                    location = new Location(player.getLocation().getWorld(), (double)(playerX + x), (double)z, (double)(playerZ + x));
+                                        for (x = blockType * -1; x < blockType + 1; ++x) {
+                                            for (x = blockType * -1; x < blockType + 1; ++x) {
+                                                for (z = playerY; z > -1; --z) {
+                                                    location = new Location(player.getLocation().getWorld(), playerX + x, z, playerZ + x);
                                                     location.getBlock().setType(Material.AIR);
                                                 }
                                             }
@@ -428,15 +428,15 @@ public class DropEvents1 extends ColorsClass {
                                                     DropEvents.b(clss, bloc);
                                                 }
                                             } else if (drop == LBDrop.LAVA_POOL) {
-                                                for(t = -3; t < 4; ++t) {
-                                                    for(fuse = -3; fuse < 4; ++fuse) {
-                                                        player.getLocation().add((double)t, -1.0D, (double)fuse).getBlock().setType(Material.STATIONARY_LAVA);
+                                                for (t = -3; t < 4; ++t) {
+                                                    for (fuse = -3; fuse < 4; ++fuse) {
+                                                        player.getLocation().add(t, -1.0D, fuse).getBlock().setType(Material.STATIONARY_LAVA);
                                                     }
                                                 }
                                             } else if (drop == LBDrop.DROPPER) {
                                                 block.setType(Material.DROPPER);
-                                                block.setData((byte)1);
-                                                Dropper d = (Dropper)block.getState();
+                                                block.setData((byte) 1);
+                                                Dropper d = (Dropper) block.getState();
                                                 fuse = 64;
                                                 if (lb.hasDropOption("Times")) {
                                                     fuse = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
@@ -444,12 +444,12 @@ public class DropEvents1 extends ColorsClass {
 
                                                 fuse = fuse;
 
-                                                while(fuse > 0) {
+                                                while (fuse > 0) {
                                                     if (fuse > 63) {
-                                                        d.getInventory().addItem(new ItemStack[]{new ItemStack(Material.DIAMOND, 64)});
+                                                        d.getInventory().addItem(new ItemStack(Material.DIAMOND, 64));
                                                         fuse -= 64;
                                                     } else {
-                                                        d.getInventory().addItem(new ItemStack[]{new ItemStack(Material.DIAMOND, fuse)});
+                                                        d.getInventory().addItem(new ItemStack(Material.DIAMOND, fuse));
                                                         fuse = 0;
                                                     }
                                                 }
@@ -461,26 +461,26 @@ public class DropEvents1 extends ColorsClass {
                                                 if (player != null) {
                                                     ItemStack item = ItemMaker.addEnchant(ItemMaker.createItem(Material.GOLD_NUGGET, 1, 0, "" + gold + bold + "Coin", Arrays.asList(gray + "Drop it in the well")), Enchantment.DURABILITY, 1);
                                                     ItemMeta itemM = item.getItemMeta();
-                                                    itemM.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+                                                    itemM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                                                     item.setItemMeta(itemM);
-                                                    player.getInventory().addItem(new ItemStack[]{item});
+                                                    player.getInventory().addItem(item);
                                                 }
                                             } else if (drop == LBDrop.WATER_TRAP) {
                                                 if (player != null) {
-                                                    for(t = -1; t < 2; ++t) {
-                                                        for(fuse = -1; fuse < 2; ++fuse) {
-                                                            for(fuse = 0; fuse < 3; ++fuse) {
+                                                    for (t = -1; t < 2; ++t) {
+                                                        for (fuse = -1; fuse < 2; ++fuse) {
+                                                            for (fuse = 0; fuse < 3; ++fuse) {
                                                                 if (t != 0 || fuse != 0) {
-                                                                    player.getLocation().add((double)t, (double)fuse, (double)fuse).getBlock().setType(Material.OBSIDIAN);
+                                                                    player.getLocation().add(t, fuse, fuse).getBlock().setType(Material.OBSIDIAN);
                                                                 }
                                                             }
                                                         }
                                                     }
 
-                                                    for(t = -1; t < 2; ++t) {
-                                                        for(fuse = -1; fuse < 2; ++fuse) {
+                                                    for (t = -1; t < 2; ++t) {
+                                                        for (fuse = -1; fuse < 2; ++fuse) {
                                                             if (t != 0 || fuse != 0) {
-                                                                player.getLocation().add((double)t, 1.0D, (double)fuse).getBlock().setType(Material.GLASS);
+                                                                player.getLocation().add(t, 1.0D, fuse).getBlock().setType(Material.GLASS);
                                                             }
                                                         }
                                                     }
@@ -505,7 +505,7 @@ public class DropEvents1 extends ColorsClass {
                                                     RawText text = new RawText(ChatColor.DARK_PURPLE + "[" + ChatColor.GOLD + "Illuminati" + ChatColor.DARK_PURPLE + "]");
                                                     text.addAction(new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, ChatColor.RED + "Illuminati confirmed!\n\n" + ChatColor.YELLOW + "Don't click"));
                                                     text.addAction(new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + ILBCmd.lcmd + " illuminati"));
-                                                    text.sendTo(new Player[]{player});
+                                                    text.sendTo(player);
                                                 }
                                             } else if (drop == LBDrop.SCHEMATIC_STRUCTURE) {
                                                 if (LuckyBlock.isWorldEditValid()) {
@@ -531,7 +531,7 @@ public class DropEvents1 extends ColorsClass {
                                                         }
 
                                                         if (a != null) {
-                                                            Schematic.loadArea(fi, a.add((double)i[0], (double)i[1], (double)i[2]));
+                                                            Schematic.loadArea(fi, a.add(i[0], i[1], i[2]));
                                                         }
                                                     }
                                                 } else if (player != null) {
@@ -574,7 +574,7 @@ public class DropEvents1 extends ColorsClass {
                                                     block.getRelative(BlockFace.UP).setData(data);
                                                     block.getRelative(BlockFace.DOWN).setType(mat);
                                                     block.getRelative(BlockFace.DOWN).setData(data);
-                                                    tnt = (TNTPrimed)block.getWorld().spawnEntity(bloc.add(0.5D, 0.0D, 0.5D), EntityType.PRIMED_TNT);
+                                                    tnt = (TNTPrimed) block.getWorld().spawnEntity(bloc.add(0.5D, 0.0D, 0.5D), EntityType.PRIMED_TNT);
                                                     tnt.setFuseTicks(fuse);
                                                     tnt.setYield(power);
                                                 } else if (drop == LBDrop.FLYING_TNTS) {
@@ -587,11 +587,11 @@ public class DropEvents1 extends ColorsClass {
                                                         fuse = Integer.parseInt(lb.getDropOption("Fuse").getValues()[0].toString());
                                                     }
 
-                                                    for(fuse = 8; fuse > 0; --fuse) {
-                                                        Bat b = (Bat)block.getWorld().spawnEntity(bloc, EntityType.BAT);
+                                                    for (fuse = 8; fuse > 0; --fuse) {
+                                                        Bat b = (Bat) block.getWorld().spawnEntity(bloc, EntityType.BAT);
                                                         b.setHealth(0.5D);
                                                         b.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
-                                                        tnt = (TNTPrimed)block.getWorld().spawnEntity(bloc, EntityType.PRIMED_TNT);
+                                                        tnt = (TNTPrimed) block.getWorld().spawnEntity(bloc, EntityType.PRIMED_TNT);
                                                         tnt.setFuseTicks(fuse);
                                                         b.addPassenger(tnt);
                                                     }
@@ -638,17 +638,17 @@ public class DropEvents1 extends ColorsClass {
     private static void jail(Block b) {
         int y;
         int x;
-        for(y = -1; y < 2; ++y) {
-            for(x = -1; x < 2; ++x) {
-                b.getLocation().add((double)y, -1.0D, (double)x).getBlock().setType(Material.SMOOTH_BRICK);
+        for (y = -1; y < 2; ++y) {
+            for (x = -1; x < 2; ++x) {
+                b.getLocation().add(y, -1.0D, x).getBlock().setType(Material.SMOOTH_BRICK);
             }
         }
 
-        for(y = 0; y < 2; ++y) {
-            for(x = -1; x < 2; ++x) {
-                for(int z = -1; z < 2; ++z) {
+        for (y = 0; y < 2; ++y) {
+            for (x = -1; x < 2; ++x) {
+                for (int z = -1; z < 2; ++z) {
                     if (x != 0 || z != 0) {
-                        b.getLocation().add((double)x, (double)y, (double)z).getBlock().setType(Material.IRON_FENCE);
+                        b.getLocation().add(x, y, z).getBlock().setType(Material.IRON_FENCE);
                     }
                 }
             }

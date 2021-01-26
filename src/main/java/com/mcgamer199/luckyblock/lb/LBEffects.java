@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.lb;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class LBEffects {
     public LBEffects() {
@@ -46,8 +46,8 @@ public class LBEffects {
                                 double ly = Double.parseDouble(part[7]);
                                 double lz = Double.parseDouble(part[8]);
                                 int amount = Integer.parseInt(part[5]);
-                                Location l = new Location(block.getWorld(), (double)block.getX() + 0.4D + lx, (double)block.getY() + 0.4D + ly, (double)block.getZ() + 0.4D + lz);
-                                block.getWorld().spawnParticle(Particle.valueOf(part[0].toUpperCase()), l, amount, (double)rx, (double)ry, (double)rz, (double)speed);
+                                Location l = new Location(block.getWorld(), (double) block.getX() + 0.4D + lx, (double) block.getY() + 0.4D + ly, (double) block.getZ() + 0.4D + lz);
+                                block.getWorld().spawnParticle(Particle.valueOf(part[0].toUpperCase()), l, amount, rx, ry, rz, speed);
                             }
                         } catch (Exception var18) {
                         }
@@ -71,6 +71,6 @@ public class LBEffects {
                 }
 
             }
-        }, (long)lb.a, (long)lb.a));
+        }, lb.a, lb.a));
     }
 }

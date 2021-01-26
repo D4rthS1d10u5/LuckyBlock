@@ -1,15 +1,15 @@
 package com.mcgamer199.luckyblock.logic;
 
-import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.command.engine.ILBCmd;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import com.mcgamer199.luckyblock.api.book.BookMaker;
 import com.mcgamer199.luckyblock.api.book.BookPage;
+import com.mcgamer199.luckyblock.command.engine.ILBCmd;
+import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
 import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
 import com.mcgamer199.luckyblock.tellraw.RawText;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class LBBook extends ColorsClass {
     public LBBook() {
@@ -35,9 +35,9 @@ public class LBBook extends ColorsClass {
         tpage[1] = new RawText(darkgreen + "Available lucky blocks:\n");
         int next = 0;
 
-        for(int x = 0; x < LBType.getTypes().size(); ++x) {
+        for (int x = 0; x < LBType.getTypes().size(); ++x) {
             if (x < 12) {
-                LBType type = (LBType)LBType.getTypes().get(x);
+                LBType type = LBType.getTypes().get(x);
                 tpage[x + 2] = new RawText(type.getName() + "\n");
                 tpage[x + 2].addAction(new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, yellow + "Click to get"));
                 tpage[x + 2].addAction(new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + ILBCmd.lcmd + " give " + player.getName() + " 1 0 " + type.getId()));
@@ -48,7 +48,7 @@ public class LBBook extends ColorsClass {
         ++next;
         String t = "";
 
-        for(int x = next; x < 13; ++x) {
+        for (int x = next; x < 13; ++x) {
             t = t + "\n";
         }
 
@@ -59,7 +59,7 @@ public class LBBook extends ColorsClass {
         tpage1[3].addAction(new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + ILBCmd.lcmd + " lct"));
         tpage1[4] = new RawText(c);
         BookPage page3 = new BookPage(tpage1);
-        BookMaker.IBook book = BookMaker.createNewBook("MCGamer199", "" + yellow + bold + "Lucky Block Book", new BookPage[]{page, page2, page3});
+        BookMaker.IBook book = BookMaker.createNewBook("MCGamer199", "" + yellow + bold + "Lucky Block Book", page, page2, page3);
         BookMaker.giveBook(book, player);
     }
 

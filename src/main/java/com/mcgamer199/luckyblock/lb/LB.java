@@ -5,15 +5,16 @@
 
 package com.mcgamer199.luckyblock.lb;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
-import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityLBNameTag;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.tags.BlockTags;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,48 +24,61 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
 import java.util.*;
 
 public class LB {
     public static final int MAX_LB_COUNT = 1048;
+    public static final List<String> hiddenOptions = Arrays.asList("Title", "Player");
+    public static final String sp = "/s/";
     public static List<LB> lbs = new ArrayList();
     public static List<LB> lastDeleted = new ArrayList();
     public static HashMap<String, List<LB>> regions = new HashMap();
-    public static final List<String> hiddenOptions = Arrays.asList("Title", "Player");
-    public static final String sp = "/s/";
+    public static Map<LBType, FileConfiguration> cache = new HashMap<>();
+    public final int _d = 5;
+    public UUID owner;
+    public int a;
+    public CustomDrop customDrop;
+    public BlockFace facing;
     Block block;
     private int luck;
     private com.mcgamer199.luckyblock.lb.LBDrop drop;
     private LBType type;
-    public UUID owner;
     private List<com.mcgamer199.luckyblock.lb.DropOption> dropOptions = new ArrayList();
-    public int a;
     private Object b;
-    public CustomDrop customDrop;
     private FileConfiguration file;
     private String floc;
-    private String folder = "Drops";
+    private final String folder = "Drops";
     private boolean freezed;
-    public final int _d = 5;
-    public BlockFace facing;
+
+    public LB() {
+        this.facing = BlockFace.EAST;
+    }
+
+    public LB(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
+        this.facing = BlockFace.EAST;
+        if (getFromBlock(block) == null) {
+            if (canSaveMore()) {
+                init(type, block, luck, placedBy, s, r);
+            }
+        }
+    }
 
     public static boolean canSaveMore() {
         return lbs.size() < 1048;
     }
 
     public static LB placeLB(Location loc, LBType lbType) {
-        return placeLB(loc, lbType, (ItemStack)null);
+        return placeLB(loc, lbType, null);
     }
 
     public static LB placeLB(Location loc, LBType lbType, ItemStack item) {
-        return placeLB(loc, lbType, item, (Object)null);
+        return placeLB(loc, lbType, item, null);
     }
 
     public static LB placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy) {
-        return placeLB(loc, lbType, item, placedBy, (String)null, 0);
+        return placeLB(loc, lbType, item, placedBy, null, 0);
     }
 
     public static LB placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy, String drop) {
@@ -80,26 +94,119 @@ public class LB {
             }
 
             loc.getBlock().setType(lbType.getBlockType());
-            loc.getBlock().setData((byte)lbType.getData());
+            loc.getBlock().setData((byte) lbType.getData());
             if (item != null) {
                 luck = LBType.getLuck(item);
             }
 
-            return PlaceLuckyBlock.place(lbType, loc.getBlock(), placedBy, PlaceLuckyBlock.dropToString(drop), luck, item, true, (BlockFace)null, options);
+            return PlaceLuckyBlock.place(lbType, loc.getBlock(), placedBy, PlaceLuckyBlock.dropToString(drop), luck, item, true, null, options);
         }
     }
 
+    public static boolean isHidden(String name) {
+        Iterator var2 = hiddenOptions.iterator();
 
-    public LB() {
-        this.facing = BlockFace.EAST;
+        while (var2.hasNext()) {
+            String s = (String) var2.next();
+            if (s.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public LB(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
-        this.facing = BlockFace.EAST;
-        if (getFromBlock(block) == null) {
-            if (canSaveMore()) {
-                init(type, block, luck, placedBy, s, r);
+    public static LB getByABlock(Block block) {
+        for (int x = 0; x < lbs.size(); ++x) {
+            if (lbs.get(x).getType().hasAdditionalBlocks() && lbs.get(x).block.getWorld().getName().equalsIgnoreCase(block.getWorld().getName())) {
+                String[] a = lbs.get(x).getType().getAdditionalBlocks();
+                String[] var6 = a;
+                int var5 = a.length;
+
+                for (int var4 = 0; var4 < var5; ++var4) {
+                    String s = var6[var4];
+                    String[] d = s.split(" ");
+                    String[] g = d[0].split(",");
+                    Block b = lbs.get(x).block;
+                    int x1 = Integer.parseInt(g[0]);
+                    int y1 = Integer.parseInt(g[1]);
+                    int z1 = Integer.parseInt(g[2]);
+                    if (blockToString(b.getLocation().add(x1, y1, z1).getBlock()).equalsIgnoreCase(blockToString(block))) {
+                        return lbs.get(x);
+                    }
+                }
             }
+        }
+
+        return null;
+    }
+
+    public static void saveAll() {
+        List<String> list = new ArrayList();
+
+        for (int x = 0; x < lbs.size(); ++x) {
+            LB lb = lbs.get(x);
+            list.add(lb.toString());
+        }
+
+        LuckyBlockAPI.lbs.set("LuckyBlocks", list);
+        LuckyBlockAPI.saveLBFile();
+    }
+
+    public static LB getFromBlock(Block block) {
+        for (int x = 0; x < lbs.size(); ++x) {
+            LB lb = lbs.get(x);
+            if (lb.blockToString().equalsIgnoreCase(blockToString(block))) {
+                return lb;
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean isLuckyBlock(Block block) {
+        return getFromBlock(block) != null;
+    }
+
+    public static Block getRelatives(Block block, BlockFace face, int times) {
+        --times;
+        return times > 0 ? getRelatives(block.getRelative(face), face, times) : block.getRelative(face);
+    }
+
+    public static boolean isRelativesType(Block block, BlockFace face, int times, Material mat) {
+        --times;
+        if (block.getRelative(face).getType() == mat) {
+            return times <= 0 || isRelativesType(block.getRelative(face), face, times, mat);
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isRelativesLB(Block block, BlockFace face, int times) {
+        --times;
+        if (isLuckyBlock(block.getRelative(face))) {
+            return times <= 0 || isRelativesLB(block.getRelative(face), face, times);
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isRelatives(Block block, Material[] mats, BlockFace... face) {
+        boolean g = false;
+
+        for (int x = 0; x < mats.length; ++x) {
+            g = block.getRelative(face[x]).getType() == mats[x];
+        }
+
+        return g;
+    }
+
+    public static String blockToString(Block block) {
+        if (block.getWorld() != null) {
+            String world = block.getWorld().getName();
+            return world + "," + block.getX() + "," + block.getY() + "," + block.getZ();
+        } else {
+            return null;
         }
     }
 
@@ -110,12 +217,12 @@ public class LB {
         if (placedBy != null) {
             if (placedBy instanceof Entity) {
                 if (placedBy instanceof Player) {
-                    this.b = "pl=" + ((Player)placedBy).getName();
+                    this.b = "pl=" + ((Player) placedBy).getName();
                 } else {
-                    this.b = "a=Entity[" + ((Entity)placedBy).getType() + "," + ((Entity)placedBy).getUniqueId().toString() + "]";
+                    this.b = "a=Entity[" + ((Entity) placedBy).getType() + "," + ((Entity) placedBy).getUniqueId().toString() + "]";
                 }
             } else if (placedBy instanceof Block) {
-                Block blk = (Block)placedBy;
+                Block blk = (Block) placedBy;
                 this.b = "a=Block[" + blk.getX() + "," + blk.getY() + "," + blk.getZ() + "]";
             } else {
                 this.b = placedBy;
@@ -126,8 +233,8 @@ public class LB {
 
         Iterator var8 = lbs.iterator();
 
-        while(var8.hasNext()) {
-            LB lb = (LB)var8.next();
+        while (var8.hasNext()) {
+            LB lb = (LB) var8.next();
             if (this.blockToString().equalsIgnoreCase(lb.blockToString())) {
                 return;
             }
@@ -185,44 +292,6 @@ public class LB {
         }
     }
 
-    public static boolean isHidden(String name) {
-        Iterator var2 = hiddenOptions.iterator();
-
-        while(var2.hasNext()) {
-            String s = (String)var2.next();
-            if (s.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static LB getByABlock(Block block) {
-        for(int x = 0; x < lbs.size(); ++x) {
-            if (((LB)lbs.get(x)).getType().hasAdditionalBlocks() && ((LB)lbs.get(x)).block.getWorld().getName().equalsIgnoreCase(block.getWorld().getName())) {
-                String[] a = ((LB)lbs.get(x)).getType().getAdditionalBlocks();
-                String[] var6 = a;
-                int var5 = a.length;
-
-                for(int var4 = 0; var4 < var5; ++var4) {
-                    String s = var6[var4];
-                    String[] d = s.split(" ");
-                    String[] g = d[0].split(",");
-                    Block b = ((LB)lbs.get(x)).block;
-                    int x1 = Integer.parseInt(g[0]);
-                    int y1 = Integer.parseInt(g[1]);
-                    int z1 = Integer.parseInt(g[2]);
-                    if (blockToString(b.getLocation().add((double)x1, (double)y1, (double)z1).getBlock()).equalsIgnoreCase(blockToString(block))) {
-                        return (LB)lbs.get(x);
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     public Object getWhoPlaced() {
         return this.b;
     }
@@ -260,8 +329,6 @@ public class LB {
         return this.dropOptions;
     }
 
-    public static Map<LBType, FileConfiguration> cache = new HashMap<>();
-
     public void setFile() {
         if (this.type == null) {
             return;
@@ -272,7 +339,7 @@ public class LB {
             File[] var6 = files;
             int var5 = files.length;
 
-            for(int var4 = 0; var4 < var5; ++var4) {
+            for (int var4 = 0; var4 < var5; ++var4) {
                 File f = var6[var4];
                 if (f.getName().endsWith(".yml")) {
                     String g = YamlConfiguration.loadConfiguration(f).getString("[Luck]");
@@ -335,12 +402,12 @@ public class LB {
                 if (c != null) {
                     Iterator var4 = c.getKeys(false).iterator();
 
-                    while(var4.hasNext()) {
-                        String s = (String)var4.next();
+                    while (var4.hasNext()) {
+                        String s = (String) var4.next();
                         String loc = "Drops." + this.floc + "." + s;
                         Object[] obj = this.getValue(loc);
 
-                        for(int x = 0; x < obj.length; ++x) {
+                        for (int x = 0; x < obj.length; ++x) {
                             if (obj[x] instanceof String) {
                                 obj[x] = obj[x].toString().replace("%s%", "'");
                             }
@@ -356,7 +423,7 @@ public class LB {
                     com.mcgamer199.luckyblock.lb.DropOption[] var14;
                     int var12 = (var14 = this.drop.getDefaultOptions()).length;
 
-                    for(var11 = 0; var11 < var12; ++var11) {
+                    for (var11 = 0; var11 < var12; ++var11) {
                         com.mcgamer199.luckyblock.lb.DropOption o = var14[var11];
                         if (o != null && !this.hasDropOption(o.getName())) {
                             this.dropOptions.add(o);
@@ -371,7 +438,7 @@ public class LB {
                 com.mcgamer199.luckyblock.lb.DropOption[] var13;
                 var11 = (var13 = this.drop.getDefaultOptions()).length;
 
-                for(int var10 = 0; var10 < var11; ++var10) {
+                for (int var10 = 0; var10 < var11; ++var10) {
                     com.mcgamer199.luckyblock.lb.DropOption o = var13[var10];
                     if (o != null) {
                         this.dropOptions.add(o);
@@ -396,6 +463,19 @@ public class LB {
         return this.luck;
     }
 
+    public void setLuck(int luck) {
+        this.luck = luck;
+        if (this.luck > this.type.getMaxLuck()) {
+            this.luck = this.type.getMaxLuck();
+        }
+
+        if (this.luck < this.type.getMinLuck()) {
+            this.luck = this.type.getMinLuck();
+        }
+
+        this.save(true);
+    }
+
     public void changed() {
         if (this.isValid()) {
             MyTasks.playEffects(Particle.NOTE, this.block.getLocation().add(0.5D, 1.0D, 0.5D), 5, new double[]{0.0D, 0.5D, 0.0D}, 0.0F);
@@ -412,8 +492,8 @@ public class LB {
         boolean h = false;
         int x = 0;
         if (this.drop != null) {
-            for(Iterator var7 = this.file.getConfigurationSection("Drops").getKeys(false).iterator(); var7.hasNext(); ++x) {
-                String a = (String)var7.next();
+            for (Iterator var7 = this.file.getConfigurationSection("Drops").getKeys(false).iterator(); var7.hasNext(); ++x) {
+                String a = (String) var7.next();
                 if (x < this.file.getConfigurationSection("Drops").getKeys(false).size() && this.file.getString("Drops." + a + ".DropName") != null && this.drop.name().equalsIgnoreCase(this.file.getString("Drops." + a + ".DropName"))) {
                     this.floc = a;
                     h = true;
@@ -433,8 +513,8 @@ public class LB {
         if (this.type.showName && this.type.showData) {
             List<EntityLBNameTag> en = EntityLBNameTag.getByLB(this);
             if (en != null && en.size() > 0) {
-                for(int i = 0; i < en.size(); ++i) {
-                    EntityLBNameTag l = (EntityLBNameTag)en.get(i);
+                for (int i = 0; i < en.size(); ++i) {
+                    EntityLBNameTag l = en.get(i);
                     if (l.hasTag("IType") && l.getTag("IType").toString().equalsIgnoreCase("Drop")) {
                         l.reload(true);
                     }
@@ -447,7 +527,7 @@ public class LB {
     public void refreshCustomDrop() {
         this.dropOptions.clear();
         if (this.customDrop.getDefaultOptions() != null) {
-            for(int x = 0; x < this.customDrop.getDefaultOptions().length; ++x) {
+            for (int x = 0; x < this.customDrop.getDefaultOptions().length; ++x) {
                 if (this.customDrop.getDefaultOptions()[x] != null) {
                     this.dropOptions.add(this.customDrop.getDefaultOptions()[x]);
                 }
@@ -461,8 +541,8 @@ public class LB {
     }
 
     public void removeDropOptions(String dropOption) {
-        for(int x = 0; x < this.dropOptions.size(); ++x) {
-            if (((com.mcgamer199.luckyblock.lb.DropOption)this.dropOptions.get(x)).getName().equalsIgnoreCase(dropOption)) {
+        for (int x = 0; x < this.dropOptions.size(); ++x) {
+            if (this.dropOptions.get(x).getName().equalsIgnoreCase(dropOption)) {
                 this.dropOptions.remove(x);
                 x = 0;
             }
@@ -470,26 +550,13 @@ public class LB {
 
     }
 
-    public void setLuck(int luck) {
-        this.luck = luck;
-        if (this.luck > this.type.getMaxLuck()) {
-            this.luck = this.type.getMaxLuck();
-        }
-
-        if (this.luck < this.type.getMinLuck()) {
-            this.luck = this.type.getMinLuck();
-        }
-
-        this.save(true);
-    }
-
     public LBDrop getDrop() {
         return this.drop;
     }
 
     public void save(boolean saveAll) {
-        for(int x = 0; x < lbs.size(); ++x) {
-            LB lb = (LB)lbs.get(x);
+        for (int x = 0; x < lbs.size(); ++x) {
+            LB lb = lbs.get(x);
             if (this.equals(lb)) {
                 lbs.remove(lb);
             }
@@ -511,8 +578,8 @@ public class LB {
     }
 
     public void remove() {
-        for(int x = 0; x < lbs.size(); ++x) {
-            LB lb = (LB)lbs.get(x);
+        for (int x = 0; x < lbs.size(); ++x) {
+            LB lb = lbs.get(x);
             if (lb.blockToString().equalsIgnoreCase(this.blockToString())) {
                 lbs.remove(lb);
             }
@@ -527,13 +594,13 @@ public class LB {
 
         String s;
         String[] g;
-        for(int x = 0; x < list.size(); ++x) {
-            s = (String)list.get(x);
+        for (int x = 0; x < list.size(); ++x) {
+            s = list.get(x);
             String[] d = s.substring(1, s.length() - 1).split("/s/");
             g = d;
             int var7 = d.length;
 
-            for(int var6 = 0; var6 < var7; ++var6) {
+            for (int var6 = 0; var6 < var7; ++var6) {
                 String s1 = g[var6];
                 String[] a = s1.split(":=");
                 if (a.length == 2 && a[0].equalsIgnoreCase("Block") && this.blockToString().equalsIgnoreCase(a[1])) {
@@ -549,7 +616,7 @@ public class LB {
             String[] var19 = a;
             int var18 = a.length;
 
-            for(int var17 = 0; var17 < var18; ++var17) {
+            for (int var17 = 0; var17 < var18; ++var17) {
                 s = var19[var17];
                 String[] d = s.split(" ");
                 g = d[0].split(",");
@@ -557,7 +624,7 @@ public class LB {
                 int y = Integer.parseInt(g[1]);
                 int z = Integer.parseInt(g[2]);
                 Material mat = Material.getMaterial(d[1]);
-                Block bl = this.block.getLocation().add((double)x, (double)y, (double)z).getBlock();
+                Block bl = this.block.getLocation().add(x, y, z).getBlock();
                 if (bl.getType() == mat) {
                     bl.setType(Material.AIR);
                 }
@@ -567,8 +634,8 @@ public class LB {
     }
 
     public boolean isValid() {
-        for(int x = 0; x < lbs.size(); ++x) {
-            if (((LB)lbs.get(x)).equals(this)) {
+        for (int x = 0; x < lbs.size(); ++x) {
+            if (lbs.get(x).equals(this)) {
                 return true;
             }
         }
@@ -576,35 +643,8 @@ public class LB {
         return false;
     }
 
-    public static void saveAll() {
-        List<String> list = new ArrayList();
-
-        for(int x = 0; x < lbs.size(); ++x) {
-            LB lb = (LB)lbs.get(x);
-            list.add(lb.toString());
-        }
-
-        LuckyBlockAPI.lbs.set("LuckyBlocks", list);
-        LuckyBlockAPI.saveLBFile();
-    }
-
     public boolean equals(LB lb) {
         return lb.blockToString().equalsIgnoreCase(this.blockToString());
-    }
-
-    public static LB getFromBlock(Block block) {
-        for(int x = 0; x < lbs.size(); ++x) {
-            LB lb = (LB)lbs.get(x);
-            if (lb.blockToString().equalsIgnoreCase(blockToString(block))) {
-                return lb;
-            }
-        }
-
-        return null;
-    }
-
-    public static boolean isLuckyBlock(Block block) {
-        return getFromBlock(block) != null;
     }
 
     public void explode() {
@@ -632,14 +672,16 @@ public class LB {
         this.type = type;
         if (this.block != null) {
             this.block.setType(type.getType());
-            this.block.setData((byte)type.getData());
+            this.block.setData((byte) type.getData());
         }
 
         this.unfreeze();
         this.save(true);
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public void setData(LB lb) {
         this.luck = lb.luck;
@@ -651,56 +693,14 @@ public class LB {
         this.a = lb.a;
     }
 
-    public static Block getRelatives(Block block, BlockFace face, int times) {
-        --times;
-        return times > 0 ? getRelatives(block.getRelative(face), face, times) : block.getRelative(face);
-    }
-
-    public static boolean isRelativesType(Block block, BlockFace face, int times, Material mat) {
-        --times;
-        if (block.getRelative(face).getType() == mat) {
-            return times > 0 ? isRelativesType(block.getRelative(face), face, times, mat) : true;
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean isRelativesLB(Block block, BlockFace face, int times) {
-        --times;
-        if (isLuckyBlock(block.getRelative(face))) {
-            return times > 0 ? isRelativesLB(block.getRelative(face), face, times) : true;
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean isRelatives(Block block, Material[] mats, BlockFace... face) {
-        boolean g = false;
-
-        for(int x = 0; x < mats.length; ++x) {
-            g = block.getRelative(face[x]).getType() == mats[x];
-        }
-
-        return g;
-    }
-
-    public static String blockToString(Block block) {
-        if (block.getWorld() != null) {
-            String world = block.getWorld().getName();
-            return world + "," + block.getX() + "," + block.getY() + "," + block.getZ();
-        } else {
-            return null;
-        }
-    }
-
     public String blockToString() {
         return blockToString(this.block);
     }
 
     public com.mcgamer199.luckyblock.lb.DropOption getDropOption(String name) {
-        for(int x = 0; x < this.dropOptions.size(); ++x) {
-            if (((com.mcgamer199.luckyblock.lb.DropOption)this.dropOptions.get(x)).getName().equalsIgnoreCase(name)) {
-                return (com.mcgamer199.luckyblock.lb.DropOption)this.dropOptions.get(x);
+        for (int x = 0; x < this.dropOptions.size(); ++x) {
+            if (this.dropOptions.get(x).getName().equalsIgnoreCase(name)) {
+                return this.dropOptions.get(x);
             }
         }
 
@@ -795,8 +795,8 @@ public class LB {
         if (this.dropOptions != null && this.dropOptions.size() > 0) {
             s = s + "/s/" + "Options:={";
 
-            for(int x = 0; x < this.dropOptions.size(); ++x) {
-                com.mcgamer199.luckyblock.lb.DropOption o = (DropOption)this.dropOptions.get(x);
+            for (int x = 0; x < this.dropOptions.size(); ++x) {
+                com.mcgamer199.luckyblock.lb.DropOption o = this.dropOptions.get(x);
                 if (o != null) {
                     if (x == 0) {
                         s = s + o.getName() + ":[";
@@ -804,7 +804,7 @@ public class LB {
                         s = s + ";" + o.getName() + ":[";
                     }
 
-                    for(int i = 0; i < o.getValues().length; ++i) {
+                    for (int i = 0; i < o.getValues().length; ++i) {
                         if (o.getValues()[i] != null) {
                             String t = o.getValues()[i].toString();
                             boolean num = false;

@@ -1,6 +1,8 @@
 package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,8 +11,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,19 +21,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class SpawnerBlock {
-    private static boolean loaded = false;
     public static List<SpawnerBlock> spawners = new ArrayList();
-    private UUID uuid = UUID.randomUUID();
     static File fileF = new File(LuckyBlock.d() + "data/spawners.yml");
     static FileConfiguration file;
-    private Material mat;
-    private Block block;
-    private int range = 16;
-    private String entityToSpawn;
+    private static boolean loaded = false;
 
     static {
         file = YamlConfiguration.loadConfiguration(fileF);
     }
+
+    private UUID uuid = UUID.randomUUID();
+    private Material mat;
+    private final Block block;
+    private int range = 16;
+    private final String entityToSpawn;
 
     public SpawnerBlock(Block block, int range, String entityToSpawn) {
         this.block = block;
@@ -41,6 +42,33 @@ public class SpawnerBlock {
         this.mat = block.getType();
         this.entityToSpawn = entityToSpawn;
         this.func_loop();
+    }
+
+    public static void load() {
+        if (!loaded) {
+            loaded = true;
+            if (file.getConfigurationSection("SpawnerBlocks") != null) {
+                Iterator var1 = file.getConfigurationSection("SpawnerBlocks").getKeys(false).iterator();
+
+                while (var1.hasNext()) {
+                    String s = (String) var1.next();
+                    ConfigurationSection c = file.getConfigurationSection("SpawnerBlocks").getConfigurationSection(s);
+                    if (c != null) {
+                        String b = c.getString("Block");
+                        int range = c.getInt("Range");
+                        UUID u = UUID.fromString(c.getString("UUID"));
+                        String e = c.getString("SpawnEntity");
+                        String mat = c.getString("BlockMaterial");
+                        SpawnerBlock sb = new SpawnerBlock(MyTasks.stringToBlock(b), range, e);
+                        sb.uuid = u;
+                        sb.mat = Material.getMaterial(mat);
+                        sb.save(false);
+                        sb.func_loop();
+                    }
+                }
+            }
+        }
+
     }
 
     public Block getBlock() {
@@ -62,9 +90,9 @@ public class SpawnerBlock {
                 if (SpawnerBlock.this.block.getType() == SpawnerBlock.this.mat) {
                     Iterator var2 = SpawnerBlock.this.block.getWorld().getPlayers().iterator();
 
-                    while(var2.hasNext()) {
-                        Player p = (Player)var2.next();
-                        if (p.getLocation().distance(SpawnerBlock.this.block.getLocation()) <= (double)SpawnerBlock.this.range) {
+                    while (var2.hasNext()) {
+                        Player p = (Player) var2.next();
+                        if (p.getLocation().distance(SpawnerBlock.this.block.getLocation()) <= (double) SpawnerBlock.this.range) {
                             SpawnerBlock.this.activate();
                             task.run();
                         }
@@ -100,8 +128,8 @@ public class SpawnerBlock {
     }
 
     public void save(boolean saveToFile) {
-        for(int x = 0; x < spawners.size(); ++x) {
-            SpawnerBlock sb = (SpawnerBlock)spawners.get(x);
+        for (int x = 0; x < spawners.size(); ++x) {
+            SpawnerBlock sb = spawners.get(x);
             String s = MyTasks.blockToString(sb.getBlock());
             if (s.equalsIgnoreCase(MyTasks.blockToString(this.block))) {
                 spawners.remove(sb);
@@ -116,15 +144,15 @@ public class SpawnerBlock {
     }
 
     public void remove() {
-        for(int x = 0; x < spawners.size(); ++x) {
-            SpawnerBlock s = (SpawnerBlock)spawners.get(x);
+        for (int x = 0; x < spawners.size(); ++x) {
+            SpawnerBlock s = spawners.get(x);
             String b = MyTasks.blockToString(s.block);
             if (b.equalsIgnoreCase(MyTasks.blockToString(this.block))) {
                 spawners.remove(s);
             }
         }
 
-        file.set("SpawnerBlocks.Spawner" + this.uuid.toString(), (Object)null);
+        file.set("SpawnerBlocks.Spawner" + this.uuid.toString(), null);
 
         try {
             file.save(fileF);
@@ -144,33 +172,6 @@ public class SpawnerBlock {
             file.save(fileF);
         } catch (IOException var2) {
             var2.printStackTrace();
-        }
-
-    }
-
-    public static void load() {
-        if (!loaded) {
-            loaded = true;
-            if (file.getConfigurationSection("SpawnerBlocks") != null) {
-                Iterator var1 = file.getConfigurationSection("SpawnerBlocks").getKeys(false).iterator();
-
-                while(var1.hasNext()) {
-                    String s = (String)var1.next();
-                    ConfigurationSection c = file.getConfigurationSection("SpawnerBlocks").getConfigurationSection(s);
-                    if (c != null) {
-                        String b = c.getString("Block");
-                        int range = c.getInt("Range");
-                        UUID u = UUID.fromString(c.getString("UUID"));
-                        String e = c.getString("SpawnEntity");
-                        String mat = c.getString("BlockMaterial");
-                        SpawnerBlock sb = new SpawnerBlock(MyTasks.stringToBlock(b), range, e);
-                        sb.uuid = u;
-                        sb.mat = Material.getMaterial(mat);
-                        sb.save(false);
-                        sb.func_loop();
-                    }
-                }
-            }
         }
 
     }

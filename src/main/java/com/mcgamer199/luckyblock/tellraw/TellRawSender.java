@@ -15,7 +15,7 @@ public class TellRawSender {
         int i = 0;
         int g;
         if (texts != null && texts.length > 0) {
-            for(g = 0; g < texts.length; ++g) {
+            for (g = 0; g < texts.length; ++g) {
                 if (texts[g] != null) {
                     ++i;
                 }
@@ -26,7 +26,7 @@ public class TellRawSender {
             t = new com.mcgamer199.luckyblock.tellraw.RawText[i];
             g = 0;
 
-            for(int x = 0; x < texts.length; ++x) {
+            for (int x = 0; x < texts.length; ++x) {
                 if (texts[x] != null) {
                     t[g] = texts[x];
                     ++g;
@@ -40,7 +40,7 @@ public class TellRawSender {
     public static void sendTo(Player to, List<com.mcgamer199.luckyblock.tellraw.RawText> texts) {
         List<com.mcgamer199.luckyblock.tellraw.RawText> ftexts = texts;
 
-        for(int x = 0; x < ftexts.size(); ++x) {
+        for (int x = 0; x < ftexts.size(); ++x) {
             if (ftexts.get(x) == null) {
                 ftexts.remove(x);
             }
@@ -48,8 +48,8 @@ public class TellRawSender {
 
         com.mcgamer199.luckyblock.tellraw.RawText[] t = new com.mcgamer199.luckyblock.tellraw.RawText[ftexts.size()];
 
-        for(int x = 0; x < ftexts.size(); ++x) {
-            t[x] = (com.mcgamer199.luckyblock.tellraw.RawText)ftexts.get(x);
+        for (int x = 0; x < ftexts.size(); ++x) {
+            t[x] = ftexts.get(x);
         }
 
         sendTo(to, t);
@@ -58,7 +58,7 @@ public class TellRawSender {
     public static void sendTo(Player to, com.mcgamer199.luckyblock.tellraw.RawText... texts) {
         String cmd = "tellraw " + to.getName() + " [";
         if (texts != null && texts.length > 0) {
-            for(int x = 0; x < texts.length; ++x) {
+            for (int x = 0; x < texts.length; ++x) {
                 if (texts[x] != null) {
                     RawText text = texts[x];
                     cmd = cmd + "{\"text\":\"" + text.getText() + "\"";
@@ -86,12 +86,12 @@ public class TellRawSender {
                         cmd = cmd + ",\"obfuscated\":true";
                     }
 
-                    for(int i = 0; i < text.actions.length; ++i) {
+                    for (int i = 0; i < text.actions.length; ++i) {
                         if (text.actions[i] != null) {
                             TextAction action = text.actions[i];
                             if (action.action == EnumTextAction.SHOW_ITEM) {
                                 if (action.value instanceof ItemStack) {
-                                    cmd = cmd + ",\"" + action.event.getName() + "\":{\"action\":\"" + action.action.getName() + "\",\"value\":\"" + ItemText.itemToString((ItemStack)action.value) + "\"}";
+                                    cmd = cmd + ",\"" + action.event.getName() + "\":{\"action\":\"" + action.action.getName() + "\",\"value\":\"" + ItemText.itemToString((ItemStack) action.value) + "\"}";
                                 }
                             } else {
                                 cmd = cmd + ",\"" + action.event.getName() + "\":{\"action\":\"" + action.action.getName() + "\",\"value\":\"" + action.value.toString() + "\"}";

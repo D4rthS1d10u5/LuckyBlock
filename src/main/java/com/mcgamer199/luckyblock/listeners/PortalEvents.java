@@ -1,11 +1,14 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -20,6 +23,55 @@ import java.util.Arrays;
 
 public class PortalEvents extends ColorsClass implements Listener {
     public PortalEvents() {
+    }
+
+    public static void removePortal(Block block) {
+        boolean t = false;
+        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.UP)))) {
+            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.UP)));
+            block.getRelative(BlockFace.UP).setType(Material.AIR);
+            t = true;
+        }
+
+        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.EAST)))) {
+            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.EAST)));
+            block.getRelative(BlockFace.EAST).setType(Material.AIR);
+            t = true;
+        }
+
+        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.WEST)))) {
+            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.WEST)));
+            block.getRelative(BlockFace.WEST).setType(Material.AIR);
+            t = true;
+        }
+
+        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.DOWN)))) {
+            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.DOWN)));
+            block.getRelative(BlockFace.DOWN).setType(Material.AIR);
+            t = true;
+        }
+
+        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.SOUTH)))) {
+            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.SOUTH)));
+            block.getRelative(BlockFace.SOUTH).setType(Material.AIR);
+            t = true;
+        }
+
+        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.NORTH)))) {
+            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.NORTH)));
+            block.getRelative(BlockFace.NORTH).setType(Material.AIR);
+            t = true;
+        }
+
+        if (t) {
+            removePortal(block.getRelative(BlockFace.UP));
+            removePortal(block.getRelative(BlockFace.EAST));
+            removePortal(block.getRelative(BlockFace.DOWN));
+            removePortal(block.getRelative(BlockFace.WEST));
+            removePortal(block.getRelative(BlockFace.SOUTH));
+            removePortal(block.getRelative(BlockFace.NORTH));
+        }
+
     }
 
     @EventHandler
@@ -144,35 +196,35 @@ public class PortalEvents extends ColorsClass implements Listener {
         int z;
         int y;
         if (face == BlockFace.EAST) {
-            for(z = 0; z > -2; --z) {
-                for(y = 0; y < 3; ++y) {
-                    b.getLocation().add((double)z, (double)y, 0.0D).getBlock().setType(Material.STAINED_GLASS);
-                    b.getLocation().add((double)z, (double)y, 0.0D).getBlock().setData((byte)10);
-                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add((double)z, (double)y, 0.0D).getBlock()));
+            for (z = 0; z > -2; --z) {
+                for (y = 0; y < 3; ++y) {
+                    b.getLocation().add(z, y, 0.0D).getBlock().setType(Material.STAINED_GLASS);
+                    b.getLocation().add(z, y, 0.0D).getBlock().setData((byte) 10);
+                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add(z, y, 0.0D).getBlock()));
                 }
             }
         } else if (face == BlockFace.WEST) {
-            for(z = 0; z < 2; ++z) {
-                for(y = 0; y < 3; ++y) {
-                    b.getLocation().add((double)z, (double)y, 0.0D).getBlock().setType(Material.STAINED_GLASS);
-                    b.getLocation().add((double)z, (double)y, 0.0D).getBlock().setData((byte)10);
-                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add((double)z, (double)y, 0.0D).getBlock()));
+            for (z = 0; z < 2; ++z) {
+                for (y = 0; y < 3; ++y) {
+                    b.getLocation().add(z, y, 0.0D).getBlock().setType(Material.STAINED_GLASS);
+                    b.getLocation().add(z, y, 0.0D).getBlock().setData((byte) 10);
+                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add(z, y, 0.0D).getBlock()));
                 }
             }
         } else if (face == BlockFace.NORTH) {
-            for(z = 0; z < 2; ++z) {
-                for(y = 0; y < 3; ++y) {
-                    b.getLocation().add(0.0D, (double)y, (double)z).getBlock().setType(Material.STAINED_GLASS);
-                    b.getLocation().add(0.0D, (double)y, (double)z).getBlock().setData((byte)10);
-                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add(0.0D, (double)y, (double)z).getBlock()));
+            for (z = 0; z < 2; ++z) {
+                for (y = 0; y < 3; ++y) {
+                    b.getLocation().add(0.0D, y, z).getBlock().setType(Material.STAINED_GLASS);
+                    b.getLocation().add(0.0D, y, z).getBlock().setData((byte) 10);
+                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add(0.0D, y, z).getBlock()));
                 }
             }
         } else if (face == BlockFace.SOUTH) {
-            for(z = 0; z > -2; --z) {
-                for(y = 0; y < 3; ++y) {
-                    b.getLocation().add(0.0D, (double)y, (double)z).getBlock().setType(Material.STAINED_GLASS);
-                    b.getLocation().add(0.0D, (double)y, (double)z).getBlock().setData((byte)10);
-                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add(0.0D, (double)y, (double)z).getBlock()));
+            for (z = 0; z > -2; --z) {
+                for (y = 0; y < 3; ++y) {
+                    b.getLocation().add(0.0D, y, z).getBlock().setType(Material.STAINED_GLASS);
+                    b.getLocation().add(0.0D, y, z).getBlock().setData((byte) 10);
+                    LuckyBlockAPI.lbwblocks.add(LB.blockToString(b.getLocation().add(0.0D, y, z).getBlock()));
                 }
             }
         }
@@ -188,7 +240,7 @@ public class PortalEvents extends ColorsClass implements Listener {
                 if (!LuckyBlockWorld.equals(player.getWorld().getGenerator())) {
                     LuckyBlockAPI.addLocation(player, player.getLocation());
                     World world = LuckyBlockWorld.getWorld(Arrays.asList(WorldOptions.NORMAL));
-                    player.teleport(new Location(world, (double)(LuckyBlock.randoms.nextInt(1000) - 500), world.getSpawnLocation().getY(), (double)(LuckyBlock.randoms.nextInt(1000) - 500)));
+                    player.teleport(new Location(world, LuckyBlock.randoms.nextInt(1000) - 500, world.getSpawnLocation().getY(), LuckyBlock.randoms.nextInt(1000) - 500));
                     send(player, "event.portal.teleport");
                     LuckyBlockAPI.savePortals();
                 } else {
@@ -247,55 +299,6 @@ public class PortalEvents extends ColorsClass implements Listener {
         }
 
         LuckyBlockAPI.savePortals();
-    }
-
-    public static void removePortal(Block block) {
-        boolean t = false;
-        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.UP)))) {
-            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.UP)));
-            block.getRelative(BlockFace.UP).setType(Material.AIR);
-            t = true;
-        }
-
-        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.EAST)))) {
-            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.EAST)));
-            block.getRelative(BlockFace.EAST).setType(Material.AIR);
-            t = true;
-        }
-
-        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.WEST)))) {
-            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.WEST)));
-            block.getRelative(BlockFace.WEST).setType(Material.AIR);
-            t = true;
-        }
-
-        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.DOWN)))) {
-            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.DOWN)));
-            block.getRelative(BlockFace.DOWN).setType(Material.AIR);
-            t = true;
-        }
-
-        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.SOUTH)))) {
-            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.SOUTH)));
-            block.getRelative(BlockFace.SOUTH).setType(Material.AIR);
-            t = true;
-        }
-
-        if (LuckyBlockAPI.lbwblocks.contains(LB.blockToString(block.getRelative(BlockFace.NORTH)))) {
-            LuckyBlockAPI.lbwblocks.remove(LB.blockToString(block.getRelative(BlockFace.NORTH)));
-            block.getRelative(BlockFace.NORTH).setType(Material.AIR);
-            t = true;
-        }
-
-        if (t) {
-            removePortal(block.getRelative(BlockFace.UP));
-            removePortal(block.getRelative(BlockFace.EAST));
-            removePortal(block.getRelative(BlockFace.DOWN));
-            removePortal(block.getRelative(BlockFace.WEST));
-            removePortal(block.getRelative(BlockFace.SOUTH));
-            removePortal(block.getRelative(BlockFace.NORTH));
-        }
-
     }
 
     @EventHandler

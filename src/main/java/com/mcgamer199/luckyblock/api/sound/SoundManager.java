@@ -27,12 +27,12 @@ public class SoundManager {
         if (sound != null) {
             Iterator var6 = loc.getWorld().getPlayers().iterator();
 
-            while(var6.hasNext()) {
-                Player p = (Player)var6.next();
+            while (var6.hasNext()) {
+                Player p = (Player) var6.next();
                 if (p.getWorld() == loc.getWorld()) {
                     double distance = p.getLocation().distance(loc);
-                    if (distance < (double)maxdistance) {
-                        float volume = (float)(1.0D - distance / (double)maxdistance);
+                    if (distance < (double) maxdistance) {
+                        float volume = (float) (1.0D - distance / (double) maxdistance);
 
                         try {
                             p.playSound(p.getLocation(), sound, vol * volume, pit);

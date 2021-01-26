@@ -1,10 +1,14 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.mcgamer199.luckyblock.api.item.ItemReflection;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,13 +18,40 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.api.item.ItemReflection;
 
 public class DispenserEvents extends ColorsClass implements Listener {
     public DispenserEvents() {
+    }
+
+    static BlockFace getDispenserF(Block block) {
+        BlockFace face = null;
+        MaterialData md = block.getState().getData();
+        org.bukkit.material.Dispenser d = (org.bukkit.material.Dispenser) md;
+        face = d.getFacing();
+        return face;
+    }
+
+    static void removeLBItem(ItemStack item, Dispenser d) {
+        LBType type = LBType.fromItem(item);
+        boolean found = false;
+
+        for (int x = 0; x < d.getInventory().getSize(); ++x) {
+            if (!found) {
+                ItemStack it = d.getInventory().getItem(x);
+                if (it != null && LBType.isLB(it) && LBType.fromItem(it) == type) {
+                    found = true;
+                    if (it.getAmount() > 1) {
+                        it.setAmount(it.getAmount() - 1);
+                        d.getInventory().setItem(x, it);
+                    } else {
+                        d.getInventory().removeItem(d.getInventory().getItem(x));
+                    }
+
+                    d.update(true);
+                }
+            }
+        }
+
     }
 
     @EventHandler
@@ -31,44 +62,13 @@ public class DispenserEvents extends ColorsClass implements Listener {
                 event.setCancelled(true);
                 Block b = block.getRelative(getDispenserF(block));
                 if (!b.getType().isSolid()) {
-                    LB.placeLB(b.getLocation(), (LBType)null, event.getItem(), b);
+                    LB.placeLB(b.getLocation(), null, event.getItem(), b);
                     ITask task = new ITask();
                     task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
                         public void run() {
-                            DispenserEvents.removeLBItem(event.getItem(), (Dispenser)event.getBlock().getState());
+                            DispenserEvents.removeLBItem(event.getItem(), (Dispenser) event.getBlock().getState());
                         }
                     }, 3L));
-                }
-            }
-        }
-
-    }
-
-    static BlockFace getDispenserF(Block block) {
-        BlockFace face = null;
-        MaterialData md = block.getState().getData();
-        org.bukkit.material.Dispenser d = (org.bukkit.material.Dispenser)md;
-        face = d.getFacing();
-        return face;
-    }
-
-    static void removeLBItem(ItemStack item, Dispenser d) {
-        LBType type = LBType.fromItem(item);
-        boolean found = false;
-
-        for(int x = 0; x < d.getInventory().getSize(); ++x) {
-            if (!found) {
-                ItemStack it = d.getInventory().getItem(x);
-                if (it != null && LBType.isLB(it) && LBType.fromItem(it) == type) {
-                    found = true;
-                    if (it.getAmount() > 1) {
-                        it.setAmount(it.getAmount() - 1);
-                        d.getInventory().setItem(x, it);
-                    } else {
-                        d.getInventory().removeItem(new ItemStack[]{d.getInventory().getItem(x)});
-                    }
-
-                    d.update(true);
                 }
             }
         }
@@ -89,7 +89,7 @@ public class DispenserEvents extends ColorsClass implements Listener {
             Object o = CustomEntityLoader.getCustomEntity(val);
             Block b = block.getRelative(getDispenserF(block));
             if (o != null) {
-                CustomEntity c = (CustomEntity)o;
+                CustomEntity c = (CustomEntity) o;
                 c.spawn(b.getLocation().add(0.5D, 0.0D, 0.5D));
             }
         }

@@ -1,28 +1,28 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.logic.IRange;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Detector {
-    private int id;
+    private final int id;
     private String name;
-    private String[] blocks = new String[64];
+    private final String[] blocks = new String[64];
     private IRange range;
     private Location loc;
-    private UUID uuid;
+    private final UUID uuid;
     private boolean running;
 
     public Detector(int id) {
@@ -35,20 +35,16 @@ public class Detector {
         return this.id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return this.name;
     }
 
-    public String[] getBlocks() {
-        return this.blocks;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setRange(IRange range) {
-        this.range = range;
+    public String[] getBlocks() {
+        return this.blocks;
     }
 
     public void expand(int i) {
@@ -61,12 +57,16 @@ public class Detector {
         return this.range;
     }
 
-    public void setLoc(Location loc) {
-        this.loc = loc;
+    public void setRange(IRange range) {
+        this.range = range;
     }
 
     public Location getLoc() {
         return this.loc;
+    }
+
+    public void setLoc(Location loc) {
+        this.loc = loc;
     }
 
     public UUID getUuid() {
@@ -74,7 +74,7 @@ public class Detector {
     }
 
     public void addBlock(Block block) {
-        for(int x = 0; x < this.blocks.length; ++x) {
+        for (int x = 0; x < this.blocks.length; ++x) {
             if (this.blocks[x] == null) {
                 this.blocks[x] = LB.blockToString(block);
                 x = this.blocks.length;
@@ -84,7 +84,7 @@ public class Detector {
     }
 
     public void addBlock(String dim) {
-        for(int x = 0; x < this.blocks.length; ++x) {
+        for (int x = 0; x < this.blocks.length; ++x) {
             if (this.blocks[x] == null) {
                 this.blocks[x] = dim;
                 x = this.blocks.length;
@@ -95,14 +95,14 @@ public class Detector {
 
     public void dispose() {
         if (LuckyBlockAPI.detectors.contains(this)) {
-            LuckyBlock.instance.detectors.set(LuckyBlockAPI.getDet(this.id), (Object)null);
+            LuckyBlock.instance.detectors.set(LuckyBlockAPI.getDet(this.id), null);
             LuckyBlockAPI.detectors.remove(this);
         }
 
         String[] var4;
         int var3 = (var4 = this.blocks).length;
 
-        for(int var2 = 0; var2 < var3; ++var2) {
+        for (int var2 = 0; var2 < var3; ++var2) {
             String s = var4[var2];
             if (s != null && MyTasks.stringToBlock(s) != null) {
                 Block block = MyTasks.stringToBlock(s);
@@ -114,8 +114,8 @@ public class Detector {
     }
 
     public void save() {
-        for(int x = 0; x < LuckyBlockAPI.detectors.size(); ++x) {
-            Detector d = (Detector)LuckyBlockAPI.detectors.get(x);
+        for (int x = 0; x < LuckyBlockAPI.detectors.size(); ++x) {
+            Detector d = LuckyBlockAPI.detectors.get(x);
             if (d.getId() == this.id) {
                 LuckyBlockAPI.detectors.remove(d);
             }
@@ -131,7 +131,7 @@ public class Detector {
         LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.z", this.range.getZ());
         List<String> list = new ArrayList();
 
-        for(int i = 0; i < this.blocks.length; ++i) {
+        for (int i = 0; i < this.blocks.length; ++i) {
             if (this.blocks[i] != null) {
                 list.add(this.blocks[i]);
             }
@@ -147,11 +147,11 @@ public class Detector {
     }
 
     private boolean checkBlock(int x, int y, int z) {
-        return LB.isLuckyBlock(this.getMainBlock().getLocation().add((double)x, (double)y, (double)z).getBlock());
+        return LB.isLuckyBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
     }
 
     private LB getLB(int x, int y, int z) {
-        return LB.getFromBlock(this.getMainBlock().getLocation().add((double)x, (double)y, (double)z).getBlock());
+        return LB.getFromBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
     }
 
     public void searchForBlocks(Player searcher) {
@@ -161,9 +161,9 @@ public class Detector {
             this.running = true;
             final ITask task = new ITask();
             task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
-                int x;
-                int y;
-                int z;
+                final int x;
+                final int y;
+                final int z;
                 int total;
 
                 {
@@ -196,11 +196,11 @@ public class Detector {
                 int x;
                 int y;
                 int z;
-                int x1;
-                int z1;
-                int x2;
-                int y2;
-                int z2;
+                final int x1;
+                final int z1;
+                final int x2;
+                final int y2;
+                final int z2;
                 int total;
                 boolean finish;
 

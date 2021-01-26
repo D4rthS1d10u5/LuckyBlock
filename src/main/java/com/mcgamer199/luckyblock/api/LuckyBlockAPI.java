@@ -1,13 +1,14 @@
 package com.mcgamer199.luckyblock.api;
 
+import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.resources.Detector;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import com.mcgamer199.luckyblock.resources.Detector;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -23,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,8 +60,8 @@ public class LuckyBlockAPI implements Listener {
             int total = 0;
 
             try {
-                for(int x = 0; x < lbs.getStringList("LuckyBlocks").size(); ++x) {
-                    String str = (String)lbs.getStringList("LuckyBlocks").get(x);
+                for (int x = 0; x < lbs.getStringList("LuckyBlocks").size(); ++x) {
+                    String str = lbs.getStringList("LuckyBlocks").get(x);
                     str = str.substring(1, str.length() - 1);
                     String[] d = str.split("/s/");
                     LBType type = null;
@@ -72,7 +72,7 @@ public class LuckyBlockAPI implements Listener {
                     int var10 = d.length;
 
                     String[] a;
-                    for(int var9 = 0; var9 < var10; ++var9) {
+                    for (int var9 = 0; var9 < var10; ++var9) {
                         String s = var11[var9];
                         a = s.split(":=");
                         if (a.length == 2) {
@@ -93,7 +93,7 @@ public class LuckyBlockAPI implements Listener {
                         a = d;
                         int var26 = d.length;
 
-                        for(var10 = 0; var10 < var26; ++var10) {
+                        for (var10 = 0; var10 < var26; ++var10) {
                             String s = a[var10];
                             String[] a2 = s.split(":=");
                             if (a2.length == 2) {
@@ -119,13 +119,13 @@ public class LuckyBlockAPI implements Listener {
                                     String p = a2[1].replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("'", "");
                                     String[] c = p.split(";");
 
-                                    for(int v = 0; v < c.length; ++v) {
+                                    for (int v = 0; v < c.length; ++v) {
                                         String[] u = c[v].split(":");
                                         if (u.length > 1) {
                                             String[] g = u[1].split(",");
                                             String[] op = new String[64];
 
-                                            for(int ii = 0; ii < g.length; ++ii) {
+                                            for (int ii = 0; ii < g.length; ++ii) {
                                                 op[ii] = g[ii];
                                             }
 
@@ -175,8 +175,8 @@ public class LuckyBlockAPI implements Listener {
     }
 
     public static Location getLocation(Player player) {
-        for(int x = 0; x < locations.size(); ++x) {
-            String[] d = ((String)locations.get(x)).split(",");
+        for (int x = 0; x < locations.size(); ++x) {
+            String[] d = locations.get(x).split(",");
             if (d.length == 5) {
                 String uuid = d[0];
                 if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
@@ -190,8 +190,8 @@ public class LuckyBlockAPI implements Listener {
     }
 
     public static void addLocation(Player player, Location location) {
-        for(int x = 0; x < locations.size(); ++x) {
-            String s = (String)locations.get(x);
+        for (int x = 0; x < locations.size(); ++x) {
+            String s = locations.get(x);
             String[] d = s.split(",");
             if (d.length == 5) {
                 String uuid = d[0];
@@ -208,8 +208,8 @@ public class LuckyBlockAPI implements Listener {
     public static void loadPortals() {
         List<String> list = portals.getStringList("Portals");
         if (list.size() > 0) {
-            for(int x = 0; x < list.size(); ++x) {
-                lbwblocks.add((String)list.get(x));
+            for (int x = 0; x < list.size(); ++x) {
+                lbwblocks.add(list.get(x));
             }
         }
 
@@ -238,9 +238,9 @@ public class LuckyBlockAPI implements Listener {
         if (enchants != null && enchants.size() > 0) {
             Iterator var9 = enchants.keySet().iterator();
 
-            while(var9.hasNext()) {
-                Enchantment e = (Enchantment)var9.next();
-                itemM.addEnchant(e, (Integer)enchants.get(e), true);
+            while (var9.hasNext()) {
+                Enchantment e = (Enchantment) var9.next();
+                itemM.addEnchant(e, enchants.get(e), true);
             }
         }
 
@@ -251,23 +251,23 @@ public class LuckyBlockAPI implements Listener {
     public static void removeDrops(World world) {
         Iterator var2 = world.getEntities().iterator();
 
-        while(true) {
+        while (true) {
             Entity e;
             do {
                 if (!var2.hasNext()) {
                     return;
                 }
 
-                e = (Entity)var2.next();
-            } while(!(e instanceof Item));
+                e = (Entity) var2.next();
+            } while (!(e instanceof Item));
 
-            Item item = (Item)e;
+            Item item = (Item) e;
             ItemStack i = item.getItemStack();
             LBType type = null;
             Iterator var7 = LBType.getTypes().iterator();
 
-            while(var7.hasNext()) {
-                LBType t = (LBType)var7.next();
+            while (var7.hasNext()) {
+                LBType t = (LBType) var7.next();
                 if (t.getType() == i.getType() && i.hasItemMeta() && i.getItemMeta().hasDisplayName() && i.getItemMeta().getDisplayName().equalsIgnoreCase(t.getName())) {
                     type = t;
                 }
@@ -293,7 +293,7 @@ public class LuckyBlockAPI implements Listener {
         ConfigurationSection cs = com.mcgamer199.luckyblock.engine.LuckyBlock.instance.detectors.getConfigurationSection("Detectors");
 
         try {
-            for(int x = 0; x < cs.getKeys(false).size(); ++x) {
+            for (int x = 0; x < cs.getKeys(false).size(); ++x) {
                 if (cs.getInt(cs.getKeys(false).toArray()[x].toString() + ".ID") != 0) {
                     s = "Detectors." + cs.getKeys(false).toArray()[x].toString();
                     x = cs.getKeys(false).size();

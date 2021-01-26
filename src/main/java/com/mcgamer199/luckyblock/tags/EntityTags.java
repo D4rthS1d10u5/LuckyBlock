@@ -26,8 +26,8 @@ import java.util.UUID;
 
 public class EntityTags extends HTag {
     public static HashMap<UUID, ItemStack[]> entityDrops = new HashMap();
-    static File AfileF;
     public static FileConfiguration Afile;
+    static File AfileF;
 
     static {
         AfileF = new File(LuckyBlock.instance.getDataFolder() + File.separator + "Data/entityDrops.yml");
@@ -42,11 +42,11 @@ public class EntityTags extends HTag {
         EntityType entitytype = null;
         Iterator var8 = c.getKeys(false).iterator();
 
-        while(true) {
+        while (true) {
             String entityMetadataType;
             String type;
-            while(var8.hasNext()) {
-                entityMetadataType = (String)var8.next();
+            while (var8.hasNext()) {
+                entityMetadataType = (String) var8.next();
                 if (entityMetadataType.equalsIgnoreCase("EntityType")) {
                     type = c.getString(entityMetadataType);
 
@@ -91,14 +91,14 @@ public class EntityTags extends HTag {
             if (entity != null) {
                 var8 = c.getKeys(false).iterator();
 
-                while(var8.hasNext()) {
-                    entityMetadataType = (String)var8.next();
+                while (var8.hasNext()) {
+                    entityMetadataType = (String) var8.next();
                     Iterator var10;
                     if (entityMetadataType.equalsIgnoreCase("With") && c.getStringList(entityMetadataType) != null && c.getStringList(entityMetadataType).size() > 0) {
                         var10 = c.getStringList(entityMetadataType).iterator();
 
-                        while(var10.hasNext()) {
-                            type = (String)var10.next();
+                        while (var10.hasNext()) {
+                            type = (String) var10.next();
                             spawnEntity(main.getConfigurationSection(type), loc1, main, true, player);
                         }
                     }
@@ -109,13 +109,13 @@ public class EntityTags extends HTag {
                         String[] d = c.getString(entityMetadataType).split("-");
                         place = getRandomNumber(d);
 
-                        for(number = place; number > 1; --number) {
+                        for (number = place; number > 1; --number) {
                             spawnEntity(c, loc1, main, false, player);
                         }
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("CustomName")) {
-                        ((Entity)entity).setCustomName(translateString(c.getString(entityMetadataType), new IDataType[]{new IDataType(TDataType.ENTITY, entity)}));
+                        entity.setCustomName(translateString(c.getString(entityMetadataType), new IDataType(TDataType.ENTITY, entity)));
                     }
 
                     String[] itemData;
@@ -123,13 +123,13 @@ public class EntityTags extends HTag {
                         ItemStack[] items = new ItemStack[64];
                         place = 0;
 
-                        for(number = 0; number < c.getStringList(entityMetadataType).size(); ++number) {
+                        for (number = 0; number < c.getStringList(entityMetadataType).size(); ++number) {
                             if (place < 64) {
-                                itemData = ((String)c.getStringList(entityMetadataType).get(number)).split(" ");
+                                itemData = c.getStringList(entityMetadataType).get(number).split(" ");
                                 if (itemData.length == 2) {
                                     double percent = Double.parseDouble(itemData[0]);
                                     String name = itemData[1];
-                                    if ((double)random.nextInt(100) < percent) {
+                                    if ((double) random.nextInt(100) < percent) {
                                         items[place] = ItemStackGetter.getItemStack(getSection(name));
                                         ++place;
                                     }
@@ -139,7 +139,7 @@ public class EntityTags extends HTag {
 
                         boolean notNull = false;
 
-                        for(int x = 0; x < items.length; ++x) {
+                        for (int x = 0; x < items.length; ++x) {
                             if (items[x] != null) {
                                 notNull = true;
                                 break;
@@ -147,63 +147,63 @@ public class EntityTags extends HTag {
                         }
 
                         if (notNull) {
-                            entityDrops.put(((Entity)entity).getUniqueId(), items);
+                            entityDrops.put(entity.getUniqueId(), items);
                             save();
                         }
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("CustomNameVisible")) {
-                        ((Entity)entity).setCustomNameVisible(c.getBoolean(entityMetadataType));
+                        entity.setCustomNameVisible(c.getBoolean(entityMetadataType));
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("Glowing")) {
-                        ((Entity)entity).setGlowing(c.getBoolean(entityMetadataType));
+                        entity.setGlowing(c.getBoolean(entityMetadataType));
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("FallDistance")) {
-                        ((Entity)entity).setFallDistance((float)c.getDouble(entityMetadataType));
+                        entity.setFallDistance((float) c.getDouble(entityMetadataType));
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("FireTicks")) {
-                        ((Entity)entity).setFireTicks(c.getInt(entityMetadataType));
+                        entity.setFireTicks(c.getInt(entityMetadataType));
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("Velocity")) {
                         Vector v = getVector(c.getConfigurationSection("Velocity"));
-                        ((Entity)entity).setVelocity(v);
+                        entity.setVelocity(v);
                     }
 
                     Entity e;
                     if (entityMetadataType.equalsIgnoreCase("Passengers") && c.getStringList(entityMetadataType) != null && c.getStringList(entityMetadataType).size() > 0) {
                         var10 = c.getStringList(entityMetadataType).iterator();
 
-                        while(var10.hasNext()) {
-                            type = (String)var10.next();
+                        while (var10.hasNext()) {
+                            type = (String) var10.next();
                             e = spawnEntity(main.getConfigurationSection(type), loc1, main, true, player);
-                            ((Entity)entity).addPassenger(e);
+                            entity.addPassenger(e);
                         }
                     }
 
                     if (entityMetadataType.equalsIgnoreCase("Vehicle") || entityMetadataType.equalsIgnoreCase("Riding")) {
                         Entity spawnEntity = spawnEntity(main.getConfigurationSection(c.getString(entityMetadataType)), loc1, main, true, player);
-                        spawnEntity.addPassenger((Entity)entity);
+                        spawnEntity.addPassenger(entity);
                     }
 
                     ConfigurationSection pressF;
                     if (entityMetadataType.equalsIgnoreCase("Metadata") && c.getConfigurationSection(entityMetadataType) != null) {
                         var10 = c.getConfigurationSection(entityMetadataType).getKeys(false).iterator();
 
-                        while(var10.hasNext()) {
-                            type = (String)var10.next();
+                        while (var10.hasNext()) {
+                            type = (String) var10.next();
                             pressF = c.getConfigurationSection(entityMetadataType).getConfigurationSection(type);
                             String name = pressF.getString("Name");
                             Object value = pressF.get("Value");
-                            ((Entity)entity).setMetadata(name, new FixedMetadataValue(LuckyBlock.instance, value));
+                            entity.setMetadata(name, new FixedMetadataValue(LuckyBlock.instance, value));
                         }
                     }
 
                     if (entity instanceof LivingEntity) {
-                        LivingEntity living = (LivingEntity)entity;
+                        LivingEntity living = (LivingEntity) entity;
                         if (entityMetadataType.equalsIgnoreCase("MaxHealth")) {
                             living.setMaxHealth(c.getDouble(entityMetadataType));
                         }
@@ -231,8 +231,8 @@ public class EntityTags extends HTag {
                         if (entityMetadataType.equalsIgnoreCase("PotionEffects") && c.getConfigurationSection(entityMetadataType) != null) {
                             var41 = c.getConfigurationSection(entityMetadataType).getKeys(false).iterator();
 
-                            while(var41.hasNext()) {
-                                t = (String)var41.next();
+                            while (var41.hasNext()) {
+                                t = (String) var41.next();
                                 f = c.getConfigurationSection(entityMetadataType).getConfigurationSection(t);
                                 if (f != null) {
                                     PotionEffect effect = ItemStackGetter.getPotionEffect(f);
@@ -246,8 +246,8 @@ public class EntityTags extends HTag {
                         if (entityMetadataType.equalsIgnoreCase("Equipment") && c.getConfigurationSection(entityMetadataType) != null) {
                             var41 = c.getConfigurationSection(entityMetadataType).getKeys(false).iterator();
 
-                            while(var41.hasNext()) {
-                                t = (String)var41.next();
+                            while (var41.hasNext()) {
+                                t = (String) var41.next();
                                 itemData = null;
                                 if (c.getConfigurationSection(entityMetadataType).getConfigurationSection(t) != null) {
                                     ItemStack item = ItemStackGetter.getItemStack(c.getConfigurationSection(entityMetadataType).getConfigurationSection(t));
@@ -273,8 +273,8 @@ public class EntityTags extends HTag {
                         if (entityMetadataType.equalsIgnoreCase("Attributes") && c.getConfigurationSection(entityMetadataType) != null) {
                             var41 = c.getConfigurationSection(entityMetadataType).getKeys(false).iterator();
 
-                            while(var41.hasNext()) {
-                                t = (String)var41.next();
+                            while (var41.hasNext()) {
+                                t = (String) var41.next();
                                 f = c.getConfigurationSection(entityMetadataType).getConfigurationSection(t);
                                 if (f != null) {
                                     Attribute attribute = null;
@@ -294,7 +294,7 @@ public class EntityTags extends HTag {
                         if (entityMetadataType.equalsIgnoreCase("DropChances")) {
                             String[] d = c.getString("DropChances").split(",");
 
-                            for(number = 0; number < d.length; ++number) {
+                            for (number = 0; number < d.length; ++number) {
                                 float num = Float.parseFloat(d[number]);
                                 if (num == 0) {
                                     living.getEquipment().setItemInMainHandDropChance(num);
@@ -311,7 +311,7 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Ageable) {
-                            Ageable ageable = (Ageable)entity;
+                            Ageable ageable = (Ageable) entity;
                             if (entityMetadataType.equalsIgnoreCase("Adult") && c.getBoolean(entityMetadataType)) {
                                 ageable.setAdult();
                             }
@@ -330,17 +330,17 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Creature) {
-                            Creature m = (Creature)living;
+                            Creature m = (Creature) living;
                             if (entityMetadataType.equalsIgnoreCase("Target")) {
                                 e = spawnEntity(main.getConfigurationSection(c.getString(entityMetadataType)), loc1, main, true, player);
                                 if (e instanceof LivingEntity) {
-                                    m.setTarget((LivingEntity)e);
+                                    m.setTarget((LivingEntity) e);
                                 }
                             }
                         }
 
                         if (living instanceof Zombie) {
-                            Zombie zombie = (Zombie)living;
+                            Zombie zombie = (Zombie) living;
                             if (entityMetadataType.equalsIgnoreCase("IsBaby")) {
                                 zombie.setBaby(c.getBoolean(entityMetadataType));
                             }
@@ -355,28 +355,28 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Bat) {
-                            Bat bat = (Bat)living;
+                            Bat bat = (Bat) living;
                             if (entityMetadataType.equalsIgnoreCase("Awake")) {
                                 bat.setAwake(c.getBoolean(entityMetadataType));
                             }
                         }
 
                         if (living instanceof Creeper) {
-                            Creeper creeper = (Creeper)living;
+                            Creeper creeper = (Creeper) living;
                             if (entityMetadataType.equalsIgnoreCase("Charged") || entityMetadataType.equalsIgnoreCase("Powered")) {
                                 creeper.setPowered(c.getBoolean(entityMetadataType));
                             }
                         }
 
                         if (living instanceof Snowman) {
-                            Snowman snow = (Snowman)living;
+                            Snowman snow = (Snowman) living;
                             if (entityMetadataType.equalsIgnoreCase("Derp") && c.getString(entityMetadataType).equalsIgnoreCase("true")) {
                                 snow.setDerp(true);
                             }
                         }
 
                         if (living instanceof Enderman) {
-                            Enderman enderman = (Enderman)living;
+                            Enderman enderman = (Enderman) living;
                             if (entityMetadataType.equalsIgnoreCase("CarriedMaterial") && c.getConfigurationSection(entityMetadataType) != null) {
                                 f = c.getConfigurationSection(entityMetadataType);
                                 Material material = null;
@@ -384,7 +384,7 @@ public class EntityTags extends HTag {
                                     material = Material.getMaterial(f.getString("Type").toUpperCase());
                                 }
 
-                                byte data = (byte)f.getInt(entityMetadataType);
+                                byte data = (byte) f.getInt(entityMetadataType);
                                 if (material != null) {
                                     enderman.setCarriedMaterial(new MaterialData(material, data));
                                 }
@@ -392,14 +392,14 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Guardian) {
-                            Guardian guardian = (Guardian)living;
+                            Guardian guardian = (Guardian) living;
                             if (entityMetadataType.equalsIgnoreCase("Elder")) {
                                 guardian.setElder(c.getBoolean(entityMetadataType));
                             }
                         }
 
                         if (living instanceof Villager) {
-                            Villager villager = (Villager)living;
+                            Villager villager = (Villager) living;
                             if (entityMetadataType.equalsIgnoreCase("Profession")) {
                                 villager.setProfession(Villager.Profession.valueOf(c.getString(entityMetadataType).toUpperCase()));
                             }
@@ -412,14 +412,14 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof IronGolem) {
-                            IronGolem golem = (IronGolem)living;
+                            IronGolem golem = (IronGolem) living;
                             if (entityMetadataType.equalsIgnoreCase("PlayerCreated")) {
                                 golem.setPlayerCreated(c.getBoolean(entityMetadataType));
                             }
                         }
 
                         if (living instanceof Horse) {
-                            Horse horse = (Horse)living;
+                            Horse horse = (Horse) living;
                             if (entityMetadataType.equalsIgnoreCase("CarryingChest")) {
                                 horse.setCarryingChest(c.getBoolean(entityMetadataType));
                             }
@@ -457,7 +457,7 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Tameable) {
-                            Tameable tameable = (Tameable)living;
+                            Tameable tameable = (Tameable) living;
                             if (entityMetadataType.equalsIgnoreCase("Owner") && c.getString(entityMetadataType).equalsIgnoreCase("{player}")) {
                                 tameable.setOwner(player);
                             }
@@ -468,14 +468,14 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Slime) {
-                            Slime slime = (Slime)living;
+                            Slime slime = (Slime) living;
                             if (entityMetadataType.equalsIgnoreCase("Size")) {
                                 slime.setSize(getRandomNumber(c.getString(entityMetadataType).split("-")));
                             }
                         }
 
                         if (living instanceof Ocelot) {
-                            Ocelot ocelot = (Ocelot)living;
+                            Ocelot ocelot = (Ocelot) living;
                             if (entityMetadataType.equalsIgnoreCase("CatType")) {
                                 ocelot.setCatType(Ocelot.Type.valueOf(c.getString(entityMetadataType).toUpperCase()));
                             }
@@ -486,7 +486,7 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof PigZombie) {
-                            PigZombie pz = (PigZombie)living;
+                            PigZombie pz = (PigZombie) living;
                             if (entityMetadataType.equalsIgnoreCase("Anger")) {
                                 pz.setAnger(c.getInt(entityMetadataType));
                             }
@@ -497,17 +497,17 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Rabbit) {
-                            Rabbit rabbit = (Rabbit)living;
+                            Rabbit rabbit = (Rabbit) living;
                             if (entityMetadataType.equalsIgnoreCase("RabbitType")) {
                                 rabbit.setRabbitType(org.bukkit.entity.Rabbit.Type.valueOf(c.getString(entityMetadataType).toUpperCase()));
                             }
                         }
 
                         if (living instanceof Sheep) {
-                            Sheep sheep = (Sheep)living;
+                            Sheep sheep = (Sheep) living;
                             if (entityMetadataType.equalsIgnoreCase("Color")) {
                                 number = getRandomNumber(c.getString(entityMetadataType).split("-"));
-                                sheep.setColor(DyeColor.getByDyeData((byte)number));
+                                sheep.setColor(DyeColor.getByDyeData((byte) number));
                             }
 
                             if (entityMetadataType.equalsIgnoreCase("Sheared")) {
@@ -516,14 +516,14 @@ public class EntityTags extends HTag {
                         }
 
                         if (living instanceof Wolf) {
-                            Wolf wolf = (Wolf)living;
+                            Wolf wolf = (Wolf) living;
                             if (entityMetadataType.equalsIgnoreCase("")) {
                                 wolf.setAngry(c.getBoolean(entityMetadataType));
                             }
 
                             if (entityMetadataType.equalsIgnoreCase("CollarColor")) {
                                 number = getRandomNumber(c.getString(entityMetadataType).split("-"));
-                                wolf.setCollarColor(DyeColor.getByDyeData((byte)number));
+                                wolf.setCollarColor(DyeColor.getByDyeData((byte) number));
                             }
 
                             if (entityMetadataType.equalsIgnoreCase("Sitting")) {
@@ -533,17 +533,17 @@ public class EntityTags extends HTag {
                     }
 
                     if (entity instanceof Projectile) {
-                        Projectile projectile = (Projectile)entity;
+                        Projectile projectile = (Projectile) entity;
                         if (entityMetadataType.equalsIgnoreCase("Bounce")) {
                             projectile.setBounce(c.getBoolean(entityMetadataType));
                         }
 
                         if (entityMetadataType.equalsIgnoreCase("Shooter")) {
-                            projectile.setShooter((ProjectileSource)null);
+                            projectile.setShooter(null);
                         }
 
                         if (entity instanceof Fireball) {
-                            Fireball fireball = (Fireball)projectile;
+                            Fireball fireball = (Fireball) projectile;
                             if (entityMetadataType.equalsIgnoreCase("Direction")) {
                                 fireball.setDirection(getVector(c.getConfigurationSection("Velocity")));
                             }
@@ -551,26 +551,26 @@ public class EntityTags extends HTag {
                     }
 
                     if (entity instanceof Explosive) {
-                        Explosive explosive = (Explosive)entity;
+                        Explosive explosive = (Explosive) entity;
                         if (entityMetadataType.equalsIgnoreCase("IsIncendiary")) {
                             explosive.setIsIncendiary(c.getBoolean(entityMetadataType));
                         }
 
                         if (entityMetadataType.equalsIgnoreCase("Yield")) {
-                            explosive.setYield((float)c.getDouble(entityMetadataType));
+                            explosive.setYield((float) c.getDouble(entityMetadataType));
                         }
                     }
 
                     boolean var10000 = entity instanceof ArmorStand;
                     if (entity instanceof ExperienceOrb) {
-                        ExperienceOrb orb = (ExperienceOrb)entity;
+                        ExperienceOrb orb = (ExperienceOrb) entity;
                         if (entityMetadataType.equalsIgnoreCase("Amount") || entityMetadataType.equalsIgnoreCase("Experience")) {
                             orb.setExperience(c.getInt(entityMetadataType));
                         }
                     }
 
                     if (entity instanceof FallingBlock) {
-                        FallingBlock falling = (FallingBlock)entity;
+                        FallingBlock falling = (FallingBlock) entity;
                         if (entityMetadataType.equalsIgnoreCase("DropItem")) {
                             falling.setDropItem(c.getBoolean(entityMetadataType));
                         }
@@ -584,14 +584,14 @@ public class EntityTags extends HTag {
                     var10000 = entity instanceof ItemFrame;
                     var10000 = entity instanceof ThrownPotion;
                     if (entity instanceof TNTPrimed) {
-                        TNTPrimed tnt = (TNTPrimed)entity;
+                        TNTPrimed tnt = (TNTPrimed) entity;
                         if (entityMetadataType.equalsIgnoreCase("FuseTicks")) {
                             tnt.setFuseTicks(c.getInt(entityMetadataType));
                         }
                     }
 
                     if (entity instanceof Minecart) {
-                        Minecart minecart = (Minecart)entity;
+                        Minecart minecart = (Minecart) entity;
                         if (entityMetadataType.equalsIgnoreCase("DisplayBlockOffset")) {
                             minecart.setDisplayBlockOffset(c.getInt(entityMetadataType));
                         }
@@ -607,7 +607,7 @@ public class EntityTags extends HTag {
                         var10000 = minecart instanceof StorageMinecart;
                         var10000 = minecart instanceof HopperMinecart;
                         if (minecart instanceof CommandMinecart) {
-                            CommandMinecart cmd = (CommandMinecart)minecart;
+                            CommandMinecart cmd = (CommandMinecart) minecart;
                             if (entityMetadataType.equalsIgnoreCase("Command")) {
                                 cmd.setCommand(c.getString(entityMetadataType));
                             }
@@ -619,7 +619,7 @@ public class EntityTags extends HTag {
                     }
 
                     if (entity instanceof Item) {
-                        Item item = (Item)entity;
+                        Item item = (Item) entity;
                         if (entityMetadataType.equalsIgnoreCase("ItemStack") && c.getConfigurationSection(entityMetadataType) != null) {
                             item.setItemStack(ItemStackGetter.getItemStack(c.getConfigurationSection(entityMetadataType)));
                         }
@@ -631,7 +631,7 @@ public class EntityTags extends HTag {
                 }
             }
 
-            return (Entity)entity;
+            return entity;
         }
     }
 
@@ -652,16 +652,16 @@ public class EntityTags extends HTag {
     }
 
     public static void save() {
-        Afile.set("Entities", (Object)null);
+        Afile.set("Entities", null);
         if (entityDrops.size() > 0) {
             int i = 0;
 
-            for(Iterator var2 = entityDrops.keySet().iterator(); var2.hasNext(); ++i) {
-                UUID uuid = (UUID)var2.next();
+            for (Iterator var2 = entityDrops.keySet().iterator(); var2.hasNext(); ++i) {
+                UUID uuid = (UUID) var2.next();
                 Afile.set("Entities.Entity" + i + ".UUID", uuid.toString());
 
-                for(int x = 0; x < ((ItemStack[])entityDrops.get(uuid)).length; ++x) {
-                    ItemStack item = ((ItemStack[])entityDrops.get(uuid))[x];
+                for (int x = 0; x < entityDrops.get(uuid).length; ++x) {
+                    ItemStack item = entityDrops.get(uuid)[x];
                     if (item != null) {
                         Afile.set("Entities.Entity" + i + ".Items.Item" + x, item);
                     }
@@ -683,24 +683,24 @@ public class EntityTags extends HTag {
             if (c != null) {
                 Iterator var2 = c.getKeys(false).iterator();
 
-                while(true) {
+                while (true) {
                     ConfigurationSection f;
                     do {
                         if (!var2.hasNext()) {
                             return;
                         }
 
-                        String s = (String)var2.next();
+                        String s = (String) var2.next();
                         f = c.getConfigurationSection(s);
-                    } while(f == null);
+                    } while (f == null);
 
                     UUID uuid = UUID.fromString(f.getString("UUID"));
                     ItemStack[] items = new ItemStack[64];
                     if (f.getConfigurationSection("Items") != null) {
                         int x = 0;
 
-                        for(Iterator var8 = f.getConfigurationSection("Items").getKeys(false).iterator(); var8.hasNext(); ++x) {
-                            String t = (String)var8.next();
+                        for (Iterator var8 = f.getConfigurationSection("Items").getKeys(false).iterator(); var8.hasNext(); ++x) {
+                            String t = (String) var8.next();
                             items[x] = f.getConfigurationSection("Items").getItemStack(t);
                         }
                     }
@@ -717,10 +717,10 @@ public class EntityTags extends HTag {
             ItemStack[] items = new ItemStack[64];
             int place = 0;
 
-            for(int x = 0; x < it.length; ++x) {
+            for (int x = 0; x < it.length; ++x) {
                 if (place < 64) {
                     double percent = chances[place];
-                    if ((double)random.nextInt(100) < percent) {
+                    if ((double) random.nextInt(100) < percent) {
                         items[place] = it[x];
                         ++place;
                     }

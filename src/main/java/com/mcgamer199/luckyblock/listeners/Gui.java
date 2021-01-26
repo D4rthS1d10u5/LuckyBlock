@@ -39,10 +39,10 @@ public class Gui extends ColorsClass implements Listener {
 
                 Inventory inv = Bukkit.createInventory(player, size + 9, yellow + "[Lucky Blocks]");
 
-                for(int x = (page - 1) * size; x < page * size + 1; ++x) {
+                for (int x = (page - 1) * size; x < page * size + 1; ++x) {
                     if (tps.size() > x) {
-                        LBType type = (LBType)tps.get(x);
-                        inv.addItem(new ItemStack[]{type.toItemStack(0)});
+                        LBType type = tps.get(x);
+                        inv.addItem(type.toItemStack(0));
                         if (x == page * size && tps.size() > x + 1) {
                             show = true;
                         }
@@ -76,38 +76,10 @@ public class Gui extends ColorsClass implements Listener {
         return page;
     }
 
-    @EventHandler
-    private void onClickLBGui(InventoryClickEvent event) {
-        if (event.getInventory().getTitle() != null && event.getInventory().getTitle().equalsIgnoreCase(yellow + "[Lucky Blocks]")) {
-            event.setCancelled(true);
-            if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR && event.getWhoClicked() instanceof Player) {
-                ItemStack item = event.getCurrentItem();
-                Player player = (Player)event.getWhoClicked();
-                Inventory inv = event.getInventory();
-                if (LBType.isLB(item)) {
-                    player.getInventory().addItem(new ItemStack[]{item});
-                    player.playSound(player.getLocation(), getSound("lb_gui_getitem"), 1.0F, 0.0F);
-                } else if (item.getType() == Material.COMPASS) {
-                    LBGui.open(player);
-                } else if (item.getType() == Material.ARROW && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-                    if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "Next Page")) {
-                        openLBGui(player, getCurrentPage(inv.getItem(inv.getSize() - 5)) + 1);
-                    } else if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "Previous Page")) {
-                        int p = getCurrentPage(inv.getItem(inv.getSize() - 5));
-                        if (p > 1) {
-                            openLBGui(player, p - 1);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
     public static void fill_glass(Inventory inv) {
         ItemStack item = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 11, ChatColor.RED + "Lucky Block");
 
-        for(int x = 0; x < inv.getSize(); ++x) {
+        for (int x = 0; x < inv.getSize(); ++x) {
             if (x >= 9 && x <= inv.getSize() - 9) {
                 if (x % 9 == 0 || x % 9 == 8) {
                     inv.setItem(x, item);
@@ -135,15 +107,37 @@ public class Gui extends ColorsClass implements Listener {
             return false;
         } else {
             if (name.equalsIgnoreCase("back")) {
-                if (item.getType() == Material.COMPASS && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Back")) {
-                    return true;
-                }
-            } else if (name.equalsIgnoreCase("close") && item.getType() == Material.COMPASS && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Close")) {
-                return true;
-            }
-
-            return false;
+                return item.getType() == Material.COMPASS && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Back");
+            } else return name.equalsIgnoreCase("close") && item.getType() == Material.COMPASS && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Close");
         }
+    }
+
+    @EventHandler
+    private void onClickLBGui(InventoryClickEvent event) {
+        if (event.getInventory().getTitle() != null && event.getInventory().getTitle().equalsIgnoreCase(yellow + "[Lucky Blocks]")) {
+            event.setCancelled(true);
+            if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR && event.getWhoClicked() instanceof Player) {
+                ItemStack item = event.getCurrentItem();
+                Player player = (Player) event.getWhoClicked();
+                Inventory inv = event.getInventory();
+                if (LBType.isLB(item)) {
+                    player.getInventory().addItem(item);
+                    player.playSound(player.getLocation(), getSound("lb_gui_getitem"), 1.0F, 0.0F);
+                } else if (item.getType() == Material.COMPASS) {
+                    LBGui.open(player);
+                } else if (item.getType() == Material.ARROW && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+                    if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "Next Page")) {
+                        openLBGui(player, getCurrentPage(inv.getItem(inv.getSize() - 5)) + 1);
+                    } else if (item.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "Previous Page")) {
+                        int p = getCurrentPage(inv.getItem(inv.getSize() - 5));
+                        if (p > 1) {
+                            openLBGui(player, p - 1);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
 

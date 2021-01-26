@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.lb.LBDrop;
-import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -30,9 +30,9 @@ public class LBGui implements Listener {
     public static void open(Player player) {
         Inventory inv = Bukkit.createInventory(player, 54, ChatColor.BLUE + "Lucky Block");
         ItemStack item = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 11, ChatColor.RED + "Lucky Block");
-        LBType type = (LBType)LBType.getTypes().get(0);
+        LBType type = LBType.getTypes().get(0);
 
-        for(int x = 0; x < inv.getSize(); ++x) {
+        for (int x = 0; x < inv.getSize(); ++x) {
             if (x >= 9 && x <= 45) {
                 if (x % 9 == 0 || x % 9 == 8) {
                     inv.setItem(x, item);
@@ -63,16 +63,16 @@ public class LBGui implements Listener {
             int var8 = (var9 = LBDrop.values()).length;
 
             int x;
-            for(x = 0; x < var8; ++x) {
+            for (x = 0; x < var8; ++x) {
                 LBDrop d = var9[x];
                 if (d.isVisible()) {
                     dr.add(d);
                 }
             }
 
-            for(int i = (page - 1) * 21; i < page * 21; ++i) {
+            for (int i = (page - 1) * 21; i < page * 21; ++i) {
                 if (dr.size() > i) {
-                    LBDrop drop = (LBDrop)dr.get(i);
+                    LBDrop drop = dr.get(i);
                     ItemStack item = ItemMaker.createItem(Material.BRICK, 1, 0, ChatColor.GREEN + drop.name(), Arrays.asList(""));
                     String a = IObjects.getString("desc.drop." + drop.name().toLowerCase(), false);
                     if (!a.equalsIgnoreCase("null")) {
@@ -81,7 +81,7 @@ public class LBGui implements Listener {
                         item = ItemMaker.addLore(item, ChatColor.RED + "no description");
                     }
 
-                    inv.addItem(new ItemStack[]{item});
+                    inv.addItem(item);
                     if (LBDrop.values().length > i + 1) {
                         next = true;
                     }
@@ -93,9 +93,9 @@ public class LBGui implements Listener {
             if (finished) {
                 List<CustomDrop> lst = CustomDropManager.getCustomDrops();
 
-                for(x = 0; x < 10; ++x) {
+                for (x = 0; x < 10; ++x) {
                     if (lst.size() > x) {
-                        CustomDrop cd = (CustomDrop)lst.get(x);
+                        CustomDrop cd = lst.get(x);
                         if (cd.isVisible()) {
                             ItemStack item = ItemMaker.createItem(Material.STAINED_CLAY, 1, 0, ChatColor.GREEN + cd.getName(), Arrays.asList(""));
                             if (cd.getDescription() != null) {
@@ -104,7 +104,7 @@ public class LBGui implements Listener {
                                 item = ItemMaker.addLore(item, ChatColor.RED + "no description");
                             }
 
-                            inv.addItem(new ItemStack[]{item});
+                            inv.addItem(item);
                         }
                     } else {
                         next = false;
@@ -126,11 +126,30 @@ public class LBGui implements Listener {
         }
     }
 
+    public static void openRecipesGui(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 54, ChatColor.BLUE + "Lucky Block: Recipes");
+        Iterator var3 = LBType.getTypes().iterator();
+
+        while (var3.hasNext()) {
+            LBType types = (LBType) var3.next();
+            if (!types.disabled) {
+                ItemStack item = types.toItemStack();
+                ItemMeta itemM = item.getItemMeta();
+                itemM.setLore(Arrays.asList("", ChatColor.GRAY + "Click to open"));
+                item.setItemMeta(itemM);
+                inv.addItem(item);
+            }
+        }
+
+        inv.setItem(inv.getSize() - 1, ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to open the main gui")));
+        player.openInventory(inv);
+    }
+
     @EventHandler
     public void onClickItem(InventoryClickEvent event) {
         Inventory inv = event.getInventory();
         if (inv.getTitle() != null && event.getWhoClicked() instanceof Player) {
-            Player player = (Player)event.getWhoClicked();
+            Player player = (Player) event.getWhoClicked();
             String title = inv.getTitle();
             ItemStack item = event.getCurrentItem();
             if (title.equalsIgnoreCase(ChatColor.BLUE + "Lucky Block")) {
@@ -158,7 +177,7 @@ public class LBGui implements Listener {
                     }
 
                     if (item.getType() == Material.CHEST) {
-                        player.getInventory().addItem(new ItemStack[]{ItemMaker.createItem(Material.CHEST, 1, 0, "" + ChatColor.GREEN + ChatColor.BOLD + ChatColor.ITALIC + "Random Chest")});
+                        player.getInventory().addItem(ItemMaker.createItem(Material.CHEST, 1, 0, "" + ChatColor.GREEN + ChatColor.BOLD + ChatColor.ITALIC + "Random Chest"));
                     }
                 }
             } else if (title.equalsIgnoreCase(ChatColor.BLUE + "Lucky Block: Drops")) {
@@ -189,24 +208,5 @@ public class LBGui implements Listener {
             }
         }
 
-    }
-
-    public static void openRecipesGui(Player player) {
-        Inventory inv = Bukkit.createInventory((InventoryHolder)null, 54, ChatColor.BLUE + "Lucky Block: Recipes");
-        Iterator var3 = LBType.getTypes().iterator();
-
-        while(var3.hasNext()) {
-            LBType types = (LBType)var3.next();
-            if (!types.disabled) {
-                ItemStack item = types.toItemStack();
-                ItemMeta itemM = item.getItemMeta();
-                itemM.setLore(Arrays.asList("", ChatColor.GRAY + "Click to open"));
-                item.setItemMeta(itemM);
-                inv.addItem(new ItemStack[]{item});
-            }
-        }
-
-        inv.setItem(inv.getSize() - 1, ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to open the main gui")));
-        player.openInventory(inv);
     }
 }

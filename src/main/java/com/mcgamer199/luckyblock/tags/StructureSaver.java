@@ -13,7 +13,9 @@ public class StructureSaver {
     public StructureSaver() {
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static int saveStructure(File fileF, Location loc1, Location loc2, boolean withAir) {
         FileConfiguration file = YamlConfiguration.loadConfiguration(fileF);
@@ -21,10 +23,10 @@ public class StructureSaver {
         file.set("Structures.Structure1.LocationType", "BLOCK");
         int i = 0;
 
-        for(int x = 0; x < loc2.getBlockX() - loc1.getBlockX() + 1; ++x) {
-            for(int y = 0; y < loc2.getBlockY() - loc1.getBlockY() + 1; ++y) {
-                for(int z = 0; z < loc2.getBlockZ() - loc1.getBlockZ() + 1; ++z) {
-                    Location loc = new Location(loc1.getWorld(), (double)(loc1.getBlockX() + x), (double)(loc1.getBlockY() + y), (double)(loc1.getBlockZ() + z));
+        for (int x = 0; x < loc2.getBlockX() - loc1.getBlockX() + 1; ++x) {
+            for (int y = 0; y < loc2.getBlockY() - loc1.getBlockY() + 1; ++y) {
+                for (int z = 0; z < loc2.getBlockZ() - loc1.getBlockZ() + 1; ++z) {
+                    Location loc = new Location(loc1.getWorld(), loc1.getBlockX() + x, loc1.getBlockY() + y, loc1.getBlockZ() + z);
                     Block block = loc.getBlock();
                     if (block.getType() == Material.AIR) {
                         if (withAir) {
@@ -59,10 +61,10 @@ public class StructureSaver {
         int z;
         Location loc;
         Block block;
-        for(x = 0; x < loc2.getBlockX() - loc1.getBlockX() + 1; ++x) {
-            for(y = 0; y < loc2.getBlockY() - loc1.getBlockY() + 1; ++y) {
-                for(z = 0; z < loc2.getBlockZ() - loc1.getBlockZ() + 1; ++z) {
-                    loc = new Location(loc1.getWorld(), (double)(loc1.getBlockX() + x), (double)(loc1.getBlockY() + y), (double)(loc1.getBlockZ() + z));
+        for (x = 0; x < loc2.getBlockX() - loc1.getBlockX() + 1; ++x) {
+            for (y = 0; y < loc2.getBlockY() - loc1.getBlockY() + 1; ++y) {
+                for (z = 0; z < loc2.getBlockZ() - loc1.getBlockZ() + 1; ++z) {
+                    loc = new Location(loc1.getWorld(), loc1.getBlockX() + x, loc1.getBlockY() + y, loc1.getBlockZ() + z);
                     block = loc.getBlock();
                     if (block.getType() == Material.AIR) {
                         if (withAir) {
@@ -77,10 +79,10 @@ public class StructureSaver {
             }
         }
 
-        for(x = 0; x < loc2.getBlockX() - loc1.getBlockX() + 1; ++x) {
-            for(y = 0; y < loc2.getBlockY() - loc1.getBlockY() + 1; ++y) {
-                for(z = 0; z < loc2.getBlockZ() - loc1.getBlockZ() + 1; ++z) {
-                    loc = new Location(loc1.getWorld(), (double)(loc1.getBlockX() + x), (double)(loc1.getBlockY() + y), (double)(loc1.getBlockZ() + z));
+        for (x = 0; x < loc2.getBlockX() - loc1.getBlockX() + 1; ++x) {
+            for (y = 0; y < loc2.getBlockY() - loc1.getBlockY() + 1; ++y) {
+                for (z = 0; z < loc2.getBlockZ() - loc1.getBlockZ() + 1; ++z) {
+                    loc = new Location(loc1.getWorld(), loc1.getBlockX() + x, loc1.getBlockY() + y, loc1.getBlockZ() + z);
                     block = loc.getBlock();
                     if (block.getType() != Material.AIR && !block.getType().isOccluding()) {
                         ++i;

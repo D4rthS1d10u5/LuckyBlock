@@ -1,24 +1,24 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class BossFunctions {
     public BossFunctions() {
     }
 
     public static void shoot_beam(com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss boss, LivingEntity entity, LivingEntity target, int max, BossFunctions.ParticleHelper helper) {
-        shoot_beam(entity.getLocation(), boss, target, max, 0.4D, helper, (String)null);
+        shoot_beam(entity.getLocation(), boss, target, max, 0.4D, helper, null);
     }
 
     public static void shoot_beam(com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss boss, LivingEntity entity, LivingEntity target, int max, double s, BossFunctions.ParticleHelper helper) {
-        shoot_beam(entity.getLocation(), boss, target, max, s, helper, (String)null);
+        shoot_beam(entity.getLocation(), boss, target, max, s, helper, null);
     }
 
     public static void shoot_beam(final Location start, final EntityLBBoss boss, final LivingEntity target, int max, final double s, final BossFunctions.ParticleHelper helper, final String tag) {
@@ -58,11 +58,11 @@ public class BossFunctions {
         }, 0L, 1L));
     }
 
-    public static enum LaserType {
+    public enum LaserType {
         CHASER,
         STRAIGHT;
 
-        private LaserType() {
+        LaserType() {
         }
     }
 

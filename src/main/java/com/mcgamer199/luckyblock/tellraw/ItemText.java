@@ -25,8 +25,8 @@ public class ItemText {
 
                 text = text + "Lore:[";
 
-                for(int x = 0; x < item.getItemMeta().getLore().size(); ++x) {
-                    text = text + (String)item.getItemMeta().getLore().get(x) + ",";
+                for (int x = 0; x < item.getItemMeta().getLore().size(); ++x) {
+                    text = text + item.getItemMeta().getLore().get(x) + ",";
                 }
 
                 text = text + "]";

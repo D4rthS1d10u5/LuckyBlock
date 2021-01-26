@@ -1,11 +1,15 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.SkullData;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -25,10 +29,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -36,12 +36,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class EntityKnight extends CustomEntity implements EntityLBBoss {
-    private String status = "none";
-    private String status_1 = "none";
-    private WitherSkeleton l;
-    private static final int startHealth = 50;
     static final ItemStack spellFortune;
-    private ItemStack head;
+    private static final int startHealth = 50;
     private static final ItemStack head1;
     private static final ItemStack bow;
     private static final ItemStack sword;
@@ -52,16 +48,13 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     private static final ItemStack chestplate1;
     private static final ItemStack leggings1;
     private static final ItemStack boots1;
-    private UUID blaze_uuid;
-    private boolean angry;
-    private BossBar bar;
 
     static {
         spellFortune = ItemMaker.addEnchant(ItemMaker.createItem(Material.GHAST_TEAR, 1, 0, "" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune", Arrays.asList("", ChatColor.GREEN + "+1000 luck")), LuckyBlock.enchantment_glow, 1);
         head1 = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), "c86041e4-5b4e-4e8a-928c-9028b2437de6", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ0NzcyZGM0ZGVmMjIyMTllZTZkODg5Y2NkYzJmOTIzMmVlMjNkMzU2ZGQ5ZTRhZGNlYTVmNzJjYzBjNjg5In19fQ==");
-        bow = ItemMaker.addEnchants(new ItemStack(Material.BOW, 1), new int[]{10, 1}, new Enchantment[]{Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE});
-        sword = ItemMaker.addEnchants(new ItemStack(Material.IRON_SWORD), new int[]{5}, new Enchantment[]{Enchantment.FIRE_ASPECT});
-        sword1 = ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{10, 10}, new Enchantment[]{Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT});
+        bow = ItemMaker.addEnchants(new ItemStack(Material.BOW, 1), new int[]{10, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
+        sword = ItemMaker.addEnchants(new ItemStack(Material.IRON_SWORD), new int[]{5}, Enchantment.FIRE_ASPECT);
+        sword1 = ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{10, 10}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
         chestplates = new ItemStack[]{ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.BLUE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.RED), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.LIME), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.ORANGE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.PURPLE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.YELLOW), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.SILVER)};
         leggings = new ItemStack[]{ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.BLUE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.RED), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.LIME), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.ORANGE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.PURPLE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.YELLOW), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.SILVER)};
         boots = new ItemStack[]{ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.BLUE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.RED), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.LIME), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.ORANGE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.PURPLE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.YELLOW), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.SILVER)};
@@ -70,13 +63,21 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
         boots1 = ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.BLACK);
     }
 
+    private String status = "none";
+    private String status_1 = "none";
+    private WitherSkeleton l;
+    private ItemStack head;
+    private UUID blaze_uuid;
+    private boolean angry;
+    private BossBar bar;
+
     public EntityKnight() {
     }
 
     public Entity spawnFunction(Location loc) {
         SkullData sd = SkullData.getRandomSkullData("BOSS");
         this.head = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), sd.getId(), sd.getData());
-        WitherSkeleton skeleton = (WitherSkeleton)loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+        WitherSkeleton skeleton = (WitherSkeleton) loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
         skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(50.0D);
         skeleton.setHealth(50.0D);
         skeleton.setSilent(true);
@@ -181,15 +182,15 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void spawn_bomb() {
         Entity e = this.l.getTarget();
-        FallingBlock fb = this.l.getWorld().spawnFallingBlock(e.getLocation().add(0.0D, 6.0D, 0.0D), Material.COAL_BLOCK, (byte)0);
+        FallingBlock fb = this.l.getWorld().spawnFallingBlock(e.getLocation().add(0.0D, 6.0D, 0.0D), Material.COAL_BLOCK, (byte) 0);
         fb.setCustomName(ChatColor.RED + "Bomb");
         fb.setCustomNameVisible(true);
         this.func_1(fb);
     }
 
     private void shoot_fire() {
-        Arrow a = (Arrow)this.l.launchProjectile(Arrow.class);
-        FallingBlock b = a.getWorld().spawnFallingBlock(a.getLocation(), Material.FIRE, (byte)0);
+        Arrow a = this.l.launchProjectile(Arrow.class);
+        FallingBlock b = a.getWorld().spawnFallingBlock(a.getLocation(), Material.FIRE, (byte) 0);
         b.setVelocity(a.getVelocity());
         a.remove();
     }
@@ -200,7 +201,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     protected void onDeath(EntityDeathEvent event) {
         SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_death"), 1.0F, 0.0F, 10);
-        com.mcgamer199.luckyblock.customentity.boss.EntityLBBlaze b = (EntityLBBlaze)CustomEntity.getByUUID(this.blaze_uuid);
+        com.mcgamer199.luckyblock.customentity.boss.EntityLBBlaze b = (EntityLBBlaze) CustomEntity.getByUUID(this.blaze_uuid);
         if (b != null && b.getEntity().isValid()) {
             b.startAttacking();
         }
@@ -209,7 +210,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     protected List<String> getNames() {
         double f = this.l.getHealth() / 50.0D * 100.0D;
-        return Arrays.asList(ChatColor.DARK_PURPLE + "Knight " + ChatColor.YELLOW + "Health " + ChatColor.GREEN + (int)f + ChatColor.WHITE + "%");
+        return Arrays.asList(ChatColor.DARK_PURPLE + "Knight " + ChatColor.YELLOW + "Health " + ChatColor.GREEN + (int) f + ChatColor.WHITE + "%");
     }
 
     protected boolean targetsNearbyEntities() {
@@ -269,7 +270,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     private void load_bar() {
-        this.bar = Bukkit.createBossBar(ChatColor.DARK_PURPLE + "LBBoss", BarColor.BLUE, BarStyle.SOLID, new BarFlag[0]);
+        this.bar = Bukkit.createBossBar(ChatColor.DARK_PURPLE + "LBBoss", BarColor.BLUE, BarStyle.SOLID);
         this.func_boss_bar();
     }
 
@@ -307,7 +308,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onLoad(ConfigurationSection c) {
-        this.l = (WitherSkeleton)this.entity;
+        this.l = (WitherSkeleton) this.entity;
         if (c.getString("blaze") != null) {
             this.blaze_uuid = UUID.fromString(c.getString("blaze"));
         }
@@ -330,7 +331,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     protected void onShootBow(final EntityShootBowEvent event) {
         if (event.getProjectile() != null && event.getProjectile() instanceof Projectile) {
-            Projectile p = (Projectile)event.getProjectile();
+            Projectile p = (Projectile) event.getProjectile();
             final Vector v = p.getVelocity();
             this.func_a(p);
             int x_1;
@@ -347,14 +348,14 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                 public void run() {
                     if (this.x > 0) {
                         if (!EntityKnight.this.l.isDead()) {
-                            double a1 = (double)(EntityKnight.this.random.nextInt(20) - 10);
-                            double a2 = (double)(EntityKnight.this.random.nextInt(20) - 10);
-                            double a3 = (double)(EntityKnight.this.random.nextInt(20) - 10);
+                            double a1 = EntityKnight.this.random.nextInt(20) - 10;
+                            double a2 = EntityKnight.this.random.nextInt(20) - 10;
+                            double a3 = EntityKnight.this.random.nextInt(20) - 10;
                             double x1 = a1 / 70.0D;
                             double x2 = a2 / 70.0D;
                             double x3 = a3 / 70.0D;
                             Vector v1 = new Vector(v.getX() + x1, v.getY() + x2, v.getZ() + x3);
-                            Arrow arrow = (Arrow)event.getEntity().launchProjectile(Arrow.class);
+                            Arrow arrow = event.getEntity().launchProjectile(Arrow.class);
                             arrow.setShooter(EntityKnight.this.l);
                             arrow.setVelocity(v1);
                             arrow.setBounce(true);
@@ -424,8 +425,8 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                     if (EntityKnight.this.angry) {
                         Iterator var2 = EntityKnight.this.l.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
 
-                        while(var2.hasNext()) {
-                            Entity e = (Entity)var2.next();
+                        while (var2.hasNext()) {
+                            Entity e = (Entity) var2.next();
                             if (e instanceof Animals) {
                                 e.getWorld().strikeLightning(e.getLocation());
                             }
@@ -449,7 +450,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
             public void run() {
                 if (EntityKnight.this.l != null && EntityKnight.this.l.isValid()) {
                     if (EntityKnight.this.angry && EntityKnight.this.l.getTarget() != null) {
-                        Zombie zombie = (Zombie)EntityKnight.this.l.getWorld().spawnEntity(EntityKnight.this.l.getLocation().add((double)(EntityKnight.this.random.nextInt(10) - 5), 5.0D, (double)(EntityKnight.this.random.nextInt(10) - 5)), EntityType.ZOMBIE);
+                        Zombie zombie = (Zombie) EntityKnight.this.l.getWorld().spawnEntity(EntityKnight.this.l.getLocation().add(EntityKnight.this.random.nextInt(10) - 5, 5.0D, EntityKnight.this.random.nextInt(10) - 5), EntityType.ZOMBIE);
                         zombie.setTarget(EntityKnight.this.l.getTarget());
                         EntityKnight.this.func_zombie(zombie);
                     }
@@ -483,10 +484,10 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     private Block getB(int range) {
-        for(int x = range * -1; x < range + 1; ++x) {
-            for(int y = range * -1; y < range + 1; ++y) {
-                for(int z = range * -1; z < range + 1; ++z) {
-                    Block b = this.l.getLocation().add((double)x, (double)y, (double)z).getBlock();
+        for (int x = range * -1; x < range + 1; ++x) {
+            for (int y = range * -1; y < range + 1; ++y) {
+                for (int z = range * -1; z < range + 1; ++z) {
+                    Block b = this.l.getLocation().add(x, y, z).getBlock();
                     if (LuckyCraftingTable.getByBlock(b) != null) {
                         return b;
                     }
@@ -530,7 +531,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     protected void onDamageEntity(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)event.getEntity();
+            LivingEntity l = (LivingEntity) event.getEntity();
             l.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 80, 2));
             l.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 1));
         }
@@ -540,9 +541,9 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     private void talk(String msg, int d) {
         Iterator var4 = Bukkit.getOnlinePlayers().iterator();
 
-        while(var4.hasNext()) {
-            Player p = (Player)var4.next();
-            if (this.l.getLocation().distance(p.getLocation()) < (double)(d + 1)) {
+        while (var4.hasNext()) {
+            Player p = (Player) var4.next();
+            if (this.l.getLocation().distance(p.getLocation()) < (double) (d + 1)) {
                 p.sendMessage("" + ChatColor.GOLD + ChatColor.BOLD + "[" + ChatColor.BLUE + ChatColor.BOLD + "LBBoss" + ChatColor.GOLD + ChatColor.BOLD + "]" + ChatColor.RESET + ": " + msg);
             }
         }

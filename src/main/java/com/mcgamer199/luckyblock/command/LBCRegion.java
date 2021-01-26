@@ -1,13 +1,14 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
-import com.mcgamer199.luckyblock.lb.LB;
-import com.mcgamer199.luckyblock.lb.LBDrop;
-import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.block.Block;
@@ -15,7 +16,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ public class LBCRegion extends LBCommand {
                 return false;
             }
 
-            Player player = (Player)sender;
+            Player player = (Player) sender;
             WorldEditPlugin w = LuckyBlock.instance.getWorldEdit();
             Selection s = w.getSelection(player);
             if (s != null) {
@@ -92,7 +92,7 @@ public class LBCRegion extends LBCommand {
                             send_2(sender, a);
                             if (!i) {
                                 LBDrop drop = LBDrop.valueOf(args[2].toUpperCase());
-                                this.action2(s, player, drop, (CustomDrop)null);
+                                this.action2(s, player, drop, null);
                             } else {
                                 CustomDrop d = CustomDropManager.getByName(args[2]);
                                 if (!d.isEnabledByCommands()) {
@@ -100,7 +100,7 @@ public class LBCRegion extends LBCommand {
                                     return false;
                                 }
 
-                                this.action2(s, player, (LBDrop)null, d);
+                                this.action2(s, player, null, d);
                             }
                         } else {
                             send_invalid_args(sender);
@@ -109,9 +109,9 @@ public class LBCRegion extends LBCommand {
                         String action3;
                         int y;//TODO это что-то с чем-то -_-
                         if (args[1].equalsIgnoreCase("clear")) {
-                            for(int minX = s.getMinimumPoint().getBlockX(); minX < s.getMaximumPoint().getBlockX() + 1; ++minX) {
-                                for(minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {
-                                    for(y = s.getMinimumPoint().getBlockZ(); y < s.getMaximumPoint().getBlockZ() + 1; ++y) {
+                            for (int minX = s.getMinimumPoint().getBlockX(); minX < s.getMaximumPoint().getBlockX() + 1; ++minX) {
+                                for (minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {
+                                    for (y = s.getMinimumPoint().getBlockZ(); y < s.getMaximumPoint().getBlockZ() + 1; ++y) {
                                         if (LB.isLuckyBlock(s.getWorld().getBlockAt(minX, minX, y))) {
                                             LB.getFromBlock(s.getWorld().getBlockAt(minX, minX, y)).remove();
                                             ++total;
@@ -141,9 +141,9 @@ public class LBCRegion extends LBCommand {
                                 return false;
                             }
 
-                            for(x = s.getMinimumPoint().getBlockX(); x < s.getMaximumPoint().getBlockX() + 1; ++x) {
-                                for(y = s.getMinimumPoint().getBlockY(); y < s.getMaximumPoint().getBlockY() + 1; ++y) {
-                                    for(int z = s.getMinimumPoint().getBlockZ(); z < s.getMaximumPoint().getBlockZ() + 1; ++z) {
+                            for (x = s.getMinimumPoint().getBlockX(); x < s.getMaximumPoint().getBlockX() + 1; ++x) {
+                                for (y = s.getMinimumPoint().getBlockY(); y < s.getMaximumPoint().getBlockY() + 1; ++y) {
+                                    for (int z = s.getMinimumPoint().getBlockZ(); z < s.getMaximumPoint().getBlockZ() + 1; ++z) {
                                         if (LB.isLuckyBlock(s.getWorld().getBlockAt(x, y, z))) {
                                             LB.getFromBlock(s.getWorld().getBlockAt(x, y, z)).setOwner(uuid);
                                             ++total;
@@ -191,11 +191,11 @@ public class LBCRegion extends LBCommand {
             int x = s.getMinimumPoint().getBlockX();
             int y = s.getMinimumPoint().getBlockY();
             int z = s.getMinimumPoint().getBlockZ();
-            int x1 = s.getMinimumPoint().getBlockX();
-            int z1 = s.getMinimumPoint().getBlockZ();
-            int x2 = s.getMaximumPoint().getBlockX();
-            int y2 = s.getMaximumPoint().getBlockY();
-            int z2 = s.getMaximumPoint().getBlockZ();
+            final int x1 = s.getMinimumPoint().getBlockX();
+            final int z1 = s.getMinimumPoint().getBlockZ();
+            final int x2 = s.getMaximumPoint().getBlockX();
+            final int y2 = s.getMaximumPoint().getBlockY();
+            final int z2 = s.getMaximumPoint().getBlockZ();
             int total = 0;
             boolean finish = false;
 
@@ -206,7 +206,7 @@ public class LBCRegion extends LBCommand {
                     task.run();
                 } else {
                     if (!LB.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
-                        LB.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, (ItemStack)null, (Object)null, (String)null, 0, new LBOption[]{LBOption.NO_SOUNDS});
+                        LB.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
                         ++this.total;
                     }
 
@@ -251,11 +251,11 @@ public class LBCRegion extends LBCommand {
             int x = s.getMinimumPoint().getBlockX();
             int y = s.getMinimumPoint().getBlockY();
             int z = s.getMinimumPoint().getBlockZ();
-            int x1 = s.getMinimumPoint().getBlockX();
-            int z1 = s.getMinimumPoint().getBlockZ();
-            int x2 = s.getMaximumPoint().getBlockX();
-            int y2 = s.getMaximumPoint().getBlockY();
-            int z2 = s.getMaximumPoint().getBlockZ();
+            final int x1 = s.getMinimumPoint().getBlockX();
+            final int z1 = s.getMinimumPoint().getBlockZ();
+            final int x2 = s.getMaximumPoint().getBlockX();
+            final int y2 = s.getMaximumPoint().getBlockY();
+            final int z2 = s.getMaximumPoint().getBlockZ();
             int total = 0;
             boolean finish = false;
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class SoundPlayer {
 
     @Getter
-    private List<SoundFile> sounds;
+    private final List<SoundFile> sounds;
 
     public SoundPlayer(List<SoundFile> sounds) {
         this.sounds = sounds;
@@ -24,7 +24,7 @@ public class SoundPlayer {
 
             public void run() {
                 if (this.timer > 0) {
-                    for(int x = 0; x < SoundPlayer.this.sounds.size(); ++x) {
+                    for (int x = 0; x < SoundPlayer.this.sounds.size(); ++x) {
                         SoundPlayer.this.sounds.get(x).play(loc);
                         --this.timer;
                     }
@@ -43,7 +43,7 @@ public class SoundPlayer {
 
             public void run() {
                 if (this.timer > 0) {
-                    for(int x = 0; x < SoundPlayer.this.sounds.size(); ++x) {
+                    for (int x = 0; x < SoundPlayer.this.sounds.size(); ++x) {
                         SoundPlayer.this.sounds.get(x).play(player);
                         --this.timer;
                     }

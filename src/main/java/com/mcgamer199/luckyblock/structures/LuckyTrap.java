@@ -17,29 +17,29 @@ public class LuckyTrap extends Structure {
 
         int x;
         int z;
-        for(x = -2; x < 3; ++x) {
-            for(z = -2; z < 3; ++z) {
-                block.getLocation().add((double)x, 0.0D, (double)z).getBlock().setType(Material.COBBLESTONE);
+        for (x = -2; x < 3; ++x) {
+            for (z = -2; z < 3; ++z) {
+                block.getLocation().add(x, 0.0D, z).getBlock().setType(Material.COBBLESTONE);
             }
         }
 
-        for(x = -1; x < 2; ++x) {
-            for(z = -1; z < 2; ++z) {
-                block.getLocation().add((double)x, 0.0D, (double)z).getBlock().setType(Material.AIR);
+        for (x = -1; x < 2; ++x) {
+            for (z = -1; z < 2; ++z) {
+                block.getLocation().add(x, 0.0D, z).getBlock().setType(Material.AIR);
             }
         }
 
-        for(x = -2; x < 3; ++x) {
-            for(z = -2; z < 3; ++z) {
-                block.getLocation().add((double)x, -1.0D, (double)z).getBlock().setType(Material.COBBLESTONE);
+        for (x = -2; x < 3; ++x) {
+            for (z = -2; z < 3; ++z) {
+                block.getLocation().add(x, -1.0D, z).getBlock().setType(Material.COBBLESTONE);
             }
         }
 
         block.getLocation().add(0.0D, 0.0D, -2.0D).getBlock().setType(Material.AIR);
 
-        for(x = -1; x < 2; ++x) {
-            for(z = -1; z < 2; ++z) {
-                block.getLocation().add((double)x, -2.0D, (double)z).getBlock().setType(Material.TNT);
+        for (x = -1; x < 2; ++x) {
+            for (z = -1; z < 2; ++z) {
+                block.getLocation().add(x, -2.0D, z).getBlock().setType(Material.TNT);
             }
         }
 

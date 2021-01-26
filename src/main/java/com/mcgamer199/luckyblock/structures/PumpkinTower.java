@@ -17,12 +17,12 @@ public class PumpkinTower extends Structure {
         int r = this.random.nextInt(5) + 3;
         int s = 0;
 
-        for(int y = 0; y < r; ++y) {
-            block.getLocation().add(0.0D, (double)y, 0.0D).getBlock().setType(Material.GOLD_BLOCK);
+        for (int y = 0; y < r; ++y) {
+            block.getLocation().add(0.0D, y, 0.0D).getBlock().setType(Material.GOLD_BLOCK);
             ++s;
         }
 
-        block.getLocation().add(0.0D, (double)s, 0.0D).getBlock().setType(Material.PUMPKIN);
+        block.getLocation().add(0.0D, s, 0.0D).getBlock().setType(Material.PUMPKIN);
         super.build(loc);
     }
 }

@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class EntityFloatingText extends CustomEntity {
     public int mode = 0;
@@ -19,7 +19,7 @@ public class EntityFloatingText extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        ArmorStand as = (ArmorStand)loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+        ArmorStand as = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
         as.setVisible(false);
         as.setCustomName(this.text);
         as.setCustomNameVisible(true);
@@ -53,7 +53,7 @@ public class EntityFloatingText extends CustomEntity {
             public void run() {
                 if (EntityFloatingText.this.age > 0) {
                     if (this.i > 0) {
-                        this.iY = Math.sin((double)this.i);
+                        this.iY = Math.sin(this.i);
                         this.iY = Math.abs(this.iY);
                         a.teleport(a.getLocation().add(0.0D, this.iY / 30.0D, 0.0D));
                         this.i -= 4;
@@ -74,7 +74,7 @@ public class EntityFloatingText extends CustomEntity {
 
             public void run() {
                 if (EntityFloatingText.this.age > 0) {
-                    this.iX = Math.sin((double)this.i);
+                    this.iX = Math.sin(this.i);
                     a.teleport(a.getLocation().add(this.iX / 20.0D, 0.1D, 0.0D));
                     ++this.i;
                 } else {

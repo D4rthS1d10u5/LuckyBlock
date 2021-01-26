@@ -1,11 +1,11 @@
 package com.mcgamer199.newstr;
 
+import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
-import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -43,10 +43,10 @@ public class FileStructure {
         Block block2 = l2.getBlock();
         Block block3 = l3.getBlock();
         Block block4 = l4.getBlock();
-        Chest chest1 = (Chest)block1.getState();
-        Chest chest2 = (Chest)block2.getState();
-        Chest chest3 = (Chest)block3.getState();
-        Chest chest4 = (Chest)block4.getState();
+        Chest chest1 = (Chest) block1.getState();
+        Chest chest2 = (Chest) block2.getState();
+        Chest chest3 = (Chest) block3.getState();
+        Chest chest4 = (Chest) block4.getState();
         ChestFiller filler = new ChestFiller(c.getConfigurationSection("Chests"), chest1);
         filler.loc1 = "FoodsChest";
         filler.fill();

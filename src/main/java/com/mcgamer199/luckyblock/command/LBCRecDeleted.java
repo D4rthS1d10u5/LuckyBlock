@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.lb.LB;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -33,9 +33,9 @@ public class LBCRecDeleted extends LBCommand {
             List<LB> lbs = new ArrayList();
 
             int x;
-            for(x = LB.lastDeleted.size() - 1 - 10 * (page - 1); x > LB.lastDeleted.size() - page * 10 - 1; --x) {
+            for (x = LB.lastDeleted.size() - 1 - 10 * (page - 1); x > LB.lastDeleted.size() - page * 10 - 1; --x) {
                 if (x > -1) {
-                    lbs.add((LB)LB.lastDeleted.get(x));
+                    lbs.add(LB.lastDeleted.get(x));
                 }
             }
 
@@ -45,8 +45,8 @@ public class LBCRecDeleted extends LBCommand {
             } else {
                 sender.sendMessage(white + val("command.lbs.page", false) + " " + page);
 
-                for(x = 0; x < lbs.size(); ++x) {
-                    LB lb = (LB)lbs.get(x);
+                for (x = 0; x < lbs.size(); ++x) {
+                    LB lb = lbs.get(x);
                     LBCLbs.sendLB(sender, lb);
                 }
 

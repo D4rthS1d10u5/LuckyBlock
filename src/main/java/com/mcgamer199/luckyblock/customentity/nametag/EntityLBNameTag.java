@@ -1,5 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.ChatColor;
@@ -7,8 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,13 +16,29 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EntityLBNameTag extends CustomEntity {
-    private LB lb;
     public String text = "none";
     public double[] a_ = new double[]{0.0D, 0.0D, 0.0D};
-    private HashMap<String, Object> tags = new HashMap();
+    private LB lb;
+    private final HashMap<String, Object> tags = new HashMap();
     private ArmorStand armorS;
 
     public EntityLBNameTag() {
+    }
+
+    public static List<EntityLBNameTag> getByLB(LB lb) {
+        List<EntityLBNameTag> list = new ArrayList();
+
+        for (int x = 0; x < entities.size(); ++x) {
+            CustomEntity c = entities.get(x);
+            if (c instanceof EntityLBNameTag) {
+                EntityLBNameTag e = (EntityLBNameTag) c;
+                if (e.lb.equals(lb)) {
+                    list.add(e);
+                }
+            }
+        }
+
+        return list;
     }
 
     public void spawn(LB lb, int i) {
@@ -43,7 +59,7 @@ public class EntityLBNameTag extends CustomEntity {
 
         l.add(this.a_[0], this.a_[1], this.a_[2]);
         if (l != null) {
-            ArmorStand as = (ArmorStand)lb.getBlock().getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+            ArmorStand as = (ArmorStand) lb.getBlock().getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
             as.setCustomName(this.text);
             as.setCustomNameVisible(true);
             as.setMarker(true);
@@ -117,8 +133,8 @@ public class EntityLBNameTag extends CustomEntity {
         c.set("Loc3", this.a_[2]);
         Iterator var3 = this.tags.keySet().iterator();
 
-        while(var3.hasNext()) {
-            String s = (String)var3.next();
+        while (var3.hasNext()) {
+            String s = (String) var3.next();
             c.set("Tags." + s, this.tags.get(s));
         }
 
@@ -129,12 +145,12 @@ public class EntityLBNameTag extends CustomEntity {
         this.a_[0] = c.getDouble("Loc1");
         this.a_[1] = c.getDouble("Loc2");
         this.a_[2] = c.getDouble("Loc3");
-        this.armorS = (ArmorStand)this.entity;
+        this.armorS = (ArmorStand) this.entity;
         if (c.getConfigurationSection("Tags") != null) {
             Iterator var4 = c.getConfigurationSection("Tags").getKeys(false).iterator();
 
-            while(var4.hasNext()) {
-                String s = (String)var4.next();
+            while (var4.hasNext()) {
+                String s = (String) var4.next();
                 this.setValue(s, c.getConfigurationSection("Tags").get(s));
             }
         }
@@ -148,21 +164,5 @@ public class EntityLBNameTag extends CustomEntity {
 
     public Immunity[] getImmuneTo() {
         return Immunity.values();
-    }
-
-    public static List<EntityLBNameTag> getByLB(LB lb) {
-        List<EntityLBNameTag> list = new ArrayList();
-
-        for(int x = 0; x < entities.size(); ++x) {
-            CustomEntity c = (CustomEntity)entities.get(x);
-            if (c instanceof EntityLBNameTag) {
-                EntityLBNameTag e = (EntityLBNameTag)c;
-                if (e.lb.equals(lb)) {
-                    list.add(e);
-                }
-            }
-        }
-
-        return list;
     }
 }

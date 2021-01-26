@@ -1,9 +1,13 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.structures.Treasure;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -16,22 +20,18 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.util.*;
 
 public class EntityGuardian extends CustomEntity {
     public LBType type = LBType.getRandomType();
-    private List<UUID> army = new ArrayList();
+    private final List<UUID> army = new ArrayList();
 
     public EntityGuardian() {
     }
 
     public Entity spawnFunction(Location loc) {
-        WitherSkeleton skeleton = (WitherSkeleton)loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+        WitherSkeleton skeleton = (WitherSkeleton) loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
         skeleton.setCustomNameVisible(true);
         skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(460.0D);
         skeleton.setHealth(460.0D);
@@ -39,7 +39,7 @@ public class EntityGuardian extends CustomEntity {
         Map<Enchantment, Integer> m = new HashMap();
         m.put(LuckyBlock.enchantment_lightning, 10);
         m.put(Enchantment.DAMAGE_ALL, 4);
-        ItemStack item = LuckyBlockAPI.createItemStack(Material.DIAMOND_AXE, 1, (short)0, (String)null, (List)null, m);
+        ItemStack item = LuckyBlockAPI.createItemStack(Material.DIAMOND_AXE, 1, (short) 0, null, null, m);
         skeleton.getEquipment().setItemInMainHand(item);
         skeleton.getEquipment().setHelmet(this.type.toItemStack());
         ItemStack item1 = ItemMaker.createItem(Material.GOLD_CHESTPLATE);
@@ -57,8 +57,8 @@ public class EntityGuardian extends CustomEntity {
     }
 
     protected List<String> getNames() {
-        LivingEntity living = (LivingEntity)this.entity;
-        return Arrays.asList(ChatColor.YELLOW + "Guardian " + ChatColor.GREEN + (int)living.getHealth() + ChatColor.WHITE + "/" + ChatColor.GREEN + living.getMaxHealth());
+        LivingEntity living = (LivingEntity) this.entity;
+        return Arrays.asList(ChatColor.YELLOW + "Guardian " + ChatColor.GREEN + (int) living.getHealth() + ChatColor.WHITE + "/" + ChatColor.GREEN + living.getMaxHealth());
     }
 
     private void run1() {
@@ -69,17 +69,17 @@ public class EntityGuardian extends CustomEntity {
                     int total = 0;
                     Iterator var3 = EntityGuardian.this.getEntity().getNearbyEntities(10.0D, 5.0D, 10.0D).iterator();
 
-                    while(true) {
-                        while(true) {
+                    while (true) {
+                        while (true) {
                             Entity e;
                             do {
                                 do {
                                     if (!var3.hasNext()) {
                                         if (total > 0) {
-                                            if (((LivingEntity)EntityGuardian.this.getEntity()).getHealth() + (double)total < ((LivingEntity)EntityGuardian.this.getEntity()).getMaxHealth()) {
-                                                ((LivingEntity)EntityGuardian.this.getEntity()).setHealth(((LivingEntity)EntityGuardian.this.getEntity()).getHealth() + (double)total);
+                                            if (((LivingEntity) EntityGuardian.this.getEntity()).getHealth() + (double) total < ((LivingEntity) EntityGuardian.this.getEntity()).getMaxHealth()) {
+                                                ((LivingEntity) EntityGuardian.this.getEntity()).setHealth(((LivingEntity) EntityGuardian.this.getEntity()).getHealth() + (double) total);
                                             } else {
-                                                ((LivingEntity)EntityGuardian.this.getEntity()).setHealth(((LivingEntity)EntityGuardian.this.getEntity()).getMaxHealth());
+                                                ((LivingEntity) EntityGuardian.this.getEntity()).setHealth(((LivingEntity) EntityGuardian.this.getEntity()).getMaxHealth());
                                             }
 
                                             EntityGuardian.this.getEntity().getWorld().spawnParticle(Particle.HEART, EntityGuardian.this.getEntity().getLocation(), total / 2, 0.4D, 0.4D, 0.4D, 0.0D);
@@ -88,15 +88,15 @@ public class EntityGuardian extends CustomEntity {
                                         return;
                                     }
 
-                                    e = (Entity)var3.next();
-                                } while(!(e instanceof LivingEntity));
-                            } while(e instanceof Monster);
+                                    e = (Entity) var3.next();
+                                } while (!(e instanceof LivingEntity));
+                            } while (e instanceof Monster);
 
                             if (!(e instanceof Player)) {
                                 e.setFallDistance(10.0F);
                                 total += 2;
                             } else {
-                                Player p = (Player)e;
+                                Player p = (Player) e;
                                 if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
                                     if (!LuckyBlockWorld.equals(EntityGuardian.this.getEntity().getWorld().getGenerator())) {
                                         e.setFallDistance(10.0F);
@@ -124,18 +124,18 @@ public class EntityGuardian extends CustomEntity {
                     int x = 0;
                     Iterator var3 = EntityGuardian.this.getEntity().getNearbyEntities(10.0D, 10.0D, 10.0D).iterator();
 
-                    while(var3.hasNext()) {
-                        Entity e = (Entity)var3.next();
+                    while (var3.hasNext()) {
+                        Entity e = (Entity) var3.next();
                         if (e instanceof LivingEntity) {
                             ++x;
                         }
                     }
 
-                    if (x < 15 && ((Creature)EntityGuardian.this.getEntity()).getTarget() != null) {
+                    if (x < 15 && ((Creature) EntityGuardian.this.getEntity()).getTarget() != null) {
                         EntitySuperWitherSkeleton p = new EntitySuperWitherSkeleton();
                         p.owner = EntityGuardian.this.getEntity().getUniqueId();
                         p.spawn(EntityGuardian.this.getEntity().getLocation());
-                        ((Creature)p.getEntity()).setTarget(((Creature)EntityGuardian.this.getEntity()).getTarget());
+                        ((Creature) p.getEntity()).setTarget(((Creature) EntityGuardian.this.getEntity()).getTarget());
                         EntityGuardian.this.army.add(p.getEntity().getUniqueId());
                     }
                 } else {
@@ -174,17 +174,17 @@ public class EntityGuardian extends CustomEntity {
     protected void onDeath(EntityDeathEvent event) {
         Iterator var3 = event.getEntity().getNearbyEntities(5.0D, 5.0D, 5.0D).iterator();
 
-        while(var3.hasNext()) {
-            Entity e = (Entity)var3.next();
+        while (var3.hasNext()) {
+            Entity e = (Entity) var3.next();
             if (e instanceof LivingEntity) {
-                ((LivingEntity)e).damage(25.0D);
+                ((LivingEntity) e).damage(25.0D);
             }
         }
 
     }
 
     protected void onDamage(EntityDamageEvent event) {
-        if (this.random.nextInt(100) > 90 && ((LivingEntity)this.entity).getEquipment().getHelmet() != null && LBType.fromMaterial(((LivingEntity)this.entity).getEquipment().getHelmet().getType()) != null) {
+        if (this.random.nextInt(100) > 90 && ((LivingEntity) this.entity).getEquipment().getHelmet() != null && LBType.fromMaterial(((LivingEntity) this.entity).getEquipment().getHelmet().getType()) != null) {
             this.entity.getWorld().dropItem(this.entity.getLocation(), this.type.toItemStack(LBType.getRandomP(-50, 50)));
         }
 
@@ -201,8 +201,8 @@ public class EntityGuardian extends CustomEntity {
 
     protected void onTarget(EntityTargetLivingEntityEvent event) {
         if (event.getTarget() != null && this.army.size() > 0) {
-            for(int x = 0; x < this.army.size(); ++x) {
-                if (((UUID)this.army.get(x)).toString().equalsIgnoreCase(event.getTarget().getUniqueId().toString())) {
+            for (int x = 0; x < this.army.size(); ++x) {
+                if (this.army.get(x).toString().equalsIgnoreCase(event.getTarget().getUniqueId().toString())) {
                     event.setCancelled(true);
                 }
             }

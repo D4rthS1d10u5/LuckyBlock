@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.lb.DropOption;
+import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -45,7 +45,7 @@ public class LBCDropList extends LBCommand {
             int var9 = (var10 = LBDrop.values()).length;
 
             int i;
-            for(i = 0; i < var9; ++i) {
+            for (i = 0; i < var9; ++i) {
                 LBDrop drop = var10[i];
                 if (drop.isVisible()) {
                     d.add(drop.name());
@@ -54,8 +54,8 @@ public class LBCDropList extends LBCommand {
 
             Iterator var22 = CustomDropManager.getCustomDrops().iterator();
 
-            while(var22.hasNext()) {
-                CustomDrop c = (CustomDrop)var22.next();
+            while (var22.hasNext()) {
+                CustomDrop c = (CustomDrop) var22.next();
                 d.add(c.getName());
             }
 
@@ -66,15 +66,15 @@ public class LBCDropList extends LBCommand {
                 String no_desc = val("command.droplist.no_desc", false);
                 String desc_ = ChatColor.GOLD + val("command.droplist.desc", false);
 
-                for(int x = (page - 1) * 10; x < page * 10; ++x) {
+                for (int x = (page - 1) * 10; x < page * 10; ++x) {
                     if (x < d.size()) {
-                        texts[i] = new com.mcgamer199.luckyblock.tellraw.RawText(aqua + "[" + green + (String)d.get(x) + aqua + "]");
+                        texts[i] = new com.mcgamer199.luckyblock.tellraw.RawText(aqua + "[" + green + d.get(x) + aqua + "]");
                         String text;
                         String desc;
                         int z;
                         String all;
-                        if (LBDrop.isValid((String)d.get(x))) {
-                            LBDrop dr = LBDrop.getByName((String)d.get(x));
+                        if (LBDrop.isValid(d.get(x))) {
+                            LBDrop dr = LBDrop.getByName(d.get(x));
                             DropOption[] s = dr.getDefaultOptions();
                             text = null;
                             String description = no_desc;
@@ -83,7 +83,7 @@ public class LBCDropList extends LBCommand {
                                 description = desc_ + ":\n" + white + description;
                             }
 
-                            for(z = 0; z < s.length; ++z) {
+                            for (z = 0; z < s.length; ++z) {
                                 if (s[z] != null && s[z].getName() != null && z < 11) {
                                     if (z == 0) {
                                         text = "\n" + yellow + s[z].getName();
@@ -101,8 +101,8 @@ public class LBCDropList extends LBCommand {
                             texts[i].addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, all));
                         }
 
-                        if (CustomDropManager.getByName((String)d.get(x)) != null) {
-                            CustomDrop cd = CustomDropManager.getByName((String)d.get(x));
+                        if (CustomDropManager.getByName(d.get(x)) != null) {
+                            CustomDrop cd = CustomDropManager.getByName(d.get(x));
                             String text2blyat = null;
                             text2blyat = cd.getDescription();
                             DropOption[] dr = cd.getDefaultOptions();
@@ -112,7 +112,7 @@ public class LBCDropList extends LBCommand {
                             }
 
                             if (dr != null) {
-                                for(z = 0; z < dr.length; ++z) {
+                                for (z = 0; z < dr.length; ++z) {
                                     if (dr[z] != null && dr[z].getName() != null && z < 11) {
                                         if (z == 0) {
                                             text2blyat = "\n" + yellow + dr[z].getName();
@@ -138,16 +138,16 @@ public class LBCDropList extends LBCommand {
                 com.mcgamer199.luckyblock.tellraw.RawText[] var30 = texts;
                 int var29 = texts.length;
 
-                for(int var27 = 0; var27 < var29; ++var27) {
+                for (int var27 = 0; var27 < var29; ++var27) {
                     com.mcgamer199.luckyblock.tellraw.RawText r = var30[var27];
                     if (r != null) {
-                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player)sender, new com.mcgamer199.luckyblock.tellraw.RawText[]{r});
+                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, r);
                     }
                 }
             } else {
-                for(int x = (page - 1) * 10; x < page * 10; ++x) {
+                for (int x = (page - 1) * 10; x < page * 10; ++x) {
                     if (x < d.size()) {
-                        sender.sendMessage(aqua + "[" + green + (String)d.get(x) + aqua + "]");
+                        sender.sendMessage(aqua + "[" + green + d.get(x) + aqua + "]");
                     }
                 }
             }

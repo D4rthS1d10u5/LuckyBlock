@@ -30,9 +30,9 @@ public class CustomEntityLoader {
             ConfigurationSection c = file.getConfigurationSection("CustomEntities");
             Iterator var2 = c.getKeys(false).iterator();
 
-            while(true) {
-                while(var2.hasNext()) {
-                    String s = (String)var2.next();
+            while (true) {
+                while (var2.hasNext()) {
+                    String s = (String) var2.next();
                     ConfigurationSection f = c.getConfigurationSection(s);
                     String en = null;
                     UUID uuid = null;
@@ -46,11 +46,11 @@ public class CustomEntityLoader {
                             uuid = UUID.fromString(f.getString("UUID"));
                         }
 
-                        for(int x = 0; x < Bukkit.getWorlds().size(); ++x) {
-                            World world = (World)Bukkit.getWorlds().get(x);
+                        for (int x = 0; x < Bukkit.getWorlds().size(); ++x) {
+                            World world = Bukkit.getWorlds().get(x);
 
-                            for(int i = 0; i < world.getEntities().size(); ++i) {
-                                Entity e = (Entity)world.getEntities().get(i);
+                            for (int i = 0; i < world.getEntities().size(); ++i) {
+                                Entity e = world.getEntities().get(i);
                                 if (e.getUniqueId().toString().equalsIgnoreCase(uuid.toString())) {
                                     entity = e;
                                     i = world.getEntities().size();
@@ -60,7 +60,7 @@ public class CustomEntityLoader {
                         }
 
                         Object o = getCustomEntity(en);
-                        CustomEntity cu = (CustomEntity)o;
+                        CustomEntity cu = (CustomEntity) o;
                         cu.entity = entity;
                         if (entity != null) {
                             cu.onLoad(f);
@@ -68,7 +68,7 @@ public class CustomEntityLoader {
                             cu.add();
                             CustomEntityEvents.onSpawn(entity);
                         } else {
-                            file.set("CustomEntities." + s, (Object)null);
+                            file.set("CustomEntities." + s, null);
 
                             try {
                                 file.save(fileF);
@@ -77,7 +77,7 @@ public class CustomEntityLoader {
                             }
                         }
                     } else {
-                        c.set(s, (Object)null);
+                        c.set(s, null);
 
                         try {
                             file.save(fileF);
@@ -108,7 +108,7 @@ public class CustomEntityLoader {
 
     public static void removeEntity(CustomEntity entity) {
         if (file.getConfigurationSection("CustomEntities.Entity" + entity.getUuid()) != null) {
-            file.set("CustomEntities.Entity" + entity.getUuid(), (Object)null);
+            file.set("CustomEntities.Entity" + entity.getUuid(), null);
 
             try {
                 file.save(fileF);

@@ -71,7 +71,7 @@ public class MyTasks {
 
     public static void playEffects(Particle particle, Location loc, int amount, double[] r, float speed) {
         if (r.length == 3) {
-            loc.getWorld().spawnParticle(particle, loc, amount, r[0], r[1], r[2], (double)speed);
+            loc.getWorld().spawnParticle(particle, loc, amount, r[0], r[1], r[2], speed);
         }
 
     }

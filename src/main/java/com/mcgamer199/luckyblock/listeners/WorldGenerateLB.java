@@ -49,7 +49,7 @@ public class WorldGenerateLB extends ColorsClass implements Listener {
                         boolean i = false;
                         int a = 0;
 
-                        while(!i) {
+                        while (!i) {
                             blockUnder = blockUnder.getRelative(BlockFace.DOWN);
                             if (blockUnder.getType() == Material.AIR && blockUnder.getRelative(BlockFace.DOWN).getType().isSolid()) {
                                 b = blockUnder;
@@ -66,7 +66,7 @@ public class WorldGenerateLB extends ColorsClass implements Listener {
                     LBPreGenerateEvent e = new LBPreGenerateEvent(b, world, event.getChunk(), type);
                     Bukkit.getPluginManager().callEvent(e);
                     if (!e.isCancelled() && !type.defaultBlock) {
-                        LB lb = LB.placeLB(b.getLocation(), type, (ItemStack)null, "a=Naturally", (String)null, LBType.getRandomP(type.generateWithLuck[0], type.generateWithLuck[1]), new PlaceLuckyBlock.LBOption[0]);
+                        LB lb = LB.placeLB(b.getLocation(), type, null, "a=Naturally", null, LBType.getRandomP(type.generateWithLuck[0], type.generateWithLuck[1]));
                         LBGenerateEvent e1 = new LBGenerateEvent(lb, world, event.getChunk());
                         Bukkit.getPluginManager().callEvent(e1);
                     }

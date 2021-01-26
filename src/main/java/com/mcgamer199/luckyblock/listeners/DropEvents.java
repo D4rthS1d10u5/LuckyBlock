@@ -1,17 +1,21 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.customdrop.CustomDrop;
+import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.resources.DebugData;
-import com.mcgamer199.luckyblock.tags.BlockTags;
-import com.mcgamer199.luckyblock.structures.Structure;
-import com.mcgamer199.luckyblock.customdrop.CustomDrop;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.logic.IDirection;
+import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import com.mcgamer199.luckyblock.resources.DebugData;
+import com.mcgamer199.luckyblock.structures.Structure;
+import com.mcgamer199.luckyblock.tags.BlockTags;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.block.Block;
@@ -33,10 +37,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.IDirection;
-import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 import java.io.File;
 import java.util.*;
@@ -56,15 +56,15 @@ public class DropEvents extends ColorsClass {
         Location bloc = block.getLocation();
         FileConfiguration file = lb.getFile();
         if (player != null && lb.hasDropOption("Message")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String)lb.getDropOption("Message").getValues()[0]));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) lb.getDropOption("Message").getValues()[0]));
         }
 
         String[] objs;
         int fuse;
         if (lb.hasDropOption("IParticles")) {
-            objs = (String[])lb.getDropOption("IParticles").getValues();
+            objs = (String[]) lb.getDropOption("IParticles").getValues();
 
-            for(fuse = 0; fuse < objs.length; ++fuse) {
+            for (fuse = 0; fuse < objs.length; ++fuse) {
                 if (objs[fuse] != null) {
                     BreakLuckyBlock.spawnParticle(bloc, objs[fuse]);
                 }
@@ -92,24 +92,24 @@ public class DropEvents extends ColorsClass {
         int x;
         String path1;
         if (lb.hasDropOption("With") && first) {
-            objs = (String[])lb.getDropOption("With").getValues();
+            objs = (String[]) lb.getDropOption("With").getValues();
             String[] var12 = objs;
             x = objs.length;
 
-            for(randomP = 0; randomP < x; ++randomP) {
+            for (randomP = 0; randomP < x; ++randomP) {
                 path1 = var12[randomP];
                 if (path1 != null) {
                     if (CustomDropManager.getByName(path1) != null) {
-                        run(block, lb, player, (LBDrop)null, CustomDropManager.getByName(path1), false);
+                        run(block, lb, player, null, CustomDropManager.getByName(path1), false);
                     } else {
-                        run(block, lb, player, LBDrop.getByName(path1), (CustomDrop)null, false);
+                        run(block, lb, player, LBDrop.getByName(path1), null, false);
                     }
                 }
             }
         }
 
         if (LuckyBlock.isDebugEnabled()) {
-            Debug("Lucky block broken", new DebugData[]{new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", locToString(bloc)), new DebugData("LBType", lb.getType().getId() + ", " + ChatColor.stripColor(lb.getType().getName())), new DebugData("Placed By", lb.getPlacedByClass()), new DebugData("Title", lb.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', lb.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", lb.customDrop != null ? lb.customDrop.getName() : lb.getDrop().name()), new DebugData("Luck", String.valueOf(lb.getLuck())), new DebugData("Owner", lb.hasOwner() ? lb.owner.toString() : "none")});
+            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", locToString(bloc)), new DebugData("LBType", lb.getType().getId() + ", " + ChatColor.stripColor(lb.getType().getName())), new DebugData("Placed By", lb.getPlacedByClass()), new DebugData("Title", lb.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', lb.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", lb.customDrop != null ? lb.customDrop.getName() : lb.getDrop().name()), new DebugData("Luck", String.valueOf(lb.getLuck())), new DebugData("Owner", lb.hasOwner() ? lb.owner.toString() : "none"));
         }
 
         if (customDrop == null) {
@@ -132,7 +132,7 @@ public class DropEvents extends ColorsClass {
                     }
 
                     if (block.getState() instanceof Chest) {
-                        chestFiller = new com.mcgamer199.luckyblock.tags.ChestFiller(((FileConfiguration)file).getConfigurationSection(path), (Chest)block.getState());
+                        chestFiller = new com.mcgamer199.luckyblock.tags.ChestFiller(file.getConfigurationSection(path), (Chest) block.getState());
                         chestFiller.loc1 = path1;
                         chestFiller.fill();
                     }
@@ -170,12 +170,12 @@ public class DropEvents extends ColorsClass {
                         }
 
                         if (path1 != null && s != null) {
-                            com.mcgamer199.luckyblock.tags.ChestFiller c = new com.mcgamer199.luckyblock.tags.ChestFiller(((FileConfiguration)file).getConfigurationSection(path1), (Chest)block.getState());
+                            com.mcgamer199.luckyblock.tags.ChestFiller c = new com.mcgamer199.luckyblock.tags.ChestFiller(file.getConfigurationSection(path1), (Chest) block.getState());
                             c.loc1 = s;
                             c.fill();
                         }
 
-                        final Chest c = (Chest)block.getState();
+                        final Chest c = (Chest) block.getState();
                         ITask task = new ITask();
                         boolean finalBreakBlocks = breakBlocks;
                         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
@@ -186,7 +186,7 @@ public class DropEvents extends ColorsClass {
 
                                 block.getWorld().createExplosion(block.getLocation(), 3.5F);
                             }
-                        }, (long)times));
+                        }, times));
                     } else if (drop == LBDrop.FALLING_BLOCK) {
                         path = "FallingBlocks";
                         path1 = null;
@@ -204,9 +204,9 @@ public class DropEvents extends ColorsClass {
                         }
 
                         if (path1 == null) {
-                            com.mcgamer199.luckyblock.tags.BlockTags.spawnRandomFallingBlock((FileConfiguration)file, path, bloc.add(0.5D, height, 0.5D));
+                            com.mcgamer199.luckyblock.tags.BlockTags.spawnRandomFallingBlock(file, path, bloc.add(0.5D, height, 0.5D));
                         } else {
-                            com.mcgamer199.luckyblock.tags.BlockTags.spawnFallingBlock((FileConfiguration)file, path, path1, bloc.add(0.5D, height, 0.5D));
+                            com.mcgamer199.luckyblock.tags.BlockTags.spawnFallingBlock(file, path, path1, bloc.add(0.5D, height, 0.5D));
                         }
                     } else if (drop == LBDrop.ENTITY) {
                         path = "Entities";
@@ -220,12 +220,12 @@ public class DropEvents extends ColorsClass {
                         }
 
                         if (path1 == null) {
-                            com.mcgamer199.luckyblock.tags.EntityTags.spawnRandomEntity(((FileConfiguration)file).getConfigurationSection(path), bloc, player);
+                            com.mcgamer199.luckyblock.tags.EntityTags.spawnRandomEntity(file.getConfigurationSection(path), bloc, player);
                         } else {
-                            com.mcgamer199.luckyblock.tags.EntityTags.spawnEntity(((FileConfiguration)file).getConfigurationSection(path).getConfigurationSection(path1), bloc, ((FileConfiguration)file).getConfigurationSection(path), true, player);
+                            com.mcgamer199.luckyblock.tags.EntityTags.spawnEntity(file.getConfigurationSection(path).getConfigurationSection(path1), bloc, file.getConfigurationSection(path), true, player);
                         }
                     } else if (drop == LBDrop.LAVA) {
-                        block.setData((byte)0);
+                        block.setData((byte) 0);
                         block.setType(Material.LAVA);
                         block.getRelative(BlockFace.EAST).setType(Material.LAVA);
                         block.getRelative(BlockFace.WEST).setType(Material.LAVA);
@@ -249,14 +249,14 @@ public class DropEvents extends ColorsClass {
                         Object[] obj;
                         if (drop == LBDrop.SPLASH_POTION) {
                             ItemStack tpotion = new ItemStack(Material.SPLASH_POTION);
-                            PotionMeta tpotionM = (PotionMeta)tpotion.getItemMeta();
+                            PotionMeta tpotionM = (PotionMeta) tpotion.getItemMeta();
                             tpotionM.setBasePotionData(new PotionData(PotionType.AWKWARD));
                             if (lb.getDropOption("Effects") != null) {
                                 obj = lb.getDropOption("Effects").getValues();
                                 Object[] var14 = obj;
                                 rp = obj.length;
 
-                                for(counter = 0; counter < rp; ++counter) {
+                                for (counter = 0; counter < rp; ++counter) {
                                     Object b = var14[counter];
                                     String serializedBlock = b.toString();
                                     if (serializedBlock != null) {
@@ -276,7 +276,7 @@ public class DropEvents extends ColorsClass {
 
                                             tpotionM.addCustomEffect(new PotionEffect(PotionEffectType.getByName(t[0].toUpperCase()), du, am), true);
                                             tpotion.setItemMeta(tpotionM);
-                                            ThrownPotion potion = (ThrownPotion)block.getWorld().spawnEntity(bloc.add(0.0D, 10.0D, 0.0D), EntityType.SPLASH_POTION);
+                                            ThrownPotion potion = (ThrownPotion) block.getWorld().spawnEntity(bloc.add(0.0D, 10.0D, 0.0D), EntityType.SPLASH_POTION);
                                             potion.setItem(tpotion);
                                         } else {
                                             send_no(player, "drops.potion_effect.invalid_effect");
@@ -295,7 +295,7 @@ public class DropEvents extends ColorsClass {
                                 fuse = Integer.parseInt(lb.getDropOption("Fuse").getValues()[0].toString());
                             }
 
-                            TNTPrimed tnt = (TNTPrimed)block.getWorld().spawnEntity(bloc.add(0.0D, 20.0D, 0.0D), EntityType.PRIMED_TNT);
+                            TNTPrimed tnt = (TNTPrimed) block.getWorld().spawnEntity(bloc.add(0.0D, 20.0D, 0.0D), EntityType.PRIMED_TNT);
                             tnt.setYield(yield);
                             tnt.setFireTicks(2000);
                             tnt.setFuseTicks(fuse);
@@ -339,7 +339,7 @@ public class DropEvents extends ColorsClass {
                                 HTasks.FakeDiamond(item, counter);
                             }
                         } else if (drop == LBDrop.FIREWORK) {
-                            final Firework fwork = (Firework)block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
+                            final Firework fwork = (Firework) block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
                             FireworkMeta fwm = fwork.getFireworkMeta();
                             Random r = new Random();
                             Type type = Type.BALL_LARGE;
@@ -354,7 +354,7 @@ public class DropEvents extends ColorsClass {
                                 public void run() {
                                     int trap = LuckyBlock.randoms.nextInt(2);
                                     if (trap > 0) {
-                                        TNTPrimed t = (TNTPrimed)fwork.getWorld().spawnEntity(fwork.getLocation(), EntityType.PRIMED_TNT);
+                                        TNTPrimed t = (TNTPrimed) fwork.getWorld().spawnEntity(fwork.getLocation(), EntityType.PRIMED_TNT);
 
                                         try {
                                             boolean breakBlocks = LuckyBlock.instance.config.getBoolean("Allow.ExplosionGrief");
@@ -368,7 +368,7 @@ public class DropEvents extends ColorsClass {
                                         t.setFuseTicks(70);
                                         t.setYield(5.0F);
                                     } else if (trap == 0) {
-                                        FallingBlock tntfake = fwork.getWorld().spawnFallingBlock(fwork.getLocation().add(0.5D, 0.0D, 0.5D), Material.TNT, (byte)0);
+                                        FallingBlock tntfake = fwork.getWorld().spawnFallingBlock(fwork.getLocation().add(0.5D, 0.0D, 0.5D), Material.TNT, (byte) 0);
                                         tntfake.setDropItem(false);
                                     }
 
@@ -392,9 +392,9 @@ public class DropEvents extends ColorsClass {
 
                                 items = null;
                                 if (path1 == null) {
-                                    items = com.mcgamer199.luckyblock.tags.ItemStackTags.getRandomItems(((FileConfiguration)file).getConfigurationSection(path));
+                                    items = com.mcgamer199.luckyblock.tags.ItemStackTags.getRandomItems(file.getConfigurationSection(path));
                                 } else {
-                                    items = com.mcgamer199.luckyblock.tags.ItemStackTags.getItems(((FileConfiguration)file).getConfigurationSection(path).getConfigurationSection(path1));
+                                    items = com.mcgamer199.luckyblock.tags.ItemStackTags.getItems(file.getConfigurationSection(path).getConfigurationSection(path1));
                                 }
 
                                 if (lb.hasDropOption("Effects") && lb.getDropOption("Effects").getValues()[0].toString().equalsIgnoreCase("true")) {
@@ -403,7 +403,7 @@ public class DropEvents extends ColorsClass {
                                     var46 = items;
                                     rp = items.length;
 
-                                    for(counter = 0; counter < rp; ++counter) {
+                                    for (counter = 0; counter < rp; ++counter) {
                                         i = var46[counter];
                                         if (i != null) {
                                             Item droppedItem = block.getWorld().dropItem(bloc, i);
@@ -429,7 +429,7 @@ public class DropEvents extends ColorsClass {
                                     double damage = 2.5D;
                                     if (lb.hasDropOption("Value") && lb.getDropOption("Value").getValues()[0] != null) {
                                         try {
-                                            damage = (double)Integer.parseInt(lb.getDropOption("Value").getValues()[0].toString());
+                                            damage = Integer.parseInt(lb.getDropOption("Value").getValues()[0].toString());
                                         } catch (Exception var22) {
                                         }
                                     }
@@ -446,10 +446,10 @@ public class DropEvents extends ColorsClass {
                             } else {
                                 SchedulerTask task;
                                 if (drop == LBDrop.F_PIGS) {
-                                    for(times = LuckyBlock.randoms.nextInt(5) + 4; times > 0; --times) {
-                                        final Bat bat = (Bat)block.getWorld().spawnEntity(block.getLocation().add(0.0D, 0.0D, 0.0D), EntityType.BAT);
+                                    for (times = LuckyBlock.randoms.nextInt(5) + 4; times > 0; --times) {
+                                        final Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation().add(0.0D, 0.0D, 0.0D), EntityType.BAT);
                                         bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
-                                        final Pig pig = (Pig)block.getWorld().spawnEntity(block.getLocation(), EntityType.PIG);
+                                        final Pig pig = (Pig) block.getWorld().spawnEntity(block.getLocation(), EntityType.PIG);
                                         if (LuckyBlock.randoms.nextInt(2) + 1 == 1) {
                                             pig.setCustomName(yellow + "Lucky Pig " + green + "+1 Health");
                                         } else {
@@ -477,7 +477,7 @@ public class DropEvents extends ColorsClass {
                                     com.mcgamer199.luckyblock.customentity.SuperSlime ss = new com.mcgamer199.luckyblock.customentity.SuperSlime();
                                     randomP = (new Random()).nextInt(3) + 3;
 
-                                    for(counter = randomP; counter > 0; --counter) {
+                                    for (counter = randomP; counter > 0; --counter) {
                                         com.mcgamer199.luckyblock.customentity.EntitySuperSlime su = new com.mcgamer199.luckyblock.customentity.EntitySuperSlime();
                                         su.setSize(times);
                                         su.spawn(bloc);
@@ -488,8 +488,8 @@ public class DropEvents extends ColorsClass {
                                 } else {
                                     FallingBlock fb;
                                     if (drop == LBDrop.METEORS) {
-                                        for(times = 8; times > 0; --times) {
-                                            fb = block.getWorld().spawnFallingBlock(block.getLocation().add((double)LuckyBlock.randoms.nextInt(10), 35.0D, (double)LuckyBlock.randoms.nextInt(10)), Material.STONE, (byte)0);
+                                        for (times = 8; times > 0; --times) {
+                                            fb = block.getWorld().spawnFallingBlock(block.getLocation().add(LuckyBlock.randoms.nextInt(10), 35.0D, LuckyBlock.randoms.nextInt(10)), Material.STONE, (byte) 0);
                                             fb.setVelocity(fb.getVelocity().multiply(2));
                                             float ep = 11.0F;
                                             if (lb.hasDropOption("ExplosionPower")) {
@@ -499,9 +499,9 @@ public class DropEvents extends ColorsClass {
                                             HTasks.Meteor(fb, ep);
                                         }
                                     } else if (drop == LBDrop.F_LB) {
-                                        final Bat bat = (Bat)block.getWorld().spawnEntity(block.getLocation(), EntityType.BAT);
+                                        final Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation(), EntityType.BAT);
                                         bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
-                                        fb = bat.getWorld().spawnFallingBlock(bat.getLocation().add(0.0D, 5.0D, 0.0D), lb.getType().getBlockType(), (byte)lb.getType().getData());
+                                        fb = bat.getWorld().spawnFallingBlock(bat.getLocation().add(0.0D, 5.0D, 0.0D), lb.getType().getBlockType(), (byte) lb.getType().getData());
                                         bat.setPassenger(fb);
                                         bat.setMetadata("flyinglb", new FixedMetadataValue(LuckyBlock.instance, "true"));
                                         fb.setDropItem(false);
@@ -557,20 +557,20 @@ public class DropEvents extends ColorsClass {
                                     } else if (drop == LBDrop.WOLVES_OCELOTS) {
                                         times = LuckyBlock.randoms.nextInt(2) + 1;
                                         if (times == 1) {
-                                            for(fuse = LuckyBlock.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
-                                                Wolf wolf = (Wolf)block.getWorld().spawnEntity(bloc, EntityType.WOLF);
+                                            for (fuse = LuckyBlock.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
+                                                Wolf wolf = (Wolf) block.getWorld().spawnEntity(bloc, EntityType.WOLF);
                                                 wolf.setTamed(true);
                                                 wolf.setOwner(player);
                                                 wolf.setMaxHealth(30.0D);
                                                 wolf.setHealth(30.0D);
                                                 wolf.setSitting(true);
-                                                wolf.setCollarColor(DyeColor.getByDyeData((byte)LuckyBlock.randoms.nextInt(16)));
+                                                wolf.setCollarColor(DyeColor.getByDyeData((byte) LuckyBlock.randoms.nextInt(16)));
                                                 wolf.setCustomName("" + yellow + bold + "Wolf " + green + wolf.getHealth() + white + "/" + green + wolf.getMaxHealth());
                                                 wolf.setCustomNameVisible(true);
                                             }
                                         } else {
-                                            for(fuse = LuckyBlock.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
-                                                Ocelot ocelot = (Ocelot)block.getWorld().spawnEntity(bloc, EntityType.OCELOT);
+                                            for (fuse = LuckyBlock.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
+                                                Ocelot ocelot = (Ocelot) block.getWorld().spawnEntity(bloc, EntityType.OCELOT);
                                                 ocelot.setCatType(org.bukkit.entity.Ocelot.Type.getType(LuckyBlock.randoms.nextInt(4)));
                                                 ocelot.setSitting(true);
                                                 ocelot.setOwner(player);
@@ -594,14 +594,14 @@ public class DropEvents extends ColorsClass {
                                             player.setHealth(player.getMaxHealth());
                                         }
                                     } else if (drop == LBDrop.SIGN) {
-                                        for(times = 0; times < 10; ++times) {
+                                        for (times = 0; times < 10; ++times) {
                                         }
 
                                         block.setType(Material.SIGN_POST);
-                                        Sign sign = (Sign)block.getState();
+                                        Sign sign = (Sign) block.getState();
                                         if (lb.hasDropOption("Facing")) {
                                             path1 = lb.getDropOption("Facing").getValues()[0].toString();
-                                            org.bukkit.material.Sign signData = (org.bukkit.material.Sign)sign.getData();
+                                            org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
                                             if (path1.equalsIgnoreCase("PLAYER")) {
                                                 if (player != null) {
                                                     signData.setFacingDirection(BlockFace.valueOf(IDirection.getByLoc(bloc, player.getLocation()).name()));
@@ -614,7 +614,7 @@ public class DropEvents extends ColorsClass {
                                         if (lb.hasDropOption("Texts")) {
                                             Object[] text = lb.getDropOption("Texts").getValues();
 
-                                            for(randomP = 0; randomP < text.length; ++randomP) {
+                                            for (randomP = 0; randomP < text.length; ++randomP) {
                                                 if (text[randomP] != null) {
                                                     sign.setLine(randomP, ChatColor.translateAlternateColorCodes('&', text[randomP].toString()));
                                                 }
@@ -631,27 +631,27 @@ public class DropEvents extends ColorsClass {
                                                 ItemStack[] var43;
                                                 ItemStack item;
                                                 if (path.equalsIgnoreCase("all")) {
-                                                    for(randomP = 0; randomP < player.getInventory().getSize(); ++randomP) {
+                                                    for (randomP = 0; randomP < player.getInventory().getSize(); ++randomP) {
                                                         if (player.getInventory().getItem(randomP) != null && player.getInventory().getItem(randomP).getType() != Material.AIR && repairable.contains(player.getInventory().getItem(randomP).getType()) && player.getInventory().getItem(randomP).getDurability() > 0) {
-                                                            player.getInventory().getItem(randomP).setDurability((short)0);
+                                                            player.getInventory().getItem(randomP).setDurability((short) 0);
                                                             ++fuse;
                                                         }
                                                     }
 
                                                     counter = (var43 = player.getInventory().getArmorContents()).length;
 
-                                                    for(counter = 0; counter < counter; ++counter) {
+                                                    for (counter = 0; counter < counter; ++counter) {
                                                         item = var43[counter];
                                                         if (item != null && item.getType() != Material.AIR && repairable.contains(item.getType()) && item.getDurability() > 0) {
-                                                            item.setDurability((short)0);
+                                                            item.setDurability((short) 0);
                                                             ++fuse;
                                                         }
                                                     }
                                                 } else {
                                                     if (path.equalsIgnoreCase("inv") || path.equalsIgnoreCase("inventory")) {
-                                                        for(randomP = 0; randomP < player.getInventory().getSize(); ++randomP) {
+                                                        for (randomP = 0; randomP < player.getInventory().getSize(); ++randomP) {
                                                             if (player.getInventory().getItem(randomP) != null && player.getInventory().getItem(randomP).getType() != Material.AIR && repairable.contains(player.getInventory().getItem(randomP).getType()) && player.getInventory().getItem(randomP).getDurability() > 0) {
-                                                                player.getInventory().getItem(randomP).setDurability((short)0);
+                                                                player.getInventory().getItem(randomP).setDurability((short) 0);
                                                                 ++fuse;
                                                             }
                                                         }
@@ -660,10 +660,10 @@ public class DropEvents extends ColorsClass {
                                                     if (path.equalsIgnoreCase("armor") || path.equalsIgnoreCase("armour")) {
                                                         counter = (var43 = player.getInventory().getArmorContents()).length;
 
-                                                        for(counter = 0; counter < counter; ++counter) {
+                                                        for (counter = 0; counter < counter; ++counter) {
                                                             item = var43[counter];
                                                             if (item != null && item.getType() != Material.AIR && repairable.contains(item.getType()) && item.getDurability() > 0) {
-                                                                item.setDurability((short)0);
+                                                                item.setDurability((short) 0);
                                                                 ++fuse;
                                                             }
                                                         }
@@ -672,7 +672,7 @@ public class DropEvents extends ColorsClass {
                                                     if (path.equalsIgnoreCase("hand") && player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                                                         item = player.getInventory().getItemInMainHand();
                                                         if (repairable.contains(item.getType()) && item.getDurability() > 0) {
-                                                            item.setDurability((short)0);
+                                                            item.setDurability((short) 0);
                                                             ++fuse;
                                                         }
                                                     }
@@ -720,23 +720,23 @@ public class DropEvents extends ColorsClass {
                                             }
 
                                             if (path1 != null) {
-                                                items = com.mcgamer199.luckyblock.tags.ItemStackTags.getItems(((FileConfiguration)file).getConfigurationSection(path).getConfigurationSection(path1));
+                                                items = com.mcgamer199.luckyblock.tags.ItemStackTags.getItems(file.getConfigurationSection(path).getConfigurationSection(path1));
                                             } else {
-                                                items = com.mcgamer199.luckyblock.tags.ItemStackTags.getRandomItems(((FileConfiguration)file).getConfigurationSection(path));
+                                                items = com.mcgamer199.luckyblock.tags.ItemStackTags.getRandomItems(file.getConfigurationSection(path));
                                             }
 
                                             var46 = items;
                                             rp = items.length;
 
-                                            for(counter = 0; counter < rp; ++counter) {
+                                            for (counter = 0; counter < rp; ++counter) {
                                                 i = var46[counter];
                                                 if (i != null) {
-                                                    player.getInventory().addItem(new ItemStack[]{i});
+                                                    player.getInventory().addItem(i);
                                                 }
                                             }
                                         }
                                     } else if (drop == LBDrop.XP) {
-                                        ExperienceOrb exp = (ExperienceOrb)block.getWorld().spawnEntity(bloc, EntityType.EXPERIENCE_ORB);
+                                        ExperienceOrb exp = (ExperienceOrb) block.getWorld().spawnEntity(bloc, EntityType.EXPERIENCE_ORB);
                                         if (lb.hasDropOption("XPAmount")) {
                                             fuse = Integer.parseInt(lb.getDropOption("XPAmount").getValues()[0].toString());
                                             exp.setExperience(fuse);
@@ -745,10 +745,10 @@ public class DropEvents extends ColorsClass {
                                         if (player != null) {
                                             Iterator var87 = player.getNearbyEntities(10.0D, 10.0D, 10.0D).iterator();
 
-                                            while(var87.hasNext()) {
-                                                Entity e = (Entity)var87.next();
+                                            while (var87.hasNext()) {
+                                                Entity e = (Entity) var87.next();
                                                 if (e instanceof LivingEntity) {
-                                                    LivingEntity l = (LivingEntity)e;
+                                                    LivingEntity l = (LivingEntity) e;
                                                     if (l.getUniqueId() != player.getUniqueId()) {
                                                         if (!(l instanceof Tameable)) {
                                                             l.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 10));
@@ -756,7 +756,7 @@ public class DropEvents extends ColorsClass {
                                                             l.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 200, 10));
                                                             l.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 300, 15));
                                                         } else {
-                                                            Tameable t = (Tameable)l;
+                                                            Tameable t = (Tameable) l;
                                                             if (!t.isTamed()) {
                                                                 l.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 10));
                                                                 l.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 200, 10));
@@ -778,26 +778,26 @@ public class DropEvents extends ColorsClass {
                                         if (lb.hasDropOption("Path1")) {
                                             path1 = lb.getDropOption("Path1").getValues()[0].toString();
                                         } else {
-                                            path1 = com.mcgamer199.luckyblock.tags.BlockTags.getRandomL((FileConfiguration)file, path);
+                                            path1 = com.mcgamer199.luckyblock.tags.BlockTags.getRandomL(file, path);
                                         }
 
-                                        s = com.mcgamer199.luckyblock.tags.BlockTags.getValue((FileConfiguration)file, path, path1, "LocationType");
+                                        s = com.mcgamer199.luckyblock.tags.BlockTags.getValue(file, path, path1, "LocationType");
                                         if (s == null) {
                                             s = "BLOCK";
                                         }
 
                                         if (s.equalsIgnoreCase("PLAYER")) {
                                             if (player != null) {
-                                                com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(((FileConfiguration)file).getConfigurationSection(path).getConfigurationSection(path1), player.getLocation());
+                                                com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), player.getLocation());
                                             } else {
-                                                com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(((FileConfiguration)file).getConfigurationSection(path).getConfigurationSection(path1), bloc);
+                                                com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), bloc);
                                             }
                                         } else {
-                                            com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(((FileConfiguration)file).getConfigurationSection(path).getConfigurationSection(path1), bloc);
+                                            com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), bloc);
                                         }
                                     } else if (drop == LBDrop.RUN_COMMAND) {
                                         if (lb.getDropOption("Command") != null) {
-                                            path = (String)lb.getDropOption("Command").getValues()[0];
+                                            path = (String) lb.getDropOption("Command").getValues()[0];
                                             if (path != null) {
                                                 if (player != null) {
                                                     path = ChatColor.translateAlternateColorCodes('&', path);
@@ -811,14 +811,14 @@ public class DropEvents extends ColorsClass {
                                         if (player != null && lb.hasDropOption("Effects")) {
                                             Object[] effects = lb.getDropOption("Effects").getValues();
 
-                                            for(fuse = 0; fuse < effects.length; ++fuse) {
+                                            for (fuse = 0; fuse < effects.length; ++fuse) {
                                                 player.removePotionEffect(PotionEffectType.getByName(effects[fuse].toString()));
                                             }
                                         }
                                     } else if (drop == LBDrop.TELEPORT) {
                                         if (player != null && lb.getDropOption("Height") != null) {
                                             times = Integer.parseInt(lb.getDropOption("Height").getValues()[0].toString());
-                                            player.teleport(player.getLocation().add(0.0D, (double)times, 0.0D));
+                                            player.teleport(player.getLocation().add(0.0D, times, 0.0D));
                                         }
                                     } else if (drop == LBDrop.RANDOM_ITEM) {
                                         path = "RandomItems";
@@ -834,27 +834,27 @@ public class DropEvents extends ColorsClass {
                                         if (path1 != null) {
                                             s = path1;
                                         } else {
-                                            s = BlockTags.getRandomL((FileConfiguration)file, path);
+                                            s = BlockTags.getRandomL(file, path);
                                         }
 
                                         com.mcgamer199.luckyblock.customentity.EntityRandomItem r = new com.mcgamer199.luckyblock.customentity.EntityRandomItem();
-                                        Iterator var49 = ((FileConfiguration)file).getConfigurationSection(path + "." + s + ".Items").getKeys(false).iterator();
+                                        Iterator var49 = file.getConfigurationSection(path + "." + s + ".Items").getKeys(false).iterator();
 
-                                        while(var49.hasNext()) {
-                                            String g = (String)var49.next();
-                                            r.items.add(com.mcgamer199.luckyblock.tags.ItemStackGetter.getItemStack((FileConfiguration)file, path + "." + s + ".Items." + g));
+                                        while (var49.hasNext()) {
+                                            String g = (String) var49.next();
+                                            r.items.add(com.mcgamer199.luckyblock.tags.ItemStackGetter.getItemStack(file, path + "." + s + ".Items." + g));
                                         }
 
                                         r.spawn(bloc);
                                     } else if (drop == LBDrop.TRADES) {
-                                        Villager v = (Villager)block.getWorld().spawnEntity(bloc, EntityType.VILLAGER);
+                                        Villager v = (Villager) block.getWorld().spawnEntity(bloc, EntityType.VILLAGER);
                                         v.setProfession(Profession.BLACKSMITH);
                                         v.setCustomName("" + yellow + bold + "Lucky Villager");
                                         v.setCustomNameVisible(true);
                                         List<MerchantRecipe> recipes = new ArrayList();
                                         randomP = lb.getType().getRandomP();
                                         i = ItemMaker.createItem(Material.POTION, 1, random.nextInt(3) + 1, "" + yellow + bold + "Lucky Potion");
-                                        PotionMeta iM = (PotionMeta)i.getItemMeta();
+                                        PotionMeta iM = (PotionMeta) i.getItemMeta();
                                         PotionData data = new PotionData(PotionType.FIRE_RESISTANCE);
                                         iM.setBasePotionData(data);
                                         iM.addCustomEffect(new PotionEffect(PotionEffectType.SPEED, 1200, 2), true);
@@ -886,7 +886,7 @@ public class DropEvents extends ColorsClass {
                                     } else if (drop == LBDrop.ZOMBIE_TRAP) {
                                         if (player != null) {
                                             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 70, 100));
-                                            Zombie zombie = (Zombie)player.getWorld().spawnEntity(bloc, EntityType.ZOMBIE);
+                                            Zombie zombie = (Zombie) player.getWorld().spawnEntity(bloc, EntityType.ZOMBIE);
                                             zombie.setMaxHealth(300.0D);
                                             zombie.setHealth(300.0D);
                                             zombie.getEquipment().setItemInMainHand(ItemMaker.addEnchant(ItemMaker.createItem(Material.DIAMOND_SWORD), Enchantment.DAMAGE_ALL, 200));
@@ -907,7 +907,7 @@ public class DropEvents extends ColorsClass {
                                                 Object[] itemMaterials = lb.getDropOption("ItemMaterials").getValues();
                                                 mats = new Material[itemMaterials.length];
 
-                                                for(counter = 0; counter < itemMaterials.length; ++counter) {
+                                                for (counter = 0; counter < itemMaterials.length; ++counter) {
                                                     if (itemMaterials[counter] != null) {
                                                         mats[counter] = Material.getMaterial(itemMaterials[counter].toString());
                                                     }
@@ -915,7 +915,7 @@ public class DropEvents extends ColorsClass {
                                             }
 
                                             if (lb.hasDropOption("ItemsData")) {
-                                                itemsData = (Short[])lb.getDropOption("ItemsData").getValues();
+                                                itemsData = (Short[]) lb.getDropOption("ItemsData").getValues();
                                             }
 
                                             HTasks.itemRain(bloc, times, mats, itemsData);
@@ -930,7 +930,7 @@ public class DropEvents extends ColorsClass {
                                                 obj = lb.getDropOption("BlockMaterials").getValues();
                                                 mats = new Material[obj.length];
 
-                                                for(counter = 0; counter < obj.length; ++counter) {
+                                                for (counter = 0; counter < obj.length; ++counter) {
                                                     if (obj[counter] != null) {
                                                         mats[counter] = Material.getMaterial(obj[counter].toString().toUpperCase());
                                                     }
@@ -998,7 +998,7 @@ public class DropEvents extends ColorsClass {
     public static void b(String clss, Location loc) {
         Object str = getStructure(clss);
         if (str != null) {
-            Structure s = (Structure)str;
+            Structure s = (Structure) str;
             s.build(loc);
         }
     }

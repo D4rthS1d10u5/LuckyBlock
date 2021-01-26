@@ -2,6 +2,8 @@ package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,8 +13,6 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class EntityLCTItem extends CustomEntity {
     private LuckyCraftingTable lct;
@@ -26,7 +26,7 @@ public class EntityLCTItem extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        ArmorStand armorStand = (ArmorStand)loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+        ArmorStand armorStand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
         armorStand.setBasePlate(false);
         armorStand.setMarker(true);
         armorStand.setGravity(false);
@@ -49,7 +49,7 @@ public class EntityLCTItem extends CustomEntity {
                     }
 
                     if (!setAir) {
-                        EntityLCTItem.this.armorStand.setHelmet((ItemStack)null);
+                        EntityLCTItem.this.armorStand.setHelmet(null);
                     }
                 } else {
                     EntityLCTItem.this.remove();
@@ -61,7 +61,7 @@ public class EntityLCTItem extends CustomEntity {
     }
 
     protected void onLoad(final ConfigurationSection c) {
-        this.armorStand = (ArmorStand)this.entity;
+        this.armorStand = (ArmorStand) this.entity;
         ITask task = new ITask();
         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
             public void run() {

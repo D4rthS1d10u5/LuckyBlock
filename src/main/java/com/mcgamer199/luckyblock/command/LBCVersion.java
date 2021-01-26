@@ -15,13 +15,13 @@ public class LBCVersion extends LBCommand {
         if (!(sender instanceof Player)) {
             sender.sendMessage(green + val("command.version", false) + " " + gold + "2.2.5");
         } else {
-            Player player = (Player)sender;
+            Player player = (Player) sender;
             com.mcgamer199.luckyblock.tellraw.RawText r = new com.mcgamer199.luckyblock.tellraw.RawText(val("command.version", false) + ": ");
             r.color = ChatColor.GREEN;
             com.mcgamer199.luckyblock.tellraw.RawText r1 = new com.mcgamer199.luckyblock.tellraw.RawText("2.2.5");
             r1.color = ChatColor.GOLD;
             r1.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "2.2.5"));
-            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, new com.mcgamer199.luckyblock.tellraw.RawText[]{r, r1});
+            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, r, r1);
         }
 
         return true;

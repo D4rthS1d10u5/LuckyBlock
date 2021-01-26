@@ -2,15 +2,15 @@ package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class EntityLCTNameTag extends CustomEntity {
     private LuckyCraftingTable lct;
@@ -23,7 +23,7 @@ public class EntityLCTNameTag extends CustomEntity {
         Location l = lct.getBlock().getLocation();
         l.add(0.5D, 1.2D, 0.5D);
         if (l != null) {
-            ArmorStand as = (ArmorStand)lct.getBlock().getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+            ArmorStand as = (ArmorStand) lct.getBlock().getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
             as.setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
             as.setCustomNameVisible(true);
             as.setMarker(true);
@@ -61,7 +61,7 @@ public class EntityLCTNameTag extends CustomEntity {
                 if (b != null) {
                     if (LuckyCraftingTable.getByBlock(MyTasks.stringToBlock(b)) != null) {
                         EntityLCTNameTag.this.lct = LuckyCraftingTable.getByBlock(MyTasks.stringToBlock(b));
-                        ((ArmorStand)EntityLCTNameTag.this.getEntity()).setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
+                        EntityLCTNameTag.this.getEntity().setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
                     }
                 } else {
                     EntityLCTNameTag.this.remove();

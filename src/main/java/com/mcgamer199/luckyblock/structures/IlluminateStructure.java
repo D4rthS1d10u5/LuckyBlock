@@ -9,7 +9,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
-/** @deprecated */
+/**
+ * @deprecated
+ */
 @Deprecated
 public class IlluminateStructure extends Structure {
     public IlluminateStructure() {
@@ -22,10 +24,10 @@ public class IlluminateStructure extends Structure {
         int times;
         int x;
         int z;
-        for(times = 20; times > 0; --times) {
-            for(x = times * -1; x < times - 1; ++x) {
-                for(z = times * -1; z < times - 1; ++z) {
-                    block.getLocation().add((double)x, (double)y, (double)z).getBlock().setType(Material.SANDSTONE);
+        for (times = 20; times > 0; --times) {
+            for (x = times * -1; x < times - 1; ++x) {
+                for (z = times * -1; z < times - 1; ++z) {
+                    block.getLocation().add(x, y, z).getBlock().setType(Material.SANDSTONE);
                 }
             }
 
@@ -34,10 +36,10 @@ public class IlluminateStructure extends Structure {
 
         y = 1;
 
-        for(times = 18; times > 0; --times) {
-            for(x = times * -1; x < times - 1; ++x) {
-                for(z = times * -1; z < times - 1; ++z) {
-                    block.getLocation().add((double)x, (double)y, (double)z).getBlock().setType(Material.AIR);
+        for (times = 18; times > 0; --times) {
+            for (x = times * -1; x < times - 1; ++x) {
+                for (z = times * -1; z < times - 1; ++z) {
+                    block.getLocation().add(x, y, z).getBlock().setType(Material.AIR);
                 }
             }
 
@@ -59,7 +61,7 @@ public class IlluminateStructure extends Structure {
         block.getLocation().add(0.0D, 3.0D, -1.0D).getBlock().setType(Material.GLASS);
         block.getLocation().add(0.0D, 4.0D, -1.0D).getBlock().setType(Material.GLASS);
         block.getLocation().add(0.0D, 5.0D, 0.0D).getBlock().setType(Material.GLASS);
-        Zombie zombie = (Zombie)loc.getWorld().spawnEntity(block.getLocation().add(0.5D, 3.0D, 0.5D), EntityType.ZOMBIE);
+        Zombie zombie = (Zombie) loc.getWorld().spawnEntity(block.getLocation().add(0.5D, 3.0D, 0.5D), EntityType.ZOMBIE);
         zombie.getEquipment().setBoots(new ItemStack(Material.GOLD_BOOTS));
         zombie.getEquipment().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
         zombie.getEquipment().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));

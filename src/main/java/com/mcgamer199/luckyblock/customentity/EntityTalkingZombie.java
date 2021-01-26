@@ -1,5 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
 
 import java.util.Iterator;
 
@@ -22,7 +22,7 @@ public class EntityTalkingZombie extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        Zombie zombie = (Zombie)loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+        Zombie zombie = (Zombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
         zombie.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100.0D);
         zombie.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(6.0D);
         zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.25D);
@@ -46,30 +46,30 @@ public class EntityTalkingZombie extends CustomEntity {
     protected void onTick() {
         this.z.setFireTicks(0);
         if (this.z.getTarget() != null && this.z.getTarget() instanceof Player) {
-            Player p = (Player)this.z.getTarget();
+            Player p = (Player) this.z.getTarget();
             if (p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE) {
                 boolean c = false;
                 if ((this.z.getEquipment().getHelmet() == null || this.z.getEquipment().getHelmet().getType() == Material.AIR) && p.getEquipment().getHelmet() != null && p.getEquipment().getHelmet().getType() != Material.AIR) {
                     this.z.getEquipment().setHelmet(p.getEquipment().getHelmet());
-                    p.getEquipment().setHelmet((ItemStack)null);
+                    p.getEquipment().setHelmet(null);
                     c = true;
                 }
 
                 if ((this.z.getEquipment().getChestplate() == null || this.z.getEquipment().getChestplate().getType() == Material.AIR) && p.getEquipment().getChestplate() != null && p.getEquipment().getChestplate().getType() != Material.AIR) {
                     this.z.getEquipment().setChestplate(p.getEquipment().getChestplate());
-                    p.getEquipment().setChestplate((ItemStack)null);
+                    p.getEquipment().setChestplate(null);
                     c = true;
                 }
 
                 if ((this.z.getEquipment().getLeggings() == null || this.z.getEquipment().getLeggings().getType() == Material.AIR) && p.getEquipment().getLeggings() != null && p.getEquipment().getLeggings().getType() != Material.AIR) {
                     this.z.getEquipment().setLeggings(p.getEquipment().getLeggings());
-                    p.getEquipment().setLeggings((ItemStack)null);
+                    p.getEquipment().setLeggings(null);
                     c = true;
                 }
 
                 if ((this.z.getEquipment().getBoots() == null || this.z.getEquipment().getBoots().getType() == Material.AIR) && p.getEquipment().getBoots() != null && p.getEquipment().getBoots().getType() != Material.AIR) {
                     this.z.getEquipment().setBoots(p.getEquipment().getBoots());
-                    p.getEquipment().setBoots((ItemStack)null);
+                    p.getEquipment().setBoots(null);
                     c = true;
                 }
 
@@ -128,9 +128,9 @@ public class EntityTalkingZombie extends CustomEntity {
     void talk(String msg, int d) {
         Iterator var4 = Bukkit.getOnlinePlayers().iterator();
 
-        while(var4.hasNext()) {
-            Player p = (Player)var4.next();
-            if (this.entity.getLocation().distance(p.getLocation()) < (double)(d + 1)) {
+        while (var4.hasNext()) {
+            Player p = (Player) var4.next();
+            if (this.entity.getLocation().distance(p.getLocation()) < (double) (d + 1)) {
                 p.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "[" + ChatColor.BLUE + ChatColor.BOLD + "Zombie" + ChatColor.RED + ChatColor.BOLD + "]" + ChatColor.RESET + ": " + msg);
             }
         }
@@ -138,6 +138,6 @@ public class EntityTalkingZombie extends CustomEntity {
     }
 
     protected void onLoad(ConfigurationSection c) {
-        this.z = (Zombie)this.entity;
+        this.z = (Zombie) this.entity;
     }
 }

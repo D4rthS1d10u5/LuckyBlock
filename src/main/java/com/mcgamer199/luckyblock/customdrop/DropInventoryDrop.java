@@ -39,9 +39,9 @@ public class DropInventoryDrop implements CustomDrop {
         if (player.getInventory().getContents() != null) {
             ItemStack[] items = player.getInventory().getContents();
 
-            for(int x = 0; x < items.length; ++x) {
+            for (int x = 0; x < items.length; ++x) {
                 if (items[x] != null) {
-                    Item item = player.getWorld().dropItem(player.getLocation().add((double)(random.nextInt(4) - 2), 0.0D, (double)(random.nextInt(4) - 2)), items[x]);
+                    Item item = player.getWorld().dropItem(player.getLocation().add(random.nextInt(4) - 2, 0.0D, random.nextInt(4) - 2), items[x]);
                     item.setPickupDelay(60);
                     if (lb.hasDropOption("ShowName") && lb.getDropOption("ShowName").getValues()[0].toString().equalsIgnoreCase("true")) {
                         if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasDisplayName()) {

@@ -1,5 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,9 +13,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 public class EntityLBShulker extends CustomEntity {
     private int killedEntities;
@@ -21,7 +21,7 @@ public class EntityLBShulker extends CustomEntity {
     }
 
     public Entity spawnFunction(Location loc) {
-        Shulker shulker = (Shulker)loc.getWorld().spawnEntity(loc, EntityType.SHULKER);
+        Shulker shulker = (Shulker) loc.getWorld().spawnEntity(loc, EntityType.SHULKER);
         shulker.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(25.0D);
         shulker.setHealth(25.0D);
         shulker.setRemoveWhenFarAway(false);
@@ -54,7 +54,7 @@ public class EntityLBShulker extends CustomEntity {
 
     protected void onDamageByEntity(EntityDamageByEntityEvent event) {
         if (this.random.nextInt(100) > 90 && event.getDamager() instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)event.getDamager();
+            LivingEntity l = (LivingEntity) event.getDamager();
             l.damage(4.0D);
             l.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 65, 2));
         }
@@ -63,8 +63,8 @@ public class EntityLBShulker extends CustomEntity {
 
     protected void onDamageEntityWithProjectile(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)event.getEntity();
-            l.damage((double)((this.killedEntities + 1) * 4 + 7));
+            LivingEntity l = (LivingEntity) event.getEntity();
+            l.damage((this.killedEntities + 1) * 4 + 7);
             l.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 145, 3));
         }
 
@@ -75,9 +75,9 @@ public class EntityLBShulker extends CustomEntity {
         String t = e.getType().name();
         if (!(e instanceof Shulker)) {
             if (e instanceof Player) {
-                t = ((Player)e).getName();
+                t = e.getName();
             } else if (e instanceof LivingEntity) {
-                LivingEntity l = (LivingEntity)e;
+                LivingEntity l = (LivingEntity) e;
                 if (l.getCustomName() != null) {
                     t = l.getCustomName();
                 }

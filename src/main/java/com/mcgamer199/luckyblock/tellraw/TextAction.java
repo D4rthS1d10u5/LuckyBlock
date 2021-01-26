@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.tellraw;
 
 public class TextAction {
+    public Object value;
     protected EnumTextEvent event;
     protected EnumTextAction action;
-    public Object value;
 
     public TextAction(EnumTextEvent event, EnumTextAction action, String value) {
         this.event = event;

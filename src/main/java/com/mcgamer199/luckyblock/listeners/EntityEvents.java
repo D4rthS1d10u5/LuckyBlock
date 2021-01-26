@@ -3,8 +3,8 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.tags.EntityTags;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.tags.EntityTags;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -27,9 +27,9 @@ public class EntityEvents extends ColorsClass implements Listener {
         Entity entity = event.getEntity();
         if (EntityTags.entityDrops.containsKey(entity.getUniqueId())) {
             event.getDrops().clear();
-            ItemStack[] items = (ItemStack[])EntityTags.entityDrops.get(entity.getUniqueId());
+            ItemStack[] items = EntityTags.entityDrops.get(entity.getUniqueId());
 
-            for(int x = 0; x < items.length; ++x) {
+            for (int x = 0; x < items.length; ++x) {
                 if (items[x] != null) {
                     event.getDrops().add(items[x]);
                 }
@@ -44,7 +44,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     @EventHandler
     private void onHurtZombie(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Zombie && event.getDamager() instanceof Player) {
-            Zombie zombie = (Zombie)event.getEntity();
+            Zombie zombie = (Zombie) event.getEntity();
             if (zombie.getCustomName() != null && zombie.getCustomName().equalsIgnoreCase("" + ChatColor.BLUE + ChatColor.BOLD + "[Illuminati]")) {
                 event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 20.0F, true);
             }
@@ -56,10 +56,10 @@ public class EntityEvents extends ColorsClass implements Listener {
     public void onHurtEntity(EntityDamageEvent event) {
         int m2;
         if (event.getEntity() instanceof Squid) {
-            Squid squid = (Squid)event.getEntity();
+            Squid squid = (Squid) event.getEntity();
             if (squid.getCustomName() != null && squid.getCustomName().startsWith(yellow + "Lucky Squid")) {
                 double f = event.getFinalDamage();
-                m2 = (int)(squid.getHealth() - f);
+                m2 = (int) (squid.getHealth() - f);
                 if (m2 < 0) {
                     m2 = 0;
                 }
@@ -67,7 +67,7 @@ public class EntityEvents extends ColorsClass implements Listener {
                 squid.setCustomName(yellow + "Lucky Squid " + red + m2 + white + "/" + red + squid.getMaxHealth());
             }
         } else if (event.getEntity() instanceof Bat) {
-            Bat bat = (Bat)event.getEntity();
+            Bat bat = (Bat) event.getEntity();
             if (bat.hasMetadata("luckybat") && event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                 event.setCancelled(true);
             }
@@ -80,11 +80,11 @@ public class EntityEvents extends ColorsClass implements Listener {
                 bat.remove();
             }
         } else if (event.getEntity() instanceof Wolf) {
-            Wolf wolf = (Wolf)event.getEntity();
+            Wolf wolf = (Wolf) event.getEntity();
             if (wolf.getCustomName() != null && wolf.getCustomName().startsWith("" + yellow + bold + "Wolf")) {
-                int h = (int)event.getFinalDamage();
-                int m1 = (int)(wolf.getHealth() - (double)h);
-                m2 = (int)wolf.getMaxHealth();
+                int h = (int) event.getFinalDamage();
+                int m1 = (int) (wolf.getHealth() - (double) h);
+                m2 = (int) wolf.getMaxHealth();
                 if (m1 < 0) {
                     m1 = 0;
                 }
@@ -98,11 +98,11 @@ public class EntityEvents extends ColorsClass implements Listener {
     @EventHandler
     public void mobsRegenHealth(EntityRegainHealthEvent event) {
         if (event.getEntity() instanceof Wolf) {
-            Wolf wolf = (Wolf)event.getEntity();
+            Wolf wolf = (Wolf) event.getEntity();
             if (wolf.getCustomName() != null && wolf.getCustomName().startsWith("" + yellow + bold + "Wolf")) {
-                int h = (int)event.getAmount();
-                int m1 = (int)(wolf.getHealth() + (double)h);
-                int m2 = (int)wolf.getMaxHealth();
+                int h = (int) event.getAmount();
+                int m1 = (int) (wolf.getHealth() + (double) h);
+                int m2 = (int) wolf.getMaxHealth();
                 wolf.setCustomName("" + yellow + bold + "Wolf " + green + m1 + white + "/" + green + m2);
             }
         }
@@ -113,15 +113,15 @@ public class EntityEvents extends ColorsClass implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Pig) {
             Player player = null;
-            Pig pig = (Pig)event.getEntity();
+            Pig pig = (Pig) event.getEntity();
             if (pig.getCustomName() != null && pig.getCustomName().startsWith(yellow + "Lucky Pig") && pig.getHealth() - event.getFinalDamage() <= 0.0D) {
                 String[] s = pig.getCustomName().split(yellow + "Lucky Pig ");
                 if (event.getDamager() instanceof Player) {
-                    player = (Player)event.getDamager();
+                    player = (Player) event.getDamager();
                 } else if (event.getDamager() instanceof Projectile) {
-                    Projectile p = (Projectile)event.getDamager();
+                    Projectile p = (Projectile) event.getDamager();
                     if (p.getShooter() instanceof Player) {
-                        player = (Player)p.getShooter();
+                        player = (Player) p.getShooter();
                     }
                 }
 
@@ -133,7 +133,7 @@ public class EntityEvents extends ColorsClass implements Listener {
                         int plus = Integer.parseInt(h[0]);
 
                         try {
-                            player.setHealth(d.getHealth() + (double)plus);
+                            player.setHealth(d.getHealth() + (double) plus);
                         } catch (Exception var11) {
                             player.setHealth(player.getMaxHealth());
                         }
@@ -151,7 +151,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     @EventHandler
     private void onHit(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player) && event.getDamager() instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)event.getDamager();
+            LivingEntity l = (LivingEntity) event.getDamager();
             if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() != Material.AIR && l.getEquipment().getItemInMainHand().hasItemMeta() && l.getEquipment().getItemInMainHand().getItemMeta().hasEnchant(LuckyBlock.enchantment_lightning)) {
                 event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
             }
@@ -162,7 +162,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     @EventHandler
     private void onStrike(EntityDamageEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
-            LivingEntity l = (LivingEntity)event.getEntity();
+            LivingEntity l = (LivingEntity) event.getEntity();
             if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() != Material.AIR && l.getEquipment().getItemInMainHand().hasItemMeta() && l.getEquipment().getItemInMainHand().getItemMeta().hasEnchant(LuckyBlock.enchantment_lightning) && event.getCause() == EntityDamageEvent.DamageCause.LIGHTNING) {
                 event.setCancelled(true);
             }
@@ -173,7 +173,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     @EventHandler
     private void onLBItemDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Item) {
-            Item itemI = (Item)event.getEntity();
+            Item itemI = (Item) event.getEntity();
             if (itemI.getItemStack() != null && LBType.isLB(itemI.getItemStack()) && LBType.fromItem(itemI.getItemStack()).hasItemProperty(LBType.ItemProperty.INVINCIBLE)) {
                 event.setCancelled(true);
             }
@@ -193,7 +193,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     private void onCreatureSpawn(CreatureSpawnEvent event) {
         if (event.getEntity() instanceof Villager && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL && IObjects.getValue("lv_spawn").equals(true)) {
             random.nextInt(100);
-            Villager villager = (Villager)event.getEntity();
+            Villager villager = (Villager) event.getEntity();
             villager.setProfession(Villager.Profession.BLACKSMITH);
             villager.setCustomName(ChatColor.YELLOW + "Lucky Villager");
             List<MerchantRecipe> recipes = new ArrayList();
@@ -201,14 +201,14 @@ public class EntityEvents extends ColorsClass implements Listener {
             List<LBType> types = new ArrayList();
 
             int x;
-            for(x = 0; x < LBType.getTypes().size(); ++x) {
-                if (!((LBType)LBType.getTypes().get(x)).disabled) {
-                    types.add((LBType)LBType.getTypes().get(x));
+            for (x = 0; x < LBType.getTypes().size(); ++x) {
+                if (!LBType.getTypes().get(x).disabled) {
+                    types.add(LBType.getTypes().get(x));
                 }
             }
 
-            for(x = 0; x < r; ++x) {
-                LBType type = (LBType)types.get(random.nextInt(types.size()));
+            for (x = 0; x < r; ++x) {
+                LBType type = types.get(random.nextInt(types.size()));
                 int luck = type.getRandomP();
                 MerchantRecipe recipe = new MerchantRecipe(type.toItemStack(luck), 16);
                 int p = random.nextInt(48) + 5;

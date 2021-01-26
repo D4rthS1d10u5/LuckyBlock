@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.lb.LB;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -24,12 +24,12 @@ public class LBClearLbs extends LBCommand {
                 a = true;
             }
 
-            for(byte x = 0; x < LB.lbs.size(); x = 0) {
-                LB lb = (LB)LB.lbs.get(x);
+            for (byte x = 0; x < LB.lbs.size(); x = 0) {
+                LB lb = LB.lbs.get(x);
                 lb.remove(a);
             }
 
-            LuckyBlockAPI.lbs.set("LuckyBlocks", (Object)null);
+            LuckyBlockAPI.lbs.set("LuckyBlocks", null);
             LuckyBlockAPI.saveLBFile();
             String b = val("command.clearlbs.success", false);
             b = b.replace("%total%", "" + amount);

@@ -8,14 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChestFiller {
-    protected int inventory_size = 96;
     public Chest chest;
     public ConfigurationSection section;
     public String loc1;
+    protected int inventory_size = 96;
 
     public ChestFiller(ConfigurationSection section, Chest chest) {
         this.section = section;
         this.chest = chest;
+    }
+
+    static boolean listContains(List<String> list, String s) {
+        if (list.size() > 0) {
+            for (int x = 0; x < list.size(); ++x) {
+                if (list.get(x).equalsIgnoreCase(s)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public ItemStack[] getRandomChestItems(ConfigurationSection c) {
@@ -31,7 +43,7 @@ public class ChestFiller {
             if (c.getConfigurationSection(i) != null) {
                 List<String> disabledItems = new ArrayList();
 
-                for(int x = times; x > 0; --x) {
+                for (int x = times; x > 0; --x) {
                     String s = com.mcgamer199.luckyblock.tags.BlockTags.getRandomLoc(c.getConfigurationSection(i));
                     ConfigurationSection f = c.getConfigurationSection(i).getConfigurationSection(s);
                     int slot = com.mcgamer199.luckyblock.tags.BlockTags.getRandomNumber(new String[]{"0", "26"});
@@ -43,8 +55,8 @@ public class ChestFiller {
                     if (f.getStringList("Disabled") != null && f.getStringList("Disabled").size() > 0) {
                         List<String> list = f.getStringList("Disabled");
 
-                        for(int a = 0; a < list.size(); ++a) {
-                            disabledItems.add((String)list.get(a));
+                        for (int a = 0; a < list.size(); ++a) {
+                            disabledItems.add(list.get(a));
                         }
                     }
 
@@ -58,8 +70,8 @@ public class ChestFiller {
                         if (f.getStringList("With") != null && f.getStringList("With").size() > 0) {
                             List<String> list = f.getStringList("With");
 
-                            for(int z = 0; z < list.size(); ++z) {
-                                String a = (String)list.get(z);
+                            for (int z = 0; z < list.size(); ++z) {
+                                String a = list.get(z);
                                 ConfigurationSection h = c.getConfigurationSection(i).getConfigurationSection(a);
                                 int slot1 = com.mcgamer199.luckyblock.tags.BlockTags.getRandomNumber(new String[]{"0", "26"});
                                 if (h.getString("Slot") != null) {
@@ -83,18 +95,6 @@ public class ChestFiller {
         return items;
     }
 
-    static boolean listContains(List<String> list, String s) {
-        if (list.size() > 0) {
-            for(int x = 0; x < list.size(); ++x) {
-                if (((String)list.get(x)).equalsIgnoreCase(s)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public void fill() {
         if (this.loc1 == null) {
             this.loc1 = BlockTags.getRandomL(this.section);
@@ -102,7 +102,7 @@ public class ChestFiller {
 
         ItemStack[] items = this.getRandomChestItems(this.section.getConfigurationSection(this.loc1));
 
-        for(int i = 0; i < items.length; ++i) {
+        for (int i = 0; i < items.length; ++i) {
             if (i < this.chest.getInventory().getSize() && items[i] != null) {
                 this.chest.getInventory().setItem(i, items[i]);
             }

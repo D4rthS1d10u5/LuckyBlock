@@ -8,7 +8,7 @@ public enum IDirection {
     EAST,
     WEST;
 
-    private IDirection() {
+    IDirection() {
     }
 
     public static IDirection getByLoc(Location bloc, Location ploc) {

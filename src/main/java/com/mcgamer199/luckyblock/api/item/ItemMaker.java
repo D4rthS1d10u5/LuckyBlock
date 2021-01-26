@@ -51,7 +51,7 @@ public class ItemMaker {
     public static ItemStack createItem(Material material, int amount, int data) {
         ItemStack item = new ItemStack(material);
         item.setAmount(amount);
-        item.setDurability((short)data);
+        item.setDurability((short) data);
         return item;
     }
 
@@ -68,7 +68,7 @@ public class ItemMaker {
     public static ItemStack createItem(Material material, int amount, int data, String displayName) {
         ItemStack item = new ItemStack(material);
         item.setAmount(amount);
-        item.setDurability((short)data);
+        item.setDurability((short) data);
         ItemMeta itemM = item.getItemMeta();
         itemM.setDisplayName(displayName);
         item.setItemMeta(itemM);
@@ -89,7 +89,7 @@ public class ItemMaker {
     public static ItemStack createItem(Material material, int amount, int data, String displayName, List<String> list) {
         ItemStack item = new ItemStack(material);
         item.setAmount(amount);
-        item.setDurability((short)data);
+        item.setDurability((short) data);
         ItemMeta itemM = item.getItemMeta();
         itemM.setDisplayName(displayName);
         itemM.setLore(list);
@@ -101,7 +101,7 @@ public class ItemMaker {
         ItemMeta itemM = item.getItemMeta();
         List<String> list = new ArrayList();
 
-        for(int x = 0; x < strings.length; ++x) {
+        for (int x = 0; x < strings.length; ++x) {
             if (strings[x] != null) {
                 list.add(strings[x]);
             }
@@ -128,8 +128,8 @@ public class ItemMaker {
             list = new ArrayList();
         }
 
-        ((List)list).add(lore);
-        itemM.setLore((List)list);
+        ((List) list).add(lore);
+        itemM.setLore((List) list);
         item.setItemMeta(itemM);
         return item;
     }
@@ -142,14 +142,14 @@ public class ItemMaker {
     }
 
     public static ItemStack addStoredEnchantment(ItemStack item, Enchantment enchantment, int level) {
-        EnchantmentStorageMeta meta = (EnchantmentStorageMeta)item.getItemMeta();
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
         meta.addStoredEnchant(enchantment, level, true);
         item.setItemMeta(meta);
         return item;
     }
 
     public static ItemStack setSkullOwner(ItemStack item, String owner) {
-        SkullMeta skull = (SkullMeta)item.getItemMeta();
+        SkullMeta skull = (SkullMeta) item.getItemMeta();
         skull.setOwner(owner);
         item.setItemMeta(skull);
         return item;
@@ -183,7 +183,7 @@ public class ItemMaker {
             var8 = values;
             var7 = values.length;
 
-            for(var6 = 0; var6 < var7; ++var6) {
+            for (var6 = 0; var6 < var7; ++var6) {
                 o = var8[var6];
                 list.add(nbt.getNewNBTTagString(o.toString()));
             }
@@ -196,7 +196,7 @@ public class ItemMaker {
             var8 = values;
             var7 = values.length;
 
-            for(var6 = 0; var6 < var7; ++var6) {
+            for (var6 = 0; var6 < var7; ++var6) {
                 o = var8[var6];
                 list.add(nbt.getNewNBTTagString(o.toString()));
             }
@@ -233,7 +233,7 @@ public class ItemMaker {
     public static ItemStack addEnchants(ItemStack item, int[] levels, Enchantment... ench) {
         ItemMeta itemM = item.getItemMeta();
 
-        for(int x = 0; x < ench.length; ++x) {
+        for (int x = 0; x < ench.length; ++x) {
             itemM.addEnchant(ench[x], levels[x], true);
         }
 
@@ -242,9 +242,9 @@ public class ItemMaker {
     }
 
     public static ItemStack addStoredEnchants(ItemStack item, int[] levels, Enchantment... ench) {
-        EnchantmentStorageMeta e = (EnchantmentStorageMeta)item.getItemMeta();
+        EnchantmentStorageMeta e = (EnchantmentStorageMeta) item.getItemMeta();
 
-        for(int x = 0; x < ench.length; ++x) {
+        for (int x = 0; x < ench.length; ++x) {
             e.addStoredEnchant(ench[x], levels[x], true);
         }
 
@@ -256,7 +256,7 @@ public class ItemMaker {
         if (item.getType() != Material.LEATHER_HELMET && item.getType() != Material.LEATHER_CHESTPLATE && item.getType() != Material.LEATHER_LEGGINGS && item.getType() != Material.LEATHER_BOOTS) {
             throw new Error("Item isn't a leather armor!");
         } else {
-            LeatherArmorMeta leather = (LeatherArmorMeta)item.getItemMeta();
+            LeatherArmorMeta leather = (LeatherArmorMeta) item.getItemMeta();
             leather.setColor(color);
             item.setItemMeta(leather);
             return item;
@@ -267,7 +267,7 @@ public class ItemMaker {
         if (item.getType() != Material.LEATHER_HELMET && item.getType() != Material.LEATHER_CHESTPLATE && item.getType() != Material.LEATHER_LEGGINGS && item.getType() != Material.LEATHER_BOOTS) {
             throw new Error("Item isn't a leather armor!");
         } else {
-            LeatherArmorMeta leather = (LeatherArmorMeta)item.getItemMeta();
+            LeatherArmorMeta leather = (LeatherArmorMeta) item.getItemMeta();
             leather.setColor(Color.fromRGB(r, g, b));
             item.setItemMeta(leather);
             return item;
@@ -276,7 +276,7 @@ public class ItemMaker {
 
     public static ItemStack setBannerMeta(ItemStack item, ItemMaker.IBannerMeta bannerMeta) {
         if (item.getType() == Material.BANNER) {
-            BannerMeta b = (BannerMeta)item.getItemMeta();
+            BannerMeta b = (BannerMeta) item.getItemMeta();
             if (bannerMeta.baseColor != null) {
                 b.setBaseColor(bannerMeta.baseColor);
             }
@@ -293,7 +293,7 @@ public class ItemMaker {
     }
 
     public static ItemStack setPotionMeta(ItemStack item, PotionData basePotionData, PotionEffectType mainEffect, PotionEffect... effects) {
-        PotionMeta potion = (PotionMeta)item.getItemMeta();
+        PotionMeta potion = (PotionMeta) item.getItemMeta();
         if (basePotionData != null) {
             potion.setBasePotionData(basePotionData);
         }
@@ -305,7 +305,7 @@ public class ItemMaker {
         PotionEffect[] var8 = effects;
         int var7 = effects.length;
 
-        for(int var6 = 0; var6 < var7; ++var6) {
+        for (int var6 = 0; var6 < var7; ++var6) {
             PotionEffect effect = var8[var6];
             if (effect != null) {
                 potion.addCustomEffect(effect, true);
@@ -315,7 +315,7 @@ public class ItemMaker {
         return item;
     }
 
-    public static enum AttributeSlot {
+    public enum AttributeSlot {
         MAIN_HAND("mainhand"),
         OFF_HAND("offhand"),
         HELMET("head"),
@@ -323,14 +323,22 @@ public class ItemMaker {
         LEGS("legs"),
         FEET("feet");
 
-        private String value;
+        private final String value;
 
-        private AttributeSlot(String value) {
+        AttributeSlot(String value) {
             this.value = value;
         }
 
         public String getValue() {
             return this.value;
+        }
+    }
+
+    public enum MinecraftTag {
+        CAN_PLACE_ON,
+        CAN_DESTROY;
+
+        MinecraftTag() {
         }
     }
 
@@ -352,7 +360,7 @@ public class ItemMaker {
         }
 
         private void addToPatterns(Pattern pattern) {
-            for(int x = 0; x < this.patterns.length; ++x) {
+            for (int x = 0; x < this.patterns.length; ++x) {
                 if (this.patterns[x] == null) {
                     this.patterns[x] = pattern;
                     break;
@@ -373,7 +381,7 @@ public class ItemMaker {
         }
 
         public void removePattern(Pattern pattern) {
-            for(int x = 0; x < this.patterns.length; ++x) {
+            for (int x = 0; x < this.patterns.length; ++x) {
                 if (this.patterns[x] == pattern) {
                     this.patterns[x] = null;
                 }
@@ -381,12 +389,12 @@ public class ItemMaker {
 
         }
 
-        public void setBaseColor(DyeColor color) {
-            this.baseColor = color;
-        }
-
         public DyeColor getBaseColor() {
             return this.baseColor;
+        }
+
+        public void setBaseColor(DyeColor color) {
+            this.baseColor = color;
         }
 
         public List<Pattern> patternsToList() {
@@ -394,7 +402,7 @@ public class ItemMaker {
             Pattern[] var5;
             int var4 = (var5 = this.patterns).length;
 
-            for(int var3 = 0; var3 < var4; ++var3) {
+            for (int var3 = 0; var3 < var4; ++var3) {
                 Pattern pattern = var5[var3];
                 if (pattern != null) {
                     p.add(pattern);
@@ -402,14 +410,6 @@ public class ItemMaker {
             }
 
             return p;
-        }
-    }
-
-    public static enum MinecraftTag {
-        CAN_PLACE_ON,
-        CAN_DESTROY;
-
-        private MinecraftTag() {
         }
     }
 }

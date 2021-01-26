@@ -3,6 +3,7 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -22,7 +23,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
 public class LBShootEvent implements Listener {
 
@@ -73,7 +73,7 @@ public class LBShootEvent implements Listener {
         LBType type = LBType.getDefaultType();
         Block block = loc.getBlock();
         block.setType(type.getType());
-        block.setData((byte)type.getData());
+        block.setData((byte) type.getData());
         LB lb = new LB(type, block, 0, entity, true, true);
         lb.playEffects();
     }
@@ -82,14 +82,14 @@ public class LBShootEvent implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
         if (projectile instanceof Arrow) {
-            Arrow arrow = (Arrow)projectile;
+            Arrow arrow = (Arrow) projectile;
             if (arrow.getShooter() instanceof Player) {
-                Player player = (Player)arrow.getShooter();
+                Player player = (Player) arrow.getShooter();
                 World world = arrow.getWorld();
                 BlockIterator iterator = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().normalize(), 0.0D, 4);
                 Block b = null;
 
-                while(iterator.hasNext()) {
+                while (iterator.hasNext()) {
                     b = iterator.next();
                     if (b != null && b.getType() != Material.AIR) {
                         break;

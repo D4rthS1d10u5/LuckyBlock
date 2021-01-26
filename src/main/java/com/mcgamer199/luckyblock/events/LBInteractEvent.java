@@ -9,14 +9,18 @@ import org.bukkit.event.HandlerList;
 
 public class LBInteractEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
-    private LB lb;
-    private BlockFace clickedFace;
+    private final Player player;
+    private final LB lb;
+    private final BlockFace clickedFace;
 
     public LBInteractEvent(Player player, LB lb, BlockFace clickedFace) {
         this.player = player;
         this.lb = lb;
         this.clickedFace = clickedFace;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public LB getLB() {
@@ -36,10 +40,6 @@ public class LBInteractEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

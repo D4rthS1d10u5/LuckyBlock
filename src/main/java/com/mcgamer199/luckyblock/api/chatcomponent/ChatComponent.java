@@ -7,7 +7,8 @@ public class ChatComponent {
 
     private BaseComponent component = new TextComponent();
 
-    public ChatComponent() {}
+    public ChatComponent() {
+    }
 
     public ChatComponent(String text) {
         this.addText(text);
@@ -15,12 +16,13 @@ public class ChatComponent {
 
     /**
      * Разделить строку, если она превышает лимит символов
+     *
      * @param string
      * @param limit  количество символов
      * @return
      */
     public static String[] stack(String string, int limit) {
-        if(string == null || string.length() <= limit || limit <= 0) {
+        if (string == null || string.length() <= limit || limit <= 0) {
             return new String[]{string};
         }
 
@@ -28,7 +30,7 @@ public class ChatComponent {
         String[] result = new String[value.length / limit + 1];
 
 
-        for(int pos = 0; pos < result.length; pos++) {
+        for (int pos = 0; pos < result.length; pos++) {
             int size = Math.min(limit, value.length - pos * limit);
             char[] line = new char[size];
             System.arraycopy(value, pos * limit, line, 0, size);
@@ -41,8 +43,9 @@ public class ChatComponent {
      * Дорбавить текст.
      * Если на него навести, то выведется текст (перенос \n)
      * а если нажать, то выполнится команда
-     * @param text отображаемый текст
-     * @param hover действие при наведении
+     *
+     * @param text    отображаемый текст
+     * @param hover   действие при наведении
      * @param command действие при нажатии
      */
     @Deprecated
@@ -52,6 +55,7 @@ public class ChatComponent {
 
     /**
      * Добавить текст
+     *
      * @param text       текст
      * @param hover      что делать, если навел на текст
      * @param valueHover значение, когда навел на текст
@@ -71,12 +75,12 @@ public class ChatComponent {
 
     private BaseComponent build(String text, Hover hover, Object valueHover, Click click, Object valueClick) {
         BaseComponent component = new TextComponent(text);
-        if(hover != null) {
+        if (hover != null) {
             HoverEvent hoverEvent = new HoverEvent(hover.action, new BaseComponent[]{new TextComponent(hover.get(valueHover))});
             component.setHoverEvent(hoverEvent);
         }
 
-        if(click != null) {
+        if (click != null) {
             ClickEvent clickEvent = new ClickEvent(click.action, click.get(valueClick));
             component.setClickEvent(clickEvent);
         }
@@ -85,6 +89,7 @@ public class ChatComponent {
 
     /**
      * Добавить текст в начало
+     *
      * @param text       текст
      * @param hover      что делать, если навел на текст
      * @param valueHover значение, когда навел на текст
@@ -101,6 +106,7 @@ public class ChatComponent {
 
     /**
      * Добавить текст в начало
+     *
      * @param text текст
      * @return this
      */
@@ -110,6 +116,7 @@ public class ChatComponent {
 
     /**
      * Добавить текст
+     *
      * @param text       текст
      * @param hover      что делать, если навел на текст
      * @param valueHover значение, когда навел на текст
@@ -122,6 +129,7 @@ public class ChatComponent {
 
     /**
      * Добавить текст
+     *
      * @param text       текст
      * @param click      что делать, если кликнул по тексту
      * @param valueClick значение, когда кликгул по тексту
@@ -134,6 +142,7 @@ public class ChatComponent {
 
     /**
      * Добавить текст
+     *
      * @param text текст
      */
     public ChatComponent addText(String text) {
@@ -143,6 +152,7 @@ public class ChatComponent {
 
     /**
      * Отправить сообщение игроку
+     *
      * @param player
      */
     public void send(CommandSender player) {

@@ -15,10 +15,10 @@ public enum LuckySkin {
     CHECKER_BOARD("2731d11b-11df-43fd-b428-e8165436c7f4", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg3MGE2NTk5MmMyZGQ4YWQ3MzhiOThkNmQzNTk2ZTQ1YTJkZDE0ZWZiYWNlNGIyMTEyMmFlYWZmNzc3ZjUifX19"),
     ILLUSION_BLOCK("d27723ec-8f68-4bbf-a2b0-58f0adf0b7f9", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjQ2MmRkZmE1NTNjZTc4NjgzYmU0NzdiOGQ4NjU0ZjNkZmMzYWEyOTY5ODA4NDc4Yzk4N2FiODhjMzc2YTAifX19");
 
-    private String value;
-    private String id;
+    private final String value;
+    private final String id;
 
-    private LuckySkin(String id, String value) {
+    LuckySkin(String id, String value) {
         this.id = id;
         this.value = value;
     }

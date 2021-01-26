@@ -1,6 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
@@ -8,19 +10,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Iterator;
 import java.util.UUID;
 
 public class EntityIPart extends CustomEntity {
-    private ArmorStand a;
     public double[] offset = new double[3];
-    private boolean running;
     public ItemStack item;
     public double amountDegree = 0.0D;
     public int t = 0;
+    private ArmorStand a;
+    private boolean running;
     private Entity attachedEntity;
 
     public EntityIPart() {
@@ -33,8 +33,8 @@ public class EntityIPart extends CustomEntity {
     protected void onChunkLoad() {
         Iterator var2 = this.entity.getWorld().getEntitiesByClass(this.attachedEntity.getClass()).iterator();
 
-        while(var2.hasNext()) {
-            Entity e = (Entity)var2.next();
+        while (var2.hasNext()) {
+            Entity e = (Entity) var2.next();
             if (e.getUniqueId().toString().equalsIgnoreCase(this.attachedEntity.getUniqueId().toString())) {
                 this.attachedEntity = e;
                 break;
@@ -44,7 +44,7 @@ public class EntityIPart extends CustomEntity {
     }
 
     protected Entity spawnFunction(Location loc) {
-        ArmorStand as = (ArmorStand)loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+        ArmorStand as = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
         as.setBasePlate(false);
         as.setVisible(false);
         as.setMarker(true);
@@ -78,7 +78,7 @@ public class EntityIPart extends CustomEntity {
                 }
 
             }
-        }, (long)this.t, (long)this.t));
+        }, this.t, this.t));
     }
 
     private void func_tick() {
@@ -150,7 +150,7 @@ public class EntityIPart extends CustomEntity {
         task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
             public void run() {
                 EntityIPart.this.attachedEntity = CustomEntity.getByUUID(UUID.fromString(c.getString("attachedEntity"))).getEntity();
-                EntityIPart.this.a = (ArmorStand)EntityIPart.this.entity;
+                EntityIPart.this.a = (ArmorStand) EntityIPart.this.entity;
                 EntityIPart.this.func_tick();
                 if (EntityIPart.this.running) {
                     EntityIPart.this.run_rotate();

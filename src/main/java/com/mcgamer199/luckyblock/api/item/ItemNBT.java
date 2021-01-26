@@ -99,7 +99,7 @@ public class ItemNBT {
                 Method m = o.getClass().getMethod("add", ItemReflection.getNBTBase());
                 Iterator var6 = this.nbts.iterator();
 
-                while(var6.hasNext()) {
+                while (var6.hasNext()) {
                     Object objs = var6.next();
                     m.invoke(o, objs);
                 }

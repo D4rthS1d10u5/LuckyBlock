@@ -161,7 +161,7 @@ public class ItemReflection {
         try {
             Method method = cis.getMethod("asCraftMirror", item.getClass());
             Object answer = method.invoke(cis, item);
-            return (ItemStack)answer;
+            return (ItemStack) answer;
         } catch (Exception var4) {
             var4.printStackTrace();
             return null;
@@ -248,7 +248,7 @@ public class ItemReflection {
 
             try {
                 Method method = nbttag.getClass().getMethod("getString", String.class);
-                return (String)method.invoke(nbttag, key);
+                return (String) method.invoke(nbttag, key);
             } catch (Exception var6) {
                 var6.printStackTrace();
                 return null;
@@ -290,7 +290,7 @@ public class ItemReflection {
 
             try {
                 Method method = nbttag.getClass().getMethod("getInt", String.class);
-                return (Integer)method.invoke(nbttag, key);
+                return (Integer) method.invoke(nbttag, key);
             } catch (Exception var6) {
                 var6.printStackTrace();
                 return null;
@@ -332,7 +332,7 @@ public class ItemReflection {
 
             try {
                 Method method = nbttag.getClass().getMethod("getDouble", String.class);
-                return (Double)method.invoke(nbttag, key);
+                return (Double) method.invoke(nbttag, key);
             } catch (Exception var6) {
                 var6.printStackTrace();
                 return null;
@@ -374,7 +374,7 @@ public class ItemReflection {
 
             try {
                 Method method = nbttag.getClass().getMethod("getBoolean", String.class);
-                return (Boolean)method.invoke(nbttag, key);
+                return (Boolean) method.invoke(nbttag, key);
             } catch (Exception var6) {
                 var6.printStackTrace();
                 return null;
@@ -394,7 +394,7 @@ public class ItemReflection {
 
             try {
                 Method method = nbttag.getClass().getMethod("hasKey", String.class);
-                return (Boolean)method.invoke(nbttag, key);
+                return (Boolean) method.invoke(nbttag, key);
             } catch (Exception var6) {
                 var6.printStackTrace();
                 return null;

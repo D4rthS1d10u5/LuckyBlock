@@ -6,18 +6,19 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 
 public class INameTagHealth extends EntityNameTag {
-    public INameTagHealth.NameTagMode mode_base;
-    public int mode;
-    public String[] strings;
     private static final ChatColor a;
     private static final ChatColor b;
-    private LivingEntity l;
-    public int heartsAmount;
 
     static {
         a = ChatColor.GREEN;
         b = ChatColor.GRAY;
     }
+
+    public INameTagHealth.NameTagMode mode_base;
+    public int mode;
+    public String[] strings;
+    public int heartsAmount;
+    private LivingEntity l;
 
     public INameTagHealth() {
         this.mode_base = INameTagHealth.NameTagMode.DEFAULT;
@@ -27,7 +28,7 @@ public class INameTagHealth extends EntityNameTag {
     }
 
     protected void func_load() {
-        this.l = (LivingEntity)this.getAttachedEntity();
+        this.l = (LivingEntity) this.getAttachedEntity();
     }
 
     protected int getTickTime() {
@@ -43,7 +44,7 @@ public class INameTagHealth extends EntityNameTag {
             if (this.l != null) {
                 p = this.l.getHealth() / this.l.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                 p *= 10.0D;
-                i = (int)p;
+                i = (int) p;
                 if (i > 8) {
                     this.armorStand.setCustomName(INameTagHealth.a + s + s + s + s + s + s + s + s + s + s);
                 } else if (i == 8) {
@@ -70,7 +71,7 @@ public class INameTagHealth extends EntityNameTag {
             s = this.strings[1];
             p = this.l.getHealth() / this.l.getMaxHealth();
             p *= 100.0D;
-            i = (int)p;
+            i = (int) p;
             if (i > 66) {
                 this.armorStand.setCustomName(INameTagHealth.a + s + s + s);
             } else if (i < 67 && i > 33) {
@@ -81,7 +82,7 @@ public class INameTagHealth extends EntityNameTag {
         } else if (this.mode_base == INameTagHealth.NameTagMode.PERCENT) {
             double pizdec = this.l.getHealth() / this.l.getMaxHealth();
             pizdec *= 100.0D;
-            int a = (int)pizdec;
+            int a = (int) pizdec;
             this.armorStand.setCustomName(ChatColor.DARK_PURPLE + "%" + ChatColor.GREEN + a);
         } else if (this.mode_base == INameTagHealth.NameTagMode.CUSTOM_HEARTS) {
             if (this.heartsAmount > 20) {
@@ -91,12 +92,12 @@ public class INameTagHealth extends EntityNameTag {
             s = this.strings[1];
             p = this.l.getHealth() / this.l.getMaxHealth();
             p *= 100.0D;
-            i = (int)p;
+            i = (int) p;
             int part = 100 / this.heartsAmount;
             int b1 = 0;
             String c = "" + INameTagHealth.a;
 
-            for(i += part; i >= part; i -= part) {
+            for (i += part; i >= part; i -= part) {
                 if (b1 < this.heartsAmount) {
                     c = c + s;
                 }
@@ -105,7 +106,7 @@ public class INameTagHealth extends EntityNameTag {
             }
 
             if (b1 < this.heartsAmount) {
-                for(c = c + b; b1 < this.heartsAmount; ++b1) {
+                for (c = c + b; b1 < this.heartsAmount; ++b1) {
                     c = c + s;
                 }
             }
@@ -127,13 +128,13 @@ public class INameTagHealth extends EntityNameTag {
         this.heartsAmount = c.getInt("Hearts");
     }
 
-    public static enum NameTagMode {
+    public enum NameTagMode {
         DEFAULT,
         THREE_HEARTS,
         PERCENT,
         CUSTOM_HEARTS;
 
-        private NameTagMode() {
+        NameTagMode() {
         }
     }
 }

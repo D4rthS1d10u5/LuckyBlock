@@ -2,18 +2,18 @@ package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss;
+import com.mcgamer199.luckyblock.entity.CustomEntity;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
 
 public class LBCSpawnEgg extends LBCommand {
     public LBCSpawnEgg() {
     }
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player)sender;
+        Player player = (Player) sender;
         if (CustomEntity.isClassValid(args[1])) {
             String s = args[1];
             CustomEntity e = CustomEntity.getClassByName(s);
@@ -25,7 +25,7 @@ public class LBCSpawnEgg extends LBCommand {
                 return false;
             } else {
                 ItemStack item = e.getSpawnEgg();
-                player.getInventory().addItem(new ItemStack[]{item});
+                player.getInventory().addItem(item);
                 send(sender, "command.spawnegg.success");
                 return true;
             }

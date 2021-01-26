@@ -18,8 +18,8 @@ public class LuckyWell extends Structure {
     public static boolean isValid(Block block) {
         String b = LB.blockToString(block);
 
-        for(int x = 0; x < blocks.size(); ++x) {
-            if (b.equalsIgnoreCase((String)blocks.get(x))) {
+        for (int x = 0; x < blocks.size(); ++x) {
+            if (b.equalsIgnoreCase(blocks.get(x))) {
                 return true;
             }
         }
@@ -33,9 +33,9 @@ public class LuckyWell extends Structure {
             block.getLocation().add(0.0D, -2.0D, 0.0D).getBlock().setType(Material.COBBLESTONE);
         }
 
-        for(int x = -1; x < 2; ++x) {
-            for(int z = -1; z < 2; ++z) {
-                block.getLocation().add((double)x, -1.0D, (double)z).getBlock().setType(Material.COBBLESTONE);
+        for (int x = -1; x < 2; ++x) {
+            for (int z = -1; z < 2; ++z) {
+                block.getLocation().add(x, -1.0D, z).getBlock().setType(Material.COBBLESTONE);
             }
         }
 

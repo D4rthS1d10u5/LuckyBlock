@@ -1,15 +1,20 @@
 package com.mcgamer199.luckyblock.advanced;
 
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.listeners.CraftLB;
-import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTNameTag;
+import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.listeners.CraftLB;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,8 +26,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,22 +35,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class LuckyCraftingTable extends ColorsClass {
+    public static List<LuckyCraftingTable> tables;
     static File fileF;
     static FileConfiguration file;
-    public static List<LuckyCraftingTable> tables;
-    private Block block;
-    private int storedLuck;
-    Inventory inv;
-    private int fuel = 360;
-    private int id;
-    private int maxLuck = 5000;
-    private boolean running;
-    private byte level = 1;
-    private String player;
-    public int slot = -1;
-    private int extraLuck;
-    private int[] u_luck = new int[]{4, 1};
-    private int[] u_fuel = new int[]{7, 2};
 
     static {
         fileF = new File(LuckyBlock.instance.getDataFolder() + File.separator + "data/LuckyTables.yml");
@@ -55,70 +45,26 @@ public class LuckyCraftingTable extends ColorsClass {
         tables = new ArrayList();
     }
 
-    public static LuckyCraftingTable getByBlock(Block block) {
-        for(int x = 0; x < tables.size(); ++x) {
-            LuckyCraftingTable c = (LuckyCraftingTable)tables.get(x);
-            Block b = c.block;
-            String s = blockToString(b);
-            if (s.equalsIgnoreCase(blockToString(block))) {
-                return c;
-            }
-        }
-
-        return null;
-    }
-
-    public boolean isValid() {
-        return getByBlock(this.block) != null;
-    }
-
-    public void stop() {
-        if (this.running) {
-            this.running = false;
-            SoundManager.playFixedSound(this.block.getLocation(), getSound("lct_stop"), 1.0F, 0.0F, 8);
-        }
-
-    }
-
-    public static LuckyCraftingTable getById(int id) {
-        for(int x = 0; x < tables.size(); ++x) {
-            LuckyCraftingTable c = (LuckyCraftingTable)tables.get(x);
-            if (c.id == id) {
-                return c;
-            }
-        }
-
-        return null;
-    }
-
-    public int getMaxLuck() {
-        return this.maxLuck;
-    }
-
-    public Inventory i() {
-        return this.inv;
-    }
-
-    public void refresh() {
-        Iterator var2 = this.inv.getViewers().iterator();
-
-        while(var2.hasNext()) {
-            HumanEntity h = (HumanEntity)var2.next();
-            if (h instanceof Player) {
-                this.open((Player)h);
-            } else {
-                h.closeInventory();
-            }
-        }
-
-    }
+    public int slot = -1;
+    Inventory inv;
+    private final Block block;
+    private int storedLuck;
+    private int fuel = 360;
+    private int id;
+    private int maxLuck = 5000;
+    private boolean running;
+    private byte level = 1;
+    private final String player;
+    private int extraLuck;
+    private final int[] u_luck = new int[]{4, 1};
+    private final int[] u_fuel = new int[]{7, 2};
 
     public LuckyCraftingTable(Block block, String player, boolean first) {
         this.id = random.nextInt(100000) + 1;
         this.block = block;
         this.player = player;
         if (this.inv == null) {
-            this.inv = Bukkit.createInventory((InventoryHolder)null, 54, red + val("lct.display_name", false));
+            this.inv = Bukkit.createInventory(null, 54, red + val("lct.display_name", false));
         }
 
         ItemStack glass = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 15, red + val("lct.gui.itemlocked.name", false));
@@ -127,7 +73,7 @@ public class LuckyCraftingTable extends ColorsClass {
         int[] var10 = glasses;
         int var9 = glasses.length;
 
-        for(int var8 = 0; var8 < var9; ++var8) {
+        for (int var8 = 0; var8 < var9; ++var8) {
             int i = var10[var8];
             this.inv.setItem(s - i, glass);
         }
@@ -143,6 +89,153 @@ public class LuckyCraftingTable extends ColorsClass {
             e.spawn(this);
             this.func_loop();
             this.spawn_items();
+        }
+
+    }
+
+    public static LuckyCraftingTable getByBlock(Block block) {
+        for (int x = 0; x < tables.size(); ++x) {
+            LuckyCraftingTable c = tables.get(x);
+            Block b = c.block;
+            String s = blockToString(b);
+            if (s.equalsIgnoreCase(blockToString(block))) {
+                return c;
+            }
+        }
+
+        return null;
+    }
+
+    public static LuckyCraftingTable getById(int id) {
+        for (int x = 0; x < tables.size(); ++x) {
+            LuckyCraftingTable c = tables.get(x);
+            if (c.id == id) {
+                return c;
+            }
+        }
+
+        return null;
+    }
+
+    private static void saveFile() {
+        try {
+            file.save(fileF);
+        } catch (IOException var1) {
+            var1.printStackTrace();
+        }
+
+    }
+
+    public static void load() {
+        ConfigurationSection c = file.getConfigurationSection("Tables");
+        if (c != null) {
+            Iterator var2 = c.getKeys(false).iterator();
+
+            while (true) {
+                while (true) {
+                    String s;
+                    ConfigurationSection f;
+                    do {
+                        if (!var2.hasNext()) {
+                            return;
+                        }
+
+                        s = (String) var2.next();
+                        f = c.getConfigurationSection(s);
+                    } while (f == null);
+
+                    int id = f.getInt("ID");
+                    String player = f.getString("Player");
+                    Block block = stringToBlock(f.getString("Block"));
+                    if (block != null && block.getType() == Material.NOTE_BLOCK) {
+                        LuckyCraftingTable cr = new LuckyCraftingTable(block, player, false);
+                        cr.id = id;
+                        cr.fuel = f.getInt("Fuel");
+                        cr.extraLuck = f.getInt("Extra");
+                        if (f.getInt("Level") > 0 && f.getInt("Level") < 128) {
+                            cr.setLevel((byte) f.getInt("Level"));
+                        }
+
+                        cr.storedLuck = f.getInt("StoredLuck");
+                        if (f.getConfigurationSection("LBItem") != null) {
+                            if (f.getItemStack("LBItem.1") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 54, f.getItemStack("LBItem.1"));
+                            }
+
+                            if (f.getItemStack("LBItem.2") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 53, f.getItemStack("LBItem.2"));
+                            }
+
+                            if (f.getItemStack("LBItem.3") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 52, f.getItemStack("LBItem.3"));
+                            }
+
+                            if (f.getItemStack("LBItem.4") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 45, f.getItemStack("LBItem.4"));
+                            }
+
+                            if (f.getItemStack("LBItem.5") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 44, f.getItemStack("LBItem.5"));
+                            }
+
+                            if (f.getItemStack("LBItem.6") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 43, f.getItemStack("LBItem.6"));
+                            }
+
+                            if (f.getItemStack("LBItem.7") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 36, f.getItemStack("LBItem.7"));
+                            }
+
+                            if (f.getItemStack("LBItem.8") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 35, f.getItemStack("LBItem.8"));
+                            }
+
+                            if (f.getItemStack("LBItem.9") != null) {
+                                cr.inv.setItem(cr.inv.getSize() - 34, f.getItemStack("LBItem.9"));
+                            }
+                        }
+
+                        cr.save(false);
+                        cr.func_loop();
+                    } else {
+                        c.set(s, null);
+                        saveFile();
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean isValid() {
+        return getByBlock(this.block) != null;
+    }
+
+    public void stop() {
+        if (this.running) {
+            this.running = false;
+            SoundManager.playFixedSound(this.block.getLocation(), getSound("lct_stop"), 1.0F, 0.0F, 8);
+        }
+
+    }
+
+    public int getMaxLuck() {
+        return this.maxLuck;
+    }
+
+    public Inventory i() {
+        return this.inv;
+    }
+
+    public void refresh() {
+        Iterator var2 = this.inv.getViewers().iterator();
+
+        while (var2.hasNext()) {
+            HumanEntity h = (HumanEntity) var2.next();
+            if (h instanceof Player) {
+                this.open((Player) h);
+            } else {
+                h.closeInventory();
+            }
         }
 
     }
@@ -185,10 +278,10 @@ public class LuckyCraftingTable extends ColorsClass {
     private void func_play_run() {
         Iterator var2 = this.inv.getViewers().iterator();
 
-        while(var2.hasNext()) {
-            HumanEntity h = (HumanEntity)var2.next();
+        while (var2.hasNext()) {
+            HumanEntity h = (HumanEntity) var2.next();
             if (h instanceof Player) {
-                Player player = (Player)h;
+                Player player = (Player) h;
                 player.playSound(player.getLocation(), getSound("lct_run"), 1.0F, 2.0F);
             }
         }
@@ -271,7 +364,7 @@ public class LuckyCraftingTable extends ColorsClass {
                     }
 
                 }
-            }, (long)this.u_luck[0], (long)this.u_luck[0]));
+            }, this.u_luck[0], this.u_luck[0]));
         }
 
     }
@@ -366,7 +459,7 @@ public class LuckyCraftingTable extends ColorsClass {
                 }
 
             }
-        }, (long)this.u_fuel[0], (long)this.u_fuel[0]));
+        }, this.u_fuel[0], this.u_fuel[0]));
     }
 
     public int getId() {
@@ -379,6 +472,14 @@ public class LuckyCraftingTable extends ColorsClass {
 
     public int getSlot() {
         return this.slot;
+    }
+
+    public int getStoredLuck() {
+        return this.storedLuck;
+    }
+
+    public byte getLevel() {
+        return this.level;
     }
 
     public void setLevel(byte level) {
@@ -440,14 +541,6 @@ public class LuckyCraftingTable extends ColorsClass {
             }
         }
 
-    }
-
-    public int getStoredLuck() {
-        return this.storedLuck;
-    }
-
-    public byte getLevel() {
-        return this.level;
     }
 
     public String getPlayer() {
@@ -539,13 +632,13 @@ public class LuckyCraftingTable extends ColorsClass {
         if (file.getConfigurationSection("Tables") != null) {
             Iterator var3 = file.getConfigurationSection("Tables").getKeys(false).iterator();
 
-            while(var3.hasNext()) {
-                String s = (String)var3.next();
+            while (var3.hasNext()) {
+                String s = (String) var3.next();
                 ConfigurationSection f = file.getConfigurationSection("Tables").getConfigurationSection(s);
                 if (f != null) {
                     int id = f.getInt("ID");
                     if (this.id == id) {
-                        file.set("Tables." + s, (Object)null);
+                        file.set("Tables." + s, null);
                     }
                 }
             }
@@ -560,8 +653,8 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public void save(boolean saveToFile) {
-        for(int x = 0; x < tables.size(); ++x) {
-            LuckyCraftingTable c = (LuckyCraftingTable)tables.get(x);
+        for (int x = 0; x < tables.size(); ++x) {
+            LuckyCraftingTable c = tables.get(x);
             if (c.id == this.id) {
                 tables.remove(c);
             }
@@ -600,95 +693,6 @@ public class LuckyCraftingTable extends ColorsClass {
         file.set(path + ".LBItem.8", this.inv.getItem(this.inv.getSize() - 35));
         file.set(path + ".LBItem.9", this.inv.getItem(this.inv.getSize() - 34));
         saveFile();
-    }
-
-    private static void saveFile() {
-        try {
-            file.save(fileF);
-        } catch (IOException var1) {
-            var1.printStackTrace();
-        }
-
-    }
-
-    public static void load() {
-        ConfigurationSection c = file.getConfigurationSection("Tables");
-        if (c != null) {
-            Iterator var2 = c.getKeys(false).iterator();
-
-            while(true) {
-                while(true) {
-                    String s;
-                    ConfigurationSection f;
-                    do {
-                        if (!var2.hasNext()) {
-                            return;
-                        }
-
-                        s = (String)var2.next();
-                        f = c.getConfigurationSection(s);
-                    } while(f == null);
-
-                    int id = f.getInt("ID");
-                    String player = f.getString("Player");
-                    Block block = stringToBlock(f.getString("Block"));
-                    if (block != null && block.getType() == Material.NOTE_BLOCK) {
-                        LuckyCraftingTable cr = new LuckyCraftingTable(block, player, false);
-                        cr.id = id;
-                        cr.fuel = f.getInt("Fuel");
-                        cr.extraLuck = f.getInt("Extra");
-                        if (f.getInt("Level") > 0 && f.getInt("Level") < 128) {
-                            cr.setLevel((byte)f.getInt("Level"));
-                        }
-
-                        cr.storedLuck = f.getInt("StoredLuck");
-                        if (f.getConfigurationSection("LBItem") != null) {
-                            if (f.getItemStack("LBItem.1") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 54, f.getItemStack("LBItem.1"));
-                            }
-
-                            if (f.getItemStack("LBItem.2") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 53, f.getItemStack("LBItem.2"));
-                            }
-
-                            if (f.getItemStack("LBItem.3") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 52, f.getItemStack("LBItem.3"));
-                            }
-
-                            if (f.getItemStack("LBItem.4") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 45, f.getItemStack("LBItem.4"));
-                            }
-
-                            if (f.getItemStack("LBItem.5") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 44, f.getItemStack("LBItem.5"));
-                            }
-
-                            if (f.getItemStack("LBItem.6") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 43, f.getItemStack("LBItem.6"));
-                            }
-
-                            if (f.getItemStack("LBItem.7") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 36, f.getItemStack("LBItem.7"));
-                            }
-
-                            if (f.getItemStack("LBItem.8") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 35, f.getItemStack("LBItem.8"));
-                            }
-
-                            if (f.getItemStack("LBItem.9") != null) {
-                                cr.inv.setItem(cr.inv.getSize() - 34, f.getItemStack("LBItem.9"));
-                            }
-                        }
-
-                        cr.save(false);
-                        cr.func_loop();
-                    } else {
-                        c.set(s, (Object)null);
-                        saveFile();
-                    }
-                }
-            }
-        }
     }
 
     public String toString() {

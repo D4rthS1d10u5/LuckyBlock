@@ -1,5 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.entity.Immunity;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,8 +9,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,7 +21,7 @@ public class EntitySuperSlime extends CustomEntity {
     }
 
     public Entity spawnFunction(Location loc) {
-        Slime slime = (Slime)loc.getWorld().spawnEntity(loc, EntityType.SLIME);
+        Slime slime = (Slime) loc.getWorld().spawnEntity(loc, EntityType.SLIME);
         slime.setSize(this.size);
         slime.setMaxHealth(20.0D);
         slime.setHealth(20.0D);
@@ -33,10 +33,10 @@ public class EntitySuperSlime extends CustomEntity {
     protected void onTick() {
         Iterator var2 = this.entity.getNearbyEntities(6.0D, 6.0D, 6.0D).iterator();
 
-        while(var2.hasNext()) {
-            Entity e = (Entity)var2.next();
+        while (var2.hasNext()) {
+            Entity e = (Entity) var2.next();
             if (e instanceof LivingEntity) {
-                LivingEntity l = (LivingEntity)e;
+                LivingEntity l = (LivingEntity) e;
                 if (!(l instanceof Player) && l.getHealth() < l.getMaxHealth() && l.getHealth() > 0.0D) {
                     try {
                         l.setHealth(l.getHealth() + 3.0D);
@@ -49,7 +49,7 @@ public class EntitySuperSlime extends CustomEntity {
             }
         }
 
-        LivingEntity l = (LivingEntity)this.entity;
+        LivingEntity l = (LivingEntity) this.entity;
         if (l.getHealth() < l.getMaxHealth() && l.getHealth() > 0.0D) {
             try {
                 l.setHealth(l.getHealth() + 3.0D);
@@ -107,7 +107,7 @@ public class EntitySuperSlime extends CustomEntity {
         if (this.size > 1 && this.random.nextInt(100) + 1 > 30) {
             int i = this.random.nextInt(2) + 2;
 
-            for(int x = i; x > 0; --x) {
+            for (int x = i; x > 0; --x) {
                 EntitySuperSlime superSlime = new EntitySuperSlime();
                 superSlime.size = this.size - 1;
                 superSlime.spawn(this.entity.getLocation());

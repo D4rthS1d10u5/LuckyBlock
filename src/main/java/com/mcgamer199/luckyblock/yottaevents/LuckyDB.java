@@ -19,10 +19,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class LuckyDB {
-    private static File dbFile;
     public static Boolean fixDupe = null;
+    private static final File dbFile;
     private static Map<UUID, LuckyDB.BlockData> db;
     private static boolean toSave;
+
+    static {
+        dbFile = new File(LuckyBlock.instance.getDataFolder(), "anti-dupe-database.yml");
+        toSave = false;
+        Bukkit.getScheduler().runTaskTimer(LuckyBlock.instance, LuckyDB::checkSave, 12000L, 12000L);
+        loadConfig();
+    }
 
     public LuckyDB() {
     }
@@ -73,8 +80,8 @@ public class LuckyDB {
             db = new HashMap(datas.size() + 16);
             Iterator var4 = datas.iterator();
 
-            while(var4.hasNext()) {
-                String data = (String)var4.next();
+            while (var4.hasNext()) {
+                String data = (String) var4.next();
 
                 try {
                     String[] meta = data.split(":");
@@ -136,15 +143,8 @@ public class LuckyDB {
         LuckyDB.setToSave(true);
     }
 
-    static {
-        dbFile = new File(LuckyBlock.instance.getDataFolder(), "anti-dupe-database.yml");
-        toSave = false;
-        Bukkit.getScheduler().runTaskTimer(LuckyBlock.instance, LuckyDB::checkSave, 12000L, 12000L);
-        loadConfig();
-    }
-
     public static class BlockData {
-        private UUID uuid;
+        private final UUID uuid;
         private int amount;
         private int place;
         private long timeMillis;

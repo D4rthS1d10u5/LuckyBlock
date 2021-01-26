@@ -1,9 +1,10 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.tags.EntityTags;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
 import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
 import com.mcgamer199.luckyblock.customentity.EntitySuperSlime;
+import com.mcgamer199.luckyblock.tags.EntityTags;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.util.Random;
 
@@ -23,15 +23,15 @@ public class LBEntitiesSpecial {
     }
 
     public static void spawnBob(Location loc, boolean noAI) {
-        Zombie zombie = (Zombie)loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+        Zombie zombie = (Zombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
         zombie.setCanPickupItems(true);
         zombie.setCustomName("" + ChatColor.YELLOW + ChatColor.BOLD + "Bob");
         zombie.setCustomNameVisible(true);
         ItemStack item = ItemMaker.createItem(Material.DIAMOND_SWORD, 1, 0);
-        item = ItemMaker.addEnchants(item, new int[]{5, 2}, new Enchantment[]{Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT});
+        item = ItemMaker.addEnchants(item, new int[]{5, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
         zombie.getEquipment().setItemInMainHand(item);
         ItemStack item1 = ItemMaker.createItem(Material.DIAMOND_HELMET);
-        item1 = ItemMaker.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, new Enchantment[]{Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE});
+        item1 = ItemMaker.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
         if ((new Random()).nextInt(100) + 1 >= 65) {
             item1 = ItemMaker.addEnchant(item1, Enchantment.THORNS, 3);
         }
@@ -58,15 +58,15 @@ public class LBEntitiesSpecial {
     }
 
     public static void spawnPeter(Location loc, boolean noAI) {
-        Skeleton skeleton = (Skeleton)loc.getWorld().spawnEntity(loc, EntityType.SKELETON);
+        Skeleton skeleton = (Skeleton) loc.getWorld().spawnEntity(loc, EntityType.SKELETON);
         skeleton.setCanPickupItems(true);
         skeleton.setCustomName("" + ChatColor.GRAY + ChatColor.BOLD + "Peter");
         skeleton.setCustomNameVisible(true);
         ItemStack item = ItemMaker.createItem(Material.BOW, 1, 0);
-        item = ItemMaker.addEnchants(item, new int[]{5, 1}, new Enchantment[]{Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE});
+        item = ItemMaker.addEnchants(item, new int[]{5, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
         skeleton.getEquipment().setItemInMainHand(item);
         ItemStack item1 = ItemMaker.createItem(Material.DIAMOND_HELMET);
-        item1 = ItemMaker.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, new Enchantment[]{Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE});
+        item1 = ItemMaker.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
         skeleton.getEquipment().setHelmet(item1);
         item1.setType(Material.DIAMOND_CHESTPLATE);
         skeleton.getEquipment().setChestplate(item1);
@@ -88,7 +88,7 @@ public class LBEntitiesSpecial {
     }
 
     public static void spawnKarl(Player player, Location loc, boolean noAI) {
-        Enderman karl = (Enderman)loc.getWorld().spawnEntity(loc, EntityType.ENDERMAN);
+        Enderman karl = (Enderman) loc.getWorld().spawnEntity(loc, EntityType.ENDERMAN);
         karl.setCarriedMaterial(new MaterialData(Material.TNT));
         karl.setCustomName("" + ChatColor.DARK_PURPLE + ChatColor.BOLD + "Karl");
         karl.setCustomNameVisible(true);
@@ -105,7 +105,7 @@ public class LBEntitiesSpecial {
     }
 
     public static void spawnHellHound(Player player, Location loc, boolean noAI) {
-        Wolf hellHund = (Wolf)loc.getWorld().spawnEntity(loc, EntityType.WOLF);
+        Wolf hellHund = (Wolf) loc.getWorld().spawnEntity(loc, EntityType.WOLF);
         hellHund.setAngry(true);
         hellHund.setAgeLock(true);
         hellHund.setCollarColor(DyeColor.RED);
@@ -118,7 +118,7 @@ public class LBEntitiesSpecial {
         hellHund.setHealth(60.0D);
         hellHund.setRemoveWhenFarAway(false);
         hellHund.setFireTicks(100000);
-        EntityTags.addRandomDrops(hellHund.getUniqueId(), new double[]{100.0D}, new ItemStack[]{new ItemStack(Material.LAVA_BUCKET)});
+        EntityTags.addRandomDrops(hellHund.getUniqueId(), new double[]{100.0D}, new ItemStack(Material.LAVA_BUCKET));
         if (player != null) {
             hellHund.setTarget(player);
         }
@@ -133,7 +133,7 @@ public class LBEntitiesSpecial {
         EntityElementalCreeper e = new EntityElementalCreeper();
         e.spawn(loc);
         if (noAI) {
-            ((Creeper)e.getEntity()).setAI(false);
+            ((Creeper) e.getEntity()).setAI(false);
         }
 
     }
@@ -142,7 +142,7 @@ public class LBEntitiesSpecial {
         EntityLuckyVillager v = new EntityLuckyVillager();
         v.spawn(loc);
         if (noAI) {
-            ((Villager)v.getEntity()).setAI(false);
+            ((Villager) v.getEntity()).setAI(false);
         }
 
     }
@@ -151,7 +151,7 @@ public class LBEntitiesSpecial {
         EntitySuperSlime s = new EntitySuperSlime();
         s.spawn(loc);
         if (noAI) {
-            ((Slime)s.getEntity()).setAI(false);
+            ((Slime) s.getEntity()).setAI(false);
         }
 
     }

@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.engine.IObjects;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,7 +28,7 @@ public class LBCResourcePack extends LBCommand {
                     return false;
                 }
 
-                p = (Player)sender;
+                p = (Player) sender;
                 p.setResourcePack(r);
                 send(p, "command.resourcepack.success");
                 return true;
@@ -41,12 +41,12 @@ public class LBCResourcePack extends LBCommand {
                             send_invalid_sender(sender);
                         }
 
-                        p = (Player)sender;
+                        p = (Player) sender;
                         p.setResourcePack(r);
                         Iterator var8 = p.getWorld().getPlayers().iterator();
 
-                        while(var8.hasNext()) {
-                            Player player = (Player)var8.next();
+                        while (var8.hasNext()) {
+                            Player player = (Player) var8.next();
                             player.setResourcePack(r);
                         }
 
@@ -57,8 +57,8 @@ public class LBCResourcePack extends LBCommand {
                     if (args[1].equalsIgnoreCase("server")) {
                         Iterator var7 = Bukkit.getOnlinePlayers().iterator();
 
-                        while(var7.hasNext()) {
-                            p = (Player)var7.next();
+                        while (var7.hasNext()) {
+                            p = (Player) var7.next();
                             p.setResourcePack(r);
                         }
 

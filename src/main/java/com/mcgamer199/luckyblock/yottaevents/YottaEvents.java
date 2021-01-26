@@ -31,7 +31,7 @@ public class YottaEvents implements Listener {
     public void checkVeryFast(LBBreakEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("lb.break.cooldown.bypass")) {
-            Long last = (Long) com.mcgamer199.luckyblock.yottaevents.PlayerData.getOrSet(player, "last.open", -1L);
+            Long last = PlayerData.getOrSet(player, "last.open", -1L);
             long current = System.currentTimeMillis();
             if (current - last < 2000L) {
                 player.sendMessage("§cНельзя так часто открывать лаки блоки.");
@@ -97,11 +97,11 @@ public class YottaEvents implements Listener {
                 if (blockData == null) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage("§cЭтот лаки блок уже нельзя октрыть, его время ушло :(");
-                    event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
+                    event.getPlayer().getInventory().setItemInMainHand(null);
                 } else if (blockData.getPlace() >= blockData.getAmount()) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage("§cЭтот лаки блок - дюпнутый, такой ставить нельзя :(");
-                    event.getPlayer().getInventory().setItemInMainHand((ItemStack)null);
+                    event.getPlayer().getInventory().setItemInMainHand(null);
                 }
             }
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class YottaEvents implements Listener {
     )
     public void FramePlace(PlayerInteractEntityEvent event) {
         if (event.getRightClicked().getType().equals(EntityType.ITEM_FRAME) && event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-            ItemFrame rightClicked = (ItemFrame)event.getRightClicked();
+            ItemFrame rightClicked = (ItemFrame) event.getRightClicked();
             if (ItemStackUtils.isNullOrAir(rightClicked.getItem())) {
                 ItemStack mainBefore = null;
                 if (event.getHand().equals(EquipmentSlot.HAND)) {

@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.lb;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import com.mcgamer199.luckyblock.logic.ITask;
 
 public class LBLoops {
     public LBLoops() {

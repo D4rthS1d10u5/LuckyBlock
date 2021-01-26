@@ -14,7 +14,7 @@ public class LBCBook extends LBCommand {
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 1) {
             if (sender instanceof Player) {
-                LBBook.giveBook((Player)sender);
+                LBBook.giveBook((Player) sender);
                 send(sender, "command.book.1");
             } else {
                 send_invalid_sender(sender);

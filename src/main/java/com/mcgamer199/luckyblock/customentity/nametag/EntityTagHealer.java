@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.customentity.boss.main.EntityHealer;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.UUID;
 
@@ -46,7 +46,7 @@ public class EntityTagHealer extends EntityNameTag {
                 public void run() {
                     CustomEntity c = CustomEntity.getByUUID(uuid);
                     if (c != null) {
-                        EntityTagHealer.this.source = (EntityHealer)c;
+                        EntityTagHealer.this.source = (EntityHealer) c;
                     }
 
                 }
