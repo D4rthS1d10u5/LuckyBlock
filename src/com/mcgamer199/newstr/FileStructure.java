@@ -1,11 +1,11 @@
 package com.mcgamer199.newstr;
 
-import com.LuckyBlock.Engine.IObjects;
-import com.LuckyBlock.Engine.LuckyBlock;
-import com.LuckyBlock.Resources.Schematic;
-import com.LuckyBlock.Tags.BlockTags;
-import com.LuckyBlock.Tags.ChestFiller;
-import com.LuckyBlock.customentity.boss.EntityBossWitch;
+import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.resources.Schematic;
+import com.mcgamer199.luckyblock.tags.BlockTags;
+import com.mcgamer199.luckyblock.tags.ChestFiller;
+import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
