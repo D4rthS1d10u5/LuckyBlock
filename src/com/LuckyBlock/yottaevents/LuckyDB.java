@@ -27,6 +27,7 @@ public class LuckyDB {
     public LuckyDB() {
     }
 
+    //TODO org.bukkit.plugin.IllegalPluginAccessException: Plugin attempted to register task while disabled
     public static void checkSave() {
         if (toSave) {
             toSave = false;

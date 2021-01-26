@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Server" type="JarApplication" singleton="true">
+    <option name="JAR_PATH" value="$PROJECT_DIR$/TestServer/core.jar" />
+    <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8" />
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/TestServer" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="LuckyBlock" />
+      </option>
+    </method>
+  </configuration>
+</component>

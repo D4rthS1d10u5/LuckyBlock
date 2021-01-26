@@ -213,7 +213,6 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
 
             DropEvents.run(block, lb, player, lb.getDrop(), lb.customDrop, true);
         }
-
     }
 
     @EventHandler
