@@ -1,10 +1,10 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.event.lb.block.DropEvents;
+import com.mcgamer199.luckyblock.listeners.DropEvents;
 import com.mcgamer199.luckyblock.resources.MapEndCastle;
 import com.mcgamer199.luckyblock.resources.Schematic;
-import com.mcgamer199.luckyblock.world.Structures.Structure;
+import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

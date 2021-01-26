@@ -24,7 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Arrays;

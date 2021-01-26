@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.tags;
 
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LB;
@@ -7,7 +8,6 @@ import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.Pattern;
@@ -367,7 +367,7 @@ public class BlockTags extends HTag {
 
     protected static void playSound(ConfigurationSection c, Location location) {
         if (c.getString("Sound") != null) {
-            ColorsClass.playFixedSound(location, Sound.valueOf(c.getString("Sound").toUpperCase()), 1.0F, 1.0F, 15);
+            SoundManager.playFixedSound(location, Sound.valueOf(c.getString("Sound").toUpperCase()), 1.0F, 1.0F, 15);
         }
 
     }

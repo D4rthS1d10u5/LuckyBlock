@@ -6,7 +6,7 @@
 
     <groupId>com.mcgamer199</groupId>
     <artifactId>LuckyBlock</artifactId>
-    <version>1.0-mineland-modify</version>
+    <version>2.2.5-mineland-modify</version>
 
     <properties>
         <app.deployDirectory>${project.basedir}/TestServer/plugins</app.deployDirectory>

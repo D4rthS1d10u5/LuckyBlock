@@ -12,7 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.io.File;
 import java.io.IOException;

@@ -10,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.inventory.ItemStack;
 import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 public class EntityKillerSkeleton extends EntityKiller {
     public EntityKillerSkeleton() {

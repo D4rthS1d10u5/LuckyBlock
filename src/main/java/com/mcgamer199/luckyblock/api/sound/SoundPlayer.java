@@ -1,23 +1,20 @@
 package com.mcgamer199.luckyblock.api.sound;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SoundPlayer {
 
-    private List<SoundFile> sounds = new ArrayList();
+    @Getter
+    private List<SoundFile> sounds;
 
     public SoundPlayer(List<SoundFile> sounds) {
         this.sounds = sounds;
-    }
-
-    public List<SoundFile> getSounds() {
-        return this.sounds;
     }
 
     public void play(int times, int delay, final Location loc) {

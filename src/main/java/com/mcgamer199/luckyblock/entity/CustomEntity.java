@@ -10,9 +10,9 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.nbt.ItemNBT;
+import com.mcgamer199.luckyblock.api.item.ItemNBT;
 
 import java.util.*;
 

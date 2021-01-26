@@ -8,7 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.util.Arrays;
 

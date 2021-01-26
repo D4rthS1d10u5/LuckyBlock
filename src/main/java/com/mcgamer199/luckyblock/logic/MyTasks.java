@@ -34,14 +34,6 @@ public class MyTasks {
         return IObjects.changeLanguage();
     }
 
-    public static final void playFixedSound(Location loc, Sound sound, float vol, float pit) {
-        com.mcgamer199.luckyblock.logic.ColorsClass.playFixedSound(loc, sound, vol, pit);
-    }
-
-    public static final void playFixedSound(Location loc, Sound sound, float vol, float pit, int maxdistance) {
-        com.mcgamer199.luckyblock.logic.ColorsClass.playFixedSound(loc, sound, vol, pit, maxdistance);
-    }
-
     public static final String blockToString(Block block) {
         return com.mcgamer199.luckyblock.logic.ColorsClass.blockToString(block);
     }

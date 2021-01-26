@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 public class EntityLBShulker extends CustomEntity {
     private int killedEntities;

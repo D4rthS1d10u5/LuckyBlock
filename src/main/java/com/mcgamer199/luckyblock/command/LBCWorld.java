@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.world.Engine.LuckyBlockWorld;
-import com.mcgamer199.luckyblock.world.Engine.WorldOptions;
+import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
+import com.mcgamer199.luckyblock.listeners.WorldOptions;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import org.bukkit.Location;
 import org.bukkit.World;

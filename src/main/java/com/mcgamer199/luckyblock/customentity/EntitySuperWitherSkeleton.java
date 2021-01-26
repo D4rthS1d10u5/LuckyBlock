@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 
 import java.util.UUID;
 

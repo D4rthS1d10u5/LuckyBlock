@@ -1,12 +1,10 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -102,7 +100,7 @@ public class EntityLBBlaze extends CustomEntity {
                 event.setCancelled(true);
             } else if (event.getDamager() instanceof LivingEntity && this.random.nextInt(100) + 1 > 65) {
                 event.setCancelled(true);
-                MyTasks.playFixedSound(this.blaze.getLocation(), MyTasks.getSound("boss_blaze_shield"), 1.0F, 1.0F, 25);
+                SoundManager.playFixedSound(this.blaze.getLocation(), MyTasks.getSound("boss_blaze_shield"), 1.0F, 1.0F, 25);
                 this.blaze.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, this.blaze.getLocation(), 200, 1.0D, 1.0D, 1.0D, 0.0D);
             }
         }

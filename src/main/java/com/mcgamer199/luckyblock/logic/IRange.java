@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.logic;
 
+//TODO заменить на Vector от Bukkit
 public class IRange {
 
     private int x;

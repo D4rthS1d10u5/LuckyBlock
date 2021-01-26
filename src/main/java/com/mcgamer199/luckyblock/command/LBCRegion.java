@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.event.lb.block.PlaceLuckyBlock.LBOption;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;

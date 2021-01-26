@@ -6,21 +6,16 @@
 package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.Enchantments.Glow;
-import com.mcgamer199.luckyblock.Enchantments.Lightning;
-import com.mcgamer199.luckyblock.Enchantments.ReflectProtectionEnchantment;
+import com.mcgamer199.luckyblock.enchantments.Glow;
+import com.mcgamer199.luckyblock.enchantments.Lightning;
+import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.event.lb.*;
-import com.mcgamer199.luckyblock.event.lb.block.BreakLuckyBlock;
-import com.mcgamer199.luckyblock.event.lb.block.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.event.lb.LBShootEvent;
+import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
+import com.mcgamer199.luckyblock.listeners.*;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.EntitySuperWitherSkeleton;
 import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
-import com.mcgamer199.luckyblock.inventory.event.EntitiesGui;
-import com.mcgamer199.luckyblock.inventory.event.Gui;
-import com.mcgamer199.luckyblock.inventory.event.LBGui;
-import com.mcgamer199.luckyblock.inventory.event.RecipeLB;
 import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -29,9 +24,9 @@ import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.Trophy;
 import com.mcgamer199.luckyblock.tags.EntityTags;
-import com.mcgamer199.luckyblock.world.Engine.LuckyBlockWorld;
-import com.mcgamer199.luckyblock.world.Engine.WorldGenerateLB;
-import com.mcgamer199.luckyblock.world.Structures.Structure;
+import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
+import com.mcgamer199.luckyblock.listeners.WorldGenerateLB;
+import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
@@ -61,8 +56,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.CustomEntityEvents;
 import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.event.lb.SpawnEggEvents;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
@@ -180,7 +174,7 @@ public class LuckyBlock extends JavaPlugin {
         }
 
         LuckyDB.checkSave();
-        this.getLogger().info("LuckyBlock , 2.2.5 Disabled.");
+        this.getLogger().info("LuckyBlock, 2.2.5 Disabled.");
     }
 
     public void loadDetectors() {

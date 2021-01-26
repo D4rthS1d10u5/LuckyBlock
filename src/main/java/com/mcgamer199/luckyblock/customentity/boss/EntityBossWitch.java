@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
@@ -25,7 +26,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Arrays;
@@ -355,7 +356,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
         task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
             public void run() {
                 if (EntityBossWitch.this.getEntity() != null && EntityBossWitch.this.getEntity().isValid()) {
-                    MyTasks.playFixedSound(EntityBossWitch.this.w.getLocation(), MyTasks.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26);
+                    SoundManager.playFixedSound(EntityBossWitch.this.w.getLocation(), MyTasks.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26);
                 } else {
                     task.run();
                 }
@@ -384,7 +385,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
             }
 
             if (!event.isCancelled()) {
-                MyTasks.playFixedSound(this.w.getLocation(), MyTasks.getSound("boss_witch_hurt"), 1.0F, 0.0F, 20);
+                SoundManager.playFixedSound(this.w.getLocation(), MyTasks.getSound("boss_witch_hurt"), 1.0F, 0.0F, 20);
             }
         }
     }
@@ -401,7 +402,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onDeath(EntityDeathEvent event) {
-        MyTasks.playFixedSound(this.w.getLocation(), MyTasks.getSound("boss_witch_death"), 1.0F, 0.0F, 20);
+        SoundManager.playFixedSound(this.w.getLocation(), MyTasks.getSound("boss_witch_death"), 1.0F, 0.0F, 20);
     }
 
     public Immunity[] getImmuneTo() {

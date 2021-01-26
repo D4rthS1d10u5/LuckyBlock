@@ -1,6 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.SkullData;
@@ -26,7 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.util.Arrays;
@@ -165,7 +166,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                 }
 
                 if (this.l.getLocation().distance(e.getEntity().getLocation()) < 3.0D && this.l.getHealth() < this.l.getMaxHealth()) {
-                    MyTasks.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_heal"), 1.0F, 0.0F, 10);
+                    SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_heal"), 1.0F, 0.0F, 10);
                     this.l.getWorld().spawnParticle(Particle.HEART, this.l.getLocation(), 10, 0.5D, 0.5D, 0.5D, 1.0D);
                     if (this.l.getHealth() + 1.0D < this.l.getMaxHealth()) {
                         this.l.setHealth(this.l.getHealth() + 1.0D);
@@ -198,7 +199,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onDeath(EntityDeathEvent event) {
-        MyTasks.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_death"), 1.0F, 0.0F, 10);
+        SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_death"), 1.0F, 0.0F, 10);
         com.mcgamer199.luckyblock.customentity.boss.EntityLBBlaze b = (EntityLBBlaze)CustomEntity.getByUUID(this.blaze_uuid);
         if (b != null && b.getEntity().isValid()) {
             b.startAttacking();
@@ -391,7 +392,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onDamage(EntityDamageEvent event) {
-        MyTasks.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_hurt"), 1.0F, 0.0F, 10);
+        SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_hurt"), 1.0F, 0.0F, 10);
         double d1 = this.l.getHealth();
         double d2 = 50.0D;
         double d3 = d1 / d2;
@@ -406,7 +407,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
         task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
             public void run() {
                 if (EntityKnight.this.getEntity() != null && !EntityKnight.this.getEntity().isDead()) {
-                    MyTasks.playFixedSound(EntityKnight.this.l.getLocation(), MyTasks.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35);
+                    SoundManager.playFixedSound(EntityKnight.this.l.getLocation(), MyTasks.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35);
                 } else {
                     task.run();
                 }

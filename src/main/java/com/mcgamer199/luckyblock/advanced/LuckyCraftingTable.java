@@ -1,17 +1,15 @@
 package com.mcgamer199.luckyblock.advanced;
 
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.event.lb.CraftLB;
+import com.mcgamer199.luckyblock.listeners.CraftLB;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTNameTag;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +21,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import com.mcgamer199.luckyblock.inventory.event.ItemMaker;
+import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.logic.ITask;
 
 import java.io.File;
@@ -77,7 +75,7 @@ public class LuckyCraftingTable extends ColorsClass {
     public void stop() {
         if (this.running) {
             this.running = false;
-            playFixedSound(this.block.getLocation(), getSound("lct_stop"), 1.0F, 0.0F, 8);
+            SoundManager.playFixedSound(this.block.getLocation(), getSound("lct_stop"), 1.0F, 0.0F, 8);
         }
 
     }
@@ -258,13 +256,13 @@ public class LuckyCraftingTable extends ColorsClass {
                                 }
                             }
                         } else if (this.working == 1) {
-                            LuckyCraftingTable.playFixedSound(LuckyCraftingTable.this.block.getLocation(), LuckyCraftingTable.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                            SoundManager.playFixedSound(LuckyCraftingTable.this.block.getLocation(), LuckyCraftingTable.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             task.run();
                             LuckyCraftingTable.this.running = false;
                             LuckyCraftingTable.this.save(true);
                         } else {
                             if (this.changed) {
-                                LuckyCraftingTable.playFixedSound(LuckyCraftingTable.this.block.getLocation(), LuckyCraftingTable.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                                SoundManager.playFixedSound(LuckyCraftingTable.this.block.getLocation(), LuckyCraftingTable.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             }
 
                             task.run();
@@ -361,7 +359,7 @@ public class LuckyCraftingTable extends ColorsClass {
                         st.setItemMeta(stM);
                     } else {
                         LuckyCraftingTable.this.running = false;
-                        LuckyCraftingTable.playFixedSound(LuckyCraftingTable.this.block.getLocation(), LuckyCraftingTable.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                        SoundManager.playFixedSound(LuckyCraftingTable.this.block.getLocation(), LuckyCraftingTable.getSound("lct_finish"), 1.0F, 2.0F, 10);
                     }
                 } else {
                     task.run();

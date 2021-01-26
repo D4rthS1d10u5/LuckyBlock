@@ -1,10 +1,11 @@
 package com.mcgamer199.luckyblock.logic;
 
+import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.api.item.ItemFactory;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
-import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -14,7 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import com.mcgamer199.luckyblock.nbt.ItemFactory;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -80,32 +80,6 @@ public class ColorsClass {
     }
 
     public ColorsClass() {
-    }
-
-    protected static final void playFixedSound(Location loc, Sound sound, float vol, float pit) {
-        playFixedSound(loc, sound, vol, pit, 30);
-    }
-
-    protected static final void playFixedSound(Location loc, Sound sound, float vol, float pit, int maxdistance) {
-        if (sound != null) {
-            Iterator var6 = loc.getWorld().getPlayers().iterator();
-
-            while(var6.hasNext()) {
-                Player p = (Player)var6.next();
-                if (p.getWorld() == loc.getWorld()) {
-                    double distance = p.getLocation().distance(loc);
-                    if (distance < (double)maxdistance) {
-                        float volume = (float)(1.0D - distance / (double)maxdistance);
-
-                        try {
-                            p.playSound(p.getLocation(), sound, vol * volume, pit);
-                        } catch (Exception var11) {
-                        }
-                    }
-                }
-            }
-        }
-
     }
 
     protected static final String blockToString(Block block) {

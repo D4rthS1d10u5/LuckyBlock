@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityTagHealer;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -95,7 +96,7 @@ public class EntityHealer extends CustomEntity {
                                 EntityHealer.this.healEntity.setHealth(EntityHealer.this.healEntity.getMaxHealth());
                             }
 
-                            MyTasks.playFixedSound(EntityHealer.this.ender.getLocation(), MyTasks.getSound("boss_healer_heal"), 1.0F, 2.0F, 8);
+                            SoundManager.playFixedSound(EntityHealer.this.ender.getLocation(), MyTasks.getSound("boss_healer_heal"), 1.0F, 2.0F, 8);
                             MyTasks.playEffects(Particle.HEART, EntityHealer.this.ender.getLocation(), 5, new double[]{0.7D, 0.7D, 0.7D}, 0.0F);
                         }
                     } else {
@@ -196,12 +197,12 @@ public class EntityHealer extends CustomEntity {
                             this.remove(a, (LuckyBlock.randoms.nextInt(20) + 6) * 3);
                         }
 
-                        MyTasks.playFixedSound(this.ender.getLocation(), MyTasks.getSound("boss_healer_death"), 1.0F, 1.0F, 8);
+                        SoundManager.playFixedSound(this.ender.getLocation(), MyTasks.getSound("boss_healer_death"), 1.0F, 1.0F, 8);
                         this.remove();
                         return;
                     }
 
-                    MyTasks.playFixedSound(this.ender.getLocation(), MyTasks.getSound("boss_healer_damage"), 1.0F, 1.0F, 8);
+                    SoundManager.playFixedSound(this.ender.getLocation(), MyTasks.getSound("boss_healer_damage"), 1.0F, 1.0F, 8);
                     this.func_wait_damage();
                     this.save_def();
                 }

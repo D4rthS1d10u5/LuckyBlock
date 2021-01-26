@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.lb;
 
-import com.mcgamer199.luckyblock.event.lb.block.HTasks;
+import com.mcgamer199.luckyblock.listeners.HTasks;
 import org.bukkit.entity.Player;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.tags.ItemStackGetter;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
@@ -65,7 +66,7 @@ public class EntityRandomItem extends CustomEntity {
 
                     as.setRightArmPose(angle);
                     as.setItemInHand((ItemStack)this.items.get(this.f));
-                    MyTasks.playFixedSound(lo, MyTasks.getSound("lb_drop_randomitem1"), 1.0F, 0.0F, 20);
+                    SoundManager.playFixedSound(lo, MyTasks.getSound("lb_drop_randomitem1"), 1.0F, 0.0F, 20);
                     --this.x;
                     ++this.f;
                     if (this.f >= l) {
@@ -78,7 +79,7 @@ public class EntityRandomItem extends CustomEntity {
                         this.entity.getWorld().dropItem(lo, (ItemStack)this.items.get(this.items.size() - 1));
                     }
 
-                    MyTasks.playFixedSound(lo, MyTasks.getSound("lb_drop_randomitem2"), 1.0F, 2.0F, 20);
+                    SoundManager.playFixedSound(lo, MyTasks.getSound("lb_drop_randomitem2"), 1.0F, 2.0F, 20);
                     this.entity.remove();
                 }
             }

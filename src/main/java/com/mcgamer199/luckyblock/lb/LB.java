@@ -7,8 +7,8 @@ package com.mcgamer199.luckyblock.lb;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlock;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.event.lb.block.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.event.lb.block.PlaceLuckyBlock.LBOption;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
+import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
