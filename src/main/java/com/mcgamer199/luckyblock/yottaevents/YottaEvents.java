@@ -5,7 +5,7 @@
 
 package com.mcgamer199.luckyblock.yottaevents;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -50,7 +50,7 @@ public class YottaEvents implements Listener {
     public void checkRemoveFromInventory(LBPlaceEvent event) {
         ItemStack mainBefore = event.getPlayer().getInventory().getItemInMainHand();
         if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore) && event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
-            Bukkit.getScheduler().runTask(LuckyBlock.instance, () -> {
+            Bukkit.getScheduler().runTask(LuckyBlockPlugin.instance, () -> {
                 ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
                 if (!ItemStackUtils.isNullOrAir(item) && LBType.isLB(item)) {
                     if (item.getAmount() > 1) {
@@ -127,7 +127,7 @@ public class YottaEvents implements Listener {
                 }
 
                 if (!ItemStackUtils.isNullOrAir(mainBefore) && LBType.isLB(mainBefore)) {
-                    Bukkit.getScheduler().runTask(LuckyBlock.instance, () -> {
+                    Bukkit.getScheduler().runTask(LuckyBlockPlugin.instance, () -> {
                         ItemStack item = null;
                         if (event.getHand().equals(EquipmentSlot.HAND)) {
                             item = event.getPlayer().getInventory().getItemInMainHand();

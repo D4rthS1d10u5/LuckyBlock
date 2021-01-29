@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.tags.EntityTags;
@@ -152,7 +152,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     private void onHit(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player) && event.getDamager() instanceof LivingEntity) {
             LivingEntity l = (LivingEntity) event.getDamager();
-            if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() != Material.AIR && l.getEquipment().getItemInMainHand().hasItemMeta() && l.getEquipment().getItemInMainHand().getItemMeta().hasEnchant(LuckyBlock.enchantment_lightning)) {
+            if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() != Material.AIR && l.getEquipment().getItemInMainHand().hasItemMeta() && l.getEquipment().getItemInMainHand().getItemMeta().hasEnchant(LuckyBlockPlugin.enchantment_lightning)) {
                 event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
             }
         }
@@ -163,7 +163,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     private void onStrike(EntityDamageEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity l = (LivingEntity) event.getEntity();
-            if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() != Material.AIR && l.getEquipment().getItemInMainHand().hasItemMeta() && l.getEquipment().getItemInMainHand().getItemMeta().hasEnchant(LuckyBlock.enchantment_lightning) && event.getCause() == EntityDamageEvent.DamageCause.LIGHTNING) {
+            if (l.getEquipment().getItemInMainHand() != null && l.getEquipment().getItemInMainHand().getType() != Material.AIR && l.getEquipment().getItemInMainHand().hasItemMeta() && l.getEquipment().getItemInMainHand().getItemMeta().hasEnchant(LuckyBlockPlugin.enchantment_lightning) && event.getCause() == EntityDamageEvent.DamageCause.LIGHTNING) {
                 event.setCancelled(true);
             }
         }

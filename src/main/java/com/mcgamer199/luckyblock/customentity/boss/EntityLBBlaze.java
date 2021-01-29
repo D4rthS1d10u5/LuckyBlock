@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -120,7 +120,7 @@ public class EntityLBBlaze extends CustomEntity {
 
     private void task1() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityLBBlaze.this.blaze.isDead()) {
                     if (EntityLBBlaze.this.ai && EntityLBBlaze.this.blaze.getTarget() != null) {
@@ -152,7 +152,7 @@ public class EntityLBBlaze extends CustomEntity {
         final Vector v = p.getVelocity();
         int x_2 = this.random.nextInt(5) + 25;
         ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             private int x = x_2;
 
             public void run() {

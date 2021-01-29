@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +16,7 @@ public class LuckyWell extends Structure {
     }
 
     public static boolean isValid(Block block) {
-        String b = LB.blockToString(block);
+        String b = LuckyBlock.blockToString(block);
 
         for (int x = 0; x < blocks.size(); ++x) {
             if (b.equalsIgnoreCase(blocks.get(x))) {

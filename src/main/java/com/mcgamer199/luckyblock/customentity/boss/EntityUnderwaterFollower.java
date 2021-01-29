@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -38,7 +38,7 @@ public class EntityUnderwaterFollower extends CustomEntity {
     private void func_age() {
         if (this.age > 0) {
             ITask task = new ITask();
-            task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
                 public void run() {
                     EntityUnderwaterFollower.this.remove();
                 }

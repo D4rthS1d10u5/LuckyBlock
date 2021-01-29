@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.command.engine;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.ChatColor;
@@ -23,7 +23,7 @@ public class ILBCmd extends ColorsClass {
     private static boolean loaded;
 
     static {
-        lcmd = LuckyBlock.command_main;
+        lcmd = LuckyBlockPlugin.command_main;
         color = ChatColor.RED;
         color1 = ChatColor.AQUA;
         color2 = ChatColor.GREEN;

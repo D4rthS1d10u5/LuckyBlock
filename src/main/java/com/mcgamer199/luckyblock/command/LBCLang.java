@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,13 +15,13 @@ public class LBCLang extends LBCommand {
     }
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
-        File file = new File(LuckyBlock.d() + "Data/messages/" + args[1] + ".yml");
+        File file = new File(LuckyBlockPlugin.d() + "Data/messages/" + args[1] + ".yml");
         if (!file.exists()) {
             send(sender, "invalid_file");
             return false;
         } else {
-            LuckyBlock.lang = args[1];
-            if (LuckyBlock.reload_lang()) {
+            LuckyBlockPlugin.lang = args[1];
+            if (LuckyBlockPlugin.reload_lang()) {
                 send(sender, "command.setlang.success");
             } else {
                 String a = "";
@@ -35,7 +35,7 @@ public class LBCLang extends LBCommand {
                     }
                 }
 
-                LuckyBlock.instance.getLogger().info("Missing Strings: [" + a + "]");
+                LuckyBlockPlugin.instance.getLogger().info("Missing Strings: [" + a + "]");
                 sender.sendMessage(ChatColor.RED + "Some strings are missing! (see the console)");
             }
 

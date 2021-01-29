@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.events;
 
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -12,12 +12,12 @@ public class LBGenerateEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final World world;
     private final Chunk chunk;
-    private final LB lb;
+    private final LuckyBlock luckyBlock;
 
-    public LBGenerateEvent(LB lb, World world, Chunk chunk) {
+    public LBGenerateEvent(LuckyBlock luckyBlock, World world, Chunk chunk) {
         this.world = world;
         this.chunk = chunk;
-        this.lb = lb;
+        this.luckyBlock = luckyBlock;
     }
 
     public static HandlerList getHandlerList() {
@@ -28,12 +28,12 @@ public class LBGenerateEvent extends Event {
         return handlers;
     }
 
-    public LB getLB() {
-        return this.lb;
+    public LuckyBlock getLB() {
+        return this.luckyBlock;
     }
 
     public Block getBlock() {
-        return this.lb.getBlock();
+        return this.luckyBlock.getBlock();
     }
 
     public World getWorld() {

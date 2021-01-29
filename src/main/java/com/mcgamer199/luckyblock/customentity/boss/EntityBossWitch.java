@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.customentity.boss;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -12,7 +12,6 @@ import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
@@ -140,7 +139,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_boss_bar() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityBossWitch.this.w.isDead()) {
                     if (EntityBossWitch.this.bar != null) {
@@ -157,7 +156,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_potions() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityBossWitch.this.w.isDead()) {
                     Location loc = new Location(EntityBossWitch.this.w.getWorld(), EntityBossWitch.this.w.getLocation().getX(), EntityBossWitch.this.w.getLocation().getY() + 2.5D, EntityBossWitch.this.w.getLocation().getZ());
@@ -185,7 +184,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_throw_fire1() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityBossWitch.this.w.isDead()) {
                     if (EntityBossWitch.this.w.getTarget() != null && EntityBossWitch.this.aTarget(EntityBossWitch.this.w.getTarget())) {
@@ -205,7 +204,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_throw_fire2() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int times = 15;
 
             public void run() {
@@ -252,7 +251,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     private void func_throw_fire3(final FallingBlock fb) {
         final int dmg = this.fire_damage - this.random.nextInt(3);
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (fb.isValid()) {
                     Iterator var2 = fb.getNearbyEntities(1.0D, 1.0D, 1.0D).iterator();
@@ -277,7 +276,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_invisible() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityBossWitch.this.w.isDead()) {
                     EntityBossWitch.this.w.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 180, 0));
@@ -340,7 +339,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_lightning() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityBossWitch.this.w.isDead()) {
                     EntityBossWitch.this.w.getWorld().strikeLightning(EntityBossWitch.this.w.getLocation());
@@ -354,7 +353,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_ambient() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityBossWitch.this.getEntity() != null && EntityBossWitch.this.getEntity().isValid()) {
                     SoundManager.playFixedSound(EntityBossWitch.this.w.getLocation(), MyTasks.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26);

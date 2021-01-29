@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class Structure {
 
-    static File structureF = new File(LuckyBlock.d() + "Data/structures.yml");
+    static File structureF = new File(LuckyBlockPlugin.d() + "Data/structures.yml");
     static FileConfiguration structure;
     private static final List<Structure> structures = new ArrayList();
 

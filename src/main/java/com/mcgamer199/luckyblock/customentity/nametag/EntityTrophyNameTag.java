@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -61,7 +61,7 @@ public class EntityTrophyNameTag extends CustomEntity {
 
     protected void onLoad(final ConfigurationSection c) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 String b = c.getString("Trophy_Block");
                 if (b != null && Trophy.getByBlock(MyTasks.stringToBlock(b)) != null) {

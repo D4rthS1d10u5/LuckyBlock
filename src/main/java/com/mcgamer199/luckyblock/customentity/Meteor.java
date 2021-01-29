@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -32,7 +32,7 @@ public class Meteor {
 
     private void particles(final Fireball ball) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (ball.isValid()) {
                     ball.getWorld().spawnParticle(Particle.FLAME, ball.getLocation(), 120, 1.0D, 1.0D, 1.0D, 0.0D);

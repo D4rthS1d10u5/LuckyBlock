@@ -4,7 +4,7 @@ import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.customentity.boss.main.EntityHealer;
 import com.mcgamer199.luckyblock.customentity.boss.main.EntityIPart;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -105,7 +105,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
 
     private void func_tick1() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityMC.this.e.isDead()) {
                     if (EntityMC.this.e.getTarget() != null && EntityMC.this.e.getTarget() != EntityMC.this.e.getTarget() && EntityMC.this.getNearbyMonsters(7, 7, 7) < 15) {
@@ -135,7 +135,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
 
     private void func_tick2() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityMC.this.e.isDead()) {
                     List<LivingEntity> l = EntityMC.this.getNearbyUnArmored(10, 10, 10, new EntityType[]{EntityType.SHEEP, EntityType.WITHER_SKELETON});
@@ -159,7 +159,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
 
     private void func_tick3() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityMC.this.e.isDead()) {
                     Item item = EntityMC.this.e.getWorld().dropItem(EntityMC.this.e.getLocation().add(0.0D, 2.0D, 0.0D), ItemMaker.createItem(Material.WOOL, 1, 11, ChatColor.GOLD + "LBWither's Bomb"));
@@ -179,7 +179,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
 
     private void func_item_remove(final Item item) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 item.remove();
             }
@@ -310,7 +310,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
     private boolean func_cA2(LivingEntity e) {
         if (e.getEquipment() != null && e.getEquipment().getChestplate() != null) {
             ItemStack i = e.getEquipment().getChestplate();
-            return i.hasItemMeta() && i.getItemMeta().hasEnchant(LuckyBlock.enchantment_reflect_prot) && i.getItemMeta().getEnchantLevel(LuckyBlock.enchantment_reflect_prot) > 0;
+            return i.hasItemMeta() && i.getItemMeta().hasEnchant(LuckyBlockPlugin.enchantment_reflect_prot) && i.getItemMeta().getEnchantLevel(LuckyBlockPlugin.enchantment_reflect_prot) > 0;
         }
 
         return false;
@@ -318,7 +318,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
 
     private void func_part_change(long delay, final ItemStack regular) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 Iterator var2 = EntityMC.this.parts.iterator();
 
@@ -380,7 +380,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
     protected void onLoad(final ConfigurationSection c) {
         this.e = (Wither) this.entity;
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 List<String> uuids = c.getStringList("Parts");
                 if (uuids != null && uuids.size() > 0) {

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,7 +40,7 @@ public class IDebug {
     }
 
     public static void sendDebug(String name, DebugData... datas) {
-        if (LuckyBlock.isDebugEnabled()) {
+        if (LuckyBlockPlugin.isDebugEnabled()) {
             ConsoleCommandSender c = Bukkit.getServer().getConsoleSender();
             c.sendMessage(ChatColor.RED + "[Lucky Block Debug]");
             Calendar cal = Calendar.getInstance();

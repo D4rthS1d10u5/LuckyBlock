@@ -5,8 +5,8 @@ import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
@@ -52,17 +52,17 @@ public class DropEvents extends ColorsClass {
     public DropEvents() {
     }
 
-    static void run(final Block block, LB lb, Player player, LBDrop drop, CustomDrop customDrop, boolean first) {
+    static void run(final Block block, LuckyBlock luckyBlock, Player player, LBDrop drop, CustomDrop customDrop, boolean first) {
         Location bloc = block.getLocation();
-        FileConfiguration file = lb.getFile();
-        if (player != null && lb.hasDropOption("Message")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) lb.getDropOption("Message").getValues()[0]));
+        FileConfiguration file = luckyBlock.getFile();
+        if (player != null && luckyBlock.hasDropOption("Message")) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) luckyBlock.getDropOption("Message").getValues()[0]));
         }
 
         String[] objs;
         int fuse;
-        if (lb.hasDropOption("IParticles")) {
-            objs = (String[]) lb.getDropOption("IParticles").getValues();
+        if (luckyBlock.hasDropOption("IParticles")) {
+            objs = (String[]) luckyBlock.getDropOption("IParticles").getValues();
 
             for (fuse = 0; fuse < objs.length; ++fuse) {
                 if (objs[fuse] != null) {
@@ -72,17 +72,17 @@ public class DropEvents extends ColorsClass {
         }
 
         String path;
-        if (player == null && lb.hasDropOption("Player")) {
-            path = lb.getDropOption("Player").getValues()[0].toString();
+        if (player == null && luckyBlock.hasDropOption("Player")) {
+            path = luckyBlock.getDropOption("Player").getValues()[0].toString();
             if (Bukkit.getPlayer(path) != null) {
                 player = Bukkit.getPlayer(path);
             }
         }
 
         File drops;
-        if (lb.hasDropOption("File")) {
-            path = lb.getDropOption("File").getValues()[0].toString();
-            drops = new File(LuckyBlock.instance.getDataFolder() + File.separator + "Drops/" + path);
+        if (luckyBlock.hasDropOption("File")) {
+            path = luckyBlock.getDropOption("File").getValues()[0].toString();
+            drops = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "Drops/" + path);
             if (drops.exists()) {
                 file = YamlConfiguration.loadConfiguration(drops);
             }
@@ -91,8 +91,8 @@ public class DropEvents extends ColorsClass {
         int randomP;
         int x;
         String path1;
-        if (lb.hasDropOption("With") && first) {
-            objs = (String[]) lb.getDropOption("With").getValues();
+        if (luckyBlock.hasDropOption("With") && first) {
+            objs = (String[]) luckyBlock.getDropOption("With").getValues();
             String[] var12 = objs;
             x = objs.length;
 
@@ -100,22 +100,22 @@ public class DropEvents extends ColorsClass {
                 path1 = var12[randomP];
                 if (path1 != null) {
                     if (CustomDropManager.getByName(path1) != null) {
-                        run(block, lb, player, null, CustomDropManager.getByName(path1), false);
+                        run(block, luckyBlock, player, null, CustomDropManager.getByName(path1), false);
                     } else {
-                        run(block, lb, player, LBDrop.getByName(path1), null, false);
+                        run(block, luckyBlock, player, LBDrop.getByName(path1), null, false);
                     }
                 }
             }
         }
 
-        if (LuckyBlock.isDebugEnabled()) {
-            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", locToString(bloc)), new DebugData("LBType", lb.getType().getId() + ", " + ChatColor.stripColor(lb.getType().getName())), new DebugData("Placed By", lb.getPlacedByClass()), new DebugData("Title", lb.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', lb.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", lb.customDrop != null ? lb.customDrop.getName() : lb.getDrop().name()), new DebugData("Luck", String.valueOf(lb.getLuck())), new DebugData("Owner", lb.hasOwner() ? lb.owner.toString() : "none"));
+        if (LuckyBlockPlugin.isDebugEnabled()) {
+            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", locToString(bloc)), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
         }
 
         if (customDrop == null) {
             if (drop != null) {
                 if (drop.getFunction() != null) {
-                    drop.getFunction().function(lb, player);
+                    drop.getFunction().function(luckyBlock, player);
                 }
 
                 com.mcgamer199.luckyblock.tags.ChestFiller chestFiller;
@@ -123,12 +123,12 @@ public class DropEvents extends ColorsClass {
                     block.setType(Material.CHEST);
                     path = "Chests";
                     path1 = null;
-                    if (lb.hasDropOption("Path")) {
-                        path = lb.getDropOption("Path").getValues()[0].toString();
+                    if (luckyBlock.hasDropOption("Path")) {
+                        path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                     }
 
-                    if (lb.hasDropOption("Path1")) {
-                        path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                    if (luckyBlock.hasDropOption("Path1")) {
+                        path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                     }
 
                     if (block.getState() instanceof Chest) {
@@ -146,20 +146,20 @@ public class DropEvents extends ColorsClass {
                         path1 = "Chests";
                         s = null;
                         breakBlocks = true;
-                        if (lb.hasDropOption("Path")) {
-                            path1 = lb.getDropOption("Path").getValues()[0].toString();
+                        if (luckyBlock.hasDropOption("Path")) {
+                            path1 = luckyBlock.getDropOption("Path").getValues()[0].toString();
                         }
 
-                        if (lb.hasDropOption("Path1")) {
-                            s = lb.getDropOption("Path1").getValues()[0].toString();
+                        if (luckyBlock.hasDropOption("Path1")) {
+                            s = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                         }
 
-                        if (lb.hasDropOption("ClearInventory") && lb.getDropOption("ClearInventory").getValues()[0].toString().equalsIgnoreCase("false")) {
+                        if (luckyBlock.hasDropOption("ClearInventory") && luckyBlock.getDropOption("ClearInventory").getValues()[0].toString().equalsIgnoreCase("false")) {
                             breakBlocks = false;
                         }
 
-                        if (lb.hasDropOption("Ticks")) {
-                            times = Integer.parseInt(lb.getDropOption("Ticks").getValues()[0].toString());
+                        if (luckyBlock.hasDropOption("Ticks")) {
+                            times = Integer.parseInt(luckyBlock.getDropOption("Ticks").getValues()[0].toString());
                             if (times > 1024) {
                                 times = 1024;
                             }
@@ -178,7 +178,7 @@ public class DropEvents extends ColorsClass {
                         final Chest c = (Chest) block.getState();
                         ITask task = new ITask();
                         boolean finalBreakBlocks = breakBlocks;
-                        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+                        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
                             public void run() {
                                 if (finalBreakBlocks) {
                                     c.getBlockInventory().clear();
@@ -191,16 +191,16 @@ public class DropEvents extends ColorsClass {
                         path = "FallingBlocks";
                         path1 = null;
                         double height = 10.0D;
-                        if (lb.hasDropOption("Path")) {
-                            path = lb.getDropOption("Path").getValues()[0].toString();
+                        if (luckyBlock.hasDropOption("Path")) {
+                            path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                         }
 
-                        if (lb.hasDropOption("Path1")) {
-                            path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                        if (luckyBlock.hasDropOption("Path1")) {
+                            path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                         }
 
-                        if (lb.hasDropOption("Height")) {
-                            height = Double.parseDouble(lb.getDropOption("Height").getValues()[0].toString());
+                        if (luckyBlock.hasDropOption("Height")) {
+                            height = Double.parseDouble(luckyBlock.getDropOption("Height").getValues()[0].toString());
                         }
 
                         if (path1 == null) {
@@ -211,12 +211,12 @@ public class DropEvents extends ColorsClass {
                     } else if (drop == LBDrop.ENTITY) {
                         path = "Entities";
                         path1 = null;
-                        if (lb.hasDropOption("Path")) {
-                            path = lb.getDropOption("Path").getValues()[0].toString();
+                        if (luckyBlock.hasDropOption("Path")) {
+                            path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                         }
 
-                        if (lb.hasDropOption("Path1")) {
-                            path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                        if (luckyBlock.hasDropOption("Path1")) {
+                            path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                         }
 
                         if (path1 == null) {
@@ -233,8 +233,8 @@ public class DropEvents extends ColorsClass {
                         block.getRelative(BlockFace.NORTH).setType(Material.LAVA);
                     } else if (drop == LBDrop.VILLAGER) {
                         times = 4;
-                        if (lb.hasDropOption("Seconds")) {
-                            fuse = Integer.parseInt(lb.getDropOption("Seconds").getValues()[0].toString());
+                        if (luckyBlock.hasDropOption("Seconds")) {
+                            fuse = Integer.parseInt(luckyBlock.getDropOption("Seconds").getValues()[0].toString());
                             if (fuse > 0 && fuse < 1000) {
                                 times = fuse;
                             }
@@ -251,8 +251,8 @@ public class DropEvents extends ColorsClass {
                             ItemStack tpotion = new ItemStack(Material.SPLASH_POTION);
                             PotionMeta tpotionM = (PotionMeta) tpotion.getItemMeta();
                             tpotionM.setBasePotionData(new PotionData(PotionType.AWKWARD));
-                            if (lb.getDropOption("Effects") != null) {
-                                obj = lb.getDropOption("Effects").getValues();
+                            if (luckyBlock.getDropOption("Effects") != null) {
+                                obj = luckyBlock.getDropOption("Effects").getValues();
                                 Object[] var14 = obj;
                                 rp = obj.length;
 
@@ -287,49 +287,49 @@ public class DropEvents extends ColorsClass {
                         } else if (drop == LBDrop.PRIMED_TNT) {
                             float yield = 3.0F;
                             fuse = 50;
-                            if (lb.hasDropOption("TntPower")) {
-                                yield = Float.parseFloat(lb.getDropOption("TntPower").getValues()[0].toString());
+                            if (luckyBlock.hasDropOption("TntPower")) {
+                                yield = Float.parseFloat(luckyBlock.getDropOption("TntPower").getValues()[0].toString());
                             }
 
-                            if (lb.hasDropOption("Fuse")) {
-                                fuse = Integer.parseInt(lb.getDropOption("Fuse").getValues()[0].toString());
+                            if (luckyBlock.hasDropOption("Fuse")) {
+                                fuse = Integer.parseInt(luckyBlock.getDropOption("Fuse").getValues()[0].toString());
                             }
 
                             TNTPrimed tnt = (TNTPrimed) block.getWorld().spawnEntity(bloc.add(0.0D, 20.0D, 0.0D), EntityType.PRIMED_TNT);
                             tnt.setYield(yield);
                             tnt.setFireTicks(2000);
                             tnt.setFuseTicks(fuse);
-                            breakBlocks = LuckyBlock.instance.config.getBoolean("Allow.ExplosionGrief");
+                            breakBlocks = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
                             if (!breakBlocks) {
-                                tnt.setMetadata("tnt", new FixedMetadataValue(LuckyBlock.instance, "true"));
+                                tnt.setMetadata("tnt", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
                             }
                         } else if (drop == LBDrop.LIGHTNING) {
                             if (player != null) {
                                 times = 10;
-                                if (lb.hasDropOption("Times")) {
-                                    times = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                if (luckyBlock.hasDropOption("Times")) {
+                                    times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                 }
 
                                 HTasks.LightningR(player, block, times);
                             }
                         } else if (drop == LBDrop.FAKE_ITEM) {
-                            if (lb.hasDropOption("ItemMaterial")) {
-                                Material mat = Material.getMaterial(lb.getDropOption("ItemMaterial").getValues()[0].toString());
+                            if (luckyBlock.hasDropOption("ItemMaterial")) {
+                                Material mat = Material.getMaterial(luckyBlock.getDropOption("ItemMaterial").getValues()[0].toString());
                                 fuse = 1;
                                 short data = 0;
-                                if (lb.hasDropOption("ItemAmount")) {
-                                    fuse = Integer.parseInt(lb.getDropOption("ItemAmount").getValues()[0].toString());
+                                if (luckyBlock.hasDropOption("ItemAmount")) {
+                                    fuse = Integer.parseInt(luckyBlock.getDropOption("ItemAmount").getValues()[0].toString());
                                 }
 
-                                if (lb.hasDropOption("ItemData")) {
-                                    data = Short.parseShort(lb.getDropOption("ItemData").getValues()[0].toString());
+                                if (luckyBlock.hasDropOption("ItemData")) {
+                                    data = Short.parseShort(luckyBlock.getDropOption("ItemData").getValues()[0].toString());
                                 }
 
                                 Item item = block.getWorld().dropItem(block.getLocation(), new ItemStack(mat, fuse, data));
                                 item.setPickupDelay(32000);
                                 counter = 85;
-                                if (lb.hasDropOption("Ticks")) {
-                                    counter = Integer.parseInt(lb.getDropOption("Ticks").getValues()[0].toString());
+                                if (luckyBlock.hasDropOption("Ticks")) {
+                                    counter = Integer.parseInt(luckyBlock.getDropOption("Ticks").getValues()[0].toString());
                                 }
 
                                 if (counter > 1024) {
@@ -350,16 +350,16 @@ public class DropEvents extends ColorsClass {
                             fwm.setPower(rp);
                             fwork.setFireworkMeta(fwm);
                             final SchedulerTask task = new SchedulerTask();
-                            task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+                            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                                 public void run() {
-                                    int trap = LuckyBlock.randoms.nextInt(2);
+                                    int trap = LuckyBlockPlugin.randoms.nextInt(2);
                                     if (trap > 0) {
                                         TNTPrimed t = (TNTPrimed) fwork.getWorld().spawnEntity(fwork.getLocation(), EntityType.PRIMED_TNT);
 
                                         try {
-                                            boolean breakBlocks = LuckyBlock.instance.config.getBoolean("Allow.ExplosionGrief");
+                                            boolean breakBlocks = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
                                             if (!breakBlocks) {
-                                                t.setMetadata("tnt", new FixedMetadataValue(LuckyBlock.instance, "true"));
+                                                t.setMetadata("tnt", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
                                             }
                                         } catch (Exception var4) {
                                             var4.printStackTrace();
@@ -382,12 +382,12 @@ public class DropEvents extends ColorsClass {
                             if (drop == LBDrop.DROPPED_ITEMS) {
                                 path = "DroppedItems";
                                 path1 = null;
-                                if (lb.hasDropOption("Path")) {
-                                    path = lb.getDropOption("Path").getValues()[0].toString();
+                                if (luckyBlock.hasDropOption("Path")) {
+                                    path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                                 }
 
-                                if (lb.hasDropOption("Path1")) {
-                                    path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                                if (luckyBlock.hasDropOption("Path1")) {
+                                    path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                                 }
 
                                 items = null;
@@ -397,8 +397,8 @@ public class DropEvents extends ColorsClass {
                                     items = com.mcgamer199.luckyblock.tags.ItemStackTags.getItems(file.getConfigurationSection(path).getConfigurationSection(path1));
                                 }
 
-                                if (lb.hasDropOption("Effects") && lb.getDropOption("Effects").getValues()[0].toString().equalsIgnoreCase("true")) {
-                                    HTasks.d_Item(items, bloc, lb);
+                                if (luckyBlock.hasDropOption("Effects") && luckyBlock.getDropOption("Effects").getValues()[0].toString().equalsIgnoreCase("true")) {
+                                    HTasks.d_Item(items, bloc, luckyBlock);
                                 } else {
                                     var46 = items;
                                     rp = items.length;
@@ -407,7 +407,7 @@ public class DropEvents extends ColorsClass {
                                         i = var46[counter];
                                         if (i != null) {
                                             Item droppedItem = block.getWorld().dropItem(bloc, i);
-                                            if (lb.hasDropOption("ShowItemName") && lb.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && i.hasItemMeta() && i.getItemMeta().hasDisplayName()) {
+                                            if (luckyBlock.hasDropOption("ShowItemName") && luckyBlock.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && i.hasItemMeta() && i.getItemMeta().hasDisplayName()) {
                                                 droppedItem.setCustomName(i.getItemMeta().getDisplayName());
                                                 droppedItem.setCustomNameVisible(true);
                                             }
@@ -418,8 +418,8 @@ public class DropEvents extends ColorsClass {
                                 if (player != null) {
                                     Location loc = player.getLocation();
                                     fuse = 10;
-                                    if (lb.hasDropOption("Duration")) {
-                                        fuse = Integer.parseInt(lb.getDropOption("Duration").getValues()[0].toString());
+                                    if (luckyBlock.hasDropOption("Duration")) {
+                                        fuse = Integer.parseInt(luckyBlock.getDropOption("Duration").getValues()[0].toString());
                                     }
 
                                     HTasks.STUCK(player, loc, fuse);
@@ -427,9 +427,9 @@ public class DropEvents extends ColorsClass {
                             } else if (drop == LBDrop.DAMAGE) {
                                 if (player != null) {
                                     double damage = 2.5D;
-                                    if (lb.hasDropOption("Value") && lb.getDropOption("Value").getValues()[0] != null) {
+                                    if (luckyBlock.hasDropOption("Value") && luckyBlock.getDropOption("Value").getValues()[0] != null) {
                                         try {
-                                            damage = Integer.parseInt(lb.getDropOption("Value").getValues()[0].toString());
+                                            damage = Integer.parseInt(luckyBlock.getDropOption("Value").getValues()[0].toString());
                                         } catch (Exception var22) {
                                         }
                                     }
@@ -438,19 +438,19 @@ public class DropEvents extends ColorsClass {
                                 }
                             } else if (drop == LBDrop.TOWER) {
                                 path = "a";
-                                if (lb.hasDropOption("Type")) {
-                                    path = lb.getDropOption("Type").getValues()[0].toString();
+                                if (luckyBlock.hasDropOption("Type")) {
+                                    path = luckyBlock.getDropOption("Type").getValues()[0].toString();
                                 }
 
-                                HTasks.Tower(block, LuckyBlock.randoms.nextInt(10) + 1, path);
+                                HTasks.Tower(block, LuckyBlockPlugin.randoms.nextInt(10) + 1, path);
                             } else {
                                 SchedulerTask task;
                                 if (drop == LBDrop.F_PIGS) {
-                                    for (times = LuckyBlock.randoms.nextInt(5) + 4; times > 0; --times) {
+                                    for (times = LuckyBlockPlugin.randoms.nextInt(5) + 4; times > 0; --times) {
                                         final Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation().add(0.0D, 0.0D, 0.0D), EntityType.BAT);
                                         bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
                                         final Pig pig = (Pig) block.getWorld().spawnEntity(block.getLocation(), EntityType.PIG);
-                                        if (LuckyBlock.randoms.nextInt(2) + 1 == 1) {
+                                        if (LuckyBlockPlugin.randoms.nextInt(2) + 1 == 1) {
                                             pig.setCustomName(yellow + "Lucky Pig " + green + "+1 Health");
                                         } else {
                                             pig.setCustomName(yellow + "Lucky Pig " + green + "+2 Health");
@@ -458,10 +458,10 @@ public class DropEvents extends ColorsClass {
 
                                         pig.setCustomNameVisible(true);
                                         bat.setPassenger(pig);
-                                        bat.setMetadata("luckybat", new FixedMetadataValue(LuckyBlock.instance, "true"));
+                                        bat.setMetadata("luckybat", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
                                         task = new SchedulerTask();
                                         SchedulerTask finalTask = task;
-                                        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+                                        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
                                             public void run() {
                                                 if (!pig.isDead() && !bat.isDead()) {
                                                     pig.getWorld().spawnParticle(Particle.REDSTONE, pig.getLocation(), 100, 0.3D, 0.3D, 0.3D, 1.0D);
@@ -489,11 +489,11 @@ public class DropEvents extends ColorsClass {
                                     FallingBlock fb;
                                     if (drop == LBDrop.METEORS) {
                                         for (times = 8; times > 0; --times) {
-                                            fb = block.getWorld().spawnFallingBlock(block.getLocation().add(LuckyBlock.randoms.nextInt(10), 35.0D, LuckyBlock.randoms.nextInt(10)), Material.STONE, (byte) 0);
+                                            fb = block.getWorld().spawnFallingBlock(block.getLocation().add(LuckyBlockPlugin.randoms.nextInt(10), 35.0D, LuckyBlockPlugin.randoms.nextInt(10)), Material.STONE, (byte) 0);
                                             fb.setVelocity(fb.getVelocity().multiply(2));
                                             float ep = 11.0F;
-                                            if (lb.hasDropOption("ExplosionPower")) {
-                                                ep = Float.parseFloat(lb.getDropOption("ExplosionPower").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("ExplosionPower")) {
+                                                ep = Float.parseFloat(luckyBlock.getDropOption("ExplosionPower").getValues()[0].toString());
                                             }
 
                                             HTasks.Meteor(fb, ep);
@@ -501,14 +501,14 @@ public class DropEvents extends ColorsClass {
                                     } else if (drop == LBDrop.F_LB) {
                                         final Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation(), EntityType.BAT);
                                         bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
-                                        fb = bat.getWorld().spawnFallingBlock(bat.getLocation().add(0.0D, 5.0D, 0.0D), lb.getType().getBlockType(), (byte) lb.getType().getData());
+                                        fb = bat.getWorld().spawnFallingBlock(bat.getLocation().add(0.0D, 5.0D, 0.0D), luckyBlock.getType().getBlockType(), (byte) luckyBlock.getType().getData());
                                         bat.setPassenger(fb);
-                                        bat.setMetadata("flyinglb", new FixedMetadataValue(LuckyBlock.instance, "true"));
+                                        bat.setMetadata("flyinglb", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
                                         fb.setDropItem(false);
                                         task = new SchedulerTask();
-                                        final LBType t = lb.getType();
+                                        final LBType t = luckyBlock.getType();
                                         SchedulerTask finalTask1 = task;
-                                        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+                                        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
                                             public void run() {
                                                 ItemStack lucky;
                                                 if (bat.isValid()) {
@@ -530,14 +530,14 @@ public class DropEvents extends ColorsClass {
                                         com.mcgamer199.luckyblock.customentity.EntitySoldier soldier = new com.mcgamer199.luckyblock.customentity.EntitySoldier();
                                         soldier.spawn(bloc);
                                     } else if (drop == LBDrop.LB_ITEM) {
-                                        block.getWorld().dropItem(bloc, lb.getType().toItemStack(LBType.getRandomP(-10, 10)));
+                                        block.getWorld().dropItem(bloc, luckyBlock.getType().toItemStack(LBType.getRandomP(-10, 10)));
                                     } else if (drop == LBDrop.BEDROCK) {
                                         HTasks.Bedrock(block);
                                     } else if (drop == LBDrop.JAIL) {
                                         times = 70;
                                         if (player != null) {
-                                            if (lb.hasDropOption("Ticks")) {
-                                                times = Integer.parseInt(lb.getDropOption("Ticks").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("Ticks")) {
+                                                times = Integer.parseInt(luckyBlock.getDropOption("Ticks").getValues()[0].toString());
                                                 if (times < 0) {
                                                     times = 0;
                                                 }
@@ -550,28 +550,28 @@ public class DropEvents extends ColorsClass {
                                             HTasks.Trap(player, times);
                                         }
                                     } else if (drop == LBDrop.TREE) {
-                                        if (lb.getDropOption("TreeType") != null) {
-                                            TreeType type = TreeType.valueOf(lb.getDropOption("TreeType").getValues()[0].toString().toUpperCase());
+                                        if (luckyBlock.getDropOption("TreeType") != null) {
+                                            TreeType type = TreeType.valueOf(luckyBlock.getDropOption("TreeType").getValues()[0].toString().toUpperCase());
                                             HTasks.Tree(block, type);
                                         }
                                     } else if (drop == LBDrop.WOLVES_OCELOTS) {
-                                        times = LuckyBlock.randoms.nextInt(2) + 1;
+                                        times = LuckyBlockPlugin.randoms.nextInt(2) + 1;
                                         if (times == 1) {
-                                            for (fuse = LuckyBlock.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
+                                            for (fuse = LuckyBlockPlugin.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
                                                 Wolf wolf = (Wolf) block.getWorld().spawnEntity(bloc, EntityType.WOLF);
                                                 wolf.setTamed(true);
                                                 wolf.setOwner(player);
                                                 wolf.setMaxHealth(30.0D);
                                                 wolf.setHealth(30.0D);
                                                 wolf.setSitting(true);
-                                                wolf.setCollarColor(DyeColor.getByDyeData((byte) LuckyBlock.randoms.nextInt(16)));
+                                                wolf.setCollarColor(DyeColor.getByDyeData((byte) LuckyBlockPlugin.randoms.nextInt(16)));
                                                 wolf.setCustomName("" + yellow + bold + "Wolf " + green + wolf.getHealth() + white + "/" + green + wolf.getMaxHealth());
                                                 wolf.setCustomNameVisible(true);
                                             }
                                         } else {
-                                            for (fuse = LuckyBlock.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
+                                            for (fuse = LuckyBlockPlugin.randoms.nextInt(5) + 7; fuse > 0; --fuse) {
                                                 Ocelot ocelot = (Ocelot) block.getWorld().spawnEntity(bloc, EntityType.OCELOT);
-                                                ocelot.setCatType(org.bukkit.entity.Ocelot.Type.getType(LuckyBlock.randoms.nextInt(4)));
+                                                ocelot.setCatType(org.bukkit.entity.Ocelot.Type.getType(LuckyBlockPlugin.randoms.nextInt(4)));
                                                 ocelot.setSitting(true);
                                                 ocelot.setOwner(player);
                                                 ocelot.setTamed(true);
@@ -599,8 +599,8 @@ public class DropEvents extends ColorsClass {
 
                                         block.setType(Material.SIGN_POST);
                                         Sign sign = (Sign) block.getState();
-                                        if (lb.hasDropOption("Facing")) {
-                                            path1 = lb.getDropOption("Facing").getValues()[0].toString();
+                                        if (luckyBlock.hasDropOption("Facing")) {
+                                            path1 = luckyBlock.getDropOption("Facing").getValues()[0].toString();
                                             org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
                                             if (path1.equalsIgnoreCase("PLAYER")) {
                                                 if (player != null) {
@@ -611,8 +611,8 @@ public class DropEvents extends ColorsClass {
                                             }
                                         }
 
-                                        if (lb.hasDropOption("Texts")) {
-                                            Object[] text = lb.getDropOption("Texts").getValues();
+                                        if (luckyBlock.hasDropOption("Texts")) {
+                                            Object[] text = luckyBlock.getDropOption("Texts").getValues();
 
                                             for (randomP = 0; randomP < text.length; ++randomP) {
                                                 if (text[randomP] != null) {
@@ -625,8 +625,8 @@ public class DropEvents extends ColorsClass {
                                     } else if (drop == LBDrop.REPAIR) {
                                         if (player != null) {
                                             send_no(player, "drops.repair.1");
-                                            if (lb.hasDropOption("RepairType")) {
-                                                path = lb.getDropOption("RepairType").getValues()[0].toString();
+                                            if (luckyBlock.hasDropOption("RepairType")) {
+                                                path = luckyBlock.getDropOption("RepairType").getValues()[0].toString();
                                                 fuse = 0;
                                                 ItemStack[] var43;
                                                 ItemStack item;
@@ -695,10 +695,10 @@ public class DropEvents extends ColorsClass {
                                                 }
 
                                                 ItemMeta im = player.getInventory().getItemInMainHand().getItemMeta();
-                                                if (lb.hasDropOption("Enchants") && lb.hasDropOption("Levels")) {
-                                                    fuse = random.nextInt(lb.getDropOption("Enchants").getValues().length);
-                                                    s = lb.getDropOption("Enchants").getValues()[fuse].toString();
-                                                    counter = Integer.parseInt(lb.getDropOption("Levels").getValues()[fuse].toString());
+                                                if (luckyBlock.hasDropOption("Enchants") && luckyBlock.hasDropOption("Levels")) {
+                                                    fuse = random.nextInt(luckyBlock.getDropOption("Enchants").getValues().length);
+                                                    s = luckyBlock.getDropOption("Enchants").getValues()[fuse].toString();
+                                                    counter = Integer.parseInt(luckyBlock.getDropOption("Levels").getValues()[fuse].toString());
                                                     im.addEnchant(Enchantment.getByName(s.toUpperCase()), counter, true);
                                                     player.getInventory().getItemInMainHand().setItemMeta(im);
                                                     send_no(player, "drops.enchant_item.success");
@@ -711,12 +711,12 @@ public class DropEvents extends ColorsClass {
                                         if (player != null) {
                                             path = "AddedItems";
                                             path1 = null;
-                                            if (lb.hasDropOption("Path")) {
-                                                path = lb.getDropOption("Path").getValues()[0].toString();
+                                            if (luckyBlock.hasDropOption("Path")) {
+                                                path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                                             }
 
-                                            if (lb.hasDropOption("Path1")) {
-                                                path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                                            if (luckyBlock.hasDropOption("Path1")) {
+                                                path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                                             }
 
                                             if (path1 != null) {
@@ -737,8 +737,8 @@ public class DropEvents extends ColorsClass {
                                         }
                                     } else if (drop == LBDrop.XP) {
                                         ExperienceOrb exp = (ExperienceOrb) block.getWorld().spawnEntity(bloc, EntityType.EXPERIENCE_ORB);
-                                        if (lb.hasDropOption("XPAmount")) {
-                                            fuse = Integer.parseInt(lb.getDropOption("XPAmount").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("XPAmount")) {
+                                            fuse = Integer.parseInt(luckyBlock.getDropOption("XPAmount").getValues()[0].toString());
                                             exp.setExperience(fuse);
                                         }
                                     } else if (drop == LBDrop.POISON_ENTITIES) {
@@ -770,13 +770,13 @@ public class DropEvents extends ColorsClass {
                                         }
                                     } else if (drop == LBDrop.CUSTOM_STRUCTURE) {
                                         path = "Structures";
-                                        if (lb.hasDropOption("Path")) {
-                                            path = lb.getDropOption("Path").getValues()[0].toString();
+                                        if (luckyBlock.hasDropOption("Path")) {
+                                            path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                                         }
 
                                         s = null;
-                                        if (lb.hasDropOption("Path1")) {
-                                            path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                                        if (luckyBlock.hasDropOption("Path1")) {
+                                            path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                                         } else {
                                             path1 = com.mcgamer199.luckyblock.tags.BlockTags.getRandomL(file, path);
                                         }
@@ -796,8 +796,8 @@ public class DropEvents extends ColorsClass {
                                             com.mcgamer199.luckyblock.tags.BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), bloc);
                                         }
                                     } else if (drop == LBDrop.RUN_COMMAND) {
-                                        if (lb.getDropOption("Command") != null) {
-                                            path = (String) lb.getDropOption("Command").getValues()[0];
+                                        if (luckyBlock.getDropOption("Command") != null) {
+                                            path = (String) luckyBlock.getDropOption("Command").getValues()[0];
                                             if (path != null) {
                                                 if (player != null) {
                                                     path = ChatColor.translateAlternateColorCodes('&', path);
@@ -808,27 +808,27 @@ public class DropEvents extends ColorsClass {
                                             }
                                         }
                                     } else if (drop == LBDrop.CLEAR_EFFECTS) {
-                                        if (player != null && lb.hasDropOption("Effects")) {
-                                            Object[] effects = lb.getDropOption("Effects").getValues();
+                                        if (player != null && luckyBlock.hasDropOption("Effects")) {
+                                            Object[] effects = luckyBlock.getDropOption("Effects").getValues();
 
                                             for (fuse = 0; fuse < effects.length; ++fuse) {
                                                 player.removePotionEffect(PotionEffectType.getByName(effects[fuse].toString()));
                                             }
                                         }
                                     } else if (drop == LBDrop.TELEPORT) {
-                                        if (player != null && lb.getDropOption("Height") != null) {
-                                            times = Integer.parseInt(lb.getDropOption("Height").getValues()[0].toString());
+                                        if (player != null && luckyBlock.getDropOption("Height") != null) {
+                                            times = Integer.parseInt(luckyBlock.getDropOption("Height").getValues()[0].toString());
                                             player.teleport(player.getLocation().add(0.0D, times, 0.0D));
                                         }
                                     } else if (drop == LBDrop.RANDOM_ITEM) {
                                         path = "RandomItems";
                                         path1 = null;
-                                        if (lb.hasDropOption("Path")) {
-                                            path = lb.getDropOption("Path").getValues()[0].toString();
+                                        if (luckyBlock.hasDropOption("Path")) {
+                                            path = luckyBlock.getDropOption("Path").getValues()[0].toString();
                                         }
 
-                                        if (lb.hasDropOption("Path1")) {
-                                            path1 = lb.getDropOption("Path1").getValues()[0].toString();
+                                        if (luckyBlock.hasDropOption("Path1")) {
+                                            path1 = luckyBlock.getDropOption("Path1").getValues()[0].toString();
                                         }
 
                                         if (path1 != null) {
@@ -852,7 +852,7 @@ public class DropEvents extends ColorsClass {
                                         v.setCustomName("" + yellow + bold + "Lucky Villager");
                                         v.setCustomNameVisible(true);
                                         List<MerchantRecipe> recipes = new ArrayList();
-                                        randomP = lb.getType().getRandomP();
+                                        randomP = luckyBlock.getType().getRandomP();
                                         i = ItemMaker.createItem(Material.POTION, 1, random.nextInt(3) + 1, "" + yellow + bold + "Lucky Potion");
                                         PotionMeta iM = (PotionMeta) i.getItemMeta();
                                         PotionData data = new PotionData(PotionType.FIRE_RESISTANCE);
@@ -864,7 +864,7 @@ public class DropEvents extends ColorsClass {
                                         iM.addCustomEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 1200, 2), true);
                                         iM.addCustomEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1200, 2), true);
                                         i.setItemMeta(iM);
-                                        MerchantRecipe recipe1 = new MerchantRecipe(lb.getType().toItemStack(randomP), 30);
+                                        MerchantRecipe recipe1 = new MerchantRecipe(luckyBlock.getType().toItemStack(randomP), 30);
                                         MerchantRecipe recipe2 = new MerchantRecipe(i, 30);
                                         recipe1.addIngredient(new ItemStack(Material.DIAMOND, randomP / 10 + random.nextInt(25) + 16));
                                         recipe2.addIngredient(new ItemStack(Material.EMERALD, random.nextInt(32) + 16));
@@ -874,12 +874,12 @@ public class DropEvents extends ColorsClass {
                                     } else if (drop == LBDrop.TNT_RAIN) {
                                         times = 10;
                                         fuse = 60;
-                                        if (lb.hasDropOption("Times")) {
-                                            times = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("Times")) {
+                                            times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                         }
 
-                                        if (lb.hasDropOption("Fuse")) {
-                                            fuse = Integer.parseInt(lb.getDropOption("Fuse").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("Fuse")) {
+                                            fuse = Integer.parseInt(luckyBlock.getDropOption("Fuse").getValues()[0].toString());
                                         }
 
                                         HTasks.rain(bloc, times, fuse);
@@ -899,12 +899,12 @@ public class DropEvents extends ColorsClass {
                                             times = 10;
                                             mats = new Material[64];
                                             Short[] itemsData = new Short[16];
-                                            if (lb.hasDropOption("Times")) {
-                                                times = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("Times")) {
+                                                times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                             }
 
-                                            if (lb.hasDropOption("ItemMaterials")) {
-                                                Object[] itemMaterials = lb.getDropOption("ItemMaterials").getValues();
+                                            if (luckyBlock.hasDropOption("ItemMaterials")) {
+                                                Object[] itemMaterials = luckyBlock.getDropOption("ItemMaterials").getValues();
                                                 mats = new Material[itemMaterials.length];
 
                                                 for (counter = 0; counter < itemMaterials.length; ++counter) {
@@ -914,20 +914,20 @@ public class DropEvents extends ColorsClass {
                                                 }
                                             }
 
-                                            if (lb.hasDropOption("ItemsData")) {
-                                                itemsData = (Short[]) lb.getDropOption("ItemsData").getValues();
+                                            if (luckyBlock.hasDropOption("ItemsData")) {
+                                                itemsData = (Short[]) luckyBlock.getDropOption("ItemsData").getValues();
                                             }
 
                                             HTasks.itemRain(bloc, times, mats, itemsData);
                                         } else if (drop == LBDrop.BLOCK_RAIN) {
                                             times = 10;
                                             mats = new Material[64];
-                                            if (lb.hasDropOption("Times")) {
-                                                times = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("Times")) {
+                                                times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                             }
 
-                                            if (lb.hasDropOption("BlockMaterials")) {
-                                                obj = lb.getDropOption("BlockMaterials").getValues();
+                                            if (luckyBlock.hasDropOption("BlockMaterials")) {
+                                                obj = luckyBlock.getDropOption("BlockMaterials").getValues();
                                                 mats = new Material[obj.length];
 
                                                 for (counter = 0; counter < obj.length; ++counter) {
@@ -942,16 +942,16 @@ public class DropEvents extends ColorsClass {
                                             times = 10;
                                             boolean critical = true;
                                             boolean bounce = true;
-                                            if (lb.hasDropOption("Times")) {
-                                                times = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("Times")) {
+                                                times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                             }
 
-                                            if (lb.hasDropOption("Critical")) {
-                                                critical = Boolean.parseBoolean(lb.getDropOption("Critical").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("Critical")) {
+                                                critical = Boolean.parseBoolean(luckyBlock.getDropOption("Critical").getValues()[0].toString());
                                             }
 
-                                            if (lb.hasDropOption("Bounce")) {
-                                                bounce = Boolean.parseBoolean(lb.getDropOption("Bounce").getValues()[0].toString());
+                                            if (luckyBlock.hasDropOption("Bounce")) {
+                                                bounce = Boolean.parseBoolean(luckyBlock.getDropOption("Bounce").getValues()[0].toString());
                                             }
 
                                             HTasks.c(bloc.add(0.5D, 0.0D, 0.5D), times, critical, bounce);
@@ -961,7 +961,7 @@ public class DropEvents extends ColorsClass {
                                             com.mcgamer199.luckyblock.customentity.EntityTalkingZombie e = new com.mcgamer199.luckyblock.customentity.EntityTalkingZombie();
                                             e.spawn(bloc);
                                         } else {
-                                            DropEvents1.run(block, lb, player, drop, customDrop, first);
+                                            DropEvents1.run(block, luckyBlock, player, drop, customDrop, first);
                                         }
                                     }
                                 }
@@ -971,7 +971,7 @@ public class DropEvents extends ColorsClass {
                 }
             }
         } else {
-            lb.customDrop.function(lb, player);
+            luckyBlock.customDrop.function(luckyBlock, player);
         }
 
     }

@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customdrop;
 
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import org.bukkit.entity.Player;
 
 public interface CustomDrop {
@@ -15,5 +15,5 @@ public interface CustomDrop {
 
     boolean isEnabledByCommands();
 
-    void function(LB var1, Player var2);
+    void function(LuckyBlock var1, Player var2);
 }

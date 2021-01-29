@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class LBCSaveItem extends LBCommand {
-    public static File fileF = new File(LuckyBlock.d() + "saved/items.yml");
+    public static File fileF = new File(LuckyBlockPlugin.d() + "saved/items.yml");
     public static FileConfiguration file;
 
     static {

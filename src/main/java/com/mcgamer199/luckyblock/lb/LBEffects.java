@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.lb;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,18 +17,18 @@ public class LBEffects {
         type.save();
     }
 
-    protected static void testEffects(final LB lb) {
+    protected static void testEffects(final LuckyBlock luckyBlock) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
-                final Block block = lb.getBlock();
-                LBType type = lb.getType();
+                final Block block = luckyBlock.getBlock();
+                LBType type = luckyBlock.getType();
                 boolean x = false;
                 if (type.getBlockType() != block.getType()) {
                     x = true;
                 }
 
-                if (!lb.isValid()) {
+                if (!luckyBlock.isValid()) {
                     x = true;
                 }
 
@@ -52,13 +52,13 @@ public class LBEffects {
                         } catch (Exception var18) {
                         }
                     }
-                } else if (!lb.isFreezed()) {
-                    if (LB.lbs.contains(lb)) {
+                } else if (!luckyBlock.isFreezed()) {
+                    if (LuckyBlock.luckyBlocks.contains(luckyBlock)) {
                         final ITask tsk = new ITask();
-                        tsk.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+                        tsk.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
                             public void run() {
-                                if (!lb.isValid() || block.getType() != lb.getType().type) {
-                                    lb.remove();
+                                if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {
+                                    luckyBlock.remove();
                                     tsk.run();
                                     task.run();
                                 }
@@ -71,6 +71,6 @@ public class LBEffects {
                 }
 
             }
-        }, lb.a, lb.a));
+        }, luckyBlock.a, luckyBlock.a));
     }
 }

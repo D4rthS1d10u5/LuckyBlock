@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,26 +15,26 @@ public class LBCLbs extends LBCommand {
     public LBCLbs() {
     }
 
-    static void sendLB(CommandSender sender, LB lb) {
+    static void sendLB(CommandSender sender, LuckyBlock luckyBlock) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             ChatColor color = ChatColor.GOLD;
             String dr = ChatColor.RED + "null";
-            if (lb.hasDropOption("Title")) {
-                dr = c(lb.getDropOption("Title").getValues()[0].toString());
+            if (luckyBlock.hasDropOption("Title")) {
+                dr = c(luckyBlock.getDropOption("Title").getValues()[0].toString());
             }
 
             com.mcgamer199.luckyblock.tellraw.RawText text = new com.mcgamer199.luckyblock.tellraw.RawText("" + color + bold + "LB " + ChatColor.BLUE + "(" + val("command.lbs.data.hover", false) + ")");
-            text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, green + lb.blockToString() + "\n" + aqua + val("command.lbs.data.drop", false) + ": " + lightpurple + dr + "\n" + aqua + val("command.lbs.data.placedby", false) + ": " + blue + lb.getPlacedByClass() + "\n" + aqua + val("command.lbs.data.luck", false) + ": " + gold + lb.getType().getLuckString(lb.getLuck()) + "\n" + aqua + val("command.lbs.data.type", false) + ": " + lb.getType().getName()));
+            text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, green + luckyBlock.blockToString() + "\n" + aqua + val("command.lbs.data.drop", false) + ": " + lightpurple + dr + "\n" + aqua + val("command.lbs.data.placedby", false) + ": " + blue + luckyBlock.getPlacedByClass() + "\n" + aqua + val("command.lbs.data.luck", false) + ": " + gold + luckyBlock.getType().getLuckString(luckyBlock.getLuck()) + "\n" + aqua + val("command.lbs.data.type", false) + ": " + luckyBlock.getType().getName()));
             com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text);
         } else {
             ChatColor color = ChatColor.GOLD;
             String dr = ChatColor.RED + "null";
-            if (lb.hasDropOption("Title")) {
-                dr = c(lb.getDropOption("Title").getValues()[0].toString());
+            if (luckyBlock.hasDropOption("Title")) {
+                dr = c(luckyBlock.getDropOption("Title").getValues()[0].toString());
             }
 
-            sender.sendMessage("" + color + bold + "LB" + aqua + "," + green + lb.blockToString() + aqua + "," + val("command.lbs.data.drop", false) + ":" + lightpurple + dr + aqua + "," + val("command.lbs.data.placedby", false) + ":" + blue + lb.getPlacedByClass() + aqua + "," + val("command.lbs.data.luck", false) + ":" + lb.getType().getLuckString(lb.getLuck()) + aqua + "," + val("command.lbs.data.type", false) + ":" + lb.getType().getName());
+            sender.sendMessage("" + color + bold + "LB" + aqua + "," + green + luckyBlock.blockToString() + aqua + "," + val("command.lbs.data.drop", false) + ":" + lightpurple + dr + aqua + "," + val("command.lbs.data.placedby", false) + ":" + blue + luckyBlock.getPlacedByClass() + aqua + "," + val("command.lbs.data.luck", false) + ":" + luckyBlock.getType().getLuckString(luckyBlock.getLuck()) + aqua + "," + val("command.lbs.data.type", false) + ":" + luckyBlock.getType().getName());
         }
 
     }
@@ -57,25 +57,25 @@ public class LBCLbs extends LBCommand {
             send_invalid_args(sender);
             return false;
         } else {
-            List<LB> lbs = new ArrayList();
+            List<LuckyBlock> luckyBlocks = new ArrayList();
 
             int x;
             for (x = (page - 1) * 10; x < page * 10; ++x) {
-                if (x < LB.lbs.size()) {
-                    lbs.add(LB.lbs.get(x));
+                if (x < LuckyBlock.luckyBlocks.size()) {
+                    luckyBlocks.add(LuckyBlock.luckyBlocks.get(x));
                 }
             }
 
-            if (lbs.size() < 1) {
+            if (luckyBlocks.size() < 1) {
                 send(sender, "command.lbs.no_lb");
                 return false;
             } else {
                 sender.sendMessage(white + val("command.lbs.page", false) + " " + page);
-                sender.sendMessage("Total: " + LB.lbs.size());
+                sender.sendMessage("Total: " + LuckyBlock.luckyBlocks.size());
 
-                for (x = 0; x < lbs.size(); ++x) {
-                    LB lb = lbs.get(x);
-                    sendLB(sender, lb);
+                for (x = 0; x < luckyBlocks.size(); ++x) {
+                    LuckyBlock luckyBlock = luckyBlocks.get(x);
+                    sendLB(sender, luckyBlock);
                 }
 
                 sender.sendMessage(white + "--------------");

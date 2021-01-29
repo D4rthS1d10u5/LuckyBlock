@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
@@ -22,7 +22,7 @@ public class Schematic {
     }
 
     public static void loadArea(World world, File file, Vector origin) {
-        if (LuckyBlock.isWorldEditValid()) {
+        if (LuckyBlockPlugin.isWorldEditValid()) {
             EditSession es = new EditSession(new BukkitWorld(world), 999999999);
             CuboidClipboard cc = null;
 
@@ -35,10 +35,10 @@ public class Schematic {
             try {
                 cc.paste(es, origin, false);
             } catch (MaxChangedBlocksException var6) {
-                LuckyBlock.instance.getLogger().info("Couldn't load schematic " + file.getName() + " !");
+                LuckyBlockPlugin.instance.getLogger().info("Couldn't load schematic " + file.getName() + " !");
             }
         } else {
-            LuckyBlock.instance.getLogger().info("Couldn't load schematic (worldedit is not installed!)");
+            LuckyBlockPlugin.instance.getLogger().info("Couldn't load schematic (worldedit is not installed!)");
         }
 
     }

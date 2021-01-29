@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class LBCPlaceLB extends LBCommand {
     public LBCPlaceLB() {
@@ -100,8 +99,8 @@ public class LBCPlaceLB extends LBCommand {
                     return false;
                 }
 
-                if (LB.getFromBlock(l.getBlock()) == null) {
-                    LB.placeLB(l, type, null, b);
+                if (LuckyBlock.getFromBlock(l.getBlock()) == null) {
+                    LuckyBlock.placeLB(l, type, null, b);
                     sendMessage(sender, "command.placelb.success");
                     return true;
                 }

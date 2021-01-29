@@ -3,7 +3,7 @@
 # Lokha - сделал cooldown на открытие лаки блоков (раз в 2 секунды)
 # Lokha - сделал защиту от дюпа, теперь лишние лаки блоки нельзя будет поставить
 name: LuckyBlock
-main: com.mcgamer199.luckyblock.engine.LuckyBlock
+main: com.mcgamer199.luckyblock.engine.LuckyBlockPlugin
 version: 2.2.5
 
 load: STARTUP

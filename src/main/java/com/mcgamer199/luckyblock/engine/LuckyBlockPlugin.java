@@ -20,7 +20,7 @@ import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.CustomEntityEvents;
 import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
@@ -59,12 +59,13 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class LuckyBlock extends JavaPlugin {
+public class LuckyBlockPlugin extends JavaPlugin {
+
     public static final String pluginname = "LuckyBlock";
     public static final String version = "2.2.5";
     public static final int version_number = 225;
     static final List<String> no_versions = Arrays.asList("2.2.4");
-    public static LuckyBlock instance;
+    public static LuckyBlockPlugin instance;
     public static Random randoms = new Random();
     public static Glow enchantment_glow = new Glow(23);
     public static Lightning enchantment_lightning = new Lightning(25);
@@ -81,7 +82,7 @@ public class LuckyBlock extends JavaPlugin {
     public FileConfiguration config;
     public File folder1;
 
-    public LuckyBlock() {
+    public LuckyBlockPlugin() {
         this.detectorsF = new File(this.getDataFolder() + File.separator + "Data/detectors.yml");
         this.detectors = YamlConfiguration.loadConfiguration(this.detectorsF);
         this.configf = new File(this.getDataFolder() + File.separator + "config.yml");
@@ -256,7 +257,7 @@ public class LuckyBlock extends JavaPlugin {
 
     @Override
     public void reloadConfig() {
-        LB.cache.clear();
+        LuckyBlock.cache.clear();
         super.reloadConfig();
         try {
             LuckyDB.checkSave();
@@ -266,13 +267,13 @@ public class LuckyBlock extends JavaPlugin {
         }
     }
 
-    public void Loops(final LB lb) {
-        final Block block = lb.getBlock();
+    public void Loops(final LuckyBlock luckyBlock) {
+        final Block block = luckyBlock.getBlock();
         final ITask task = new ITask();
         task.setId(ITask.getNewRepeating(this, new Runnable() {
             public void run() {
                 if (block.getRelative(BlockFace.UP).getType() == Material.FIRE) {
-                    if (lb.getType().getProperties().contains(BlockProperty.FIRE_RESISTANCE)) {
+                    if (luckyBlock.getType().getProperties().contains(BlockProperty.FIRE_RESISTANCE)) {
                         block.getRelative(BlockFace.UP).setType(Material.AIR);
                     } else {
                         task.run();

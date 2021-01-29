@@ -104,15 +104,15 @@ public class IObjects {
             objects.add(new com.mcgamer199.luckyblock.command.LBCInfo());
             objects.add(new com.mcgamer199.luckyblock.command.LBCLang());
             objects.add(new com.mcgamer199.luckyblock.command.LBCResourcePack());
-            options.put("rp_enabled", com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getConfig().getBoolean("resourcepack.enabled"));
-            options.put("rp_url", com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getConfig().getString("resourcepack.url"));
-            options.put("lv_spawn", com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getConfig().getBoolean("spawn.lucky_villager"));
-            options.put("actionbar_messages", com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getConfig().getBoolean("ActionbarMessages"));
-            options.put("debug_enabled", com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getConfig().getBoolean("debug"));
+            options.put("rp_enabled", LuckyBlockPlugin.instance.getConfig().getBoolean("resourcepack.enabled"));
+            options.put("rp_url", LuckyBlockPlugin.instance.getConfig().getString("resourcepack.url"));
+            options.put("lv_spawn", LuckyBlockPlugin.instance.getConfig().getBoolean("spawn.lucky_villager"));
+            options.put("actionbar_messages", LuckyBlockPlugin.instance.getConfig().getBoolean("ActionbarMessages"));
+            options.put("debug_enabled", LuckyBlockPlugin.instance.getConfig().getBoolean("debug"));
             objects.add(new com.mcgamer199.luckyblock.command.LBCGenerate());
             objects.add(new com.mcgamer199.luckyblock.command.LBCSaveStructure());
             objects.add(new com.mcgamer199.luckyblock.command.LBCommandDesc());
-            options.put("lct_nameVisible", com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getConfig().getBoolean("show_display_name"));
+            options.put("lct_nameVisible", LuckyBlockPlugin.instance.getConfig().getBoolean("show_display_name"));
             objects.add(new com.mcgamer199.luckyblock.command.LBCBook());
             objects.add(new com.mcgamer199.luckyblock.command.LBCSaveItem());
             objects.add(new LBCRecDeleted());
@@ -126,15 +126,15 @@ public class IObjects {
     public static void load1() {
         if (!loaded1) {
             loaded1 = true;
-            storedFiles.put("witch_structure", new File(com.mcgamer199.luckyblock.engine.LuckyBlock.d() + "data/plugin/str/witch/structure.schematic"));
-            storedFiles.put("witch_chests", new File(com.mcgamer199.luckyblock.engine.LuckyBlock.d() + "data/plugin/str/witch/chests.yml"));
+            storedFiles.put("witch_structure", new File(LuckyBlockPlugin.d() + "data/plugin/str/witch/structure.schematic"));
+            storedFiles.put("witch_chests", new File(LuckyBlockPlugin.d() + "data/plugin/str/witch/chests.yml"));
         } else {
             throw new Error("Why are you calling load method again? :D");
         }
     }
 
     private static boolean loadSounds() {
-        File f = new File(com.mcgamer199.luckyblock.engine.LuckyBlock.d() + "data/sounds/" + com.mcgamer199.luckyblock.engine.LuckyBlock.sounds_file + ".yml");
+        File f = new File(LuckyBlockPlugin.d() + "data/sounds/" + LuckyBlockPlugin.sounds_file + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
         addSound(c, "lct_stop", "core.lucky_crafting_table.stop");
         addSound(c, "lct_run", "core.lucky_crafting_table.run");
@@ -175,7 +175,7 @@ public class IObjects {
 
     private static boolean loadStrings() {
         missing.clear();
-        File file = new File(com.mcgamer199.luckyblock.engine.LuckyBlock.d() + "data/messages/" + com.mcgamer199.luckyblock.engine.LuckyBlock.lang + ".yml");
+        File file = new File(LuckyBlockPlugin.d() + "data/messages/" + LuckyBlockPlugin.lang + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(file);
         fLang = c;
         addString(c, "invalid_command", "command.main.invalid_command");
@@ -418,7 +418,7 @@ public class IObjects {
             return s;
         } else {
             if (log) {
-                com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getLogger().info(key + " is missing! check your language file (" + com.mcgamer199.luckyblock.engine.LuckyBlock.lang + ")");
+                LuckyBlockPlugin.instance.getLogger().info(key + " is missing! check your language file (" + LuckyBlockPlugin.lang + ")");
             }
 
             return "null";
@@ -426,18 +426,18 @@ public class IObjects {
     }
 
     public static boolean changeLanguage() {
-        LanguageChangedEvent la = new LanguageChangedEvent(com.mcgamer199.luckyblock.engine.LuckyBlock.lang);
+        LanguageChangedEvent la = new LanguageChangedEvent(LuckyBlockPlugin.lang);
         Bukkit.getServer().getPluginManager().callEvent(la);
-        com.mcgamer199.luckyblock.engine.LuckyBlock.instance.config.set("lang_file", com.mcgamer199.luckyblock.engine.LuckyBlock.lang);
+        LuckyBlockPlugin.instance.config.set("lang_file", LuckyBlockPlugin.lang);
 
         try {
-            com.mcgamer199.luckyblock.engine.LuckyBlock.instance.config.save(com.mcgamer199.luckyblock.engine.LuckyBlock.instance.configf);
+            LuckyBlockPlugin.instance.config.save(LuckyBlockPlugin.instance.configf);
         } catch (IOException var2) {
             var2.printStackTrace();
         }
 
         MISSING_STRINGS = false;
-        File file = new File(com.mcgamer199.luckyblock.engine.LuckyBlock.d() + "data/messages/" + com.mcgamer199.luckyblock.engine.LuckyBlock.lang + ".yml");
+        File file = new File(LuckyBlockPlugin.d() + "data/messages/" + LuckyBlockPlugin.lang + ".yml");
         if (file.exists()) {
             storedStrings.clear();
             return loadStrings();
@@ -452,7 +452,7 @@ public class IObjects {
 
     public static boolean changeSounds() {
         MISSING_SOUNDS = false;
-        File file = new File(com.mcgamer199.luckyblock.engine.LuckyBlock.d() + "data/sounds/" + com.mcgamer199.luckyblock.engine.LuckyBlock.sounds_file + ".yml");
+        File file = new File(LuckyBlockPlugin.d() + "data/sounds/" + LuckyBlockPlugin.sounds_file + ".yml");
         if (file.exists()) {
             storedSounds.clear();
             return loadSounds();
@@ -514,6 +514,6 @@ public class IObjects {
     }
 
     private static void a(String a) {
-        LuckyBlock.instance.a(a);
+        LuckyBlockPlugin.instance.a(a);
     }
 }

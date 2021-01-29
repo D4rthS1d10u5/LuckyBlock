@@ -2,10 +2,10 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.item.ItemReflection;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -62,9 +62,9 @@ public class DispenserEvents extends ColorsClass implements Listener {
                 event.setCancelled(true);
                 Block b = block.getRelative(getDispenserF(block));
                 if (!b.getType().isSolid()) {
-                    LB.placeLB(b.getLocation(), null, event.getItem(), b);
+                    LuckyBlock.placeLB(b.getLocation(), null, event.getItem(), b);
                     ITask task = new ITask();
-                    task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+                    task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
                         public void run() {
                             DispenserEvents.removeLBItem(event.getItem(), (Dispenser) event.getBlock().getState());
                         }

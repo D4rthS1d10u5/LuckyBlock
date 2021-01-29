@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.customentity.boss;
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -15,7 +15,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
@@ -50,7 +49,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     private static final ItemStack boots1;
 
     static {
-        spellFortune = ItemMaker.addEnchant(ItemMaker.createItem(Material.GHAST_TEAR, 1, 0, "" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune", Arrays.asList("", ChatColor.GREEN + "+1000 luck")), LuckyBlock.enchantment_glow, 1);
+        spellFortune = ItemMaker.addEnchant(ItemMaker.createItem(Material.GHAST_TEAR, 1, 0, "" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune", Arrays.asList("", ChatColor.GREEN + "+1000 luck")), LuckyBlockPlugin.enchantment_glow, 1);
         head1 = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), "c86041e4-5b4e-4e8a-928c-9028b2437de6", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ0NzcyZGM0ZGVmMjIyMTllZTZkODg5Y2NkYzJmOTIzMmVlMjNkMzU2ZGQ5ZTRhZGNlYTVmNzJjYzBjNjg5In19fQ==");
         bow = ItemMaker.addEnchants(new ItemStack(Material.BOW, 1), new int[]{10, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
         sword = ItemMaker.addEnchants(new ItemStack(Material.IRON_SWORD), new int[]{5}, Enchantment.FIRE_ASPECT);
@@ -108,7 +107,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_1(final FallingBlock fb) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!fb.isValid()) {
                     if (EntityKnight.this.angry) {
@@ -276,7 +275,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_boss_bar() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityKnight.this.l.isDead()) {
                     if (EntityKnight.this.bar != null) {
@@ -342,7 +341,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
             }
 
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 private int x = x_1;
 
                 public void run() {
@@ -379,7 +378,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_a(final Projectile p) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (p.isValid() && !p.isOnGround()) {
                     p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getLocation(), 3, 0.1D, 0.1D, 0.1D, 0.0D);
@@ -405,7 +404,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_ambient() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityKnight.this.getEntity() != null && !EntityKnight.this.getEntity().isDead()) {
                     SoundManager.playFixedSound(EntityKnight.this.l.getLocation(), MyTasks.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35);
@@ -419,7 +418,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_angry() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityKnight.this.l != null && EntityKnight.this.l.isValid()) {
                     if (EntityKnight.this.angry) {
@@ -446,7 +445,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
             }
         }, 60L, 60L));
         final ITask task1 = new ITask();
-        task1.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task1.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityKnight.this.l != null && EntityKnight.this.l.isValid()) {
                     if (EntityKnight.this.angry && EntityKnight.this.l.getTarget() != null) {
@@ -464,7 +463,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_zombie(final Zombie zombie) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!zombie.isDead()) {
                     zombie.remove();
@@ -500,7 +499,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     private void func_2() {
         ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 LuckyCraftingTable c = LuckyCraftingTable.getByBlock(EntityKnight.this.l.getLocation().getBlock().getRelative(BlockFace.DOWN));
                 if (c != null) {

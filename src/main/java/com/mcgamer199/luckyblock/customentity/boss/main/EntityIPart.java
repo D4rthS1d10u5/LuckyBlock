@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
@@ -67,7 +67,7 @@ public class EntityIPart extends CustomEntity {
 
     private void run1() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityIPart.this.running && !EntityIPart.this.a.isDead()) {
                     if (EntityIPart.this.amountDegree > 0.0D) {
@@ -94,7 +94,7 @@ public class EntityIPart extends CustomEntity {
 
     private void func_tick1() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityIPart.this.attachedEntity.isDead()) {
                     Location loc = EntityIPart.this.attachedEntity.getLocation();
@@ -147,7 +147,7 @@ public class EntityIPart extends CustomEntity {
         this.t = c.getInt("TickTime");
         this.item = c.getItemStack("Item");
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityIPart.this.attachedEntity = CustomEntity.getByUUID(UUID.fromString(c.getString("attachedEntity"))).getEntity();
                 EntityIPart.this.a = (ArmorStand) EntityIPart.this.entity;

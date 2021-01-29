@@ -1,14 +1,15 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
-import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.DebugData;
@@ -33,12 +34,12 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
     public PlaceLuckyBlock() {
     }
 
-    public static boolean hasOption(PlaceLuckyBlock.LBOption[] options, PlaceLuckyBlock.LBOption option) {
-        PlaceLuckyBlock.LBOption[] var5 = options;
+    public static boolean hasOption(LBOption[] options, LBOption option) {
+        LBOption[] var5 = options;
         int var4 = options.length;
 
         for (int var3 = 0; var3 < var4; ++var3) {
-            PlaceLuckyBlock.LBOption o = var5[var3];
+            LBOption o = var5[var3];
             if (o == option) {
                 return true;
             }
@@ -88,8 +89,8 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
 
     }
 
-    public static LB place(LBType type, Block block, Object placedBy, String drop, int luck, ItemStack item, boolean r, BlockFace face, PlaceLuckyBlock.LBOption... options) {
-        if (!LB.canSaveMore()) {
+    public static LuckyBlock place(LBType type, Block block, Object placedBy, String drop, int luck, ItemStack item, boolean r, BlockFace face, LBOption... options) {
+        if (!LuckyBlock.canSaveMore()) {
             block.setType(Material.AIR);
             return null;
         } else if (type.disabled && placedBy != null && placedBy instanceof Player) {
@@ -112,7 +113,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
             Location location = block.getLocation();
             String[] particleData;
             float pit;
-            if (type.allowplaceparticles && type.placeparticles != null && (options == null || options.length == 0 || !hasOption(options, PlaceLuckyBlock.LBOption.NO_EFFECTS))) {
+            if (type.allowplaceparticles && type.placeparticles != null && (options == null || options.length == 0 || !hasOption(options, LBOption.NO_EFFECTS))) {
                 String particle = type.placeparticles;
                 particleData = particle.split(" ");
                 pit = Float.parseFloat(particleData[1]);
@@ -127,7 +128,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
             }
 
             String[] s;
-            if (type.allowplacesound && type.placesound != null && (options == null || options.length == 0 || !hasOption(options, PlaceLuckyBlock.LBOption.NO_SOUNDS))) {
+            if (type.allowplacesound && type.placesound != null && (options == null || options.length == 0 || !hasOption(options, LBOption.NO_SOUNDS))) {
                 Sound sound = null;
                 float vol = 100.0F;
                 pit = 1.0F;
@@ -157,24 +158,24 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 send((Player) placedBy, "invalid_file");
                 return null;
             } else {
-                LB lb = new LB(type, block, luck, placedBy, true, r);
+                LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, true, r);
                 if (face != null) {
-                    lb.facing = face;
+                    luckyBlock.facing = face;
                 }
 
                 if (drop != null) {
                     particleData = drop.split(":");
                     if (particleData[0].equalsIgnoreCase("LBDrop")) {
                         if (LBDrop.isValid(particleData[1])) {
-                            lb.setDrop(LBDrop.getByName(particleData[1]), true, true);
+                            luckyBlock.setDrop(LBDrop.getByName(particleData[1]), true, true);
                         }
                     } else if (particleData[0].equalsIgnoreCase("CustomDrop") && CustomDropManager.isValid(particleData[1])) {
-                        lb.customDrop = CustomDropManager.getByName(particleData[1]);
-                        lb.refreshCustomDrop();
+                        luckyBlock.customDrop = CustomDropManager.getByName(particleData[1]);
+                        luckyBlock.refreshCustomDrop();
                     }
                 }
 
-                lb.playEffects();
+                luckyBlock.playEffects();
                 String o = null;
                 UUID owner = null;
                 if (item != null && item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() > 0) {
@@ -189,28 +190,28 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 }
 
                 if (type.getProperties().size() > 0 && type.getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
-                    LuckyBlock.instance.Loops(lb);
+                    LuckyBlockPlugin.instance.Loops(luckyBlock);
                 }
 
                 if (o != null) {
                     s = o.split("Protected: ");
                     if (s.length > 1 && s[1].equalsIgnoreCase(green + "true")) {
                         if (placedBy != null && placedBy instanceof Player) {
-                            lb.owner = ((Player) placedBy).getUniqueId();
+                            luckyBlock.owner = ((Player) placedBy).getUniqueId();
                         }
                     } else if (owner != null) {
-                        lb.owner = owner;
+                        luckyBlock.owner = owner;
                     }
                 } else {
-                    lb.owner = owner;
+                    luckyBlock.owner = owner;
                 }
 
-                if (LuckyBlock.isDebugEnabled()) {
-                    Debug("Lucky block placed", new DebugData("Location", locToString(block.getLocation())), new DebugData("LBType", lb.getType().getId() + ", " + ChatColor.stripColor(lb.getType().getName())), new DebugData("Placed By", lb.getPlacedByClass()), new DebugData("Title", lb.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', lb.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", lb.customDrop != null ? lb.customDrop.getName() : lb.getDrop().name()), new DebugData("Luck", String.valueOf(lb.getLuck())), new DebugData("Owner", lb.hasOwner() ? lb.owner.toString() : "none"));
+                if (LuckyBlockPlugin.isDebugEnabled()) {
+                    Debug("Lucky block placed", new DebugData("Location", locToString(block.getLocation())), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
                 }
 
-                lb.save(true);
-                return lb;
+                luckyBlock.save(true);
+                return luckyBlock;
             }
         }
     }
@@ -319,7 +320,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 Block block = event.getBlock();
                 Player player = event.getPlayer();
                 if (isEnoughSpace(block.getLocation(), new int[]{2, 1, 2})) {
-                    Detector d = new Detector(LuckyBlock.randoms.nextInt(99999) + 1);
+                    Detector d = new Detector(LuckyBlockPlugin.randoms.nextInt(99999) + 1);
                     d.setLoc(block.getLocation());
                     block.setType(Material.OBSIDIAN);
                     d.addBlock(block);
@@ -348,7 +349,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
 
     @EventHandler
     public void breakDetector(BlockBreakEvent event) {
-        String dim = LB.blockToString(event.getBlock());
+        String dim = LuckyBlock.blockToString(event.getBlock());
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.CREATIVE && player.getInventory().getItemInMainHand() != null) {
             ItemStack item = player.getInventory().getItemInMainHand();
@@ -378,13 +379,5 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
             send_no(player, "event.detector.break");
         }
 
-    }
-
-    public enum LBOption {
-        NO_EFFECTS,
-        NO_SOUNDS;
-
-        LBOption() {
-        }
     }
 }

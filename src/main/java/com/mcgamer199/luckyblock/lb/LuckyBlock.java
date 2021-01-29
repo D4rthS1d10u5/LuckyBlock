@@ -5,13 +5,13 @@
 
 package com.mcgamer199.luckyblock.lb;
 
+import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityLBNameTag;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.tags.BlockTags;
@@ -28,13 +28,14 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.util.*;
 
-public class LB {
+public class LuckyBlock {
+
     public static final int MAX_LB_COUNT = 1048;
     public static final List<String> hiddenOptions = Arrays.asList("Title", "Player");
     public static final String sp = "/s/";
-    public static List<LB> lbs = new ArrayList();
-    public static List<LB> lastDeleted = new ArrayList();
-    public static HashMap<String, List<LB>> regions = new HashMap();
+    public static List<LuckyBlock> luckyBlocks = new ArrayList();
+    public static List<LuckyBlock> lastDeleted = new ArrayList();
+    public static HashMap<String, List<LuckyBlock>> regions = new HashMap();
     public static Map<LBType, FileConfiguration> cache = new HashMap<>();
     public final int _d = 5;
     public UUID owner;
@@ -52,11 +53,11 @@ public class LB {
     private final String folder = "Drops";
     private boolean freezed;
 
-    public LB() {
+    public LuckyBlock() {
         this.facing = BlockFace.EAST;
     }
 
-    public LB(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
+    public LuckyBlock(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
         this.facing = BlockFace.EAST;
         if (getFromBlock(block) == null) {
             if (canSaveMore()) {
@@ -66,26 +67,26 @@ public class LB {
     }
 
     public static boolean canSaveMore() {
-        return lbs.size() < 1048;
+        return luckyBlocks.size() < 1048;
     }
 
-    public static LB placeLB(Location loc, LBType lbType) {
+    public static LuckyBlock placeLB(Location loc, LBType lbType) {
         return placeLB(loc, lbType, null);
     }
 
-    public static LB placeLB(Location loc, LBType lbType, ItemStack item) {
+    public static LuckyBlock placeLB(Location loc, LBType lbType, ItemStack item) {
         return placeLB(loc, lbType, item, null);
     }
 
-    public static LB placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy) {
+    public static LuckyBlock placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy) {
         return placeLB(loc, lbType, item, placedBy, null, 0);
     }
 
-    public static LB placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy, String drop) {
+    public static LuckyBlock placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy, String drop) {
         return placeLB(loc, lbType, item, placedBy, drop, 0);
     }
 
-    public static LB placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy, String drop, int luck, LBOption... options) {
+    public static LuckyBlock placeLB(Location loc, LBType lbType, ItemStack item, Object placedBy, String drop, int luck, LBOption... options) {
         if (!canSaveMore()) {
             return null;
         } else {
@@ -116,10 +117,10 @@ public class LB {
         return false;
     }
 
-    public static LB getByABlock(Block block) {
-        for (int x = 0; x < lbs.size(); ++x) {
-            if (lbs.get(x).getType().hasAdditionalBlocks() && lbs.get(x).block.getWorld().getName().equalsIgnoreCase(block.getWorld().getName())) {
-                String[] a = lbs.get(x).getType().getAdditionalBlocks();
+    public static LuckyBlock getByABlock(Block block) {
+        for (int x = 0; x < luckyBlocks.size(); ++x) {
+            if (luckyBlocks.get(x).getType().hasAdditionalBlocks() && luckyBlocks.get(x).block.getWorld().getName().equalsIgnoreCase(block.getWorld().getName())) {
+                String[] a = luckyBlocks.get(x).getType().getAdditionalBlocks();
                 String[] var6 = a;
                 int var5 = a.length;
 
@@ -127,12 +128,12 @@ public class LB {
                     String s = var6[var4];
                     String[] d = s.split(" ");
                     String[] g = d[0].split(",");
-                    Block b = lbs.get(x).block;
+                    Block b = luckyBlocks.get(x).block;
                     int x1 = Integer.parseInt(g[0]);
                     int y1 = Integer.parseInt(g[1]);
                     int z1 = Integer.parseInt(g[2]);
                     if (blockToString(b.getLocation().add(x1, y1, z1).getBlock()).equalsIgnoreCase(blockToString(block))) {
-                        return lbs.get(x);
+                        return luckyBlocks.get(x);
                     }
                 }
             }
@@ -144,20 +145,20 @@ public class LB {
     public static void saveAll() {
         List<String> list = new ArrayList();
 
-        for (int x = 0; x < lbs.size(); ++x) {
-            LB lb = lbs.get(x);
-            list.add(lb.toString());
+        for (int x = 0; x < luckyBlocks.size(); ++x) {
+            LuckyBlock luckyBlock = luckyBlocks.get(x);
+            list.add(luckyBlock.toString());
         }
 
         LuckyBlockAPI.lbs.set("LuckyBlocks", list);
         LuckyBlockAPI.saveLBFile();
     }
 
-    public static LB getFromBlock(Block block) {
-        for (int x = 0; x < lbs.size(); ++x) {
-            LB lb = lbs.get(x);
-            if (lb.blockToString().equalsIgnoreCase(blockToString(block))) {
-                return lb;
+    public static LuckyBlock getFromBlock(Block block) {
+        for (int x = 0; x < luckyBlocks.size(); ++x) {
+            LuckyBlock luckyBlock = luckyBlocks.get(x);
+            if (luckyBlock.blockToString().equalsIgnoreCase(blockToString(block))) {
+                return luckyBlock;
             }
         }
 
@@ -231,11 +232,11 @@ public class LB {
             this.b = "a=None";
         }
 
-        Iterator var8 = lbs.iterator();
+        Iterator var8 = luckyBlocks.iterator();
 
         while (var8.hasNext()) {
-            LB lb = (LB) var8.next();
-            if (this.blockToString().equalsIgnoreCase(lb.blockToString())) {
+            LuckyBlock luckyBlock = (LuckyBlock) var8.next();
+            if (this.blockToString().equalsIgnoreCase(luckyBlock.blockToString())) {
                 return;
             }
         }
@@ -334,7 +335,7 @@ public class LB {
             return;
         }
         this.file = cache.computeIfAbsent(this.type, lbType -> {
-            String[] ad = LuckyBlock.instance.configf.getPath().split(LuckyBlock.instance.configf.getName());
+            String[] ad = LuckyBlockPlugin.instance.configf.getPath().split(LuckyBlockPlugin.instance.configf.getName());
             File[] files = (new File(ad[0] + "/" + this.folder + "/" + lbType.getFolder() + "/")).listFiles();
             File[] var6 = files;
             int var5 = files.length;
@@ -555,14 +556,14 @@ public class LB {
     }
 
     public void save(boolean saveAll) {
-        for (int x = 0; x < lbs.size(); ++x) {
-            LB lb = lbs.get(x);
-            if (this.equals(lb)) {
-                lbs.remove(lb);
+        for (int x = 0; x < luckyBlocks.size(); ++x) {
+            LuckyBlock luckyBlock = luckyBlocks.get(x);
+            if (this.equals(luckyBlock)) {
+                luckyBlocks.remove(luckyBlock);
             }
         }
 
-        lbs.add(this);
+        luckyBlocks.add(this);
         if (saveAll) {
             saveAll();
         }
@@ -578,10 +579,10 @@ public class LB {
     }
 
     public void remove() {
-        for (int x = 0; x < lbs.size(); ++x) {
-            LB lb = lbs.get(x);
-            if (lb.blockToString().equalsIgnoreCase(this.blockToString())) {
-                lbs.remove(lb);
+        for (int x = 0; x < luckyBlocks.size(); ++x) {
+            LuckyBlock luckyBlock = luckyBlocks.get(x);
+            if (luckyBlock.blockToString().equalsIgnoreCase(this.blockToString())) {
+                luckyBlocks.remove(luckyBlock);
             }
         }
 
@@ -634,8 +635,8 @@ public class LB {
     }
 
     public boolean isValid() {
-        for (int x = 0; x < lbs.size(); ++x) {
-            if (lbs.get(x).equals(this)) {
+        for (int x = 0; x < luckyBlocks.size(); ++x) {
+            if (luckyBlocks.get(x).equals(this)) {
                 return true;
             }
         }
@@ -643,23 +644,23 @@ public class LB {
         return false;
     }
 
-    public boolean equals(LB lb) {
-        return lb.blockToString().equalsIgnoreCase(this.blockToString());
+    public boolean equals(LuckyBlock luckyBlock) {
+        return luckyBlock.blockToString().equalsIgnoreCase(this.blockToString());
     }
 
     public void explode() {
         this.remove();
         final Location l = this.block.getLocation().add(0.4D, 0.6D, 0.4D);
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int x = 10;
 
             public void run() {
                 if (this.x > 0) {
-                    LB.this.block.getWorld().spawnParticle(Particle.SPELL, l, 50, 0.3D, 0.7D, 0.3D, 0.0D);
+                    LuckyBlock.this.block.getWorld().spawnParticle(Particle.SPELL, l, 50, 0.3D, 0.7D, 0.3D, 0.0D);
                     --this.x;
                 } else {
-                    LB.this.block.getWorld().createExplosion(LB.this.block.getLocation(), 3.0F);
+                    LuckyBlock.this.block.getWorld().createExplosion(LuckyBlock.this.block.getLocation(), 3.0F);
                     task.run();
                 }
 
@@ -683,14 +684,14 @@ public class LB {
      * @deprecated
      */
     @Deprecated
-    public void setData(LB lb) {
-        this.luck = lb.luck;
-        this.drop = lb.drop;
-        this.customDrop = lb.customDrop;
-        this.dropOptions = lb.dropOptions;
-        this.owner = lb.owner;
-        this.b = lb.b;
-        this.a = lb.a;
+    public void setData(LuckyBlock luckyBlock) {
+        this.luck = luckyBlock.luck;
+        this.drop = luckyBlock.drop;
+        this.customDrop = luckyBlock.customDrop;
+        this.dropOptions = luckyBlock.dropOptions;
+        this.owner = luckyBlock.owner;
+        this.b = luckyBlock.b;
+        this.a = luckyBlock.a;
     }
 
     public String blockToString() {

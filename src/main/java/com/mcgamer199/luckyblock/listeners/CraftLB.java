@@ -7,7 +7,7 @@ import com.mcgamer199.luckyblock.api.item.ItemReflection;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBCraftEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
@@ -238,7 +238,7 @@ public class CraftLB extends ColorsClass implements Listener {
     }
 
     private static void TestSend(Player player, String path) {
-        if (LuckyBlock.action_bar_messages()) {
+        if (LuckyBlockPlugin.action_bar_messages()) {
             TitleSender.send_1(player, path);
         } else {
             send_no(player, path);
@@ -578,7 +578,7 @@ public class CraftLB extends ColorsClass implements Listener {
     private void CraftLBEvent(LBCraftEvent event) {
         LBType type = event.getLBType();
         Player player = (Player) event.getHuman();
-        if (LuckyBlock.isDebugEnabled()) {
+        if (LuckyBlockPlugin.isDebugEnabled()) {
             Debug("Lucky block crafted", new DebugData("LBType", type.getId() + ", " + ChatColor.stripColor(type.getName())), new DebugData("Item crafted", event.getItem().getType().name()), new DebugData("Crafted By", player.getName()), new DebugData("Luck", String.valueOf(LBType.getLuck(event.getItem()))));
         }
 

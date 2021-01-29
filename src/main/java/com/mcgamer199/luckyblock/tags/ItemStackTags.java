@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -76,9 +76,9 @@ public class ItemStackTags extends HTag {
             }
         } catch (Exception var14) {
             if (c != null) {
-                LuckyBlock.instance.getLogger().info("Error [Section:" + c.getName() + "]");
+                LuckyBlockPlugin.instance.getLogger().info("Error [Section:" + c.getName() + "]");
             } else {
-                LuckyBlock.instance.getLogger().info("Error [Invalid Path!]");
+                LuckyBlockPlugin.instance.getLogger().info("Error [Invalid Path!]");
             }
 
             throw var14;

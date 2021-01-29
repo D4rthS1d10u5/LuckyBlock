@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -30,7 +29,7 @@ public class EntityTags extends HTag {
     static File AfileF;
 
     static {
-        AfileF = new File(LuckyBlock.instance.getDataFolder() + File.separator + "Data/entityDrops.yml");
+        AfileF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "Data/entityDrops.yml");
         Afile = YamlConfiguration.loadConfiguration(AfileF);
     }
 
@@ -53,7 +52,7 @@ public class EntityTags extends HTag {
                     try {
                         entitytype = EntityType.valueOf(type.toUpperCase());
                     } catch (Exception var16) {
-                        LuckyBlock.instance.getLogger().info("Invalid EntityType: " + type);
+                        LuckyBlockPlugin.instance.getLogger().info("Invalid EntityType: " + type);
                     }
 
                     if (type.equalsIgnoreCase("horse")) {
@@ -198,7 +197,7 @@ public class EntityTags extends HTag {
                             pressF = c.getConfigurationSection(entityMetadataType).getConfigurationSection(type);
                             String name = pressF.getString("Name");
                             Object value = pressF.get("Value");
-                            entity.setMetadata(name, new FixedMetadataValue(LuckyBlock.instance, value));
+                            entity.setMetadata(name, new FixedMetadataValue(LuckyBlockPlugin.instance, value));
                         }
                     }
 

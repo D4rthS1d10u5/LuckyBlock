@@ -4,7 +4,7 @@ import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Random;
-import java.util.Set;
 
 public class LBCSetDrop extends LBCommand {
     public LBCSetDrop() {
@@ -28,8 +27,8 @@ public class LBCSetDrop extends LBCommand {
                 Player player = (Player) sender;
                 if (player.getTargetBlock(null, 100) != null && player.getTargetBlock(null, 100).getType() != Material.AIR) {
                     Block block = player.getTargetBlock(null, 100);
-                    if (LB.isLuckyBlock(block)) {
-                        LB lb = LB.getFromBlock(block);
+                    if (LuckyBlock.isLuckyBlock(block)) {
+                        LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
                         boolean x = false;
                         if (!LBDrop.isValid(args[1].toUpperCase())) {
                             if (CustomDropManager.getByName(args[1]) == null) {
@@ -44,7 +43,7 @@ public class LBCSetDrop extends LBCommand {
                         }
 
                         if (!x) {
-                            lb.setDrop(LBDrop.valueOf(args[1].toUpperCase()), true, true);
+                            luckyBlock.setDrop(LBDrop.valueOf(args[1].toUpperCase()), true, true);
                         } else {
                             CustomDrop d = CustomDropManager.getByName(args[1]);
                             if (!d.isEnabledByCommands()) {
@@ -52,9 +51,9 @@ public class LBCSetDrop extends LBCommand {
                                 return false;
                             }
 
-                            lb.customDrop = d;
-                            lb.refreshCustomDrop();
-                            lb.save(true);
+                            luckyBlock.customDrop = d;
+                            luckyBlock.refreshCustomDrop();
+                            luckyBlock.save(true);
                         }
 
                         if (args.length == 3) {
@@ -89,16 +88,16 @@ public class LBCSetDrop extends LBCommand {
                                         }
                                     }
 
-                                    if (lb.getDropOption(u[0]) != null) {
-                                        lb.removeDropOptions(u[0]);
+                                    if (luckyBlock.getDropOption(u[0]) != null) {
+                                        luckyBlock.removeDropOptions(u[0]);
                                     }
 
-                                    if (lb.hasDropOption(u[0])) {
-                                        lb.removeDropOptions(u[0]);
+                                    if (luckyBlock.hasDropOption(u[0])) {
+                                        luckyBlock.removeDropOptions(u[0]);
                                     }
 
-                                    lb.getDropOptions().add(new DropOption(u[0], op));
-                                    lb.save(true);
+                                    luckyBlock.getDropOptions().add(new DropOption(u[0], op));
+                                    luckyBlock.save(true);
                                 }
                             }
                         }

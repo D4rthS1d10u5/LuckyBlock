@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions;
 import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions.ParticleHelper;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -14,7 +14,6 @@ import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
@@ -36,7 +35,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     static {
         trophy = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.BLUE + "Underwater Boss", Arrays.asList("", ChatColor.GRAY + "Obtained by killing underwater bosses.")), "e56a8749-8a4a-40cc-9ded-3c90f8ae8c63", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM3OTc0ODJhMTRiZmNiODc3MjU3Y2IyY2ZmMWI2ZTZhOGI4NDEzMzM2ZmZiNGMyOWE2MTM5Mjc4YjQzNmIifX19");
-        winItem = ItemMaker.addEnchant(ItemMaker.createItem(Material.PAPER, 1, 0, ChatColor.GREEN + "Congratulations", Arrays.asList("", ChatColor.GRAY + "You beat the underwater boss!")), LuckyBlock.enchantment_glow, 1);
+        winItem = ItemMaker.addEnchant(ItemMaker.createItem(Material.PAPER, 1, 0, ChatColor.GREEN + "Congratulations", Arrays.asList("", ChatColor.GRAY + "You beat the underwater boss!")), LuckyBlockPlugin.enchantment_glow, 1);
     }
 
     ElderGuardian elder;
@@ -78,7 +77,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_Beam() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     int x = 0;
@@ -121,7 +120,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_Effects() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     Iterator var2 = EntityUnderwaterBoss.this.elder.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
@@ -147,7 +146,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_Tnt() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     if (EntityUnderwaterBoss.this.elder.getTarget() != null) {
@@ -168,7 +167,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_boss_bar() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     if (EntityUnderwaterBoss.this.bar != null) {
@@ -184,7 +183,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void spawnTnt(final TNTPrimed tnt) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int x = 4;
 
             public void run() {
@@ -206,7 +205,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_Invisible() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     EntityUnderwaterBoss.this.elder.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 120, 0));
@@ -220,7 +219,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_Followers() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     if (EntityUnderwaterBoss.this.checkFollowers() < 6) {
@@ -239,7 +238,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_Squids() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead()) {
                     Iterator var2 = EntityUnderwaterBoss.this.elder.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
@@ -391,7 +390,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
 
     private void func_gatling(final LivingEntity target, int times) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             private int t = times;
 
             public void run() {

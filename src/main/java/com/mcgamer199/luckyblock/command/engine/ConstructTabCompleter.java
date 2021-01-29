@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.command.engine;
 
+import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.lb.LB;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -16,7 +16,10 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.engine.ILBCmd implements TabCompleter {
     public ConstructTabCompleter() {
@@ -78,7 +81,7 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                             LBDrop[] var19;
                             CustomDrop customDrop;
                             if (args[0].equalsIgnoreCase("setdrop")) {
-                                if (args.length == 2 && sender instanceof Player && LB.isLuckyBlock(((Player) sender).getTargetBlock(null, 100))) {
+                                if (args.length == 2 && sender instanceof Player && LuckyBlock.isLuckyBlock(((Player) sender).getTargetBlock(null, 100))) {
                                     if (args[1] == null) {
                                         var8 = (var19 = LBDrop.values()).length;
 
@@ -117,7 +120,7 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                 Iterator var18;
                                 String stringProsto;
                                 if (args[0].equalsIgnoreCase("region")) {
-                                    if (!LuckyBlock.isWorldEditValid()) {
+                                    if (!LuckyBlockPlugin.isWorldEditValid()) {
                                         return null;
                                     }
 
@@ -256,7 +259,7 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                     }
                                 } else if (args[0].equalsIgnoreCase("setlang")) {
                                     if (args.length == 2) {
-                                        File folder = new File(LuckyBlock.d() + "Data/messages");
+                                        File folder = new File(LuckyBlockPlugin.d() + "Data/messages");
                                         if (folder.listFiles() != null) {
                                             File[] var10;
                                             int var24 = (var10 = folder.listFiles()).length;

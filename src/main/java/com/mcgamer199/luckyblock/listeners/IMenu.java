@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,7 @@ public class IMenu implements Listener {
     public IMenu(Inventory inv, IMenu.ClickEvent click) {
         this.inv = inv;
         this.click = click;
-        Bukkit.getPluginManager().registerEvents(this, LuckyBlock.instance);
+        Bukkit.getPluginManager().registerEvents(this, LuckyBlockPlugin.instance);
     }
 
     @EventHandler

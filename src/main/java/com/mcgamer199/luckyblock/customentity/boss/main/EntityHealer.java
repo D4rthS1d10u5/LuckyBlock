@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.customentity.boss.main;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityTagHealer;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -64,7 +64,7 @@ public class EntityHealer extends CustomEntity {
 
     private void spawn_nametag() {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityHealer.this.a();
             }
@@ -86,7 +86,7 @@ public class EntityHealer extends CustomEntity {
             this.running = true;
             this.save_def();
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 public void run() {
                     if (!EntityHealer.this.healEntity.isDead() && !EntityHealer.this.ender.isDead()) {
                         if (EntityHealer.this.running && EntityHealer.this.healEntity.getHealth() < EntityHealer.this.healEntity.getMaxHealth()) {
@@ -112,7 +112,7 @@ public class EntityHealer extends CustomEntity {
 
     private void func_target() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityHealer.this.healEntity.isDead() && !EntityHealer.this.ender.isDead()) {
                     EntityHealer.this.ender.setBeamTarget(EntityHealer.this.healEntity.getLocation());
@@ -131,7 +131,7 @@ public class EntityHealer extends CustomEntity {
 
     private void func_protect() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityHealer.this.ender.isDead()) {
                     if (EntityHealer.this.damageNearby) {
@@ -191,10 +191,10 @@ public class EntityHealer extends CustomEntity {
 
                     MyTasks.playEffects(Particle.FLAME, this.ender.getLocation().add(0.0D, 0.5D, 0.0D), 30, new double[]{0.2D, 0.0D, 0.2D}, 1.0F);
                     if (this.health < 1) {
-                        for (int x = LuckyBlock.randoms.nextInt(5) + 100; x > 0; --x) {
+                        for (int x = LuckyBlockPlugin.randoms.nextInt(5) + 100; x > 0; --x) {
                             Item a = this.ender.getWorld().dropItem(this.ender.getLocation(), new ItemStack(Material.GLASS, 1));
                             a.setPickupDelay(2000);
-                            this.remove(a, (LuckyBlock.randoms.nextInt(20) + 6) * 3);
+                            this.remove(a, (LuckyBlockPlugin.randoms.nextInt(20) + 6) * 3);
                         }
 
                         SoundManager.playFixedSound(this.ender.getLocation(), MyTasks.getSound("boss_healer_death"), 1.0F, 1.0F, 8);
@@ -212,7 +212,7 @@ public class EntityHealer extends CustomEntity {
     }
 
     private void remove(final Item i, int time) {
-        LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 i.remove();
             }
@@ -222,7 +222,7 @@ public class EntityHealer extends CustomEntity {
     private void func_wait_damage() {
         this.damageable = false;
         final ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityHealer.this.damageable = true;
                 task.run();
@@ -247,7 +247,7 @@ public class EntityHealer extends CustomEntity {
         this.damageNearby = c.getBoolean("DamageNearby");
         this.health = c.getInt("Health");
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityHealer.this.healEntity = (LivingEntity) CustomEntity.getByUUID(UUID.fromString(c.getString("HealEntity"))).getEntity();
                 if (EntityHealer.this.running) {

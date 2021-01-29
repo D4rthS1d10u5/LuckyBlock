@@ -80,8 +80,8 @@ public enum LBDrop {
     ADD_XP(true, new DropOption("Amount", new Integer[]{550})),
     LUCKY_WELL(true),
     LB_RAIN(true, new LBDrop.LBFunction() {
-        public void function(LB lb, Player player) {
-            HTasks.m(lb.getBlock().getLocation(), 10, lb.getType());
+        public void function(LuckyBlock luckyBlock, Player player) {
+            HTasks.m(luckyBlock.getBlock().getLocation(), 10, luckyBlock.getType());
         }
     }),
     KARL(true),
@@ -165,6 +165,6 @@ public enum LBDrop {
     }
 
     public interface LBFunction {
-        void function(LB var1, Player var2);
+        void function(LuckyBlock var1, Player var2);
     }
 }

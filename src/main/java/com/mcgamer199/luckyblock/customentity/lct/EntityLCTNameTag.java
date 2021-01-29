@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -55,7 +55,7 @@ public class EntityLCTNameTag extends CustomEntity {
 
     protected void onLoad(final ConfigurationSection c) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 String b = c.getString("LCT_Block");
                 if (b != null) {

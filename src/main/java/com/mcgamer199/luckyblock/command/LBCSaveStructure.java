@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.tags.StructureSaver;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -70,7 +70,7 @@ public class LBCSaveStructure extends LBCommand {
                     send_2(sender, a);
                     return false;
                 } else {
-                    File file = new File(LuckyBlock.d() + "saved/structures/" + fileName + ".yml");
+                    File file = new File(LuckyBlockPlugin.d() + "saved/structures/" + fileName + ".yml");
                     if (file.exists()) {
                         send(sender, "command.savestructure.file_exists");
                         return false;

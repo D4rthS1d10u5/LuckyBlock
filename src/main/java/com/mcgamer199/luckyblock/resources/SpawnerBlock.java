@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class SpawnerBlock {
     public static List<SpawnerBlock> spawners = new ArrayList();
-    static File fileF = new File(LuckyBlock.d() + "data/spawners.yml");
+    static File fileF = new File(LuckyBlockPlugin.d() + "data/spawners.yml");
     static FileConfiguration file;
     private static boolean loaded = false;
 
@@ -85,7 +85,7 @@ public class SpawnerBlock {
 
     private void func_loop() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (SpawnerBlock.this.block.getType() == SpawnerBlock.this.mat) {
                     Iterator var2 = SpawnerBlock.this.block.getWorld().getPlayers().iterator();

@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
 import com.mcgamer199.luckyblock.customentity.boss.main.EntityHealer;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.ChatColor;
@@ -42,7 +42,7 @@ public class EntityTagHealer extends EntityNameTag {
         if (c.getString("Source") != null) {
             final UUID uuid = UUID.fromString(c.getString("Source"));
             ITask task = new ITask();
-            task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
                 public void run() {
                     CustomEntity c = CustomEntity.getByUUID(uuid);
                     if (c != null) {

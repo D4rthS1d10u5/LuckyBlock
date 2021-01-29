@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.customentity.nametag.EntityTrophyNameTag;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Material;
@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class Trophy {
     public static List<Trophy> trophies;
-    static File fileF = new File(LuckyBlock.d() + "data/trophies.yml");
+    static File fileF = new File(LuckyBlockPlugin.d() + "data/trophies.yml");
     static FileConfiguration file;
     private static boolean loaded = false;
 
@@ -87,7 +87,7 @@ public class Trophy {
 
     private void func_loop() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (Trophy.this.block.getType() != Material.SKULL) {
                     Trophy.this.remove();

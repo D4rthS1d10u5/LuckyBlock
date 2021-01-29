@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -42,7 +42,7 @@ public class LBShootEvent implements Listener {
 
     private void run(final Entity p, final Entity entity) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (p.isOnGround()) {
                     LBShootEvent.this.place(p.getLocation(), entity);
@@ -59,8 +59,8 @@ public class LBShootEvent implements Listener {
     }
 
     private void place(Location loc, Entity entity) {
-        if (LuckyBlock.isWorldGuardValid()) {
-            WorldGuardPlugin w = LuckyBlock.instance.getWorldGuard();
+        if (LuckyBlockPlugin.isWorldGuardValid()) {
+            WorldGuardPlugin w = LuckyBlockPlugin.instance.getWorldGuard();
             if (w != null) {
                 RegionManager m = w.getRegionManager(loc.getWorld());
                 ApplicableRegionSet s = m.getApplicableRegions(loc);
@@ -74,8 +74,8 @@ public class LBShootEvent implements Listener {
         Block block = loc.getBlock();
         block.setType(type.getType());
         block.setData((byte) type.getData());
-        LB lb = new LB(type, block, 0, entity, true, true);
-        lb.playEffects();
+        LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, entity, true, true);
+        luckyBlock.playEffects();
     }
 
     @EventHandler
@@ -96,14 +96,14 @@ public class LBShootEvent implements Listener {
                     }
                 }
 
-                if (LB.getFromBlock(b) != null) {
-                    LB lb = LB.getFromBlock(b);
-                    if (lb.getType().arrowRun) {
+                if (LuckyBlock.getFromBlock(b) != null) {
+                    LuckyBlock luckyBlock = LuckyBlock.getFromBlock(b);
+                    if (luckyBlock.getType().arrowRun) {
                         if (event.getEntity().isValid()) {
                             event.getEntity().remove();
                         }
 
-                        BreakLuckyBlock.openLB(lb, player);
+                        BreakLuckyBlock.openLB(luckyBlock, player);
                     }
                 }
 

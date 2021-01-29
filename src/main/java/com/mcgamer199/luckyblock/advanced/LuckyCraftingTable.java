@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTNameTag;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.CraftLB;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
@@ -23,7 +23,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -40,7 +39,7 @@ public class LuckyCraftingTable extends ColorsClass {
     static FileConfiguration file;
 
     static {
-        fileF = new File(LuckyBlock.instance.getDataFolder() + File.separator + "data/LuckyTables.yml");
+        fileF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "data/LuckyTables.yml");
         file = YamlConfiguration.loadConfiguration(fileF);
         tables = new ArrayList();
     }
@@ -297,7 +296,7 @@ public class LuckyCraftingTable extends ColorsClass {
             this.run1();
             final String t = val("lct.data.main.stored_luck", false);
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 int place = 0;
                 int working = 0;
                 boolean changed = false;
@@ -427,7 +426,7 @@ public class LuckyCraftingTable extends ColorsClass {
     private void run1() {
         final String s = val("lct.data.main.fuel", false);
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (LuckyCraftingTable.this.running) {
                     ItemStack st;
@@ -612,7 +611,7 @@ public class LuckyCraftingTable extends ColorsClass {
 
     private void func_loop() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (LuckyCraftingTable.this.isValid()) {
                     if (LuckyCraftingTable.this.inv.getViewers().size() > 0) {

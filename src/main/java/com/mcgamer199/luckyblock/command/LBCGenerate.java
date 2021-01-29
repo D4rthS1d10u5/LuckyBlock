@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.DropEvents;
 import com.mcgamer199.luckyblock.resources.MapEndCastle;
 import com.mcgamer199.luckyblock.resources.Schematic;
@@ -33,7 +33,7 @@ public class LBCGenerate extends LBCommand {
             if (Structure.isStructure(s)) {
                 DropEvents.b(s, player.getLocation());
             } else {
-                File file = new File(LuckyBlock.d() + "Drops/" + s);
+                File file = new File(LuckyBlockPlugin.d() + "Drops/" + s);
                 if (!file.exists()) {
                     send(sender, "command.generate.invalid_structure");
                     return false;

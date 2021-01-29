@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
 import com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import org.bukkit.Location;
@@ -25,7 +25,7 @@ public class BossFunctions {
         start.setDirection(target.getLocation().toVector().subtract(start.toVector()));
         final Vector increase = start.getDirection().multiply(s);
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             private int m = max;
             private int a = 0;
 

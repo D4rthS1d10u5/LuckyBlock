@@ -2,7 +2,7 @@ package com.mcgamer199.newstr;
 
 import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
@@ -20,7 +20,7 @@ public class FileStructure {
 
     public static void generate(String fileS, String l, Location loc) {
         if (fileS != null && l != null) {
-            File fileF = new File(LuckyBlock.d() + "data/plugin/str/" + fileS + ".yml");
+            File fileF = new File(LuckyBlockPlugin.d() + "data/plugin/str/" + fileS + ".yml");
             FileConfiguration file = YamlConfiguration.loadConfiguration(fileF);
             String[] d = l.split(",");
             BlockTags.buildStructure(file.getConfigurationSection(d[0]).getConfigurationSection(d[1]), loc);

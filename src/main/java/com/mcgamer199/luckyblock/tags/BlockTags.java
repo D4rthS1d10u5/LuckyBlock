@@ -2,9 +2,9 @@ package com.mcgamer199.luckyblock.tags;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.IDirection;
@@ -18,7 +18,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -292,36 +291,36 @@ public class BlockTags extends HTag {
                         if (!type.disabled) {
                             block.setType(LBType.fromId(luck).getType());
                             block.setData((byte) LBType.fromId(luck).getData());
-                            LB lb = new LB(type, block, 0, null, true, true);
-                            lb.playEffects();
+                            LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, null, true, true);
+                            luckyBlock.playEffects();
                         }
                     }
                 }
 
                 if (t.equalsIgnoreCase("LB_LUCK")) {
                     luck = getRandomNumber(c1.getString(t).split(":"));
-                    if (LB.getFromBlock(block) != null) {
-                        LB.getFromBlock(block).setLuck(luck);
-                        LB.getFromBlock(block).save(true);
+                    if (LuckyBlock.getFromBlock(block) != null) {
+                        LuckyBlock.getFromBlock(block).setLuck(luck);
+                        LuckyBlock.getFromBlock(block).save(true);
                     }
                 }
 
                 if (t.equalsIgnoreCase("LB_DROP")) {
                     String drop = c1.getString(t);
-                    if (LB.getFromBlock(block) != null) {
-                        LB lb = LB.getFromBlock(block);
+                    if (LuckyBlock.getFromBlock(block) != null) {
+                        LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
                         if (LBDrop.isValid(drop)) {
-                            lb.setDrop(LBDrop.valueOf(drop.toUpperCase()), true, true);
-                            lb.save(true);
+                            luckyBlock.setDrop(LBDrop.valueOf(drop.toUpperCase()), true, true);
+                            luckyBlock.save(true);
                         } else if (CustomDropManager.getByName(drop) != null) {
-                            lb.customDrop = CustomDropManager.getByName(drop);
-                            lb.save(true);
+                            luckyBlock.customDrop = CustomDropManager.getByName(drop);
+                            luckyBlock.save(true);
                         }
                     }
                 }
 
-                if (t.equalsIgnoreCase("LB_DROP_OPTIONS") && c1.getConfigurationSection(t) != null && LB.getFromBlock(block) != null) {
-                    LB lb = LB.getFromBlock(block);
+                if (t.equalsIgnoreCase("LB_DROP_OPTIONS") && c1.getConfigurationSection(t) != null && LuckyBlock.getFromBlock(block) != null) {
+                    LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
                     var18 = c1.getConfigurationSection(t).getKeys(false).iterator();
 
                     while (var18.hasNext()) {
@@ -331,8 +330,8 @@ public class BlockTags extends HTag {
                         List<String> list = c2.getStringList("Values");
                         if (name != null && list != null && list.size() > 0) {
                             DropOption dr = new DropOption(name, list.toArray());
-                            lb.getDropOptions().add(dr);
-                            lb.save(true);
+                            luckyBlock.getDropOptions().add(dr);
+                            luckyBlock.save(true);
                         }
                     }
                 }
@@ -385,7 +384,7 @@ public class BlockTags extends HTag {
                     int y = Integer.parseInt(d[1]);
                     int z = Integer.parseInt(d[2]);
                     Location l = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) y, location.getZ() + (double) z);
-                    File file = new File(LuckyBlock.d() + "Drops/" + f.getString("File") + ".schematic");
+                    File file = new File(LuckyBlockPlugin.d() + "Drops/" + f.getString("File") + ".schematic");
                     int ticks = getTicks(f);
                     if (ticks > 0) {
                         perform_schem(l, file, ticks);
@@ -421,7 +420,7 @@ public class BlockTags extends HTag {
                 if (f1 != null) {
                     String fil = f1.getString("File");
                     String loc = f1.getString("Path");
-                    File fc = new File(LuckyBlock.d() + "Drops/" + fil);
+                    File fc = new File(LuckyBlockPlugin.d() + "Drops/" + fil);
                     if (fc.exists()) {
                         FileConfiguration fc1 = YamlConfiguration.loadConfiguration(fc);
                         if (fc1.getConfigurationSection(loc) != null) {
@@ -800,7 +799,7 @@ public class BlockTags extends HTag {
 
     private static void perform_schem(final Location location, final File file, int ticks) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 Schematic.loadArea(file, location);
             }
@@ -809,7 +808,7 @@ public class BlockTags extends HTag {
 
     private static void perform_piece(final ConfigurationSection c, final Location location, int ticks) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 BlockTags.setBlocks(c, location);
             }
@@ -818,7 +817,7 @@ public class BlockTags extends HTag {
 
     private static void perform_setblock(final ConfigurationSection c, final Location location, final String locationType, int ticks) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 BlockTags.setBlock(c, location, locationType);
             }
@@ -827,7 +826,7 @@ public class BlockTags extends HTag {
 
     private static void perform_spawnentity(final ConfigurationSection c1, final ConfigurationSection c2, final Location location, int ticks) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityTags.spawnEntity(c1, location, c2.getConfigurationSection("Entities"), true, null);
             }
@@ -836,7 +835,7 @@ public class BlockTags extends HTag {
 
     private static void perform_filler(final Location location, final Material blockMat, final byte blockData, final int xM, final int yM, final int zM, final int xL, final int yL, final int zL, int ticks) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 for (int x = xM; x < xL; ++x) {
                     for (int y = yM; y < yL; ++y) {

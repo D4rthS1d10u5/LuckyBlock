@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.api;
 
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -40,12 +40,12 @@ public class LuckyBlockAPI implements Listener {
     private static boolean loaded;
 
     static {
-        lbsF = new File(com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getDataFolder() + File.separator + "LuckyBlocks.yml");
+        lbsF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "LuckyBlocks.yml");
         lbs = YamlConfiguration.loadConfiguration(lbsF);
         lbwblocks = new ArrayList();
         detectors = new ArrayList();
         locations = new ArrayList();
-        portalsF = new File(com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getDataFolder() + File.separator + "Data/Portals.yml");
+        portalsF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "Data/Portals.yml");
         portals = YamlConfiguration.loadConfiguration(portalsF);
         loaded = false;
     }
@@ -56,7 +56,7 @@ public class LuckyBlockAPI implements Listener {
     public static void loadLuckyBlocks() {
         if (!loaded) {
             loaded = true;
-            com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getLogger().info(MyTasks.val("log.lb.loading", false));
+            LuckyBlockPlugin.instance.getLogger().info(MyTasks.val("log.lb.loading", false));
             int total = 0;
 
             try {
@@ -89,7 +89,7 @@ public class LuckyBlockAPI implements Listener {
                     }
 
                     if (block != null && type != null) {
-                        final LB lb = new LB(type, block, luck, placedBy, false, false);
+                        final LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, false, false);
                         a = d;
                         int var26 = d.length;
 
@@ -99,21 +99,21 @@ public class LuckyBlockAPI implements Listener {
                             if (a2.length == 2) {
                                 if (a2[0].equalsIgnoreCase("Drop")) {
                                     if (LBDrop.isValid(a2[1])) {
-                                        lb.setDrop(LBDrop.valueOf(a2[1]), false, false);
+                                        luckyBlock.setDrop(LBDrop.valueOf(a2[1]), false, false);
                                     }
                                 } else if (a2[0].equalsIgnoreCase("Tick_a")) {
-                                    lb.a = Integer.parseInt(a2[1]);
+                                    luckyBlock.a = Integer.parseInt(a2[1]);
                                 } else if (a2[0].equalsIgnoreCase("CustomDrop")) {
-                                    lb.customDrop = CustomDropManager.getByName(a2[1]);
+                                    luckyBlock.customDrop = CustomDropManager.getByName(a2[1]);
                                 } else if (a2[0].equalsIgnoreCase("Owner")) {
                                     if (!a2[1].equalsIgnoreCase("null")) {
-                                        lb.owner = UUID.fromString(a2[1]);
+                                        luckyBlock.owner = UUID.fromString(a2[1]);
                                     }
                                 } else if (a2[0].equalsIgnoreCase("Facing")) {
-                                    lb.facing = BlockFace.valueOf(a2[1].toUpperCase());
+                                    luckyBlock.facing = BlockFace.valueOf(a2[1].toUpperCase());
                                 } else if (a2[0].equalsIgnoreCase("Freezed")) {
                                     if (a2[1].equalsIgnoreCase("true")) {
-                                        lb.freeze();
+                                        luckyBlock.freeze();
                                     }
                                 } else if (a2[0].equalsIgnoreCase("Options")) {
                                     String p = a2[1].replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("'", "");
@@ -129,7 +129,7 @@ public class LuckyBlockAPI implements Listener {
                                                 op[ii] = g[ii];
                                             }
 
-                                            lb.getDropOptions().add(new DropOption(u[0], op));
+                                            luckyBlock.getDropOptions().add(new DropOption(u[0], op));
                                         }
                                     }
                                 }
@@ -137,17 +137,17 @@ public class LuckyBlockAPI implements Listener {
                         }
 
                         if (block.getType() == Material.AIR) {
-                            lb.remove();
+                            luckyBlock.remove();
                         } else {
                             ++total;
                         }
 
                         final SchedulerTask task = new SchedulerTask();
-                        task.setId(com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(com.mcgamer199.luckyblock.engine.LuckyBlock.instance, new Runnable() {
+                        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                             public void run() {
-                                lb.playEffects();
-                                if (lb.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
-                                    com.mcgamer199.luckyblock.engine.LuckyBlock.instance.Loops(lb);
+                                luckyBlock.playEffects();
+                                if (luckyBlock.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
+                                    LuckyBlockPlugin.instance.Loops(luckyBlock);
                                 }
 
                                 task.run();
@@ -159,7 +159,7 @@ public class LuckyBlockAPI implements Listener {
                 if (total == 1) {
                     String s = MyTasks.val("log.lb.found", false);
                     s = s.replace("%total%", String.valueOf(total));
-                    com.mcgamer199.luckyblock.engine.LuckyBlock.instance.getLogger().info(s);
+                    LuckyBlockPlugin.instance.getLogger().info(s);
                 }
             } catch (Exception var21) {
                 var21.printStackTrace();
@@ -290,7 +290,7 @@ public class LuckyBlockAPI implements Listener {
 
     public static String getDet(int id) {
         String s = null;
-        ConfigurationSection cs = com.mcgamer199.luckyblock.engine.LuckyBlock.instance.detectors.getConfigurationSection("Detectors");
+        ConfigurationSection cs = LuckyBlockPlugin.instance.detectors.getConfigurationSection("Detectors");
 
         try {
             for (int x = 0; x < cs.getKeys(false).size(); ++x) {
@@ -316,19 +316,19 @@ public class LuckyBlockAPI implements Listener {
 
     public static void saveDetFile() {
         try {
-            com.mcgamer199.luckyblock.engine.LuckyBlock.instance.detectors.save(LuckyBlock.instance.detectorsF);
+            LuckyBlockPlugin.instance.detectors.save(LuckyBlockPlugin.instance.detectorsF);
         } catch (IOException var1) {
             var1.printStackTrace();
         }
 
     }
 
-    public static void spawnLuckyBlockItem(LB lb, Location loc) {
-        spawnLuckyBlockItem(lb, lb.getLuck(), loc);
+    public static void spawnLuckyBlockItem(LuckyBlock luckyBlock, Location loc) {
+        spawnLuckyBlockItem(luckyBlock, luckyBlock.getLuck(), loc);
     }
 
-    public static void spawnLuckyBlockItem(LB lb, int luck, Location loc) {
-        ItemStack item = lb.getType().toItemStack(luck);
+    public static void spawnLuckyBlockItem(LuckyBlock luckyBlock, int luck, Location loc) {
+        ItemStack item = luckyBlock.getType().toItemStack(luck);
         loc.getWorld().dropItem(loc, item);
     }
 }

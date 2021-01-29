@@ -5,9 +5,9 @@
 
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.lb.LBType.LBOption;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

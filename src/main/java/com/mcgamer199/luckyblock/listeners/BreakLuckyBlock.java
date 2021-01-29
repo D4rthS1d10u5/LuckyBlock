@@ -8,9 +8,9 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -39,23 +39,23 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
         this.injectYottaEvents();
     }
 
-    public static void openLB(LB lb, Player player) {
-        if (lb != null) {
-            Block block = lb.getBlock();
-            LBType types = lb.getType();
+    public static void openLB(LuckyBlock luckyBlock, Player player) {
+        if (luckyBlock != null) {
+            Block block = luckyBlock.getBlock();
+            LBType types = luckyBlock.getType();
             Location bloc = block.getLocation();
             if (player != null) {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && player.getGameMode() != GameMode.CREATIVE) {
-                    if (lb.getType().getPermission("SilkTouch") == null) {
-                        HTasks.spawnLB(lb, bloc);
-                        lb.remove(true);
+                    if (luckyBlock.getType().getPermission("SilkTouch") == null) {
+                        HTasks.spawnLB(luckyBlock, bloc);
+                        luckyBlock.remove(true);
                         return;
                     }
 
-                    if (player.hasPermission(lb.getType().getPermission("SilkTouch"))) {
-                        HTasks.spawnLB(lb, bloc);
-                        lb.remove(true);
+                    if (player.hasPermission(luckyBlock.getType().getPermission("SilkTouch"))) {
+                        HTasks.spawnLB(luckyBlock, bloc);
+                        luckyBlock.remove(true);
                         return;
                     }
                 }
@@ -86,7 +86,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 SoundManager.playFixedSound(bloc, sound, vol, pit, 30);
             }
 
-            lb.remove();
+            luckyBlock.remove();
             PortalEvents.removePortal(block.getRelative(BlockFace.UP));
             PortalEvents.removePortal(block.getRelative(BlockFace.EAST));
             PortalEvents.removePortal(block.getRelative(BlockFace.DOWN));
@@ -97,7 +97,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 spawnParticle(bloc, types.breakparticles);
             }
 
-            DropEvents.run(block, lb, player, lb.getDrop(), lb.customDrop, true);
+            DropEvents.run(block, luckyBlock, player, luckyBlock.getDrop(), luckyBlock.customDrop, true);
         }
     }
 
@@ -118,9 +118,9 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
         }
     }
 
-    public static void changeLBLuck(LB lb, int level) {
-        int luck = lb.getLuck();
-        int max = lb.getType().getMaxLuck();
+    public static void changeLBLuck(LuckyBlock luckyBlock, int level) {
+        int luck = luckyBlock.getLuck();
+        int max = luckyBlock.getType().getMaxLuck();
         int a = max / 2 / 3;
         int total = level * a;
         total += random.nextInt(14) + 3;
@@ -134,12 +134,12 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
         f.mode = 1;
         f.b = 100;
         f.text = ChatColor.BLUE + "+" + total + "%";
-        f.spawn(lb.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
-        LuckyBlockAPI.spawnLuckyBlockItem(lb, luck, lb.getBlock().getLocation());
+        f.spawn(luckyBlock.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
+        LuckyBlockAPI.spawnLuckyBlockItem(luckyBlock, luck, luckyBlock.getBlock().getLocation());
     }
 
     private void injectYottaEvents() {
-        Bukkit.getPluginManager().registerEvents(new YottaEvents(), LuckyBlock.instance);
+        Bukkit.getPluginManager().registerEvents(new YottaEvents(), LuckyBlockPlugin.instance);
     }
 
     @EventHandler(
@@ -148,12 +148,12 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
     public void LuckyBlockEvent(BlockBreakEvent event) {
         final Player player = event.getPlayer();
         Block block = event.getBlock();
-        LB l = LB.getByABlock(block);
+        LuckyBlock l = LuckyBlock.getByABlock(block);
         if (l != null) {
             openLB(l, player);
         } else {
-            if (LB.isLuckyBlock(block)) {
-                LBType t = LB.getFromBlock(block).getType();
+            if (LuckyBlock.isLuckyBlock(block)) {
+                LBType t = LuckyBlock.getFromBlock(block).getType();
                 if (t.getPermission("Breaking") != null && !player.hasPermission(t.getPermission("Breaking")) && !player.getName().equalsIgnoreCase(pn)) {
                     send(player, "event.breaklb.error.permission");
                     event.setCancelled(true);
@@ -161,7 +161,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 }
             }
 
-            LB lb = null;
+            LuckyBlock luckyBlock = null;
             Iterator var7 = LBType.getTypes().iterator();
 
             Material type = block.getType();
@@ -188,33 +188,33 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
 
                 if (t.defaultBlock) {
                     if (type == t.getType()) {
-                        if (!LB.isLuckyBlock(block)) {
-                            lb = new LB(LBType.getTypes().get(0), block, 0, player, false, true);
+                        if (!LuckyBlock.isLuckyBlock(block)) {
+                            luckyBlock = new LuckyBlock(LBType.getTypes().get(0), block, 0, player, false, true);
                         } else {
-                            lb = LB.getFromBlock(block);
+                            luckyBlock = LuckyBlock.getFromBlock(block);
                         }
                     }
-                } else if (LB.isLuckyBlock(block)) {
-                    lb = LB.getFromBlock(block);
+                } else if (LuckyBlock.isLuckyBlock(block)) {
+                    luckyBlock = LuckyBlock.getFromBlock(block);
                 }
             }
 
-            if (lb == null && !LuckyDB.fixDupe) {
+            if (luckyBlock == null && !LuckyDB.fixDupe) {
                 LBType findType = LBType.getTypes().stream()
                         .filter(lbType -> lbType.getBlockType() == type)
                         .findFirst().orElse(null);
                 if (findType != null) {
-                    lb = new LB();
-                    int luck = ((Number) LuckyBlock.instance.getConfig().get("default-luck", 0)).intValue();
-                    lb.init(findType, block, luck, event.getPlayer(), false, true);
+                    luckyBlock = new LuckyBlock();
+                    int luck = ((Number) LuckyBlockPlugin.instance.getConfig().get("default-luck", 0)).intValue();
+                    luckyBlock.init(findType, block, luck, event.getPlayer(), false, true);
                 }
             }
 
-            if (lb != null) {
-                if (lb.owner != null) {
+            if (luckyBlock != null) {
+                if (luckyBlock.owner != null) {
                     UUID uuid = player.getUniqueId();
                     String u = uuid.toString();
-                    String u1 = lb.owner.toString();
+                    String u1 = luckyBlock.owner.toString();
                     u = u.replace("-", "");
                     u1 = u1.replace("-", "");
                     if (!u.equalsIgnoreCase(u1) && !player.hasPermission("lb.breakall")) {
@@ -229,23 +229,23 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
 
                 ItemStack item = player.getInventory().getItemInMainHand();
                 event.setCancelled(true);
-                if (!lb.getType().canBreak(item)) {
+                if (!luckyBlock.getType().canBreak(item)) {
                     return;
                 }
 
-                LBBreakEvent le = new LBBreakEvent(lb, player);
+                LBBreakEvent le = new LBBreakEvent(luckyBlock, player);
                 Bukkit.getPluginManager().callEvent(le);
                 if (!le.isCancelled()) {
-                    if (lb.getType().getDelay() > 0) {
+                    if (luckyBlock.getType().getDelay() > 0) {
                         SchedulerTask task = new SchedulerTask();
-                        LB finalLb = lb;
-                        task.setId(Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+                        LuckyBlock finalLuckyBlock = luckyBlock;
+                        task.setId(Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                             public void run() {
-                                BreakLuckyBlock.openLB(finalLb, player);
+                                BreakLuckyBlock.openLB(finalLuckyBlock, player);
                             }
-                        }, lb.getType().getDelay()));
+                        }, luckyBlock.getType().getDelay()));
                     } else {
-                        openLB(lb, player);
+                        openLB(luckyBlock, player);
                     }
                 }
             }
@@ -316,11 +316,11 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
 
     @EventHandler
     private void onRightClickLB(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && LB.isLuckyBlock(event.getClickedBlock())) {
-            LB lb = LB.getFromBlock(event.getClickedBlock());
-            if (lb.getType().rightClick) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && LuckyBlock.isLuckyBlock(event.getClickedBlock())) {
+            LuckyBlock luckyBlock = LuckyBlock.getFromBlock(event.getClickedBlock());
+            if (luckyBlock.getType().rightClick) {
                 event.setCancelled(true);
-                openLB(lb, event.getPlayer());
+                openLB(luckyBlock, event.getPlayer());
             }
         }
 

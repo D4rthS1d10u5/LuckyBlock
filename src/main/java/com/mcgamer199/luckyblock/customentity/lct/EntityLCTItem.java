@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -12,7 +12,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
 public class EntityLCTItem extends CustomEntity {
     private LuckyCraftingTable lct;
@@ -39,7 +38,7 @@ public class EntityLCTItem extends CustomEntity {
 
     private void func_loop() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityLCTItem.this.lct != null && EntityLCTItem.this.lct.isValid()) {
                     boolean setAir = false;
@@ -63,7 +62,7 @@ public class EntityLCTItem extends CustomEntity {
     protected void onLoad(final ConfigurationSection c) {
         this.armorStand = (ArmorStand) this.entity;
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityLCTItem.this.lct = LuckyCraftingTable.getByBlock(MyTasks.stringToBlock(c.getString("LCT_Block")));
                 EntityLCTItem.this.func_loop();

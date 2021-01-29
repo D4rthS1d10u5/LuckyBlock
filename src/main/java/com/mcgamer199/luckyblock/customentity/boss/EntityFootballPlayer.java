@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.resources.SkullData;
 import org.bukkit.ChatColor;
@@ -27,7 +27,7 @@ public class EntityFootballPlayer extends CustomEntity {
     private final ItemStack baseball;
 
     public EntityFootballPlayer() {
-        this.baseball = ItemMaker.addEnchants(ItemMaker.createItem(Material.WOOD_SPADE, 1, 0, ChatColor.LIGHT_PURPLE + "Baseball Bat"), new int[]{1, 2}, LuckyBlock.enchantment_glow, Enchantment.KNOCKBACK);
+        this.baseball = ItemMaker.addEnchants(ItemMaker.createItem(Material.WOOD_SPADE, 1, 0, ChatColor.LIGHT_PURPLE + "Baseball Bat"), new int[]{1, 2}, LuckyBlockPlugin.enchantment_glow, Enchantment.KNOCKBACK);
     }
 
     protected Entity spawnFunction(Location loc) {

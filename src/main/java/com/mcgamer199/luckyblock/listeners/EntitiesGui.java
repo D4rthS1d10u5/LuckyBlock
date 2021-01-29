@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import org.bukkit.Bukkit;
@@ -12,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -24,7 +23,7 @@ public class EntitiesGui implements Listener {
     public static void open(Player player) {
         Inventory inv = Bukkit.createInventory(null, 54, ChatColor.BLUE + "Lucky Block: Entities");
         Gui.fill_glass(inv);
-        inv.addItem(ItemMaker.addEnchant(ItemMaker.createItem(Material.LAVA_BUCKET, 1, 0, ChatColor.GOLD + "Hell Hound", Arrays.asList("", ChatColor.GRAY + "Click to spawn")), LuckyBlock.enchantment_glow, 1));
+        inv.addItem(ItemMaker.addEnchant(ItemMaker.createItem(Material.LAVA_BUCKET, 1, 0, ChatColor.GOLD + "Hell Hound", Arrays.asList("", ChatColor.GRAY + "Click to spawn")), LuckyBlockPlugin.enchantment_glow, 1));
         inv.addItem(ItemMaker.createItem(Material.ENDER_PEARL, 1, 0, ChatColor.DARK_PURPLE + "Karl", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
         inv.addItem(ItemMaker.createItem(Material.ROTTEN_FLESH, 1, 0, ChatColor.YELLOW + "Bob", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));
         inv.addItem(ItemMaker.createItem(Material.BONE, 1, 0, ChatColor.BLUE + "Peter", Arrays.asList("", ChatColor.GRAY + "Click to spawn")));

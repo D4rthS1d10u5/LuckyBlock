@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -25,7 +25,7 @@ public class EntityKiller extends CustomEntity {
     }
 
     private void remove(final Item i, int time) {
-        LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityKiller.items.remove(i);
                 i.remove();
@@ -37,18 +37,18 @@ public class EntityKiller extends CustomEntity {
         int x;
         Item d;
         if (event.getDamage() < 100.0D) {
-            for (x = (int) ((double) LuckyBlock.randoms.nextInt(5) + event.getDamage()); x > 0; --x) {
+            for (x = (int) ((double) LuckyBlockPlugin.randoms.nextInt(5) + event.getDamage()); x > 0; --x) {
                 d = this.entity.getWorld().dropItem(this.entity.getLocation(), new ItemStack(Material.WOOL, 1, (short) 14));
                 items.add(d);
                 d.setPickupDelay(2000);
-                this.remove(d, (LuckyBlock.randoms.nextInt(20) + 6) * 3);
+                this.remove(d, (LuckyBlockPlugin.randoms.nextInt(20) + 6) * 3);
             }
         } else {
-            for (x = LuckyBlock.randoms.nextInt(5) + 100; x > 0; --x) {
+            for (x = LuckyBlockPlugin.randoms.nextInt(5) + 100; x > 0; --x) {
                 d = this.entity.getWorld().dropItem(this.entity.getLocation(), new ItemStack(Material.WOOL, 1, (short) 14));
                 items.add(d);
                 d.setPickupDelay(2000);
-                this.remove(d, (LuckyBlock.randoms.nextInt(20) + 6) * 2);
+                this.remove(d, (LuckyBlockPlugin.randoms.nextInt(20) + 6) * 2);
             }
         }
 

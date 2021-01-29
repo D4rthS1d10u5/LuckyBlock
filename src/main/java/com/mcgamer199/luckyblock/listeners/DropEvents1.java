@@ -5,8 +5,8 @@ import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.logic.ActionPerformer;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
@@ -38,49 +38,49 @@ public class DropEvents1 extends ColorsClass {
     public DropEvents1() {
     }
 
-    static void run(Block block, LB lb, Player player, LBDrop drop, CustomDrop customDrop, boolean first) {
+    static void run(Block block, LuckyBlock luckyBlock, Player player, LBDrop drop, CustomDrop customDrop, boolean first) {
         Location bloc = block.getLocation();
-        FileConfiguration file = lb.getFile();
+        FileConfiguration file = luckyBlock.getFile();
         String clss;
         if (drop == LBDrop.SOUND) {
             clss = null;
-            if (lb.getDropOption("Listener") != null) {
-                if (lb.getDropOption("Listener").getValues()[0].toString().equalsIgnoreCase("player")) {
+            if (luckyBlock.getDropOption("Listener") != null) {
+                if (luckyBlock.getDropOption("Listener").getValues()[0].toString().equalsIgnoreCase("player")) {
                     clss = "player";
-                } else if (lb.getDropOption("Listener").getValues()[0].toString().equalsIgnoreCase("nearby")) {
+                } else if (luckyBlock.getDropOption("Listener").getValues()[0].toString().equalsIgnoreCase("nearby")) {
                     clss = "nearby";
                 }
             }
 
             if (clss.equalsIgnoreCase("player")) {
-                if (player != null && lb.getDropOption("SoundName") != null) {
-                    player.playSound(player.getLocation(), Sound.valueOf(lb.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F);
+                if (player != null && luckyBlock.getDropOption("SoundName") != null) {
+                    player.playSound(player.getLocation(), Sound.valueOf(luckyBlock.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F);
                 }
             } else if (clss.equalsIgnoreCase("nearby")) {
-                SoundManager.playFixedSound(bloc, Sound.valueOf(lb.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F, 30);
+                SoundManager.playFixedSound(bloc, Sound.valueOf(luckyBlock.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F, 30);
             }
         } else if (drop == LBDrop.XP_RAIN) {
-            HTasks.f(bloc.add(0.0D, 1.0D, 0.0D), lb);
+            HTasks.f(bloc.add(0.0D, 1.0D, 0.0D), luckyBlock);
         } else {
             Material blockMaterial;
             byte blockType;
             if (drop == LBDrop.SET_BLOCK) {
                 blockType = 0;
                 blockMaterial = null;
-                if (lb.hasDropOption("BlockMaterial")) {
-                    blockMaterial = Material.getMaterial(lb.getDropOption("BlockMaterial").getValues()[0].toString().toUpperCase());
+                if (luckyBlock.hasDropOption("BlockMaterial")) {
+                    blockMaterial = Material.getMaterial(luckyBlock.getDropOption("BlockMaterial").getValues()[0].toString().toUpperCase());
                     if (blockMaterial != null) {
                         block.setType(blockMaterial);
                     } else if (player != null) {
                         send_no(player, "drops.setblock.invalid_material");
                     }
 
-                    if (lb.hasDropOption("BlockData")) {
-                        blockType = Byte.parseByte(lb.getDropOption("BlockData").getValues()[0].toString());
+                    if (luckyBlock.hasDropOption("BlockData")) {
+                        blockType = Byte.parseByte(luckyBlock.getDropOption("BlockData").getValues()[0].toString());
                         block.setData(blockType);
                     }
 
-                    if (blockMaterial != null && lb.hasDropOption("ShowParticles") && lb.getDropOption("ShowParticles").getValues()[0].toString().equalsIgnoreCase("true")) {
+                    if (blockMaterial != null && luckyBlock.hasDropOption("ShowParticles") && luckyBlock.getDropOption("ShowParticles").getValues()[0].toString().equalsIgnoreCase("true")) {
                         MaterialData md = new MaterialData(blockMaterial, blockType);
                         bloc.getWorld().spawnParticle(Particle.BLOCK_CRACK, bloc, 100, 0.3D, 0.1D, 0.3D, 0.0D, md);
                     }
@@ -92,17 +92,17 @@ public class DropEvents1 extends ColorsClass {
                 if (drop == LBDrop.FALLING_ANVILS) {
                     blockType = 8;
                     fuseTicks = 20;
-                    if (lb.hasDropOption("Height")) {
-                        fuseTicks = Integer.parseInt(lb.getDropOption("Height").getValues()[0].toString());
+                    if (luckyBlock.hasDropOption("Height")) {
+                        fuseTicks = Integer.parseInt(luckyBlock.getDropOption("Height").getValues()[0].toString());
                     }
 
                     Location l = bloc.add(0.0D, fuseTicks, 0.0D);
-                    if (lb.hasDropOption("LocationType") && lb.getDropOption("LocationType").getValues()[0].toString().equalsIgnoreCase("player") && player != null) {
+                    if (luckyBlock.hasDropOption("LocationType") && luckyBlock.getDropOption("LocationType").getValues()[0].toString().equalsIgnoreCase("player") && player != null) {
                         l = player.getLocation().add(0.0D, fuseTicks, 0.0D);
                     }
 
-                    if (lb.hasDropOption("AnvilData")) {
-                        blockType = Byte.parseByte(lb.getDropOption("AnvilData").getValues()[0].toString());
+                    if (luckyBlock.hasDropOption("AnvilData")) {
+                        blockType = Byte.parseByte(luckyBlock.getDropOption("AnvilData").getValues()[0].toString());
                     }
 
                     for (playerX = -1; playerX < 2; ++playerX) {
@@ -118,8 +118,8 @@ public class DropEvents1 extends ColorsClass {
                         block.setData((byte) 1);
                         Dispenser d = (Dispenser) block.getState();
                         fuse = 64;
-                        if (lb.hasDropOption("Times")) {
-                            fuse = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                        if (luckyBlock.hasDropOption("Times")) {
+                            fuse = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                         }
 
                         fuse = fuse;
@@ -138,8 +138,8 @@ public class DropEvents1 extends ColorsClass {
                     } else {
                         int wtfIsThisInt;
                         if (drop == LBDrop.POTION_EFFECT) {
-                            if (player != null && lb.getDropOption("Effects") != null) {
-                                Object[] d = lb.getDropOption("Effects").getValues();
+                            if (player != null && luckyBlock.getDropOption("Effects") != null) {
+                                Object[] d = luckyBlock.getDropOption("Effects").getValues();
                                 Object[] var30 = d;
                                 playerX = d.length;
 
@@ -170,25 +170,25 @@ public class DropEvents1 extends ColorsClass {
                         } else {
                             int t;
                             if (drop == LBDrop.DAMAGE_1) {
-                                if (player != null && lb.getDropOption("Times") != null) {
+                                if (player != null && luckyBlock.getDropOption("Times") != null) {
                                     t = 11;
-                                    if (lb.hasDropOption("Ticks")) {
-                                        t = Integer.parseInt(lb.getDropOption("Ticks").getValues()[0].toString());
+                                    if (luckyBlock.hasDropOption("Ticks")) {
+                                        t = Integer.parseInt(luckyBlock.getDropOption("Ticks").getValues()[0].toString());
                                     }
 
-                                    HTasks.h(player, Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString()), t);
+                                    HTasks.h(player, Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString()), t);
                                 }
                             } else if (drop == LBDrop.FIRE) {
                                 t = 10;
-                                if (lb.hasDropOption("Range")) {
-                                    t = Integer.parseInt(lb.getDropOption("Range").getValues()[0].toString());
+                                if (luckyBlock.hasDropOption("Range")) {
+                                    t = Integer.parseInt(luckyBlock.getDropOption("Range").getValues()[0].toString());
                                 }
 
                                 HTasks.i(bloc, t);
                             } else if (drop == LBDrop.EXPLOSION) {
                                 float power = 4.0F;
-                                if (lb.hasDropOption("ExplosionPower")) {
-                                    power = Float.parseFloat(lb.getDropOption("ExplosionPower").getValues()[0].toString());
+                                if (luckyBlock.hasDropOption("ExplosionPower")) {
+                                    power = Float.parseFloat(luckyBlock.getDropOption("ExplosionPower").getValues()[0].toString());
                                 }
 
                                 bloc.getWorld().createExplosion(bloc, power);
@@ -212,20 +212,20 @@ public class DropEvents1 extends ColorsClass {
                                         boolean cobs = true;
                                         Material ma = Material.STONE;
                                         byte data = 0;
-                                        if (lb.hasDropOption("BordersMaterial")) {
-                                            ma = Material.getMaterial(lb.getDropOption("BordersMaterial").getValues()[0].toString().toUpperCase());
+                                        if (luckyBlock.hasDropOption("BordersMaterial")) {
+                                            ma = Material.getMaterial(luckyBlock.getDropOption("BordersMaterial").getValues()[0].toString().toUpperCase());
                                         }
 
-                                        if (lb.hasDropOption("BordersData")) {
-                                            data = Byte.parseByte(lb.getDropOption("BordersData").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("BordersData")) {
+                                            data = Byte.parseByte(luckyBlock.getDropOption("BordersData").getValues()[0].toString());
                                         }
 
-                                        if (lb.hasDropOption("WithWebs") && lb.getDropOption("WithWebs").getValues()[0].toString().equalsIgnoreCase("false")) {
+                                        if (luckyBlock.hasDropOption("WithWebs") && luckyBlock.getDropOption("WithWebs").getValues()[0].toString().equalsIgnoreCase("false")) {
                                             cobs = false;
                                         }
 
-                                        if (lb.hasDropOption("Radius")) {
-                                            rad = Byte.parseByte(lb.getDropOption("Radius").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("Radius")) {
+                                            rad = Byte.parseByte(luckyBlock.getDropOption("Radius").getValues()[0].toString());
                                         }
 
                                         if (rad > 48) {
@@ -271,8 +271,8 @@ public class DropEvents1 extends ColorsClass {
                                         loc.getBlock().setType(mat);
                                         loc.getBlock().setData((byte) 5);
                                         Sign sign = (Sign) loc.getBlock().getState();
-                                        if (lb.hasDropOption("Texts")) {
-                                            Object[] text = lb.getDropOption("Texts").getValues();
+                                        if (luckyBlock.hasDropOption("Texts")) {
+                                            Object[] text = luckyBlock.getDropOption("Texts").getValues();
 
                                             for (int x = 0; x < text.length; ++x) {
                                                 if (text[x] != null) {
@@ -297,16 +297,16 @@ public class DropEvents1 extends ColorsClass {
                                         blockType = 2;
                                         blockMaterial = Material.AIR;
                                         byte data = 0;
-                                        if (lb.hasDropOption("BordersMaterial")) {
-                                            blockMaterial = Material.getMaterial(lb.getDropOption("BordersMaterial").getValues()[0].toString().toUpperCase());
+                                        if (luckyBlock.hasDropOption("BordersMaterial")) {
+                                            blockMaterial = Material.getMaterial(luckyBlock.getDropOption("BordersMaterial").getValues()[0].toString().toUpperCase());
                                         }
 
-                                        if (lb.hasDropOption("BordersData")) {
-                                            data = Byte.parseByte(lb.getDropOption("BordersData").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("BordersData")) {
+                                            data = Byte.parseByte(luckyBlock.getDropOption("BordersData").getValues()[0].toString());
                                         }
 
-                                        if (lb.hasDropOption("Radius")) {
-                                            blockType = Byte.parseByte(lb.getDropOption("Radius").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("Radius")) {
+                                            blockType = Byte.parseByte(luckyBlock.getDropOption("Radius").getValues()[0].toString());
                                         }
 
                                         if (blockType > 48) {
@@ -339,13 +339,13 @@ public class DropEvents1 extends ColorsClass {
                                         }
                                     }
                                 } else if (drop == LBDrop.ADD_XP) {
-                                    if (player != null && lb.hasDropOption("Amount")) {
-                                        t = Integer.parseInt(lb.getDropOption("Amount").getValues()[0].toString());
+                                    if (player != null && luckyBlock.hasDropOption("Amount")) {
+                                        t = Integer.parseInt(luckyBlock.getDropOption("Amount").getValues()[0].toString());
                                         player.giveExp(t);
                                     }
                                 } else if (drop == LBDrop.ADD_LEVEL) {
-                                    if (player != null && lb.hasDropOption("Amount")) {
-                                        t = Integer.parseInt(lb.getDropOption("Amount").getValues()[0].toString());
+                                    if (player != null && luckyBlock.hasDropOption("Amount")) {
+                                        t = Integer.parseInt(luckyBlock.getDropOption("Amount").getValues()[0].toString());
                                         player.giveExpLevels(t);
                                     }
                                 } else {
@@ -353,38 +353,38 @@ public class DropEvents1 extends ColorsClass {
                                     if (drop == LBDrop.ELEMENTAL_CREEPER) {
                                         EntityElementalCreeper e = new EntityElementalCreeper();
                                         e.spawn(bloc);
-                                        if (lb.hasDropOption("BlockMaterial")) {
-                                            blockMaterial = Material.getMaterial(lb.getDropOption("BlockMaterial").getValues()[0].toString().toUpperCase());
+                                        if (luckyBlock.hasDropOption("BlockMaterial")) {
+                                            blockMaterial = Material.getMaterial(luckyBlock.getDropOption("BlockMaterial").getValues()[0].toString().toUpperCase());
                                             e.changeMaterial(blockMaterial, e.getBlockData());
                                         }
 
-                                        if (lb.hasDropOption("BlockData")) {
-                                            data = Byte.parseByte(lb.getDropOption("BlockData").getValues()[0].toString());
+                                        if (luckyBlock.hasDropOption("BlockData")) {
+                                            data = Byte.parseByte(luckyBlock.getDropOption("BlockData").getValues()[0].toString());
                                             e.changeMaterial(e.getBlockMaterial(), data);
                                         }
                                     } else {
                                         Material mat;
                                         if (drop == LBDrop.SET_NEARBY_BLOCKS) {
-                                            if (lb.hasDropOption("BlockMaterial")) {
-                                                mat = Material.getMaterial(lb.getDropOption("BlockMaterial").getValues()[0].toString().toUpperCase());
+                                            if (luckyBlock.hasDropOption("BlockMaterial")) {
+                                                mat = Material.getMaterial(luckyBlock.getDropOption("BlockMaterial").getValues()[0].toString().toUpperCase());
                                                 data = 0;
                                                 fuse = 10;
                                                 playerX = 8;
                                                 String mode = "surface";
-                                                if (lb.hasDropOption("BlockData")) {
-                                                    data = Byte.parseByte(lb.getDropOption("BlockData").getValues()[0].toString());
+                                                if (luckyBlock.hasDropOption("BlockData")) {
+                                                    data = Byte.parseByte(luckyBlock.getDropOption("BlockData").getValues()[0].toString());
                                                 }
 
-                                                if (lb.hasDropOption("Range")) {
-                                                    fuse = Integer.parseInt(lb.getDropOption("Range").getValues()[0].toString());
+                                                if (luckyBlock.hasDropOption("Range")) {
+                                                    fuse = Integer.parseInt(luckyBlock.getDropOption("Range").getValues()[0].toString());
                                                 }
 
-                                                if (lb.hasDropOption("Delay")) {
-                                                    playerX = Integer.parseInt(lb.getDropOption("Delay").getValues()[0].toString());
+                                                if (luckyBlock.hasDropOption("Delay")) {
+                                                    playerX = Integer.parseInt(luckyBlock.getDropOption("Delay").getValues()[0].toString());
                                                 }
 
-                                                if (lb.hasDropOption("Mode")) {
-                                                    mode = lb.getDropOption("Mode").getValues()[0].toString();
+                                                if (luckyBlock.hasDropOption("Mode")) {
+                                                    mode = luckyBlock.getDropOption("Mode").getValues()[0].toString();
                                                 }
 
                                                 HTasks.j(bloc, fuse, mat, data, playerX, mode);
@@ -396,8 +396,8 @@ public class DropEvents1 extends ColorsClass {
                                         } else {
                                             String f;
                                             if (drop == LBDrop.PERFORM_ACTION) {
-                                                if (lb.hasDropOption("ObjType") && ObjectType.getByName(lb.getDropOption("ObjType").getValues()[0].toString()) != null) {
-                                                    ObjectType objType = ObjectType.getByName(lb.getDropOption("ObjType").getValues()[0].toString());
+                                                if (luckyBlock.hasDropOption("ObjType") && ObjectType.getByName(luckyBlock.getDropOption("ObjType").getValues()[0].toString()) != null) {
+                                                    ObjectType objType = ObjectType.getByName(luckyBlock.getDropOption("ObjType").getValues()[0].toString());
                                                     if (objType == ObjectType.PLAYER) {
                                                         objType.setObj(player);
                                                     }
@@ -409,12 +409,12 @@ public class DropEvents1 extends ColorsClass {
                                                     if (objType.getObj() != null) {
                                                         f = null;
                                                         Object actionValue = null;
-                                                        if (lb.hasDropOption("ActionName")) {
-                                                            f = lb.getDropOption("ActionName").getValues()[0].toString();
+                                                        if (luckyBlock.hasDropOption("ActionName")) {
+                                                            f = luckyBlock.getDropOption("ActionName").getValues()[0].toString();
                                                         }
 
-                                                        if (lb.hasDropOption("ActionValue")) {
-                                                            actionValue = lb.getDropOption("ActionValue").getValues()[0];
+                                                        if (luckyBlock.hasDropOption("ActionValue")) {
+                                                            actionValue = luckyBlock.getDropOption("ActionValue").getValues()[0];
                                                         }
 
                                                         if (f != null && !ActionPerformer.perform(objType, f, actionValue)) {
@@ -423,8 +423,8 @@ public class DropEvents1 extends ColorsClass {
                                                     }
                                                 }
                                             } else if (drop == LBDrop.LB_STRUCTURE) {
-                                                if (lb.hasDropOption("Class")) {
-                                                    clss = lb.getDropOption("Class").getValues()[0].toString();
+                                                if (luckyBlock.hasDropOption("Class")) {
+                                                    clss = luckyBlock.getDropOption("Class").getValues()[0].toString();
                                                     DropEvents.b(clss, bloc);
                                                 }
                                             } else if (drop == LBDrop.LAVA_POOL) {
@@ -438,8 +438,8 @@ public class DropEvents1 extends ColorsClass {
                                                 block.setData((byte) 1);
                                                 Dropper d = (Dropper) block.getState();
                                                 fuse = 64;
-                                                if (lb.hasDropOption("Times")) {
-                                                    fuse = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                                if (luckyBlock.hasDropOption("Times")) {
+                                                    fuse = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                                 }
 
                                                 fuse = fuse;
@@ -495,8 +495,8 @@ public class DropEvents1 extends ColorsClass {
                                                 LBEntitiesSpecial.spawnHellHound(player, bloc, false);
                                             } else if (drop == LBDrop.METEORS_1) {
                                                 t = 15;
-                                                if (lb.hasDropOption("Times")) {
-                                                    t = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                                if (luckyBlock.hasDropOption("Times")) {
+                                                    t = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                                 }
 
                                                 HTasks.Met(bloc, t);
@@ -508,19 +508,19 @@ public class DropEvents1 extends ColorsClass {
                                                     text.sendTo(player);
                                                 }
                                             } else if (drop == LBDrop.SCHEMATIC_STRUCTURE) {
-                                                if (LuckyBlock.isWorldEditValid()) {
-                                                    if (lb.hasDropOption("LocationType") && lb.hasDropOption("File")) {
+                                                if (LuckyBlockPlugin.isWorldEditValid()) {
+                                                    if (luckyBlock.hasDropOption("LocationType") && luckyBlock.hasDropOption("File")) {
                                                         int[] i = new int[3];
-                                                        if (lb.hasDropOption("Loc") && lb.getDropOption("Loc").getValues().length == 3) {
-                                                            Object[] a = lb.getDropOption("Loc").getValues();
+                                                        if (luckyBlock.hasDropOption("Loc") && luckyBlock.getDropOption("Loc").getValues().length == 3) {
+                                                            Object[] a = luckyBlock.getDropOption("Loc").getValues();
                                                             i[0] = Integer.parseInt(a[0].toString());
                                                             i[1] = Integer.parseInt(a[1].toString());
                                                             i[2] = Integer.parseInt(a[2].toString());
                                                         }
 
-                                                        f = lb.getDropOption("File").getValues()[0].toString();
-                                                        File fi = new File(LuckyBlock.d() + "Drops/" + f + ".schematic");
-                                                        String s = lb.getDropOption("LocationType").getValues()[0].toString();
+                                                        f = luckyBlock.getDropOption("File").getValues()[0].toString();
+                                                        File fi = new File(LuckyBlockPlugin.d() + "Drops/" + f + ".schematic");
+                                                        String s = luckyBlock.getDropOption("LocationType").getValues()[0].toString();
                                                         Location a = null;
                                                         if (s.equalsIgnoreCase("PLAYER")) {
                                                             if (player != null) {
@@ -546,20 +546,20 @@ public class DropEvents1 extends ColorsClass {
                                                     data = 0;
                                                     fuse = 65;
                                                     float power = 5.0F;
-                                                    if (lb.hasDropOption("BlocksMaterial")) {
-                                                        mat = Material.getMaterial(lb.getDropOption("BlocksMaterial").getValues()[0].toString());
+                                                    if (luckyBlock.hasDropOption("BlocksMaterial")) {
+                                                        mat = Material.getMaterial(luckyBlock.getDropOption("BlocksMaterial").getValues()[0].toString());
                                                     }
 
-                                                    if (lb.hasDropOption("BlocksData")) {
-                                                        data = Byte.parseByte(lb.getDropOption("BlocksData").getValues()[0].toString());
+                                                    if (luckyBlock.hasDropOption("BlocksData")) {
+                                                        data = Byte.parseByte(luckyBlock.getDropOption("BlocksData").getValues()[0].toString());
                                                     }
 
-                                                    if (lb.hasDropOption("Fuse")) {
-                                                        fuse = Integer.parseInt(lb.getDropOption("Fuse").getValues()[0].toString());
+                                                    if (luckyBlock.hasDropOption("Fuse")) {
+                                                        fuse = Integer.parseInt(luckyBlock.getDropOption("Fuse").getValues()[0].toString());
                                                     }
 
-                                                    if (lb.hasDropOption("ExplosionPower")) {
-                                                        power = Float.parseFloat(lb.getDropOption("ExplosionPower").getValues()[0].toString());
+                                                    if (luckyBlock.hasDropOption("ExplosionPower")) {
+                                                        power = Float.parseFloat(luckyBlock.getDropOption("ExplosionPower").getValues()[0].toString());
                                                     }
 
                                                     block.getRelative(BlockFace.EAST).setType(mat);
@@ -579,12 +579,12 @@ public class DropEvents1 extends ColorsClass {
                                                     tnt.setYield(power);
                                                 } else if (drop == LBDrop.FLYING_TNTS) {
                                                     fuse = 80;
-                                                    if (lb.hasDropOption("Times")) {
-                                                        t = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+                                                    if (luckyBlock.hasDropOption("Times")) {
+                                                        t = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
                                                     }
 
-                                                    if (lb.hasDropOption("Fuse")) {
-                                                        fuse = Integer.parseInt(lb.getDropOption("Fuse").getValues()[0].toString());
+                                                    if (luckyBlock.hasDropOption("Fuse")) {
+                                                        fuse = Integer.parseInt(luckyBlock.getDropOption("Fuse").getValues()[0].toString());
                                                     }
 
                                                     for (fuse = 8; fuse > 0; --fuse) {
@@ -598,8 +598,8 @@ public class DropEvents1 extends ColorsClass {
                                                 } else if (drop == LBDrop.ANVIL_JAIL) {
                                                     if (player != null) {
                                                         double h = 35.0D;
-                                                        if (lb.hasDropOption("Height")) {
-                                                            h = Double.parseDouble(lb.getDropOption("Height").getValues()[0].toString());
+                                                        if (luckyBlock.hasDropOption("Height")) {
+                                                            h = Double.parseDouble(luckyBlock.getDropOption("Height").getValues()[0].toString());
                                                         }
 
                                                         Block b = player.getLocation().getBlock();
@@ -609,8 +609,8 @@ public class DropEvents1 extends ColorsClass {
                                                 } else if (drop == LBDrop.LAVA_JAIL) {
                                                     if (player != null) {
                                                         t = 55;
-                                                        if (lb.hasDropOption("Ticks")) {
-                                                            t = Integer.parseInt(lb.getDropOption("Ticks").getValues()[0].toString());
+                                                        if (luckyBlock.hasDropOption("Ticks")) {
+                                                            t = Integer.parseInt(luckyBlock.getDropOption("Ticks").getValues()[0].toString());
                                                         }
 
                                                         Block b = player.getLocation().getBlock();
@@ -618,7 +618,7 @@ public class DropEvents1 extends ColorsClass {
                                                         HTasks.n(player.getLocation().add(0.0D, 2.0D, 0.0D), t);
                                                     }
                                                 } else if (drop == LBDrop.EQUIP_ITEM) {
-                                                    lb.hasDropOption("Path");
+                                                    luckyBlock.hasDropOption("Path");
                                                 } else {
                                                     LBDrop var10000 = LBDrop.DONT_MINE;
                                                 }

@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.entity;
 
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.item.ItemNBT;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -105,7 +105,7 @@ public class CustomEntity {
 
         this.d();
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int x = 0;
 
             public void run() {
@@ -131,7 +131,7 @@ public class CustomEntity {
         if (this.entity != null && this.entity instanceof Creature) {
             final Creature cr = (Creature) this.entity;
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 public void run() {
                     if (!CustomEntity.this.entity.isDead()) {
                         if (cr.getTarget() == null) {
@@ -205,7 +205,7 @@ public class CustomEntity {
     private void d() {
         if (this.hasBossBar() && this.getBossBar() != null && this.getBossBarRange() > 0 && this.getBossBarRange() < 225) {
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 public void run() {
                     if (!CustomEntity.this.entity.isDead()) {
                         if (CustomEntity.this.hasBossBar() && CustomEntity.this.getBossBar() != null && CustomEntity.this.getBossBarRange() > 0 && CustomEntity.this.getBossBarRange() < 225) {
@@ -260,7 +260,7 @@ public class CustomEntity {
     protected final void spawn_1(Location loc, Entity e) {
         this.entity = e;
         if (this.entity != null) {
-            this.entity.setMetadata("CustomEntity", new FixedMetadataValue(LuckyBlock.instance, this.getClass().getName()));
+            this.entity.setMetadata("CustomEntity", new FixedMetadataValue(LuckyBlockPlugin.instance, this.getClass().getName()));
             entities.add(this);
             this.b();
             this.save_def();

@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -36,11 +36,11 @@ public class HTasks extends ColorsClass {
         FallingBlock fb = block.getWorld().spawnFallingBlock(loc.add(0.0D, 10.0D, 0.0D), i1[0], (byte) i1[1]);
         fb.setDropItem(false);
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int loop;
 
             {
-                this.loop = LuckyBlock.randoms.nextInt(4) + 6;
+                this.loop = LuckyBlockPlugin.randoms.nextInt(4) + 6;
             }
 
             public void run() {
@@ -79,7 +79,7 @@ public class HTasks extends ColorsClass {
 
     private static void Tower1(final FallingBlock fb) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 Location loc;
                 if (fb.isValid()) {
@@ -102,7 +102,7 @@ public class HTasks extends ColorsClass {
 
     static void STUCK(final Player player, final Location loc, final int time) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int a = time;
 
             public void run() {
@@ -119,7 +119,7 @@ public class HTasks extends ColorsClass {
 
     static void Met(final Location loc, final int times) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int i = times;
 
             public void run() {
@@ -145,7 +145,7 @@ public class HTasks extends ColorsClass {
 
     static void Meteor(final FallingBlock fb, final float explosionPower) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = 0;
 
             public void run() {
@@ -179,8 +179,8 @@ public class HTasks extends ColorsClass {
                     int z = fb.getLocation().getBlockZ();
 
                     try {
-                        boolean breakBlocks = LuckyBlock.instance.config.getBoolean("Allow.ExplosionGrief");
-                        boolean setFire = LuckyBlock.instance.config.getBoolean("Allow.ExplosionFire");
+                        boolean breakBlocks = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
+                        boolean setFire = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionFire");
                         fb.getWorld().createExplosion(xx, y, z, explosionPower, setFire, breakBlocks);
                     } catch (Exception var6) {
                         var6.printStackTrace();
@@ -196,7 +196,7 @@ public class HTasks extends ColorsClass {
 
     private static void met3(final Item item) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 item.remove();
                 task.run();
@@ -206,7 +206,7 @@ public class HTasks extends ColorsClass {
 
     private static void met1(final Item item) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (item.isValid()) {
                     Iterator var2 = item.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
@@ -237,7 +237,7 @@ public class HTasks extends ColorsClass {
 
     private static void met2(final Block block, final Material mat, final byte data) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 block.setType(mat);
                 block.setData(data);
@@ -248,7 +248,7 @@ public class HTasks extends ColorsClass {
 
     static void LightningR(final Player player, final Block block, final int count) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = count;
 
             public void run() {
@@ -265,7 +265,7 @@ public class HTasks extends ColorsClass {
 
     static void rain(final Location loc, final int times, final int fuse) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = times;
 
             public void run() {
@@ -289,7 +289,7 @@ public class HTasks extends ColorsClass {
 
     static void a(Player player, final Zombie zombie) {
         SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 zombie.remove();
             }
@@ -317,7 +317,7 @@ public class HTasks extends ColorsClass {
         final SchedulerTask task = new SchedulerTask();
         short finalD = d;
         int finalX = x;
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int times = time;
 
             public void run() {
@@ -350,7 +350,7 @@ public class HTasks extends ColorsClass {
         x = randoms.nextInt(i);
         final Material m = mats[x];
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = times;
 
             public void run() {
@@ -375,7 +375,7 @@ public class HTasks extends ColorsClass {
 
     static void b1(final FallingBlock fb) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!fb.isValid()) {
                     MaterialData d = new MaterialData(fb.getMaterial(), fb.getBlockData());
@@ -390,7 +390,7 @@ public class HTasks extends ColorsClass {
 
     static void c(final Location loc, final int times, final boolean critical, final boolean bounce) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = times;
 
             public void run() {
@@ -417,11 +417,11 @@ public class HTasks extends ColorsClass {
         final SchedulerTask task = new SchedulerTask();
         final ArmorStand s = (ArmorStand) loc.getWorld().spawnEntity(new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0D, loc.getZ()), EntityType.ARMOR_STAND);
         s.teleport(loc);
-        s.setMetadata("hrocket", new FixedMetadataValue(LuckyBlock.instance, "" + s.getUniqueId()));
+        s.setMetadata("hrocket", new FixedMetadataValue(LuckyBlockPlugin.instance, "" + s.getUniqueId()));
         s.setVisible(false);
         s.setGravity(false);
         s.setHelmet(new ItemStack(Material.IRON_BLOCK));
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = 80;
 
             public void run() {
@@ -455,15 +455,15 @@ public class HTasks extends ColorsClass {
         }, 1L, 1L));
     }
 
-    static void f(final Location loc, LB lb) {
+    static void f(final Location loc, LuckyBlock luckyBlock) {
         int times = 30;
-        if (lb.hasDropOption("Times")) {
-            times = Integer.parseInt(lb.getDropOption("Times").getValues()[0].toString());
+        if (luckyBlock.hasDropOption("Times")) {
+            times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
         }
 
         final SchedulerTask task = new SchedulerTask();
         int finalTimes = times;
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = finalTimes;
 
             public void run() {
@@ -486,7 +486,7 @@ public class HTasks extends ColorsClass {
 
     static void g(final Dispenser dispenser) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (dispenser.getBlock().getType() != Material.DISPENSER) {
                     task.run();
@@ -505,7 +505,7 @@ public class HTasks extends ColorsClass {
 
     static void h(final Player player, final int times, int ticks) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int t = times;
 
             public void run() {
@@ -525,7 +525,7 @@ public class HTasks extends ColorsClass {
 
     static void FireWorks(final Block block) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x;
 
             {
@@ -534,7 +534,7 @@ public class HTasks extends ColorsClass {
 
             public void run() {
                 if (this.x > 0) {
-                    for (int x = LuckyBlock.randoms.nextInt(18) + 8; x > 0; --x) {
+                    for (int x = LuckyBlockPlugin.randoms.nextInt(18) + 8; x > 0; --x) {
                         Firework fwork = (Firework) block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
                         FireworkMeta fwm = fwork.getFireworkMeta();
                         Random r = new Random();
@@ -560,7 +560,7 @@ public class HTasks extends ColorsClass {
                             type = FireworkEffect.Type.STAR;
                         }
 
-                        FireworkEffect f = FireworkEffect.builder().flicker(r.nextBoolean()).withColor(Color.fromBGR(LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255))).withColor(Color.fromBGR(LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255))).withColor(Color.fromBGR(LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255))).withFade(Color.fromBGR(LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255), LuckyBlock.randoms.nextInt(255))).with(type).trail(r.nextBoolean()).build();
+                        FireworkEffect f = FireworkEffect.builder().flicker(r.nextBoolean()).withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).withFade(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).with(type).trail(r.nextBoolean()).build();
                         fwm.clearEffects();
                         fwm.addEffect(f);
                         int rp = r.nextInt(3) + 1;
@@ -585,7 +585,7 @@ public class HTasks extends ColorsClass {
         }
 
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 block.getWorld().generateTree(block.getLocation(), treetype);
                 task.run();
@@ -595,7 +595,7 @@ public class HTasks extends ColorsClass {
 
     static void FakeDiamond(final Item item, int ticks) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 item.remove();
                 task.run();
@@ -686,7 +686,7 @@ public class HTasks extends ColorsClass {
 
     private static void trap2(final Block block, int ticks) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 block.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().setType(Material.AIR);
                 task.run();
@@ -696,7 +696,7 @@ public class HTasks extends ColorsClass {
 
     static void Bedrock(final Block block) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 block.setType(Material.BEDROCK);
                 if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
@@ -712,17 +712,17 @@ public class HTasks extends ColorsClass {
         }, 1L));
     }
 
-    public static void spawnLB(LB lb, final Location bloc) {
+    public static void spawnLB(LuckyBlock luckyBlock, final Location bloc) {
         String s = null;
-        if (lb.customDrop != null) {
-            s = lb.customDrop.getName();
-        } else if (lb.getDrop() != null) {
-            s = lb.getDrop().name();
+        if (luckyBlock.customDrop != null) {
+            s = luckyBlock.customDrop.getName();
+        } else if (luckyBlock.getDrop() != null) {
+            s = luckyBlock.getDrop().name();
         }
 
-        final ItemStack it = lb.getType().toItemStack(lb.getLuck(), null, s);
+        final ItemStack it = luckyBlock.getType().toItemStack(luckyBlock.getLuck(), null, s);
         final ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 bloc.getWorld().dropItem(bloc, it);
                 bloc.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, bloc, 150, 0.3D, 0.3D, 0.3D, 0.0D);
@@ -742,7 +742,7 @@ public class HTasks extends ColorsClass {
 
         final SchedulerTask task = new SchedulerTask();
         int finalRange = range;
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int r = finalRange;
             int g = 1;
 
@@ -769,9 +769,9 @@ public class HTasks extends ColorsClass {
         }, 3L, 20L));
     }
 
-    static void d_Item(final ItemStack[] items, final Location loc, final LB lb) {
+    static void d_Item(final ItemStack[] items, final Location loc, final LuckyBlock luckyBlock) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = 0;
 
             public void run() {
@@ -783,7 +783,7 @@ public class HTasks extends ColorsClass {
                         int h1 = HTasks.randoms.nextInt(4) - 2;
                         double g1 = (double) h1 / 50.0D;
                         item.setVelocity(new Vector(g, 0.4D, g1));
-                        if (lb.hasDropOption("ShowItemName") && lb.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && items[this.x].hasItemMeta() && items[this.x].getItemMeta().hasDisplayName()) {
+                        if (luckyBlock.hasDropOption("ShowItemName") && luckyBlock.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && items[this.x].hasItemMeta() && items[this.x].getItemMeta().hasDisplayName()) {
                             item.setCustomName(items[this.x].getItemMeta().getDisplayName());
                             item.setCustomNameVisible(true);
                         }
@@ -815,7 +815,7 @@ public class HTasks extends ColorsClass {
         final SchedulerTask task = new SchedulerTask();
         if (mode.equalsIgnoreCase("surface")) {
             int finalRange = range;
-            task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
                 int r = finalRange;
                 int g = 1;
 
@@ -843,7 +843,7 @@ public class HTasks extends ColorsClass {
             }, delay, delay));
         } else if (mode.equalsIgnoreCase("all")) {
             int finalRange = range;
-            task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
                 int r = finalRange;
                 int g = 1;
 
@@ -875,7 +875,7 @@ public class HTasks extends ColorsClass {
 
     static void k(final Player player) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (player.getLocation().getY() > 0.0D) {
                     player.teleport(player.getLocation().add(0.0D, -1.0D, 0.0D));
@@ -889,7 +889,7 @@ public class HTasks extends ColorsClass {
 
     static void l(final Dropper dropper) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (dropper.getBlock().getType() != Material.DROPPER) {
                     task.run();
@@ -908,7 +908,7 @@ public class HTasks extends ColorsClass {
 
     public static void m(final Location loc, final int times, final LBType type) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             int x = times;
 
             public void run() {
@@ -933,13 +933,13 @@ public class HTasks extends ColorsClass {
 
     private static void m_1(final FallingBlock b, final Material type, final byte data) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!b.isValid()) {
                     Block block = b.getLocation().getBlock();
                     if (block.getType() == type) {
-                        LB lb = new LB(LBType.fromMaterialAndData(type, data), block, 0, null, true, true);
-                        lb.playEffects();
+                        LuckyBlock luckyBlock = new LuckyBlock(LBType.fromMaterialAndData(type, data), block, 0, null, true, true);
+                        luckyBlock.playEffects();
                     }
 
                     task.run();
@@ -951,7 +951,7 @@ public class HTasks extends ColorsClass {
 
     static void n(final Location loc, int ticks) {
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 loc.getBlock().setType(Material.LAVA);
             }

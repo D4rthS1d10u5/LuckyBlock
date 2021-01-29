@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.IRange;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -76,7 +76,7 @@ public class Detector {
     public void addBlock(Block block) {
         for (int x = 0; x < this.blocks.length; ++x) {
             if (this.blocks[x] == null) {
-                this.blocks[x] = LB.blockToString(block);
+                this.blocks[x] = LuckyBlock.blockToString(block);
                 x = this.blocks.length;
             }
         }
@@ -95,7 +95,7 @@ public class Detector {
 
     public void dispose() {
         if (LuckyBlockAPI.detectors.contains(this)) {
-            LuckyBlock.instance.detectors.set(LuckyBlockAPI.getDet(this.id), null);
+            LuckyBlockPlugin.instance.detectors.set(LuckyBlockAPI.getDet(this.id), null);
             LuckyBlockAPI.detectors.remove(this);
         }
 
@@ -121,14 +121,14 @@ public class Detector {
             }
         }
 
-        LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".ID", this.id);
+        LuckyBlockPlugin.instance.detectors.set("Detectors.Detector" + this.uuid + ".ID", this.id);
         if (this.name != null) {
-            LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".Name", this.name);
+            LuckyBlockPlugin.instance.detectors.set("Detectors.Detector" + this.uuid + ".Name", this.name);
         }
 
-        LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.x", this.range.getX());
-        LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.y", this.range.getY());
-        LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.z", this.range.getZ());
+        LuckyBlockPlugin.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.x", this.range.getX());
+        LuckyBlockPlugin.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.y", this.range.getY());
+        LuckyBlockPlugin.instance.detectors.set("Detectors.Detector" + this.uuid + ".Range.z", this.range.getZ());
         List<String> list = new ArrayList();
 
         for (int i = 0; i < this.blocks.length; ++i) {
@@ -137,7 +137,7 @@ public class Detector {
             }
         }
 
-        LuckyBlock.instance.detectors.set("Detectors.Detector" + this.uuid + ".Blocks", list);
+        LuckyBlockPlugin.instance.detectors.set("Detectors.Detector" + this.uuid + ".Blocks", list);
         LuckyBlockAPI.saveDetFile();
         LuckyBlockAPI.detectors.add(this);
     }
@@ -147,11 +147,11 @@ public class Detector {
     }
 
     private boolean checkBlock(int x, int y, int z) {
-        return LB.isLuckyBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
+        return LuckyBlock.isLuckyBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
     }
 
-    private LB getLB(int x, int y, int z) {
-        return LB.getFromBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
+    private LuckyBlock getLB(int x, int y, int z) {
+        return LuckyBlock.getFromBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
     }
 
     public void searchForBlocks(Player searcher) {
@@ -160,7 +160,7 @@ public class Detector {
         } else {
             this.running = true;
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 final int x;
                 final int y;
                 final int z;
@@ -192,7 +192,7 @@ public class Detector {
             searcher.sendMessage(ChatColor.GREEN + "Already running!");
         } else {
             final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
                 int x;
                 int y;
                 int z;

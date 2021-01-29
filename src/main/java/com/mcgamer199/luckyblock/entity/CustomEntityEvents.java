@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.entity;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -24,7 +24,7 @@ public class CustomEntityEvents implements Listener {
             final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(entity.getUniqueId());
             if (c.entity != null && c.getTickTime() > -1) {
                 final SchedulerTask task = new SchedulerTask();
-                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+                task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
                     public void run() {
                         if (c.entity != null && !c.entity.isDead()) {
                             c.onTick();
@@ -310,7 +310,7 @@ public class CustomEntityEvents implements Listener {
             final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getDamager().getUniqueId());
             if (c.entity != null && event.getEntity() instanceof LivingEntity) {
                 SchedulerTask task = new SchedulerTask();
-                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+                task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                     public void run() {
                         if (event.getEntity().isDead()) {
                             c.onKillEntity(event);
@@ -330,7 +330,7 @@ public class CustomEntityEvents implements Listener {
             if (c.entity != null) {
                 final Player player = (Player) event.getEntity();
                 SchedulerTask task = new SchedulerTask();
-                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+                task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                     public void run() {
                         if (player.isDead()) {
                             c.onKillPlayer(event);
@@ -528,7 +528,7 @@ public class CustomEntityEvents implements Listener {
             if (c.entity != null) {
                 final Player player = (Player) event.getDamager();
                 SchedulerTask task = new SchedulerTask();
-                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+                task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                     public void run() {
                         if (event.getEntity().isDead()) {
                             c.onKilledByPlayer(event, player);
@@ -547,7 +547,7 @@ public class CustomEntityEvents implements Listener {
             final com.mcgamer199.luckyblock.entity.CustomEntity c = com.mcgamer199.luckyblock.entity.CustomEntity.getByUUID(event.getEntity().getUniqueId());
             if (c.entity != null) {
                 SchedulerTask task = new SchedulerTask();
-                task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+                task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                     public void run() {
                         if (event.getEntity().isDead()) {
                             c.onKilledByEntity(event);

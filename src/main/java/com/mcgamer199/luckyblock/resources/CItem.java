@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.tags.ItemStackGetter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,7 @@ public class CItem {
 
     public static void loadItemsFromFolder(String folderName) {
         String a = folderName + "/customItems/";
-        File folder = new File(LuckyBlock.d() + "Drops/" + a);
+        File folder = new File(LuckyBlockPlugin.d() + "Drops/" + a);
         if (folder.listFiles() != null) {
             File[] var6;
             int var5 = (var6 = folder.listFiles()).length;

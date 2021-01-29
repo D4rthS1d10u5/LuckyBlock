@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
@@ -42,7 +42,7 @@ public class EntityFloatingText extends CustomEntity {
 
     private void run_1(final ArmorStand a) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             double iY = 1.0D;
             int i;
 
@@ -68,7 +68,7 @@ public class EntityFloatingText extends CustomEntity {
 
     private void run_2(final ArmorStand a) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             double iX = 1.0D;
             int i = 0;
 
@@ -87,7 +87,7 @@ public class EntityFloatingText extends CustomEntity {
 
     private void func_age() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityFloatingText.this.age > 0) {
                     --EntityFloatingText.this.age;

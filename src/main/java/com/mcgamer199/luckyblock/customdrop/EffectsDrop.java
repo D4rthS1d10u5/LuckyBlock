@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.customdrop;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import org.bukkit.Particle;
@@ -34,17 +34,17 @@ public class EffectsDrop implements CustomDrop {
         return new DropOption[]{new DropOption("Particles", new String[]{"BARRIER", "CLOUD", "CRIT", "CRIT_MAGIC", "DRIP_LAVA", "DRIP_WATER", "ENCHANTMENT_TABLE", "FIREWORKS_SPARK", "FLAME", "FOOTSTEP", "\nHEART", "LAVA", "NOTE", "PORTAL", "REDSTONE", "SLIME", "SMOKE_NORMAL", "SPELL", "SPELL_MOB", "SPELL_MOB_AMBIENT", "SPELL_WITCH", "SUSPENDED_DEPTH", "TOWN_AURA", "VILLAGER_ANGRY", "VILLAGER_HAPPY"})};
     }
 
-    public void function(final LB lb, Player player) {
-        if (lb.hasDropOption("Particles")) {
-            final String[] s = (String[]) lb.getDropOption("Particles").getValues();
+    public void function(final LuckyBlock luckyBlock, Player player) {
+        if (luckyBlock.hasDropOption("Particles")) {
+            final String[] s = (String[]) luckyBlock.getDropOption("Particles").getValues();
             final SchedulerTask task = new SchedulerTask();
-            task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
                 int x = 10;
 
                 public void run() {
                     int r = (new Random()).nextInt(s.length);
                     Particle e = Particle.valueOf(s[r].toUpperCase());
-                    lb.getBlock().getWorld().spawnParticle(e, lb.getBlock().getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
+                    luckyBlock.getBlock().getWorld().spawnParticle(e, luckyBlock.getBlock().getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
                     --this.x;
                     if (this.x < 1) {
                         task.run();

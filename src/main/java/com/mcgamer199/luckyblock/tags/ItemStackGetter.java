@@ -5,7 +5,7 @@
 
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import org.bukkit.ChatColor;
@@ -70,7 +70,7 @@ public class ItemStackGetter extends HTag {
                     try {
                         item = new ItemStack(Material.getMaterial(c.getString(s).toUpperCase()));
                     } catch (Exception var21) {
-                        LuckyBlock.instance.getLogger().info("Error: Invalid Material! [Section:" + c.getName() + "," + c.getString(s) + "]");
+                        LuckyBlockPlugin.instance.getLogger().info("Error: Invalid Material! [Section:" + c.getName() + "," + c.getString(s) + "]");
                     }
                 } else if (s.equalsIgnoreCase("LBType")) {
                     LBType type = LBType.fromId(c.getInt(s));

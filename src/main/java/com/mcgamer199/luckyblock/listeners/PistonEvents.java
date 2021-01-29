@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -28,42 +27,42 @@ public class PistonEvents implements Listener {
 
         while (var3.hasNext()) {
             final Block block = (Block) var3.next();
-            if (LB.isLuckyBlock(block)) {
-                final LB lb = LB.getFromBlock(block);
-                if (!lb.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH) && !lb.getType().hasProperty(BlockProperty.CAN_BE_THROWN)) {
+            if (LuckyBlock.isLuckyBlock(block)) {
+                final LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                if (!luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH) && !luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_THROWN)) {
                     event.setCancelled(true);
                     return;
                 }
 
-                if (lb.getType().hasAdditionalBlocks()) {
+                if (luckyBlock.getType().hasAdditionalBlocks()) {
                     event.setCancelled(true);
                     return;
                 }
 
-                if (lb.getType().hasProperty(BlockProperty.CAN_BE_THROWN) && event.getDirection() == BlockFace.UP && block.getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
+                if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_THROWN) && event.getDirection() == BlockFace.UP && block.getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
                     final ITask task = new ITask();
-                    task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+                    task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
                         public void run() {
-                            lb.freeze();
+                            luckyBlock.freeze();
                             block.getRelative(BlockFace.UP).setType(Material.AIR);
-                            FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), lb.getType().getType(), (byte) lb.getType().getData());
+                            FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), luckyBlock.getType().getType(), (byte) luckyBlock.getType().getData());
                             fb.setVelocity(new Vector(0.0D, 1.2D, 0.0D));
-                            PistonEvents.this.fb_run(fb, lb);
+                            PistonEvents.this.fb_run(fb, luckyBlock);
                             task.run();
                         }
                     }, 5L));
                 }
 
-                if (lb.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
-                    lb.freeze();
-                    lb.changeBlock(block.getRelative(event.getDirection()));
-                    lb.unfreeze();
+                if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
+                    luckyBlock.freeze();
+                    luckyBlock.changeBlock(block.getRelative(event.getDirection()));
+                    luckyBlock.unfreeze();
                 }
 
-                if (lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
-                    BreakLuckyBlock.openLB(lb, null);
+                if (luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
+                    BreakLuckyBlock.openLB(luckyBlock, null);
                 }
-            } else if (LBType.isAdditionalBlocksFound() && LB.getByABlock(block) != null) {
+            } else if (LBType.isAdditionalBlocksFound() && LuckyBlock.getByABlock(block) != null) {
                 event.setCancelled(true);
                 return;
             }
@@ -77,28 +76,28 @@ public class PistonEvents implements Listener {
 
         while (var3.hasNext()) {
             Block block = (Block) var3.next();
-            if (LB.isLuckyBlock(block)) {
-                LB lb = LB.getFromBlock(block);
-                if (!lb.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
+            if (LuckyBlock.isLuckyBlock(block)) {
+                LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                if (!luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
                     event.setCancelled(true);
                     return;
                 }
 
-                if (lb.getType().hasAdditionalBlocks()) {
+                if (luckyBlock.getType().hasAdditionalBlocks()) {
                     event.setCancelled(true);
                     return;
                 }
 
-                if (lb.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
-                    lb.freeze();
-                    lb.changeBlock(block.getRelative(event.getDirection()));
-                    lb.unfreeze();
+                if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
+                    luckyBlock.freeze();
+                    luckyBlock.changeBlock(block.getRelative(event.getDirection()));
+                    luckyBlock.unfreeze();
                 }
 
-                if (lb.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
-                    BreakLuckyBlock.openLB(lb, null);
+                if (luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
+                    BreakLuckyBlock.openLB(luckyBlock, null);
                 }
-            } else if (LBType.isAdditionalBlocksFound() && LB.getByABlock(block) != null) {
+            } else if (LBType.isAdditionalBlocksFound() && LuckyBlock.getByABlock(block) != null) {
                 event.setCancelled(true);
                 return;
             }
@@ -106,16 +105,16 @@ public class PistonEvents implements Listener {
 
     }
 
-    private void fb_run(final FallingBlock fb, final LB lb) {
+    private void fb_run(final FallingBlock fb, final LuckyBlock luckyBlock) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!fb.isValid()) {
                     if (fb.getLocation().getBlock().getRelative(BlockFace.DOWN) != null) {
-                        lb.changeBlock(fb.getLocation().getBlock());
+                        luckyBlock.changeBlock(fb.getLocation().getBlock());
                     }
 
-                    lb.unfreeze();
+                    luckyBlock.unfreeze();
                     task.run();
                 }
 

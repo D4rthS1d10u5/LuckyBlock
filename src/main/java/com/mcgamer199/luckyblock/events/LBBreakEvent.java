@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.events;
 
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -12,10 +12,10 @@ public class LBBreakEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
     private boolean cancelled;
-    private final LB lb;
+    private final LuckyBlock luckyBlock;
 
-    public LBBreakEvent(LB lb, Player player) {
-        this.lb = lb;
+    public LBBreakEvent(LuckyBlock luckyBlock, Player player) {
+        this.luckyBlock = luckyBlock;
         this.player = player;
     }
 
@@ -36,11 +36,11 @@ public class LBBreakEvent extends Event implements Cancellable {
     }
 
     public Block getBlock() {
-        return this.lb.getBlock();
+        return this.luckyBlock.getBlock();
     }
 
-    public LB getLB() {
-        return this.lb;
+    public LuckyBlock getLB() {
+        return this.luckyBlock;
     }
 
     public HandlerList getHandlers() {

@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock.LBOption;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -15,7 +15,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -25,13 +24,13 @@ public class LBCRegion extends LBCommand {
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length > 1) {
-            if (!LuckyBlock.isWorldEditValid()) {
+            if (!LuckyBlockPlugin.isWorldEditValid()) {
                 send(sender, "world_edit_not_found");
                 return false;
             }
 
             Player player = (Player) sender;
-            WorldEditPlugin w = LuckyBlock.instance.getWorldEdit();
+            WorldEditPlugin w = LuckyBlockPlugin.instance.getWorldEdit();
             Selection s = w.getSelection(player);
             if (s != null) {
                 if (args.length > 1) {
@@ -112,8 +111,8 @@ public class LBCRegion extends LBCommand {
                             for (int minX = s.getMinimumPoint().getBlockX(); minX < s.getMaximumPoint().getBlockX() + 1; ++minX) {
                                 for (minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {
                                     for (y = s.getMinimumPoint().getBlockZ(); y < s.getMaximumPoint().getBlockZ() + 1; ++y) {
-                                        if (LB.isLuckyBlock(s.getWorld().getBlockAt(minX, minX, y))) {
-                                            LB.getFromBlock(s.getWorld().getBlockAt(minX, minX, y)).remove();
+                                        if (LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(minX, minX, y))) {
+                                            LuckyBlock.getFromBlock(s.getWorld().getBlockAt(minX, minX, y)).remove();
                                             ++total;
                                         }
                                     }
@@ -144,8 +143,8 @@ public class LBCRegion extends LBCommand {
                             for (x = s.getMinimumPoint().getBlockX(); x < s.getMaximumPoint().getBlockX() + 1; ++x) {
                                 for (y = s.getMinimumPoint().getBlockY(); y < s.getMaximumPoint().getBlockY() + 1; ++y) {
                                     for (int z = s.getMinimumPoint().getBlockZ(); z < s.getMaximumPoint().getBlockZ() + 1; ++z) {
-                                        if (LB.isLuckyBlock(s.getWorld().getBlockAt(x, y, z))) {
-                                            LB.getFromBlock(s.getWorld().getBlockAt(x, y, z)).setOwner(uuid);
+                                        if (LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(x, y, z))) {
+                                            LuckyBlock.getFromBlock(s.getWorld().getBlockAt(x, y, z)).setOwner(uuid);
                                             ++total;
                                         }
                                     }
@@ -187,7 +186,7 @@ public class LBCRegion extends LBCommand {
 
     void action1(final Selection s, final Player player, final LBType type) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int x = s.getMinimumPoint().getBlockX();
             int y = s.getMinimumPoint().getBlockY();
             int z = s.getMinimumPoint().getBlockZ();
@@ -202,11 +201,11 @@ public class LBCRegion extends LBCommand {
             public void run() {
                 boolean changeX = true;
                 boolean changeZ = true;
-                if (!LB.canSaveMore()) {
+                if (!LuckyBlock.canSaveMore()) {
                     task.run();
                 } else {
-                    if (!LB.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
-                        LB.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
+                    if (!LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
+                        LuckyBlock.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
                         ++this.total;
                     }
 
@@ -247,7 +246,7 @@ public class LBCRegion extends LBCommand {
 
     void action2(final Selection s, final Player player, final LBDrop drop, final CustomDrop cd) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int x = s.getMinimumPoint().getBlockX();
             int y = s.getMinimumPoint().getBlockY();
             int z = s.getMinimumPoint().getBlockZ();
@@ -263,16 +262,16 @@ public class LBCRegion extends LBCommand {
                 boolean changeX = true;
                 boolean changeZ = true;
                 Block b = s.getWorld().getBlockAt(this.x, this.y, this.z);
-                if (LB.isLuckyBlock(b)) {
-                    LB lb = LB.getFromBlock(b);
+                if (LuckyBlock.isLuckyBlock(b)) {
+                    LuckyBlock luckyBlock = LuckyBlock.getFromBlock(b);
                     if (cd != null) {
-                        lb.customDrop = cd;
-                        lb.refreshCustomDrop();
-                        lb.changed();
+                        luckyBlock.customDrop = cd;
+                        luckyBlock.refreshCustomDrop();
+                        luckyBlock.changed();
                         ++this.total;
                     } else if (drop != null) {
-                        lb.setDrop(drop, false, true);
-                        lb.changed();
+                        luckyBlock.setDrop(drop, false, true);
+                        luckyBlock.changed();
                         ++this.total;
                     }
                 }
@@ -302,7 +301,7 @@ public class LBCRegion extends LBCommand {
 
                 if (this.finish) {
                     if (this.total > 0) {
-                        LB.saveAll();
+                        LuckyBlock.saveAll();
                         String a = LBCRegion.val("command.region.action2", false);
                         a = a.replace("%total%", String.valueOf(this.total));
                         LBCRegion.send_2(player, a);

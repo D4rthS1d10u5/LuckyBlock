@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.tags;
 
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -28,14 +28,14 @@ public class HTag extends ColorsClass {
     }
 
     protected static FileConfiguration getFileByLoc(String s) {
-        File ff = new File(LuckyBlock.d() + "Drops/" + s);
+        File ff = new File(LuckyBlockPlugin.d() + "Drops/" + s);
         FileConfiguration f = YamlConfiguration.loadConfiguration(ff);
         return f;
     }
 
     public static ConfigurationSection getSectionMain(String s) {
         String[] d = s.split(",");
-        File ff = new File(LuckyBlock.d() + d[0]);
+        File ff = new File(LuckyBlockPlugin.d() + d[0]);
         FileConfiguration f = YamlConfiguration.loadConfiguration(ff);
         return f.getConfigurationSection(d[1]);
     }

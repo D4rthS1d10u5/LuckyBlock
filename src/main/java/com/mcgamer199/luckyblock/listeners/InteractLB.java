@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.events.LBInteractEvent;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.structures.BossDungeon;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,8 +23,8 @@ public class InteractLB implements Listener {
     private void onInteractLB(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
-            if (block != null && LB.isLuckyBlock(block)) {
-                LBInteractEvent e = new LBInteractEvent(event.getPlayer(), LB.getFromBlock(block), event.getBlockFace());
+            if (block != null && LuckyBlock.isLuckyBlock(block)) {
+                LBInteractEvent e = new LBInteractEvent(event.getPlayer(), LuckyBlock.getFromBlock(block), event.getBlockFace());
                 Bukkit.getPluginManager().callEvent(e);
             }
         }
@@ -34,10 +34,10 @@ public class InteractLB implements Listener {
     @EventHandler
     public void onInteract(LBInteractEvent event) {
         Block block = event.getClickedBlock();
-        LB lb = LB.getFromBlock(block);
+        LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
         Player player = event.getPlayer();
-        if (lb != null) {
-            if (lb.getLuck() == lb.getType().getMaxLuck() && block.getRelative(BlockFace.UP).getType() == Material.CHEST && block.getRelative(BlockFace.DOWN).getType() == Material.EMERALD_BLOCK && LuckyBlockWorld.equals(player.getWorld().getGenerator())) {
+        if (luckyBlock != null) {
+            if (luckyBlock.getLuck() == luckyBlock.getType().getMaxLuck() && block.getRelative(BlockFace.UP).getType() == Material.CHEST && block.getRelative(BlockFace.DOWN).getType() == Material.EMERALD_BLOCK && LuckyBlockWorld.equals(player.getWorld().getGenerator())) {
                 Chest chest = (Chest) block.getRelative(BlockFace.UP).getState();
                 int total = 0;
 

@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.newstr.FileStructure;
@@ -30,9 +30,9 @@ public class LBSpawnBoss implements Listener {
     @EventHandler
     private void onPotionHit(PotionSplashEvent event) {
         Block block = event.getPotion().getLocation().getBlock().getRelative(BlockFace.DOWN);
-        if (LB.isLuckyBlock(block)) {
-            LB lb = LB.getFromBlock(block);
-            if (lb.getLuck() == lb.getType().getMaxLuck()) {
+        if (LuckyBlock.isLuckyBlock(block)) {
+            LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+            if (luckyBlock.getLuck() == luckyBlock.getType().getMaxLuck()) {
                 Block b = block.getRelative(BlockFace.DOWN);
                 if (b.getRelative(BlockFace.EAST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.WEST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.SOUTH).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.NORTH).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.NORTH_EAST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.NORTH_WEST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.SOUTH_EAST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.SOUTH_WEST).getType() == Material.STATIONARY_WATER && event.getPotion().getEffects() != null) {
                     boolean f = false;
@@ -69,7 +69,7 @@ public class LBSpawnBoss implements Listener {
                         }
 
                         if (a > 4) {
-                            lb.remove(true);
+                            luckyBlock.remove(true);
                             var9 = item.iterator();
 
                             while (var9.hasNext()) {
@@ -88,7 +88,7 @@ public class LBSpawnBoss implements Listener {
 
     private void func_2(final Location loc) {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             int i = 25;
 
             public void run() {

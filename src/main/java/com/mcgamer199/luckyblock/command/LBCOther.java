@@ -3,8 +3,8 @@ package com.mcgamer199.luckyblock.command;
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
 import com.mcgamer199.luckyblock.listeners.LBGui;
 import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class LBCOther extends LBCommand {
     public LBCOther() {
@@ -120,14 +119,14 @@ public class LBCOther extends LBCommand {
                 }
             } else {
                 if (args[0].equalsIgnoreCase("runall")) {
-                    if (LB.lbs.size() <= 0) {
+                    if (LuckyBlock.luckyBlocks.size() <= 0) {
                         send(sender, "command.runall.no_lb");
                         return false;
                     }
 
-                    for (byte blocks = 0; blocks < LB.lbs.size() && blocks < 65; blocks = 0) {
-                        LB lb = LB.lbs.get(blocks);
-                        BreakLuckyBlock.openLB(lb, null);
+                    for (byte blocks = 0; blocks < LuckyBlock.luckyBlocks.size() && blocks < 65; blocks = 0) {
+                        LuckyBlock luckyBlock = LuckyBlock.luckyBlocks.get(blocks);
+                        BreakLuckyBlock.openLB(luckyBlock, null);
                     }
 
                     send(sender, "command.runall.success");
@@ -135,8 +134,8 @@ public class LBCOther extends LBCommand {
                 }
 
                 if (args[0].equalsIgnoreCase("reload")) {
-                    LuckyBlock.instance.reloadConfig();
-                    LuckyBlock.instance.config = LuckyBlock.instance.getConfig();
+                    LuckyBlockPlugin.instance.reloadConfig();
+                    LuckyBlockPlugin.instance.config = LuckyBlockPlugin.instance.getConfig();
                     send(sender, "command.reload.success");
                     return true;
                 }

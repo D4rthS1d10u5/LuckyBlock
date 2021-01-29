@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.command.engine;
 
 import com.mcgamer199.luckyblock.command.LBCOther;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
 import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
@@ -17,7 +17,7 @@ public class LBCommand extends ILBCmd implements CommandExecutor {
     private final boolean strict;
 
     public LBCommand() {
-        this.strict = LuckyBlock.instance.config.getBoolean("strict_commands");
+        this.strict = LuckyBlockPlugin.instance.config.getBoolean("strict_commands");
     }
 
     public static LBCommand getByName(String name) {

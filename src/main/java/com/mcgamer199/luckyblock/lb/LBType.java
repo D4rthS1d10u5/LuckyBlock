@@ -5,11 +5,12 @@
 
 package com.mcgamer199.luckyblock.lb;
 
+import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.item.ItemReflection;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.CItem;
@@ -179,7 +180,7 @@ public class LBType {
 
     public static File getFolder(LBType type) {
         File f = null;
-        String[] ad = LuckyBlock.instance.configf.getPath().split(LuckyBlock.instance.configf.getName());
+        String[] ad = LuckyBlockPlugin.instance.configf.getPath().split(LuckyBlockPlugin.instance.configf.getName());
         if (type != null) {
             f = new File(ad[0] + "/Drops/" + type.getFolder() + "/");
         }
@@ -191,7 +192,7 @@ public class LBType {
         File f = null;
         FileConfiguration file = null;
         if (type != null) {
-            f = new File(LuckyBlock.instance.getDataFolder() + File.separator + "Drops/" + type.getFolder() + "/");
+            f = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "Drops/" + type.getFolder() + "/");
             f = new File(f.getPath() + "/" + f.listFiles()[number].getName());
         }
 
@@ -319,7 +320,7 @@ public class LBType {
     }
 
     public static void load() {
-        File[] files = LuckyBlock.instance.folder1.listFiles();
+        File[] files = LuckyBlockPlugin.instance.folder1.listFiles();
         int id = 1;
         String last = "";
         int tot = files.length;
@@ -693,9 +694,9 @@ public class LBType {
 
         if (totalLoaded > 0) {
             if (totalLoaded == 1) {
-                LuckyBlock.instance.getLogger().info("Loaded " + totalLoaded + " LB Type!");
+                LuckyBlockPlugin.instance.getLogger().info("Loaded " + totalLoaded + " LB Type!");
             } else {
-                LuckyBlock.instance.getLogger().info("Loaded " + totalLoaded + " LB Types!");
+                LuckyBlockPlugin.instance.getLogger().info("Loaded " + totalLoaded + " LB Types!");
             }
         }
 
@@ -752,7 +753,7 @@ public class LBType {
                             }
                         } while (shapeless);
 
-                        ShapedRecipe sh = new ShapedRecipe(new NamespacedKey(LuckyBlock.instance, "lbtype." + ChatColor.stripColor(type.name.toLowerCase()).replace(" ", "") + "." + s), item);
+                        ShapedRecipe sh = new ShapedRecipe(new NamespacedKey(LuckyBlockPlugin.instance, "lbtype." + ChatColor.stripColor(type.name.toLowerCase()).replace(" ", "") + "." + s), item);
                         sh.shape((String) shape.get(0), (String) shape.get(1), (String) shape.get(2));
 
                         for (o = 0; o < items.size(); ++o) {
@@ -1013,7 +1014,7 @@ public class LBType {
         if (this.id >= 1 && this.id <= 255) {
             lbs.add(this);
             if (this.version > 225) {
-                LuckyBlock.instance.getLogger().info("LBType:" + this.id + " is newer than the current version of lb!");
+                LuckyBlockPlugin.instance.getLogger().info("LBType:" + this.id + " is newer than the current version of lb!");
             }
 
             for (x = 0; x < lbs.size(); ++x) {
@@ -1030,7 +1031,7 @@ public class LBType {
 
     public FileConfiguration getConfig() {
         FileConfiguration file = null;
-        String path = LuckyBlock.instance.folder1.getPath();
+        String path = LuckyBlockPlugin.instance.folder1.getPath();
         File f = new File(path);
         File[] files = f.listFiles();
 
@@ -1076,19 +1077,19 @@ public class LBType {
         return this.toItemStack(luck, null, drop);
     }
 
-    public ItemStack toItemStack(int luck, LBType.LBOption[] options) {
+    public ItemStack toItemStack(int luck, LBOption[] options) {
         return this.toItemStack(luck, options, null);
     }
 
-    public ItemStack toItemStack(int luck, LBType.LBOption[] options, String drop) {
+    public ItemStack toItemStack(int luck, LBOption[] options, String drop) {
         return this.toItemStack(luck, options, drop, false, 1);
     }
 
-    public ItemStack toItemStack(int luck, LBType.LBOption[] options, String drop, boolean randomLuck) {
+    public ItemStack toItemStack(int luck, LBOption[] options, String drop, boolean randomLuck) {
         return this.toItemStack(luck, options, drop, randomLuck, 1);
     }
 
-    public ItemStack toItemStack(int luck, LBType.LBOption[] options, String drop, boolean randomLuck, int amount) {
+    public ItemStack toItemStack(int luck, LBOption[] options, String drop, boolean randomLuck, int amount) {
         List<String> list = new ArrayList();
         if (this.itemLore != null && this.itemLore.size() > 0) {
             Iterator var7 = this.itemLore.iterator();
@@ -1123,12 +1124,12 @@ public class LBType {
         }
 
         if (options != null) {
-            LBType.LBOption[] var10 = options;
+            LBOption[] var10 = options;
             int var9 = options.length;
 
             for (int var8 = 0; var8 < var9; ++var8) {
-                LBType.LBOption option = var10[var8];
-                if (option == LBType.LBOption.PROTECTED) {
+                LBOption option = var10[var8];
+                if (option == LBOption.PROTECTED) {
                     item = ItemMaker.addLore(item, ChatColor.GRAY + "Protected: " + ChatColor.GREEN + "true");
                 }
             }
@@ -1291,13 +1292,6 @@ public class LBType {
             }
         } else {
             return false;
-        }
-    }
-
-    public enum LBOption {
-        PROTECTED;
-
-        LBOption() {
         }
     }
 

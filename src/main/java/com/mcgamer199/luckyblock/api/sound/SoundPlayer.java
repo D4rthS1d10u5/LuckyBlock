@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.api.sound;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ public class SoundPlayer {
 
     public void play(int times, int delay, final Location loc) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             private int timer = times;
 
             public void run() {
@@ -38,7 +38,7 @@ public class SoundPlayer {
 
     public void play(int times, int delay, final Player player) {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             private int timer = times;
 
             public void run() {

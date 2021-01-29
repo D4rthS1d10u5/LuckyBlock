@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.entity;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +18,7 @@ public class CustomEntityLoader {
     public static FileConfiguration file;
 
     static {
-        fileF = new File(LuckyBlock.instance.getDataFolder() + File.separator + "CustomEntities.yml");
+        fileF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "CustomEntities.yml");
         file = YamlConfiguration.loadConfiguration(fileF);
     }
 

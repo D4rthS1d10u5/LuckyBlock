@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.logic;
 import com.mcgamer199.luckyblock.api.item.ItemFactory;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
@@ -76,7 +76,7 @@ public class ColorsClass {
         random = new Random();
         swords = Arrays.asList(Material.DIAMOND_SWORD, Material.GOLD_SWORD, Material.IRON_SWORD, Material.STONE_SWORD, Material.WOOD_SWORD);
         wait = new ArrayList();
-        delay = LuckyBlock.instance.config.getLong("delay");
+        delay = LuckyBlockPlugin.instance.config.getLong("delay");
     }
 
     public ColorsClass() {
@@ -171,7 +171,7 @@ public class ColorsClass {
         if (!wait.contains(uuid)) {
             wait.add(uuid);
             SchedulerTask task = new SchedulerTask();
-            task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlock.instance, new Runnable() {
+            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
                 public void run() {
                     ColorsClass.wait.remove(uuid);
                 }
@@ -203,7 +203,7 @@ public class ColorsClass {
     @Deprecated
     protected static final Sound _deprecated_getSound(String name) {
         Sound s = null;
-        File folder = new File(LuckyBlock.d() + "data/sounds/" + LuckyBlock.sounds_file);
+        File folder = new File(LuckyBlockPlugin.d() + "data/sounds/" + LuckyBlockPlugin.sounds_file);
         if (folder.exists() && folder.getName().endsWith(".yml")) {
             FileConfiguration fc = YamlConfiguration.loadConfiguration(folder);
             if (fc.getString(name) != null && isSoundValid(fc.getString(name))) {
@@ -212,7 +212,7 @@ public class ColorsClass {
             }
         }
 
-        folder = new File(LuckyBlock.d() + "data/sounds");
+        folder = new File(LuckyBlockPlugin.d() + "data/sounds");
         if (folder.listFiles() != null) {
             File[] var6;
             int var5 = (var6 = folder.listFiles()).length;

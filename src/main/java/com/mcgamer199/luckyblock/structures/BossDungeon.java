@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.structures;
 
 import com.mcgamer199.luckyblock.customentity.EntityGuardian;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,7 +62,7 @@ public class BossDungeon extends LuckyDungeon {
         }
 
         block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock().setType(mat);
-        baseBlocks.add(LB.blockToString(block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock()));
+        baseBlocks.add(LuckyBlock.blockToString(block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock()));
         super.build(loc);
         b.spawn(loc);
     }

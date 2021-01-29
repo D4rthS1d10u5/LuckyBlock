@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBGenerateEvent;
 import com.mcgamer199.luckyblock.events.LBPreGenerateEvent;
-import com.mcgamer199.luckyblock.lb.LB;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.Bukkit;
@@ -14,7 +14,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class WorldGenerateLB extends ColorsClass implements Listener {
 
@@ -23,7 +22,7 @@ public class WorldGenerateLB extends ColorsClass implements Listener {
 
     @EventHandler
     private void onChunkPopulate(ChunkPopulateEvent event) {
-        if (LuckyBlock.allowLBGeneration) {
+        if (LuckyBlockPlugin.allowLBGeneration) {
             World world = event.getWorld();
             if (!LuckyBlockWorld.equals(world.getGenerator())) {
                 int x = random.nextInt(10) - 5;
@@ -66,8 +65,8 @@ public class WorldGenerateLB extends ColorsClass implements Listener {
                     LBPreGenerateEvent e = new LBPreGenerateEvent(b, world, event.getChunk(), type);
                     Bukkit.getPluginManager().callEvent(e);
                     if (!e.isCancelled() && !type.defaultBlock) {
-                        LB lb = LB.placeLB(b.getLocation(), type, null, "a=Naturally", null, LBType.getRandomP(type.generateWithLuck[0], type.generateWithLuck[1]));
-                        LBGenerateEvent e1 = new LBGenerateEvent(lb, world, event.getChunk());
+                        LuckyBlock luckyBlock = LuckyBlock.placeLB(b.getLocation(), type, null, "a=Naturally", null, LBType.getRandomP(type.generateWithLuck[0], type.generateWithLuck[1]));
+                        LBGenerateEvent e1 = new LBGenerateEvent(luckyBlock, world, event.getChunk());
                         Bukkit.getPluginManager().callEvent(e1);
                     }
                 }

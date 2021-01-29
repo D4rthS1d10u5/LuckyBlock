@@ -5,7 +5,7 @@
 
 package com.mcgamer199.luckyblock.yottaevents;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -25,9 +25,9 @@ public class LuckyDB {
     private static boolean toSave;
 
     static {
-        dbFile = new File(LuckyBlock.instance.getDataFolder(), "anti-dupe-database.yml");
+        dbFile = new File(LuckyBlockPlugin.instance.getDataFolder(), "anti-dupe-database.yml");
         toSave = false;
-        Bukkit.getScheduler().runTaskTimer(LuckyBlock.instance, LuckyDB::checkSave, 12000L, 12000L);
+        Bukkit.getScheduler().runTaskTimer(LuckyBlockPlugin.instance, LuckyDB::checkSave, 12000L, 12000L);
         loadConfig();
     }
 
@@ -38,7 +38,7 @@ public class LuckyDB {
     public static void checkSave() {
         if (toSave) {
             toSave = false;
-            Bukkit.getScheduler().runTaskAsynchronously(LuckyBlock.instance, () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(LuckyBlockPlugin.instance, () -> {
                 YamlConfiguration dbConfig = new YamlConfiguration();
                 if (fixDupe == null) {
                     dbConfig.set("fix-dupe", true);
@@ -98,7 +98,7 @@ public class LuckyDB {
                         db.put(uuid, new LuckyDB.BlockData(uuid, amount, timeMillis, Integer.parseInt(meta[3])));
                     }
                 } catch (Exception var9) {
-                    LuckyBlock.instance.getLogger().severe("Invalid '" + data + "' in anti-dupe-database.yml");
+                    LuckyBlockPlugin.instance.getLogger().severe("Invalid '" + data + "' in anti-dupe-database.yml");
                     var9.printStackTrace();
                 }
             }

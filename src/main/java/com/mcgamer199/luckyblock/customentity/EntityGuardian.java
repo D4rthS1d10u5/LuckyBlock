@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.entity.Immunity;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -37,7 +37,7 @@ public class EntityGuardian extends CustomEntity {
         skeleton.setHealth(460.0D);
         skeleton.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999999, 1));
         Map<Enchantment, Integer> m = new HashMap();
-        m.put(LuckyBlock.enchantment_lightning, 10);
+        m.put(LuckyBlockPlugin.enchantment_lightning, 10);
         m.put(Enchantment.DAMAGE_ALL, 4);
         ItemStack item = LuckyBlockAPI.createItemStack(Material.DIAMOND_AXE, 1, (short) 0, null, null, m);
         skeleton.getEquipment().setItemInMainHand(item);
@@ -63,7 +63,7 @@ public class EntityGuardian extends CustomEntity {
 
     private void run1() {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityGuardian.this.getEntity().isDead()) {
                     int total = 0;
@@ -118,7 +118,7 @@ public class EntityGuardian extends CustomEntity {
 
     private void run2() {
         final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlock.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlock.instance, new Runnable() {
+        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityGuardian.this.getEntity().isDead()) {
                     int x = 0;

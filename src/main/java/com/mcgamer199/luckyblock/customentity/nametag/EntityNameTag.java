@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.entity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Location;
@@ -36,7 +36,7 @@ public class EntityNameTag extends CustomEntity {
         this.func_1();
         this.func_load();
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 as.setCustomNameVisible(true);
             }
@@ -88,7 +88,7 @@ public class EntityNameTag extends CustomEntity {
 
     private void func_1() {
         final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityNameTag.this.attachedEntity.isDead()) {
                     Location l = EntityNameTag.this.attachedEntity.getLocation().add(EntityNameTag.this.offset[0], EntityNameTag.this.offset[1], EntityNameTag.this.offset[2]);
@@ -116,7 +116,7 @@ public class EntityNameTag extends CustomEntity {
         this.offset[2] = c.getDouble("Offset.Z");
         this.armorStand = (ArmorStand) this.entity;
         ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlock.instance, new Runnable() {
+        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 EntityNameTag.this.attachedEntity = CustomEntity.getByUUID(UUID.fromString(c.getString("attachedEntity"))).getEntity();
                 EntityNameTag.this.onload(c);

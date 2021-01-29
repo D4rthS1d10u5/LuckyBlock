@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -15,7 +15,7 @@ public class PlayerData {
     private static final Plugin plugin;
 
     static {
-        plugin = LuckyBlock.instance;
+        plugin = LuckyBlockPlugin.instance;
     }
 
     public PlayerData() {
