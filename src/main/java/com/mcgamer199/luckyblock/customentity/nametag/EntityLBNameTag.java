@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.Immunity;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -155,8 +155,8 @@ public class EntityLBNameTag extends CustomEntity {
             }
         }
 
-        if (b != null && LuckyBlock.getFromBlock(MyTasks.stringToBlock(b)) != null) {
-            this.luckyBlock = LuckyBlock.getFromBlock(MyTasks.stringToBlock(b));
+        if (b != null && LuckyBlock.getFromBlock(LocationUtils.blockFromString(b)) != null) {
+            this.luckyBlock = LuckyBlock.getFromBlock(LocationUtils.blockFromString(b));
         }
 
         this.reload(false);

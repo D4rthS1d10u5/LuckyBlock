@@ -277,7 +277,7 @@ public class HTasks extends ColorsClass {
                     int h1 = HTasks.randoms.nextInt(4) - 2;
                     double g1 = (double) h1 / 10.0D;
                     tnt.setVelocity(new Vector(g, 1.0D, g1));
-                    SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
+                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
                     --this.x;
                 } else {
                     task.run();
@@ -326,7 +326,7 @@ public class HTasks extends ColorsClass {
                     Item item = loc.getWorld().dropItem(loc, new ItemStack(mat, 1, finalD));
                     item.setVelocity(new Vector(0.0D, 0.8D, 0.0D));
                     --this.times;
-                    SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 20);
+                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 20);
                 } else {
                     task.run();
                 }
@@ -362,7 +362,7 @@ public class HTasks extends ColorsClass {
                     int h1 = HTasks.randoms.nextInt(4) - 2;
                     double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
-                    SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
+                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
                     HTasks.b1(fb);
                     --this.x;
                 } else {
@@ -380,7 +380,7 @@ public class HTasks extends ColorsClass {
                 if (!fb.isValid()) {
                     MaterialData d = new MaterialData(fb.getMaterial(), fb.getBlockData());
                     fb.getWorld().spawnParticle(Particle.BLOCK_CRACK, fb.getLocation(), 100, 0.3D, 0.1D, 0.3D, 0.0D, d);
-                    SoundManager.playFixedSound(fb.getLocation(), HTasks.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
+                    SoundManager.playFixedSound(fb.getLocation(), SoundManager.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
                     task.run();
                 }
 
@@ -403,7 +403,7 @@ public class HTasks extends ColorsClass {
                     a.setVelocity(new Vector(g, 1.2D, g1));
                     a.setCritical(critical);
                     a.setBounce(bounce);
-                    SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_arrowrain"), 1.0F, 1.0F, 50);
+                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_arrowrain"), 1.0F, 1.0F, 50);
                     --this.x;
                 } else {
                     task.run();
@@ -788,7 +788,7 @@ public class HTasks extends ColorsClass {
                             item.setCustomNameVisible(true);
                         }
 
-                        SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 50);
+                        SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 50);
                         ++this.x;
                     }
                 } else {
@@ -920,7 +920,7 @@ public class HTasks extends ColorsClass {
                     int h1 = HTasks.randoms.nextInt(4) - 2;
                     double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
-                    SoundManager.playFixedSound(loc, HTasks.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
+                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
                     HTasks.m_1(fb, type.getType(), (byte) type.getData());
                     --this.x;
                 } else {

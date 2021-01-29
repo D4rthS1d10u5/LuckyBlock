@@ -9,6 +9,7 @@ import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.resources.Detector;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -79,7 +80,7 @@ public class LuckyBlockAPI implements Listener {
                             if (a[0].equalsIgnoreCase("LBType")) {
                                 type = LBType.fromId(Integer.parseInt(a[1]));
                             } else if (a[0].equalsIgnoreCase("Block")) {
-                                block = MyTasks.stringToBlock(a[1]);
+                                block = LocationUtils.blockFromString(a[1]);
                             } else if (a[0].equalsIgnoreCase("PlacedBy")) {
                                 placedBy = a[1];
                             } else if (a[0].equalsIgnoreCase("Luck")) {
@@ -181,7 +182,7 @@ public class LuckyBlockAPI implements Listener {
                 String uuid = d[0];
                 if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
                     String all = d[1] + "," + d[2] + "," + d[3] + "," + d[4];
-                    return MyTasks.stringToLoc(all);
+                    return LocationUtils.locationFromString(all);
                 }
             }
         }
@@ -201,7 +202,7 @@ public class LuckyBlockAPI implements Listener {
             }
         }
 
-        locations.add(player.getUniqueId().toString() + "," + MyTasks.locToString(location));
+        locations.add(player.getUniqueId().toString() + "," + LocationUtils.asString(location));
         savePortals();
     }
 

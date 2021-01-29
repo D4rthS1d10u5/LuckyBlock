@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Trophy;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
@@ -56,7 +56,7 @@ public class EntityTrophyNameTag extends CustomEntity {
     }
 
     protected void onSave(ConfigurationSection c) {
-        c.set("Trophy_Block", MyTasks.blockToString(this.t.getBlock()));
+        c.set("Trophy_Block", LocationUtils.asString(this.t.getBlock().getLocation()));
     }
 
     protected void onLoad(final ConfigurationSection c) {
@@ -64,8 +64,8 @@ public class EntityTrophyNameTag extends CustomEntity {
         task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 String b = c.getString("Trophy_Block");
-                if (b != null && Trophy.getByBlock(MyTasks.stringToBlock(b)) != null) {
-                    EntityTrophyNameTag.this.t = Trophy.getByBlock(MyTasks.stringToBlock(b));
+                if (b != null && Trophy.getByBlock(LocationUtils.blockFromString(b)) != null) {
+                    EntityTrophyNameTag.this.t = Trophy.getByBlock(LocationUtils.blockFromString(b));
                 }
 
             }

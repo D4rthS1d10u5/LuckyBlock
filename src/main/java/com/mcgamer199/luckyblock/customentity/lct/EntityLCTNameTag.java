@@ -2,10 +2,11 @@ package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -50,7 +51,7 @@ public class EntityLCTNameTag extends CustomEntity {
     }
 
     protected void onSave(ConfigurationSection c) {
-        c.set("LCT_Block", MyTasks.blockToString(this.lct.getBlock()));
+        c.set("LCT_Block", LocationUtils.asString(this.lct.getBlock().getLocation()));
     }
 
     protected void onLoad(final ConfigurationSection c) {
@@ -59,8 +60,8 @@ public class EntityLCTNameTag extends CustomEntity {
             public void run() {
                 String b = c.getString("LCT_Block");
                 if (b != null) {
-                    if (LuckyCraftingTable.getByBlock(MyTasks.stringToBlock(b)) != null) {
-                        EntityLCTNameTag.this.lct = LuckyCraftingTable.getByBlock(MyTasks.stringToBlock(b));
+                    if (LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(b)) != null) {
+                        EntityLCTNameTag.this.lct = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(b));
                         EntityLCTNameTag.this.getEntity().setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
                     }
                 } else {

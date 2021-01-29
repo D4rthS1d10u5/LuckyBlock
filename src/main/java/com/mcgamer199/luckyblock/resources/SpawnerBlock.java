@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,7 +59,7 @@ public class SpawnerBlock {
                         UUID u = UUID.fromString(c.getString("UUID"));
                         String e = c.getString("SpawnEntity");
                         String mat = c.getString("BlockMaterial");
-                        SpawnerBlock sb = new SpawnerBlock(MyTasks.stringToBlock(b), range, e);
+                        SpawnerBlock sb = new SpawnerBlock(LocationUtils.blockFromString(b), range, e);
                         sb.uuid = u;
                         sb.mat = Material.getMaterial(mat);
                         sb.save(false);
@@ -130,8 +130,8 @@ public class SpawnerBlock {
     public void save(boolean saveToFile) {
         for (int x = 0; x < spawners.size(); ++x) {
             SpawnerBlock sb = spawners.get(x);
-            String s = MyTasks.blockToString(sb.getBlock());
-            if (s.equalsIgnoreCase(MyTasks.blockToString(this.block))) {
+            String s = LocationUtils.asString(sb.getBlock().getLocation());
+            if (s.equalsIgnoreCase(LocationUtils.asString(this.block.getLocation()))) {
                 spawners.remove(sb);
             }
         }
@@ -146,8 +146,8 @@ public class SpawnerBlock {
     public void remove() {
         for (int x = 0; x < spawners.size(); ++x) {
             SpawnerBlock s = spawners.get(x);
-            String b = MyTasks.blockToString(s.block);
-            if (b.equalsIgnoreCase(MyTasks.blockToString(this.block))) {
+            String b = LocationUtils.asString(s.block.getLocation());
+            if (b.equalsIgnoreCase(LocationUtils.asString(this.block.getLocation()))) {
                 spawners.remove(s);
             }
         }
@@ -164,7 +164,7 @@ public class SpawnerBlock {
 
     private void saveFile() {
         file.set("SpawnerBlocks.Spawner" + this.uuid.toString() + ".UUID", this.uuid.toString());
-        file.set("SpawnerBlocks.Spawner" + this.uuid.toString() + ".Block", MyTasks.blockToString(this.block));
+        file.set("SpawnerBlocks.Spawner" + this.uuid.toString() + ".Block", LocationUtils.asString(this.block.getLocation()));
         file.set("SpawnerBlocks.Spawner" + this.uuid.toString() + ".Range", this.range);
         file.set("SpawnerBlocks.Spawner" + this.uuid.toString() + ".BlockMaterial", this.mat.name());
 

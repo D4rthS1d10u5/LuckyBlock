@@ -30,6 +30,8 @@ import java.util.*;
 
 public class LuckyBlock {
 
+
+
     public static final int MAX_LB_COUNT = 1048;
     public static final List<String> hiddenOptions = Arrays.asList("Title", "Player");
     public static final String sp = "/s/";
@@ -42,7 +44,7 @@ public class LuckyBlock {
     public int a;
     public CustomDrop customDrop;
     public BlockFace facing;
-    Block block;
+    private Block block;
     private int luck;
     private com.mcgamer199.luckyblock.lb.LBDrop drop;
     private LBType type;
@@ -118,6 +120,7 @@ public class LuckyBlock {
     }
 
     public static LuckyBlock getByABlock(Block block) {
+
         for (int x = 0; x < luckyBlocks.size(); ++x) {
             if (luckyBlocks.get(x).getType().hasAdditionalBlocks() && luckyBlocks.get(x).block.getWorld().getName().equalsIgnoreCase(block.getWorld().getName())) {
                 String[] a = luckyBlocks.get(x).getType().getAdditionalBlocks();

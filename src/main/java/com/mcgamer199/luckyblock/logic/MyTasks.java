@@ -3,43 +3,14 @@ package com.mcgamer199.luckyblock.logic;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-
-import java.lang.reflect.Method;
 
 public class MyTasks {
+
     public MyTasks() {
-    }
-
-    public static void followEntity(Entity target, LivingEntity entity, double speed) {
-        followEntity(target.getLocation(), entity, speed);
-    }
-
-    public static void followEntity(Location target, LivingEntity entity, double speed) {
-        try {
-            Object handle = entity.getClass().getMethod("getHandle").invoke(entity);
-            Object nav = handle.getClass().getMethod("getNavigation").invoke(handle);
-            Method method = nav.getClass().getMethod("a", Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE);
-            method.invoke(nav, target.getX(), target.getY(), target.getZ(), speed);
-        } catch (Exception var7) {
-            var7.printStackTrace();
-        }
-
     }
 
     public static boolean reloadLang() {
         return IObjects.changeLanguage();
-    }
-
-    public static final String blockToString(Block block) {
-        return com.mcgamer199.luckyblock.logic.ColorsClass.blockToString(block);
-    }
-
-    public static final String locToString(Location loc) {
-        return com.mcgamer199.luckyblock.logic.ColorsClass.locToString(loc);
     }
 
     public static final Particle getParticle(String s) {
@@ -53,18 +24,6 @@ public class MyTasks {
         return p;
     }
 
-    public static final Location stringToLoc(String s) {
-        return com.mcgamer199.luckyblock.logic.ColorsClass.stringToLoc(s);
-    }
-
-    public static final Block stringToBlock(String s) {
-        return com.mcgamer199.luckyblock.logic.ColorsClass.stringToBlock(s);
-    }
-
-    public static final Sound getSound(String name) {
-        return com.mcgamer199.luckyblock.logic.ColorsClass.getSound(name);
-    }
-
     public static final String val(String loc, boolean colors) {
         return com.mcgamer199.luckyblock.logic.ColorsClass.val(loc, colors);
     }
@@ -74,9 +33,5 @@ public class MyTasks {
             loc.getWorld().spawnParticle(particle, loc, amount, r[0], r[1], r[2], speed);
         }
 
-    }
-
-    public static String c(String a) {
-        return ColorsClass.c(a);
     }
 }

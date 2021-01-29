@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.IRange;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -104,8 +104,8 @@ public class Detector {
 
         for (int var2 = 0; var2 < var3; ++var2) {
             String s = var4[var2];
-            if (s != null && MyTasks.stringToBlock(s) != null) {
-                Block block = MyTasks.stringToBlock(s);
+            if (s != null && LocationUtils.blockFromString(s) != null) {
+                Block block = LocationUtils.blockFromString(s);
                 block.setType(Material.AIR);
             }
         }
@@ -143,7 +143,7 @@ public class Detector {
     }
 
     private Block getMainBlock() {
-        return MyTasks.stringToBlock(this.blocks[0]);
+        return LocationUtils.blockFromString(this.blocks[0]);
     }
 
     private boolean checkBlock(int x, int y, int z) {

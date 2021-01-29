@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,7 +44,7 @@ public class EntitiesGui implements Listener {
                 int slot = event.getRawSlot();
                 if (slot < 44) {
                     ItemStack item = event.getCurrentItem();
-                    player.playSound(player.getLocation(), MyTasks.getSound("lb_gui_getitem"), 1.0F, 0.0F);
+                    player.playSound(player.getLocation(), SoundManager.getSound("lb_gui_getitem"), 1.0F, 0.0F);
                     if (item != null) {
                         if (Gui.isIItem(item, "back")) {
                             LBGui.open(player);

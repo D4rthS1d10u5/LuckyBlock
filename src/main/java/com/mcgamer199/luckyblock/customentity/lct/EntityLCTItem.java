@@ -2,9 +2,9 @@ package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -64,13 +64,13 @@ public class EntityLCTItem extends CustomEntity {
         ITask task = new ITask();
         task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
-                EntityLCTItem.this.lct = LuckyCraftingTable.getByBlock(MyTasks.stringToBlock(c.getString("LCT_Block")));
+                EntityLCTItem.this.lct = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(c.getString("LCT_Block")));
                 EntityLCTItem.this.func_loop();
             }
         }, 10L));
     }
 
     protected void onSave(ConfigurationSection c) {
-        c.set("LCT_Block", MyTasks.blockToString(this.lct.getBlock()));
+        c.set("LCT_Block", LocationUtils.asString(this.lct.getBlock().getLocation()));
     }
 }

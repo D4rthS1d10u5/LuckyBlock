@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

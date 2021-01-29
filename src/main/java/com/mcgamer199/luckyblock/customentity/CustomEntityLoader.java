@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.entity;
+package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.Bukkit;

@@ -7,16 +7,14 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -80,40 +78,6 @@ public class ColorsClass {
     }
 
     public ColorsClass() {
-    }
-
-    protected static final String blockToString(Block block) {
-        String world = block.getWorld().getName();
-        return world + "," + block.getX() + "," + block.getY() + "," + block.getZ();
-    }
-
-    protected static final String locToString(Location loc) {
-        String world = loc.getWorld().getName();
-        return world + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
-    }
-
-    protected static final Location stringToLoc(String s) {
-        String[] d = s.split(",");
-        World world = Bukkit.getWorld(d[0]);
-        double x = Double.parseDouble(d[1]);
-        double y = Double.parseDouble(d[2]);
-        double z = Double.parseDouble(d[3]);
-        return new Location(world, x, y, z);
-    }
-
-    protected static final Block stringToBlock(String s) {
-        String a = ChatColor.stripColor(s);
-        String[] d = a.split(",");
-        Block block = null;
-        World world = Bukkit.getWorld(d[0]);
-        int x = Integer.parseInt(d[1]);
-        int y = Integer.parseInt(d[2]);
-        int z = Integer.parseInt(d[3]);
-        if (world != null && world.getBlockAt(x, y, z) != null) {
-            block = world.getBlockAt(x, y, z);
-        }
-
-        return block;
     }
 
     private static String getMessage(String loc, ColorsClass.ObjectType... objs) {
@@ -182,69 +146,6 @@ public class ColorsClass {
 
     protected static final boolean canRun(UUID uuid) {
         return !wait.contains(uuid);
-    }
-
-    protected static final Sound getSound(String name) {
-        Sound s = null;
-        String n = IObjects.getSound(name);
-        if (n != null) {
-            try {
-                s = Sound.valueOf(n);
-            } catch (Exception var4) {
-            }
-        }
-
-        return s;
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    protected static final Sound _deprecated_getSound(String name) {
-        Sound s = null;
-        File folder = new File(LuckyBlockPlugin.d() + "data/sounds/" + LuckyBlockPlugin.sounds_file);
-        if (folder.exists() && folder.getName().endsWith(".yml")) {
-            FileConfiguration fc = YamlConfiguration.loadConfiguration(folder);
-            if (fc.getString(name) != null && isSoundValid(fc.getString(name))) {
-                s = getSoundByName(fc.getString(name));
-                return s;
-            }
-        }
-
-        folder = new File(LuckyBlockPlugin.d() + "data/sounds");
-        if (folder.listFiles() != null) {
-            File[] var6;
-            int var5 = (var6 = folder.listFiles()).length;
-
-            for (int var4 = 0; var4 < var5; ++var4) {
-                File file = var6[var4];
-                if (file.getName().endsWith(".yml")) {
-                    FileConfiguration c = YamlConfiguration.loadConfiguration(file);
-                    if (c.getString(name) != null) {
-                        try {
-                            s = Sound.valueOf(c.getString(name));
-                        } catch (Exception var9) {
-                        }
-                    }
-                }
-            }
-        }
-
-        return s;
-    }
-
-    static boolean isSoundValid(String name) {
-        try {
-            Sound s = Sound.valueOf(name.toUpperCase());
-            return s != null;
-        } catch (Exception var2) {
-            return false;
-        }
-    }
-
-    static Sound getSoundByName(String name) {
-        return isSoundValid(name) ? Sound.valueOf(name.toUpperCase()) : null;
     }
 
     protected static final String val(String loc) {
@@ -333,7 +234,7 @@ public class ColorsClass {
 
     private static void msg_b(CommandSender sender, String string, ColorsClass.ObjectType... objectTypes) {
         if (string != null) {
-            string = c(string);
+            string = ChatColor.translateAlternateColorCodes('&', string);
             if (!string.equalsIgnoreCase("")) {
                 if (sender instanceof Player) {
                     com.mcgamer199.luckyblock.tellraw.RawText _a = new com.mcgamer199.luckyblock.tellraw.RawText("");
@@ -352,10 +253,6 @@ public class ColorsClass {
 
     protected static final void send_2(CommandSender sender, String string) {
         msg_b(sender, string);
-    }
-
-    protected static final String c(String a) {
-        return ChatColor.translateAlternateColorCodes('&', a);
     }
 
     protected static final void Debug(String name, DebugData... datas) {

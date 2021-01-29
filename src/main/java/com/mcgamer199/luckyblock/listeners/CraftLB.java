@@ -14,10 +14,8 @@ import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.TitleSender;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import com.mcgamer199.luckyblock.util.LocationUtils;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -504,8 +502,8 @@ public class CraftLB extends ColorsClass implements Listener {
     LuckyCraftingTable getLTable(ItemStack item) {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(yellow + val("lct.display_name", false)) && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0) != null) {
             String s = item.getItemMeta().getLore().get(0);
-            if (stringToBlock(s) != null) {
-                return LuckyCraftingTable.getByBlock(stringToBlock(s));
+            if (LocationUtils.blockFromString(s) != null) {
+                return LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(s));
             }
         }
 
@@ -536,7 +534,7 @@ public class CraftLB extends ColorsClass implements Listener {
             HumanEntity h = (HumanEntity) var8.next();
             if (h instanceof Player) {
                 Player p = (Player) h;
-                p.playSound(p.getLocation(), getSound("lct_insert"), 0.4F, 2.0F);
+                p.playSound(p.getLocation(), SoundManager.getSound("lct_insert"), 0.4F, 2.0F);
                 c.open(p);
             }
         }
@@ -712,7 +710,7 @@ public class CraftLB extends ColorsClass implements Listener {
                             table.setLevel((byte) (table.getLevel() + 1));
                             table.save(true);
                             table.refresh();
-                            SoundManager.playFixedSound(table.getBlock().getLocation(), getSound("lct_upgrade"), 1.0F, 0.0F, 7);
+                            SoundManager.playFixedSound(table.getBlock().getLocation(), SoundManager.getSound("lct_upgrade"), 1.0F, 0.0F, 7);
                             EntityFloatingText e = new EntityFloatingText();
                             e.mode = 1;
                             e.text = val("lct.level_up");

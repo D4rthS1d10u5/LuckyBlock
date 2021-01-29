@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.entity;
+package com.mcgamer199.luckyblock.customentity;
 
 public enum Immunity {
     FIRE("fire"),

@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.structures;
 
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -41,7 +41,7 @@ public class LuckyWell extends Structure {
 
         block.setType(Material.WATER);
         block.getLocation().add(0.0D, -1.0D, 0.0D).getBlock().setType(Material.IRON_PLATE);
-        blocks.add(MyTasks.blockToString(block.getLocation().add(0.0D, -1.0D, 0.0D).getBlock()));
+        blocks.add(LocationUtils.asString(block.getLocation().add(0.0D, -1.0D, 0.0D).getBlock().getLocation()));
         block.getLocation().add(1.0D, 0.0D, 0.0D).getBlock().setType(Material.COBBLESTONE);
         block.getLocation().add(-1.0D, 0.0D, 0.0D).getBlock().setType(Material.COBBLESTONE);
         block.getLocation().add(1.0D, 0.0D, 1.0D).getBlock().setType(Material.COBBLESTONE);

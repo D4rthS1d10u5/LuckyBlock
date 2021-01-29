@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Method;
 
 public class ItemReflection {
-    static final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+    static final String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
     public ItemReflection() {
     }

@@ -16,6 +16,7 @@ import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.BlockTags;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.block.Block;
@@ -109,7 +110,7 @@ public class DropEvents extends ColorsClass {
         }
 
         if (LuckyBlockPlugin.isDebugEnabled()) {
-            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", locToString(bloc)), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
+            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", LocationUtils.asString(bloc)), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
         }
 
         if (customDrop == null) {
@@ -679,7 +680,7 @@ public class DropEvents extends ColorsClass {
                                                 }
 
                                                 if (fuse > 0) {
-                                                    SoundManager.playFixedSound(player.getLocation(), getSound("lb_drop_repair"), 1.0F, 1.0F, 20);
+                                                    SoundManager.playFixedSound(player.getLocation(), SoundManager.getSound("lb_drop_repair"), 1.0F, 1.0F, 20);
                                                     s = val("drops.repair.2");
                                                     s = s.replace("%total%", String.valueOf(fuse));
                                                     player.sendMessage(s);

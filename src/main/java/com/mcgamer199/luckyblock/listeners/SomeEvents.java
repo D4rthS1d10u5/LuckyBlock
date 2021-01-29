@@ -12,6 +12,7 @@ import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.structures.BossDungeon;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -235,7 +236,7 @@ public class SomeEvents extends ColorsClass implements Listener {
 
                     for (int var8 = 0; var8 < var9; ++var8) {
                         String s = var10[var8];
-                        if (s != null && LuckyBlock.blockToString(stringToBlock(s)).equalsIgnoreCase(LuckyBlock.blockToString(block))) {
+                        if (s != null && LuckyBlock.blockToString(LocationUtils.blockFromString(s)).equalsIgnoreCase(LuckyBlock.blockToString(block))) {
                             detector = det;
                         }
                     }

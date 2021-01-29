@@ -88,19 +88,19 @@ public class BlockTags extends HTag {
                 if (t.equalsIgnoreCase("Sign") && (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN)) {
                     Sign sign = (Sign) block.getState();
                     if (c1.getString("Sign.Text1") != null) {
-                        sign.setLine(0, c(c1.getString("Sign.Text1")));
+                        sign.setLine(0, ChatColor.translateAlternateColorCodes('&', c1.getString("Sign.Text1")));
                     }
 
                     if (c1.getString("Sign.Text2") != null) {
-                        sign.setLine(1, c(c1.getString("Sign.Text2")));
+                        sign.setLine(1, ChatColor.translateAlternateColorCodes('&', c1.getString("Sign.Text2")));
                     }
 
                     if (c1.getString("Sign.Text3") != null) {
-                        sign.setLine(2, c(c1.getString("Sign.Text3")));
+                        sign.setLine(2, ChatColor.translateAlternateColorCodes('&', c1.getString("Sign.Text3")));
                     }
 
                     if (c1.getString("Sign.Text4") != null) {
-                        sign.setLine(3, c(c1.getString("Sign.Text4")));
+                        sign.setLine(3, ChatColor.translateAlternateColorCodes('&', c1.getString("Sign.Text4")));
                     }
 
                     if (c1.getString("Sign.Facing") != null) {

@@ -140,7 +140,7 @@ public class HTag extends ColorsClass {
         for (int x = 1; x < d.length; ++x) {
             String[] d1 = d[x].split("!");
             String pth = d1[0];
-            String z = c(IObjects.fLang.getString(pth));
+            String z = ChatColor.translateAlternateColorCodes('&', IObjects.fLang.getString(pth));
             d[x] = z;
         }
 

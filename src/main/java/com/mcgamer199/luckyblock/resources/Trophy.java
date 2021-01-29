@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.resources;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityTrophyNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,8 +52,8 @@ public class Trophy {
 
     public static Trophy getByBlock(Block block) {
         for (int x = 0; x < trophies.size(); ++x) {
-            String b = MyTasks.blockToString(trophies.get(x).block);
-            if (b.equalsIgnoreCase(MyTasks.blockToString(block))) {
+            String b = LocationUtils.asString(trophies.get(x).block.getLocation());
+            if (b.equalsIgnoreCase(LocationUtils.asString(block.getLocation()))) {
                 return trophies.get(x);
             }
         }
@@ -74,7 +74,7 @@ public class Trophy {
                         String b = c.getString("Block");
                         ItemStack i = c.getItemStack("Item");
                         UUID u = UUID.fromString(c.getString("UUID"));
-                        Trophy t = new Trophy(MyTasks.stringToBlock(b), i);
+                        Trophy t = new Trophy(LocationUtils.blockFromString(b), i);
                         t.uuid = u;
                         t.save(false);
                         t.func_loop();
@@ -101,8 +101,8 @@ public class Trophy {
     private void save(boolean saveToFile) {
         for (int x = 0; x < trophies.size(); ++x) {
             Trophy t = trophies.get(x);
-            String s = MyTasks.blockToString(t.getBlock());
-            if (s.equalsIgnoreCase(MyTasks.blockToString(this.block))) {
+            String s = LocationUtils.asString(t.getBlock().getLocation());
+            if (s.equalsIgnoreCase(LocationUtils.asString(this.block.getLocation()))) {
                 trophies.remove(t);
             }
         }
@@ -117,8 +117,8 @@ public class Trophy {
     public void remove() {
         for (int x = 0; x < trophies.size(); ++x) {
             Trophy t = trophies.get(x);
-            String b = MyTasks.blockToString(t.block);
-            if (b.equalsIgnoreCase(MyTasks.blockToString(this.block))) {
+            String b = LocationUtils.asString(t.block.getLocation());
+            if (b.equalsIgnoreCase(LocationUtils.asString(this.block.getLocation()))) {
                 trophies.remove(t);
             }
         }
@@ -135,7 +135,7 @@ public class Trophy {
 
     private void saveFile() {
         file.set("Trophies.Trophy" + this.uuid.toString() + ".UUID", this.uuid.toString());
-        file.set("Trophies.Trophy" + this.uuid.toString() + ".Block", MyTasks.blockToString(this.block));
+        file.set("Trophies.Trophy" + this.uuid.toString() + ".Block", LocationUtils.asString(this.block.getLocation()));
         file.set("Trophies.Trophy" + this.uuid.toString() + ".Item", this.itemToDrop);
 
         try {

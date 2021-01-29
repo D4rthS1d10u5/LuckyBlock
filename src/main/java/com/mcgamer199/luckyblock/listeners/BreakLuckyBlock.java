@@ -16,6 +16,7 @@ import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.mcgamer199.luckyblock.yottaevents.YottaEvents;
 import org.bukkit.*;
@@ -256,7 +257,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
     @EventHandler
     public void block(BlockRedstoneEvent event) {
         if (event.getBlock().getType() == Material.IRON_PLATE && LuckyWell.isValid(event.getBlock())) {
-            LuckyWell.blocks.remove(ColorsClass.blockToString(event.getBlock()));
+            LuckyWell.blocks.remove(LocationUtils.asString(event.getBlock().getLocation()));
             Entity l = null;
             Iterator var4 = event.getBlock().getLocation().getWorld().getNearbyEntities(event.getBlock().getLocation(), 1.0D, 1.0D, 1.0D).iterator();
 
@@ -283,10 +284,10 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                         Player pl = (Player) p;
                         if (r == 1) {
                             send_no(pl, "drops.well.lucky");
-                            pl.playSound(pl.getLocation(), getSound("lb_stwell_lucky"), 1.0F, 1.0F);
+                            pl.playSound(pl.getLocation(), SoundManager.getSound("lb_stwell_lucky"), 1.0F, 1.0F);
                         } else {
                             send_no(pl, "drops.well.unlucky");
-                            pl.playSound(pl.getLocation(), getSound("lb_stwell_unlucky"), 1.0F, 1.0F);
+                            pl.playSound(pl.getLocation(), SoundManager.getSound("lb_stwell_unlucky"), 1.0F, 1.0F);
                         }
                     }
                 }

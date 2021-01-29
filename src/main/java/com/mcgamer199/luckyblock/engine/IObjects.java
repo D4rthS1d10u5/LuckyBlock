@@ -1,11 +1,13 @@
 package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.events.LanguageChangedEvent;
 import com.mcgamer199.luckyblock.lb.LBDrop;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+@UtilityClass
 public class IObjects {
+
     public static final ItemStack ITEM_SPAWN_ENTITY;
     public static FileConfiguration fLang;
     static List<String> missing = new ArrayList();
@@ -37,9 +41,6 @@ public class IObjects {
 
     static {
         ITEM_SPAWN_ENTITY = ItemMaker.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity");
-    }
-
-    public IObjects() {
     }
 
     public static Object getValue(String key) {
@@ -81,7 +82,7 @@ public class IObjects {
     }
 
     public static File getStoredFile(String name) {
-        return storedFiles.containsKey(name) ? storedFiles.get(name) : null;
+        return storedFiles.getOrDefault(name, null);
     }
 
     public static void load() {
@@ -116,10 +117,8 @@ public class IObjects {
             objects.add(new com.mcgamer199.luckyblock.command.LBCBook());
             objects.add(new com.mcgamer199.luckyblock.command.LBCSaveItem());
             objects.add(new LBCRecDeleted());
-            loadSounds();
+            SoundManager.loadSounds();
             loadStrings();
-        } else {
-            throw new Error("Why are you calling load method again? :D");
         }
     }
 
@@ -128,49 +127,7 @@ public class IObjects {
             loaded1 = true;
             storedFiles.put("witch_structure", new File(LuckyBlockPlugin.d() + "data/plugin/str/witch/structure.schematic"));
             storedFiles.put("witch_chests", new File(LuckyBlockPlugin.d() + "data/plugin/str/witch/chests.yml"));
-        } else {
-            throw new Error("Why are you calling load method again? :D");
         }
-    }
-
-    private static boolean loadSounds() {
-        File f = new File(LuckyBlockPlugin.d() + "data/sounds/" + LuckyBlockPlugin.sounds_file + ".yml");
-        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-        addSound(c, "lct_stop", "core.lucky_crafting_table.stop");
-        addSound(c, "lct_run", "core.lucky_crafting_table.run");
-        addSound(c, "lct_finish", "core.lucky_crafting_table.done");
-        addSound(c, "lct_insert", "core.lucky_crafting_table.insert");
-        addSound(c, "lct_upgrade", "core.lucky_crafting_table.upgrade");
-        addSound(c, "lb_break_fortune", "core.lb.break.fortune");
-        addSound(c, "lb_drop_repair", "core.lb.drop.repair");
-        addSound(c, "lb_drop_tntrain", "core.lb.drop.tnt_rain");
-        addSound(c, "lb_drop_itemrain", "core.lb.drop.item_rain");
-        addSound(c, "lb_drop_blockrain_launch", "core.lb.drop.block_rain.launch");
-        addSound(c, "lb_drop_blockrain_land", "core.lb.drop.block_rain.land");
-        addSound(c, "lb_drop_arrowrain", "core.lb.drop.arrow_rain");
-        addSound(c, "lb_drop_lbrain", "core.lb.drop.lb_rain");
-        addSound(c, "lb_drop_randomitem1", "core.lb.drop.random_item.switch");
-        addSound(c, "lb_drop_randomitem2", "core.lb.drop.random_item.drop");
-        addSound(c, "lb_gui_getitem", "core.lb.gui.get_item");
-        addSound(c, "lb_stwell_activate", "core.lb.structure.lucky_well.activate");
-        addSound(c, "lb_stwell_lucky", "core.lb.structure.lucky_well.lucky");
-        addSound(c, "lb_stwell.unlucky", "core.lb.structure.lucky_well.unlucky");
-        addSound(c, "portal_activate", "core.portal.activate");
-        addSound(c, "portal_teleport", "core.portal.teleport");
-        addSound(c, "boss_lb_hurt", "core.boss.lb.hurt");
-        addSound(c, "boss_lb_death", "core.boss.lb.death");
-        addSound(c, "boss_lb_ambient", "core.boss.lb.ambient");
-        addSound(c, "boss_lb_heal", "core.boss.lb.heal");
-        addSound(c, "boss_blaze_shield", "core.boss.lb.blaze_shield");
-        addSound(c, "boss_witch_hurt", "core.boss.witch.hurt");
-        addSound(c, "boss_witch_death", "core.boss.witch.death");
-        addSound(c, "boss_witch_ambient", "core.boss.witch.ambient");
-        addSound(c, "boss_healer_damage", "core.boss.healer.damage");
-        addSound(c, "boss_healer_death", "core.boss.healer.death");
-        addSound(c, "boss_healer_heal", "core.boss.healer.heal");
-        addSound(c, "ritual_witch_particles", "core.lb.spawn_boss_ritual.witch.particles");
-        addSound(c, "ritual_witch_spawn", "core.lb.spawn_boss_ritual.witch.spawn");
-        return !MISSING_SOUNDS;
     }
 
     private static boolean loadStrings() {
@@ -404,7 +361,7 @@ public class IObjects {
     }
 
     public static String getSound(String key) {
-        return storedSounds.containsKey(key) ? storedSounds.get(key) : null;
+        return storedSounds.getOrDefault(key, null);
     }
 
     public static String getString(String key) {
@@ -448,17 +405,6 @@ public class IObjects {
 
     public static List<String> listM() {
         return missing;
-    }
-
-    public static boolean changeSounds() {
-        MISSING_SOUNDS = false;
-        File file = new File(LuckyBlockPlugin.d() + "data/sounds/" + LuckyBlockPlugin.sounds_file + ".yml");
-        if (file.exists()) {
-            storedSounds.clear();
-            return loadSounds();
-        } else {
-            throw new Error("Sounds file is broken!");
-        }
     }
 
     static void loadLuckyBlockFiles() {

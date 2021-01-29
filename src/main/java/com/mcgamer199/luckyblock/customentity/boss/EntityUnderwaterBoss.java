@@ -6,8 +6,8 @@ import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions.ParticleHe
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBItem;

@@ -4,10 +4,10 @@ import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.Immunity;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.Immunity;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.EntityUtils;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.SkullData;
 import org.bukkit.*;
@@ -158,7 +158,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
             CustomEntity e = CustomEntity.getByUUID(this.blaze_uuid);
             if (e != null) {
                 if (this.l.getLocation().distance(e.getEntity().getLocation()) > 5.0D) {
-                    MyTasks.followEntity(e.getEntity(), this.l, 1.2D);
+                    EntityUtils.followEntity(e.getEntity().getLocation(), this.l, 1.2D);
                 }
 
                 if (this.l.getLocation().distance(e.getEntity().getLocation()) > 15.0D) {
@@ -166,7 +166,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                 }
 
                 if (this.l.getLocation().distance(e.getEntity().getLocation()) < 3.0D && this.l.getHealth() < this.l.getMaxHealth()) {
-                    SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_heal"), 1.0F, 0.0F, 10);
+                    SoundManager.playFixedSound(this.l.getLocation(), SoundManager.getSound("boss_lb_heal"), 1.0F, 0.0F, 10);
                     this.l.getWorld().spawnParticle(Particle.HEART, this.l.getLocation(), 10, 0.5D, 0.5D, 0.5D, 1.0D);
                     if (this.l.getHealth() + 1.0D < this.l.getMaxHealth()) {
                         this.l.setHealth(this.l.getHealth() + 1.0D);
@@ -199,7 +199,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onDeath(EntityDeathEvent event) {
-        SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_death"), 1.0F, 0.0F, 10);
+        SoundManager.playFixedSound(this.l.getLocation(), SoundManager.getSound("boss_lb_death"), 1.0F, 0.0F, 10);
         com.mcgamer199.luckyblock.customentity.boss.EntityLBBlaze b = (EntityLBBlaze) CustomEntity.getByUUID(this.blaze_uuid);
         if (b != null && b.getEntity().isValid()) {
             b.startAttacking();
@@ -392,7 +392,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onDamage(EntityDamageEvent event) {
-        SoundManager.playFixedSound(this.l.getLocation(), MyTasks.getSound("boss_lb_hurt"), 1.0F, 0.0F, 10);
+        SoundManager.playFixedSound(this.l.getLocation(), SoundManager.getSound("boss_lb_hurt"), 1.0F, 0.0F, 10);
         double d1 = this.l.getHealth();
         double d2 = 50.0D;
         double d3 = d1 / d2;
@@ -407,7 +407,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
         task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityKnight.this.getEntity() != null && !EntityKnight.this.getEntity().isDead()) {
-                    SoundManager.playFixedSound(EntityKnight.this.l.getLocation(), MyTasks.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35);
+                    SoundManager.playFixedSound(EntityKnight.this.l.getLocation(), SoundManager.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35);
                 } else {
                     task.run();
                 }
@@ -435,7 +435,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                     if (EntityKnight.this.l.getTarget() == null) {
                         Block b = EntityKnight.this.getB(4);
                         if (b != null) {
-                            MyTasks.followEntity(b.getLocation(), EntityKnight.this.l, 1.1D);
+                            EntityUtils.followEntity(b.getLocation(), EntityKnight.this.l, 1.1D);
                         }
                     }
                 } else {

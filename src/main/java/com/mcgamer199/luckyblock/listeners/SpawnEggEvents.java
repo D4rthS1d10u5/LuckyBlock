@@ -2,8 +2,8 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.item.ItemReflection;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
-import com.mcgamer199.luckyblock.entity.CustomEntityLoader;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,8 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Set;
 
 public class SpawnEggEvents extends ColorsClass implements Listener {
 

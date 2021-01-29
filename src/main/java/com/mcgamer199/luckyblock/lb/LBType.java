@@ -346,7 +346,7 @@ public class LBType {
 
                         while (var12.hasNext()) {
                             s = (String) var12.next();
-                            type.itemLore.add(MyTasks.c(s));
+                            type.itemLore.add(ChatColor.translateAlternateColorCodes('&', s));
                         }
                     }
 

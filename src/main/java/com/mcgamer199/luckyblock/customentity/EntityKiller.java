@@ -1,7 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.entity.CustomEntity;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.event.entity.EntityDamageEvent;

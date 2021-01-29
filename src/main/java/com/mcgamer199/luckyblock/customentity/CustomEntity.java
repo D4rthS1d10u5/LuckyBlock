@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.entity;
+package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.item.ItemMaker;
 import com.mcgamer199.luckyblock.api.item.ItemNBT;
@@ -294,7 +294,7 @@ public class CustomEntity {
             }
         }
 
-        com.mcgamer199.luckyblock.entity.CustomEntityLoader.removeEntity(this);
+        CustomEntityLoader.removeEntity(this);
     }
 
     public Entity getEntity() {
