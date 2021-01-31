@@ -7,6 +7,7 @@ package com.mcgamer199.luckyblock.yottaevents;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

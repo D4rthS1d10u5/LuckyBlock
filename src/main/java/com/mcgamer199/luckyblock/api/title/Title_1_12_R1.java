@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.title;
+package com.mcgamer199.luckyblock.api.title;
 
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;

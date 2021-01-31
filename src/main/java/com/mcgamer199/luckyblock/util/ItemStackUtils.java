@@ -1,10 +1,14 @@
 package com.mcgamer199.luckyblock.util;
 
 import com.mcgamer199.luckyblock.MinecraftTag;
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.api.nbt.NBTListWrapper;
 import com.mcgamer199.luckyblock.api.nbt.v1_12_R1.v1_12_R1_NBTCompoundWrapper;
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -12,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftMetaBook;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
@@ -21,6 +26,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class ItemStackUtils {
@@ -387,6 +393,85 @@ public class ItemStackUtils {
 
     public static boolean isSword(ItemStack itemStack) {
         return itemStack != null && itemStack.getType().name().endsWith("SWORD");
+    }
+
+    public static ItemStack setPages(ItemStack item, List<ChatComponent> components){
+        if(!item.getType().equals(Material.WRITTEN_BOOK)) {
+            throw new IllegalArgumentException("item.getType() != Material.WRITTEN_BOOK");
+        }
+
+        List<BaseComponent> pages = components.stream().map(ChatComponent::getBaseComponent).collect(Collectors.toList());
+
+        pages.forEach(ChatComponentUtils::fixComponent);
+        item = fixItem(item);
+        ItemMeta meta = item.getItemMeta();
+        CraftMetaBook craft = (CraftMetaBook) meta;
+        craft.pages = pages.stream()
+                .map(ComponentSerializer::toString)
+                .map(IChatBaseComponent.ChatSerializer::a)
+                .collect(Collectors.toList());
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack fixItem(ItemStack itemStack){
+        if(itemStack == null) {
+            return null;
+        }
+        if (itemStack instanceof CraftItemStack) {
+            return itemStack; // уже преобразован в NMS формат с тегами
+        }
+
+        ItemStack fix = CraftItemStack.asBukkitCopy(CraftItemStack.asNMSCopy(itemStack));
+        if(fix == null || fix.getType() != itemStack.getType()){
+            throw new IllegalArgumentException("Нельзя преобразовать предмет " + itemStack + " в NMS предмет с тегами, " +
+                    "его нельзя представить в виде предмета, только в виде блока!");
+        }
+        return fix;
+    }
+
+    public static boolean isNullOrAir(ItemStack item) {
+        return item == null || item.getType() == Material.AIR;
+    }
+
+    public static ItemStack setMetadata(ItemStack stack, String metadata) {
+        ItemMeta meta = stack.getItemMeta();
+        if (meta != null) {
+            meta.setLocalizedName(metadata);
+            stack.setItemMeta(meta);
+        }
+
+        return stack;
+    }
+
+    public static String getMetadata(ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        return meta == null ? null : meta.getLocalizedName();
+    }
+
+    public static boolean hasMetadata(ItemStack stack, String metadata) {
+        ItemMeta meta = stack.getItemMeta();
+        return meta != null && metadata.equals(meta.getLocalizedName());
+    }
+
+    private static boolean has(String text, String data) {
+        int index = data.length() * 2 + 1;
+        if (text.length() - 1 < index) {
+            return false;
+        } else if (text.charAt(index) == 9773) {
+            char[] chars = data.toCharArray();
+            char[] textChars = text.toCharArray();
+
+            for (int i = 0; i < chars.length; ++i) {
+                if (chars[i] != textChars[i * 2 + 1]) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

@@ -27,9 +27,7 @@ public class PlayerData {
     }
 
     public static <V> V getOrSet(Player player, String key, V def) {
-        return (V) getMetadata(player).computeIfAbsent(key, (s) -> {
-            return def;
-        });
+        return (V) getMetadata(player).computeIfAbsent(key, (s) -> def);
     }
 
     public static <V> V set(Player player, String key, V val) {
@@ -39,9 +37,9 @@ public class PlayerData {
     public static Map<String, Object> getMetadata(Player player) {
         List<MetadataValue> luckydata = player.getMetadata("luckydata");
         if (!luckydata.isEmpty()) {
-            return (Map) luckydata.get(0).value();
+            return (Map<String, Object>) luckydata.get(0).value();
         } else {
-            Map<String, Object> result = new HashMap(8);
+            Map<String, Object> result = new HashMap<>(8);
             player.setMetadata("luckydata", new FixedMetadataValue(plugin, result));
             return result;
         }

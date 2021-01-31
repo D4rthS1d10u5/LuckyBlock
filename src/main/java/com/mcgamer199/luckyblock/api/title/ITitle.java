@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.title;
+package com.mcgamer199.luckyblock.api.title;
 
 import org.bukkit.entity.Player;
 
