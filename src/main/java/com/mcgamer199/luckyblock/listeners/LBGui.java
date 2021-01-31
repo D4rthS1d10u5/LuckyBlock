@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.IObjects;
@@ -14,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,7 +28,7 @@ public class LBGui implements Listener {
 
     public static void open(Player player) {
         Inventory inv = Bukkit.createInventory(player, 54, ChatColor.BLUE + "Lucky Block");
-        ItemStack item = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 11, ChatColor.RED + "Lucky Block");
+        ItemStack item = ItemStackUtils.createItem(Material.STAINED_GLASS_PANE, 1, 11, ChatColor.RED + "Lucky Block");
         LBType type = LBType.getTypes().get(0);
 
         for (int x = 0; x < inv.getSize(); ++x) {
@@ -42,11 +41,11 @@ public class LBGui implements Listener {
             }
         }
 
-        inv.setItem(10, ItemMaker.createItem(type.getType(), 1, type.getData(), ChatColor.GOLD + "Lucky Blocks", Arrays.asList("", ChatColor.GRAY + "Click to open")));
-        inv.setItem(43, ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Close", Arrays.asList("", ChatColor.GRAY + "Click to close")));
-        inv.setItem(11, ItemMaker.createItem(Material.SLIME_BALL, 1, 0, ChatColor.GREEN + "Drops", Arrays.asList("", ChatColor.GRAY + "Click to open")));
-        inv.setItem(12, ItemMaker.createItem(Material.SKULL_ITEM, 1, 4, ChatColor.DARK_PURPLE + "Entities", Arrays.asList("", ChatColor.GRAY + "Click to open")));
-        inv.setItem(13, ItemMaker.createItem(Material.WORKBENCH, 1, 0, "" + ChatColor.AQUA + ChatColor.BOLD + "Recipes", Arrays.asList("", ChatColor.GRAY + "Click to open")));
+        inv.setItem(10, ItemStackUtils.createItem(type.getType(), 1, type.getData(), ChatColor.GOLD + "Lucky Blocks", Arrays.asList("", ChatColor.GRAY + "Click to open")));
+        inv.setItem(43, ItemStackUtils.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Close", Arrays.asList("", ChatColor.GRAY + "Click to close")));
+        inv.setItem(11, ItemStackUtils.createItem(Material.SLIME_BALL, 1, 0, ChatColor.GREEN + "Drops", Arrays.asList("", ChatColor.GRAY + "Click to open")));
+        inv.setItem(12, ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 4, ChatColor.DARK_PURPLE + "Entities", Arrays.asList("", ChatColor.GRAY + "Click to open")));
+        inv.setItem(13, ItemStackUtils.createItem(Material.WORKBENCH, 1, 0, "" + ChatColor.AQUA + ChatColor.BOLD + "Recipes", Arrays.asList("", ChatColor.GRAY + "Click to open")));
         player.openInventory(inv);
     }
 
@@ -73,12 +72,12 @@ public class LBGui implements Listener {
             for (int i = (page - 1) * 21; i < page * 21; ++i) {
                 if (dr.size() > i) {
                     LBDrop drop = dr.get(i);
-                    ItemStack item = ItemMaker.createItem(Material.BRICK, 1, 0, ChatColor.GREEN + drop.name(), Arrays.asList(""));
+                    ItemStack item = ItemStackUtils.createItem(Material.BRICK, 1, 0, ChatColor.GREEN + drop.name(), Arrays.asList(""));
                     String a = IObjects.getString("desc.drop." + drop.name().toLowerCase(), false);
                     if (!a.equalsIgnoreCase("null")) {
-                        item = ItemMaker.addLore(item, ChatColor.GOLD + a);
+                        item = ItemStackUtils.addLore(item, ChatColor.GOLD + a);
                     } else {
-                        item = ItemMaker.addLore(item, ChatColor.RED + "no description");
+                        item = ItemStackUtils.addLore(item, ChatColor.RED + "no description");
                     }
 
                     inv.addItem(item);
@@ -97,11 +96,11 @@ public class LBGui implements Listener {
                     if (lst.size() > x) {
                         CustomDrop cd = lst.get(x);
                         if (cd.isVisible()) {
-                            ItemStack item = ItemMaker.createItem(Material.STAINED_CLAY, 1, 0, ChatColor.GREEN + cd.getName(), Arrays.asList(""));
+                            ItemStack item = ItemStackUtils.createItem(Material.STAINED_CLAY, 1, 0, ChatColor.GREEN + cd.getName(), Arrays.asList(""));
                             if (cd.getDescription() != null) {
-                                item = ItemMaker.addLore(item, ChatColor.GOLD + cd.getDescription());
+                                item = ItemStackUtils.addLore(item, ChatColor.GOLD + cd.getDescription());
                             } else {
-                                item = ItemMaker.addLore(item, ChatColor.RED + "no description");
+                                item = ItemStackUtils.addLore(item, ChatColor.RED + "no description");
                             }
 
                             inv.addItem(item);
@@ -113,15 +112,15 @@ public class LBGui implements Listener {
             }
 
             if (next) {
-                inv.setItem(42, ItemMaker.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Next Page"));
+                inv.setItem(42, ItemStackUtils.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Next Page"));
             }
 
-            inv.setItem(40, ItemMaker.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Current Page: " + page));
+            inv.setItem(40, ItemStackUtils.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Current Page: " + page));
             if (page > 1) {
-                inv.setItem(37, ItemMaker.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Previous Page"));
+                inv.setItem(37, ItemStackUtils.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Previous Page"));
             }
 
-            inv.setItem(43, ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to return")));
+            inv.setItem(43, ItemStackUtils.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to return")));
             player.openInventory(inv);
         }
     }
@@ -141,7 +140,7 @@ public class LBGui implements Listener {
             }
         }
 
-        inv.setItem(inv.getSize() - 1, ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to open the main gui")));
+        inv.setItem(inv.getSize() - 1, ItemStackUtils.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to open the main gui")));
         player.openInventory(inv);
     }
 
@@ -177,7 +176,7 @@ public class LBGui implements Listener {
                     }
 
                     if (item.getType() == Material.CHEST) {
-                        player.getInventory().addItem(ItemMaker.createItem(Material.CHEST, 1, 0, "" + ChatColor.GREEN + ChatColor.BOLD + ChatColor.ITALIC + "Random Chest"));
+                        player.getInventory().addItem(ItemStackUtils.createItem(Material.CHEST, 1, 0, "" + ChatColor.GREEN + ChatColor.BOLD + ChatColor.ITALIC + "Random Chest"));
                     }
                 }
             } else if (title.equalsIgnoreCase(ChatColor.BLUE + "Lucky Block: Drops")) {

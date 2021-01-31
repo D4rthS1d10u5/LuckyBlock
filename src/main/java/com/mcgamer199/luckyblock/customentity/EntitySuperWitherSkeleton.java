@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ public class EntitySuperWitherSkeleton extends CustomEntity {
         skeleton.setCustomNameVisible(true);
         skeleton.setMaxHealth(100.0D);
         skeleton.setHealth(100.0D);
-        skeleton.getEquipment().setItemInMainHand(ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{4, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT));
+        skeleton.getEquipment().setItemInMainHand(ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{4, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT));
         skeleton.getEquipment().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
         return skeleton;
     }
@@ -40,7 +40,7 @@ public class EntitySuperWitherSkeleton extends CustomEntity {
     }
 
     public ItemStack[] getDrops() {
-        return new ItemStack[]{ItemMaker.createItem(Material.IRON_BLOCK), ItemMaker.createItem(Material.BREAD, this.random.nextInt(4) + 1), ItemMaker.createItem(Material.IRON_INGOT, this.random.nextInt(5) + 3)};
+        return new ItemStack[]{new ItemStack(Material.IRON_BLOCK), new ItemStack(Material.BREAD, this.random.nextInt(4) + 1), new ItemStack(Material.IRON_INGOT, this.random.nextInt(5) + 3)};
     }
 
     protected int[] getPercents() {

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ public class EntityKillerSkeleton extends EntityKiller {
         skeleton.setHealth(120.0D);
         skeleton.setCustomName(ChatColor.RED + "Killer Skeleton");
         skeleton.setCustomNameVisible(true);
-        skeleton.getEquipment().setItemInMainHand(ItemMaker.addEnchants(new ItemStack(Material.BOW), new int[]{3}, Enchantment.ARROW_DAMAGE));
+        skeleton.getEquipment().setItemInMainHand(ItemStackUtils.addEnchants(new ItemStack(Material.BOW), new int[]{3}, Enchantment.ARROW_DAMAGE));
         skeleton.getEquipment().setHelmet(new ItemStack(Material.GLASS));
         skeleton.getEquipment().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
         skeleton.getEquipment().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));

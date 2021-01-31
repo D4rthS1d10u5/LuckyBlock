@@ -1,12 +1,13 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemReflection;
-import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.Material;
@@ -79,20 +80,20 @@ public class DispenserEvents extends ColorsClass implements Listener {
     private void onSpawnCustomEntity(BlockDispenseEvent event) {
         ItemStack item = event.getItem();
         Block block = event.getBlock();
-        if (item != null && compareItems(item, IObjects.ITEM_SPAWN_ENTITY)) {
+        if (compareItems(item, IObjects.ITEM_SPAWN_ENTITY)) {
             event.setCancelled(true);
-            if (!ItemReflection.hasKey(item, "EntityClass") || ItemReflection.getString(item, "EntityClass") == null) {
+            NBTCompoundWrapper<?> itemTag = ItemStackUtils.getItemTag(item);
+            String entityClass = itemTag.getString("EntityClass");
+            if(itemTag.getString("EntityClass") == null) {
                 return;
             }
 
-            String val = ItemReflection.getString(item, "EntityClass");
-            Object o = CustomEntityLoader.getCustomEntity(val);
+            Object o = CustomEntityLoader.getCustomEntity(entityClass);
             Block b = block.getRelative(getDispenserF(block));
             if (o != null) {
                 CustomEntity c = (CustomEntity) o;
                 c.spawn(b.getLocation().add(0.5D, 0.0D, 0.5D));
             }
         }
-
     }
 }

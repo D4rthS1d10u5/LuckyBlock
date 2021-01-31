@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -11,7 +11,7 @@ public class BossPalace extends Structure {
     static final int[] chances;
 
     static {
-        items = new ItemStack[]{ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{10}, Enchantment.DAMAGE_ALL)};
+        items = new ItemStack[]{ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{10}, Enchantment.DAMAGE_ALL)};
         chances = new int[]{100};
     }
 

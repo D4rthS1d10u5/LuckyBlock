@@ -1,10 +1,17 @@
-package com.mcgamer199.luckyblock.api.item;
+package com.mcgamer199.luckyblock.util;
 
+import com.mcgamer199.luckyblock.MinecraftTag;
+import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
+import com.mcgamer199.luckyblock.api.nbt.NBTListWrapper;
+import com.mcgamer199.luckyblock.api.nbt.v1_12_R1.v1_12_R1_NBTCompoundWrapper;
+import lombok.experimental.UtilityClass;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
@@ -15,44 +22,29 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemMaker {
-    public ItemMaker() {
+@UtilityClass
+public class ItemStackUtils {
+
+    public static NBTCompoundWrapper<?> getItemTag(ItemStack item) {
+        NBTTagCompound itemTag = CraftItemStack.asNMSCopy(item).getTag();
+        return new v1_12_R1_NBTCompoundWrapper(itemTag != null ? itemTag : new NBTTagCompound());
     }
 
-    public static ItemMaker.IBannerMeta getNewBannerMeta() {
-        return new ItemMaker.IBannerMeta();
+    public static ItemStack setItemTag(ItemStack item, NBTCompoundWrapper<?> tagWrapper) {
+        net.minecraft.server.v1_12_R1.ItemStack nmsCopy = CraftItemStack.asNMSCopy(item);
+        nmsCopy.setTag((NBTTagCompound) tagWrapper.getTag());
+        return CraftItemStack.asBukkitCopy(nmsCopy);
     }
 
-    public static ItemMaker.IBannerMeta getNewBannerMeta(DyeColor baseColor, Pattern... patterns) {
-        ItemMaker.IBannerMeta bannerMeta = new ItemMaker.IBannerMeta();
+    public static ItemStackUtils.IBannerMeta getNewBannerMeta() {
+        return new ItemStackUtils.IBannerMeta();
+    }
+
+    public static ItemStackUtils.IBannerMeta getNewBannerMeta(DyeColor baseColor, Pattern... patterns) {
+        ItemStackUtils.IBannerMeta bannerMeta = new ItemStackUtils.IBannerMeta();
         bannerMeta.baseColor = baseColor;
         bannerMeta.patterns = patterns;
         return bannerMeta;
-    }
-
-    public static ItemStack createItem(Material material) {
-        ItemStack item = new ItemStack(material);
-        return item;
-    }
-
-    public static ItemStack createItem(Material material, int amount) {
-        ItemStack item = new ItemStack(material);
-        item.setAmount(amount);
-        return item;
-    }
-
-    public static ItemStack createItem(Material material, int amount, short data) {
-        ItemStack item = new ItemStack(material);
-        item.setAmount(amount);
-        item.setDurability(data);
-        return item;
-    }
-
-    public static ItemStack createItem(Material material, int amount, int data) {
-        ItemStack item = new ItemStack(material);
-        item.setAmount(amount);
-        item.setDurability((short) data);
-        return item;
     }
 
     public static ItemStack createItem(Material material, int amount, short data, String displayName) {
@@ -156,71 +148,59 @@ public class ItemMaker {
     }
 
     public static ItemStack createSkull(ItemStack item, String id, String value) {
-        ItemNBT n = new ItemNBT(item);
-        Object base = n.getNewNBT();
-        ItemNBT.NBTList l = new ItemNBT.NBTList();
-        l.add(n.setTag("Value", n.getNewNBT(), n.getNewNBTTagString(value)));
-        Object nbt = n.setTag("textures", n.getNewNBT(), l.getNBT());
-        base = n.setTag("Id", n.getNewNBT(), n.getNewNBTTagString(id));
-        base = n.setTag("Properties", base, nbt);
-        n.set("SkullOwner", base);
-        return n.getItem();
+        NBTCompoundWrapper<?> compound = getItemTag(item);
+        NBTCompoundWrapper<?> skullOwner = compound.newCompound();
+        NBTListWrapper<?> textures = compound.newList();
+
+        skullOwner.setString("Id", id);
+        textures.add(compound.newCompound().setString("Value", value));
+        skullOwner.setCompound("Properties", compound.newCompound().setList("textures", textures));
+
+        compound.setCompound("SkullOwner", skullOwner);
+
+        return setItemTag(item, compound);
     }
 
     public static ItemStack makeUnbreakable(ItemStack item) {
-        return ItemReflection.setBoolean(item, "Unbreakable", true);
-    }
+        ItemMeta meta = item.getItemMeta();
 
-    public static ItemStack addMinecraftTag(ItemStack item, ItemMaker.MinecraftTag tag, Object... values) {
-        ItemNBT nbt = new ItemNBT(item);
-        ItemNBT.NBTList list;
-        Object o;
-        int var6;
-        int var7;
-        Object[] var8;
-        if (tag == ItemMaker.MinecraftTag.CAN_PLACE_ON) {
-            list = new ItemNBT.NBTList();
-            var8 = values;
-            var7 = values.length;
-
-            for (var6 = 0; var6 < var7; ++var6) {
-                o = var8[var6];
-                list.add(nbt.getNewNBTTagString(o.toString()));
-            }
-
-            nbt.set("CanPlaceOn", list.getNBT());
+        if(meta != null) {
+            meta.setUnbreakable(true);
+            item.setItemMeta(meta);
         }
 
-        if (tag == ItemMaker.MinecraftTag.CAN_DESTROY) {
-            list = new ItemNBT.NBTList();
-            var8 = values;
-            var7 = values.length;
-
-            for (var6 = 0; var6 < var7; ++var6) {
-                o = var8[var6];
-                list.add(nbt.getNewNBTTagString(o.toString()));
-            }
-
-            nbt.set("CanDestroy", list.getNBT());
-        }
-
-        return nbt.getItem();
+        return item;
     }
 
-    public static ItemStack addAttribute(ItemStack item, String attributeName, int operation, String name, float amount, ItemMaker.AttributeSlot slot) {
-        ItemNBT n = new ItemNBT(item);
-        Object base = n.getNewNBT();
-        ItemNBT.NBTList l = new ItemNBT.NBTList();
-        base = n.setTag("Operation", n.getNewNBT(), n.getNewNBTTagInt(operation));
-        base = n.setTag("AttributeName", base, n.getNewNBTTagString(attributeName));
-        base = n.setTag("Name", base, n.getNewNBTTagString(name));
-        base = n.setTag("Amount", base, n.getNewNBTTagFloat(amount));
-        base = n.setTag("UUIDLeast", base, n.getNewNBTTagInt(1));
-        base = n.setTag("UUIDMost", base, n.getNewNBTTagInt(1));
-        base = n.setTag("Slot", base, n.getNewNBTTagString(slot.value));
-        l.add(base);
-        n.set("AttributeModifiers", l.getNBT());
-        return n.getItem();
+    public static ItemStack addMinecraftTag(ItemStack item, MinecraftTag tag, Object... values) {
+        NBTCompoundWrapper<?> compound = getItemTag(item);
+        NBTListWrapper<?> list = compound.newList();
+        for (Object value : values) {
+            list.add(value.toString());
+        }
+
+        compound.setList(tag.getTagName(), list);
+
+        return setItemTag(item, compound);
+    }
+
+    public static ItemStack addAttribute(ItemStack item, String attributeName, int operation, String name, float amount, ItemStackUtils.AttributeSlot slot) {
+        NBTCompoundWrapper<?> itemTag = getItemTag(item);
+
+        NBTCompoundWrapper<?> attributeModifier = itemTag.newCompound();
+        NBTListWrapper<?> attributeModifiers = itemTag.getList("AttributeModifiers", List.class);
+
+        attributeModifier.setInt("Operation", operation)
+                .setString("AttributeName", attributeName)
+                .setString("Name", name)
+                .setFloat("Amount", amount)
+                .setLong("UUIDLeast", 1)
+                .setLong("UUIDMost", 1)
+                .setString("Slot", slot.value);
+        attributeModifiers.add(attributeModifier);
+        itemTag.setList("AttributeModifiers", attributeModifiers);
+
+        return setItemTag(item, itemTag);
     }
 
     public static ItemStack addEnchant(ItemStack item, Enchantment ench, int level) {
@@ -274,7 +254,7 @@ public class ItemMaker {
         }
     }
 
-    public static ItemStack setBannerMeta(ItemStack item, ItemMaker.IBannerMeta bannerMeta) {
+    public static ItemStack setBannerMeta(ItemStack item, ItemStackUtils.IBannerMeta bannerMeta) {
         if (item.getType() == Material.BANNER) {
             BannerMeta b = (BannerMeta) item.getItemMeta();
             if (bannerMeta.baseColor != null) {
@@ -331,14 +311,6 @@ public class ItemMaker {
 
         public String getValue() {
             return this.value;
-        }
-    }
-
-    public enum MinecraftTag {
-        CAN_PLACE_ON,
-        CAN_DESTROY;
-
-        MinecraftTag() {
         }
     }
 
@@ -411,6 +383,10 @@ public class ItemMaker {
 
             return p;
         }
+    }
+
+    public static boolean isSword(ItemStack itemStack) {
+        return itemStack != null && itemStack.getType().name().endsWith("SWORD");
     }
 }
 

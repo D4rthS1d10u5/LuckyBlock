@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
@@ -40,7 +40,7 @@ public class EntityGuardian extends CustomEntity {
         ItemStack item = LuckyBlockAPI.createItemStack(Material.DIAMOND_AXE, 1, (short) 0, null, null, m);
         skeleton.getEquipment().setItemInMainHand(item);
         skeleton.getEquipment().setHelmet(this.type.toItemStack());
-        ItemStack item1 = ItemMaker.createItem(Material.GOLD_CHESTPLATE);
+        ItemStack item1 = new ItemStack(Material.GOLD_CHESTPLATE);
         skeleton.getEquipment().setChestplate(item1);
         item1.setType(Material.GOLD_LEGGINGS);
         skeleton.getEquipment().setLeggings(item1);
@@ -154,10 +154,10 @@ public class EntityGuardian extends CustomEntity {
                 list = Arrays.asList(ChatColor.RED + "No treasure found!");
             }
 
-            ItemStack map = ItemMaker.createItem(Material.MAP, 1, 0, "" + ChatColor.GREEN + ChatColor.ITALIC + "Treasure Map", list);
-            return new ItemStack[]{map, ItemMaker.createItem(Material.GOLD_INGOT, (this.random.nextInt(3) + 3) * 3), ItemMaker.createItem(Material.DIAMOND, (this.random.nextInt(4) + 3) * 2), ItemMaker.createItem(Material.IRON_INGOT, (this.random.nextInt(8) + 6) * 3)};
+            ItemStack map = ItemStackUtils.createItem(Material.MAP, 1, 0, "" + ChatColor.GREEN + ChatColor.ITALIC + "Treasure Map", list);
+            return new ItemStack[]{map, new ItemStack(Material.GOLD_INGOT, (this.random.nextInt(3) + 3) * 3), new ItemStack(Material.DIAMOND, (this.random.nextInt(4) + 3) * 2), new ItemStack(Material.IRON_INGOT, (this.random.nextInt(8) + 6) * 3)};
         } else {
-            return new ItemStack[]{ItemMaker.createItem(Material.GOLD_INGOT, (this.random.nextInt(3) + 3) * 3), ItemMaker.createItem(Material.DIAMOND, (this.random.nextInt(4) + 3) * 2), ItemMaker.createItem(Material.IRON_INGOT, (this.random.nextInt(8) + 6) * 3)};
+            return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, (this.random.nextInt(3) + 3) * 3), new ItemStack(Material.DIAMOND, (this.random.nextInt(4) + 3) * 2), new ItemStack(Material.IRON_INGOT, (this.random.nextInt(8) + 6) * 3)};
         }
     }
 

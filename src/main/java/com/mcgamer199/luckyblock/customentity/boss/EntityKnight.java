@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
@@ -49,17 +49,17 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     private static final ItemStack boots1;
 
     static {
-        spellFortune = ItemMaker.addEnchant(ItemMaker.createItem(Material.GHAST_TEAR, 1, 0, "" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune", Arrays.asList("", ChatColor.GREEN + "+1000 luck")), LuckyBlockPlugin.enchantment_glow, 1);
-        head1 = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), "c86041e4-5b4e-4e8a-928c-9028b2437de6", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ0NzcyZGM0ZGVmMjIyMTllZTZkODg5Y2NkYzJmOTIzMmVlMjNkMzU2ZGQ5ZTRhZGNlYTVmNzJjYzBjNjg5In19fQ==");
-        bow = ItemMaker.addEnchants(new ItemStack(Material.BOW, 1), new int[]{10, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
-        sword = ItemMaker.addEnchants(new ItemStack(Material.IRON_SWORD), new int[]{5}, Enchantment.FIRE_ASPECT);
-        sword1 = ItemMaker.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{10, 10}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
-        chestplates = new ItemStack[]{ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.BLUE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.RED), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.LIME), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.ORANGE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.PURPLE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.YELLOW), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.SILVER)};
-        leggings = new ItemStack[]{ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.BLUE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.RED), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.LIME), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.ORANGE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.PURPLE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.YELLOW), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.SILVER)};
-        boots = new ItemStack[]{ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.BLUE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.RED), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.LIME), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.ORANGE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.PURPLE), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.YELLOW), ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.SILVER)};
-        chestplate1 = ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_CHESTPLATE), Color.BLACK);
-        leggings1 = ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_LEGGINGS), Color.BLACK);
-        boots1 = ItemMaker.setLeatherArmorColor(ItemMaker.createItem(Material.LEATHER_BOOTS), Color.BLACK);
+        spellFortune = ItemStackUtils.addEnchant(ItemStackUtils.createItem(Material.GHAST_TEAR, 1, 0, "" + ChatColor.GRAY + ChatColor.BOLD + "Spell of fortune", Arrays.asList("", ChatColor.GREEN + "+1000 luck")), LuckyBlockPlugin.enchantment_glow, 1);
+        head1 = ItemStackUtils.createSkull(ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), "c86041e4-5b4e-4e8a-928c-9028b2437de6", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ0NzcyZGM0ZGVmMjIyMTllZTZkODg5Y2NkYzJmOTIzMmVlMjNkMzU2ZGQ5ZTRhZGNlYTVmNzJjYzBjNjg5In19fQ==");
+        bow = ItemStackUtils.addEnchants(new ItemStack(Material.BOW, 1), new int[]{10, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
+        sword = ItemStackUtils.addEnchants(new ItemStack(Material.IRON_SWORD), new int[]{5}, Enchantment.FIRE_ASPECT);
+        sword1 = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{10, 10}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
+        chestplates = new ItemStack[]{ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLUE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.RED), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.LIME), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.ORANGE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.PURPLE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.YELLOW), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.SILVER)};
+        leggings = new ItemStack[]{ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.BLUE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.RED), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.LIME), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.ORANGE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.PURPLE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.YELLOW), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.SILVER)};
+        boots = new ItemStack[]{ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.BLUE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.RED), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.LIME), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.ORANGE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.PURPLE), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.YELLOW), ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.SILVER)};
+        chestplate1 = ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLACK);
+        leggings1 = ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.BLACK);
+        boots1 = ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.BLACK);
     }
 
     private String status = "none";
@@ -75,7 +75,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
 
     public Entity spawnFunction(Location loc) {
         SkullData sd = SkullData.getRandomSkullData("BOSS");
-        this.head = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), sd.getId(), sd.getData());
+        this.head = ItemStackUtils.createSkull(ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), sd.getId(), sd.getData());
         WitherSkeleton skeleton = (WitherSkeleton) loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
         skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(50.0D);
         skeleton.setHealth(50.0D);
@@ -88,7 +88,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
         skeleton.getEquipment().setChestplate(chestplates[x]);
         skeleton.getEquipment().setLeggings(leggings[x]);
         skeleton.getEquipment().setBoots(boots[x]);
-        skeleton.getEquipment().setItemInOffHand(ItemMaker.createItem(Material.SHIELD));
+        skeleton.getEquipment().setItemInOffHand(new ItemStack(Material.SHIELD));
         skeleton.setRemoveWhenFarAway(false);
         this.l = skeleton;
         com.mcgamer199.luckyblock.customentity.boss.EntityLBBlaze b = new com.mcgamer199.luckyblock.customentity.boss.EntityLBBlaze();

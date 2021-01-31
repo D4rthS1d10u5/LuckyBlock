@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
@@ -36,7 +36,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     private static final ItemStack head;
 
     static {
-        head = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.DARK_PURPLE + "Witch", Arrays.asList("", ChatColor.GRAY + "Obtained by killing witch bosses.")), "0a9e8efb-9191-4c81-80f5-e27ca5433156", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIyZDhlNzUxYzhmMmZkNGM4OTQyYzQ0YmRiMmY1Y2E0ZDhhZThlNTc1ZWQzZWIzNGMxOGE4NmU5M2IifX19");
+        head = ItemStackUtils.createSkull(ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.DARK_PURPLE + "Witch", Arrays.asList("", ChatColor.GRAY + "Obtained by killing witch bosses.")), "0a9e8efb-9191-4c81-80f5-e27ca5433156", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIyZDhlNzUxYzhmMmZkNGM4OTQyYzQ0YmRiMmY1Y2E0ZDhhZThlNTc1ZWQzZWIzNGMxOGE4NmU5M2IifX19");
     }
 
     private Witch w;
@@ -67,7 +67,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     public ItemStack[] getDrops() {
-        ItemStack potion = ItemMaker.createItem(Material.POTION, 1, 0, "" + ChatColor.RED + ChatColor.BOLD + "Super Potion");
+        ItemStack potion = ItemStackUtils.createItem(Material.POTION, 1, 0, "" + ChatColor.RED + ChatColor.BOLD + "Super Potion");
         PotionMeta pM = (PotionMeta) potion.getItemMeta();
         pM.addCustomEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 4000, 0), true);
         pM.addCustomEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 4000, 2), true);

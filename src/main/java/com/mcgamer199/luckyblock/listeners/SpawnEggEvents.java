@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemReflection;
-import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
+import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -55,13 +55,14 @@ public class SpawnEggEvents extends ColorsClass implements Listener {
                 }
 
                 event.setCancelled(true);
-                if (!ItemReflection.hasKey(item, "EntityClass") || ItemReflection.getString(item, "EntityClass") == null) {
+
+                String entityClass = ItemStackUtils.getItemTag(item).getString("EntityClass");
+                if (entityClass == null) {
                     player.sendMessage(ChatColor.RED + "Invalid Entity!");
                     return;
                 }
 
-                String val = ItemReflection.getString(item, "EntityClass");
-                Object o = CustomEntityLoader.getCustomEntity(val);
+                Object o = CustomEntityLoader.getCustomEntity(entityClass);
                 if (o != null) {
                     CustomEntity c = (CustomEntity) o;
                     c.spawn(loc);

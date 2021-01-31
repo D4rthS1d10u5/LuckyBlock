@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class LBCDetector extends LBCommand {
                 return true;
             }
 
-            item = ItemMaker.createItem(Material.PISTON_BASE, 1, (short) 0, "" + blue + bold + "Detector", Arrays.asList(gray + "Place it"));
+            item = ItemStackUtils.createItem(Material.PISTON_BASE, 1, (short) 0, "" + blue + bold + "Detector", Arrays.asList(gray + "Place it"));
             target.getInventory().addItem(item);
             send(sender, "command.detector.success");
             return true;

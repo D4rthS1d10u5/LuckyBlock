@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -88,26 +88,26 @@ public class Treasure extends Structure {
 
         for (int x = 0; x < r; ++x) {
             int i = this.random.nextInt(10) + 1;
-            ItemStack item = ItemMaker.createItem(Material.DIAMOND_BLOCK, this.random.nextInt(3) + 2);
+            ItemStack item = new ItemStack(Material.DIAMOND_BLOCK, this.random.nextInt(3) + 2);
             if (i == 2) {
-                item = ItemMaker.createItem(Material.GOLDEN_APPLE, 1, 1);
+                item = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1);
             } else if (i == 3) {
                 LBType t = LBType.getRandomType();
                 item = t.toItemStack(t.getMaxLuck());
             } else if (i == 4) {
-                item = ItemMaker.addEnchants(ItemMaker.createItem(Material.DIAMOND_SWORD), new int[]{4, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
+                item = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_SWORD), new int[]{4, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
             } else if (i == 5) {
-                item = ItemMaker.addEnchants(ItemMaker.createItem(Material.DIAMOND_HELMET), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
+                item = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_HELMET), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
             } else if (i == 6) {
-                item = ItemMaker.addEnchants(ItemMaker.createItem(Material.DIAMOND_CHESTPLATE), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
+                item = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_CHESTPLATE), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
             } else if (i == 7) {
-                item = ItemMaker.addEnchants(ItemMaker.createItem(Material.DIAMOND_LEGGINGS), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
+                item = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_LEGGINGS), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
             } else if (i == 8) {
-                item = ItemMaker.addEnchants(ItemMaker.createItem(Material.DIAMOND_BOOTS), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
+                item = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_BOOTS), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
             } else if (i == 9) {
-                item = ItemMaker.createItem(Material.EMERALD_BLOCK, this.random.nextInt(3) + 1);
+                item = new ItemStack(Material.EMERALD_BLOCK, this.random.nextInt(3) + 1);
             } else if (i == 10) {
-                item = ItemMaker.createItem(Material.GOLD_BLOCK, this.random.nextInt(4) + 3);
+                item = new ItemStack(Material.GOLD_BLOCK, this.random.nextInt(4) + 3);
             }
 
             chest.getInventory().setItem(this.random.nextInt(27), item);

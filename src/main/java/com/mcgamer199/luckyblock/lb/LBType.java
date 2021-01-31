@@ -6,13 +6,11 @@
 package com.mcgamer199.luckyblock.lb;
 
 import com.mcgamer199.luckyblock.LBOption;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.api.item.ItemReflection;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.CItem;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import org.bukkit.*;
@@ -747,9 +745,9 @@ public class LBType {
                             item = type.toItemStack(o);
                             item.setAmount(amount);
                             if (drop != null) {
-                                item = ItemMaker.addLore(item, ChatColor.GRAY + "Drop: " + drop.name());
+                                item = ItemStackUtils.addLore(item, ChatColor.GRAY + "Drop: " + drop.name());
                             } else if (cdrop != null) {
-                                item = ItemMaker.addLore(item, ChatColor.GRAY + "Drop: " + cdrop.getName());
+                                item = ItemStackUtils.addLore(item, ChatColor.GRAY + "Drop: " + cdrop.getName());
                             }
                         } while (shapeless);
 
@@ -1106,21 +1104,21 @@ public class LBType {
             list.add(this.getFixedLuckString(luck));
         }
 
-        ItemStack item = ItemMaker.createItem(this.type, 1, this.data, this.name, list);
+        ItemStack item = ItemStackUtils.createItem(this.type, 1, this.data, this.name, list);
         if (this.type == Material.SKULL_ITEM && this.useSkin) {
             if (this.skin != null) {
-                item = ItemMaker.createSkull(item, this.skin.getId(), this.skin.getValue());
+                item = ItemStackUtils.createSkull(item, this.skin.getId(), this.skin.getValue());
             } else {
                 if (this.skin_data[0] == null || this.skin_data[1] == null) {
                     throw new NullPointerException("Invalid skull data!");
                 }
 
-                item = ItemMaker.createSkull(item, this.skin_data[0], this.skin_data[1]);
+                item = ItemStackUtils.createSkull(item, this.skin_data[0], this.skin_data[1]);
             }
         }
 
         if (drop != null && PlaceLuckyBlock.dropToString(drop) != null) {
-            item = ItemMaker.addLore(item, ChatColor.DARK_PURPLE + "Drop: " + ChatColor.GRAY + drop);
+            item = ItemStackUtils.addLore(item, ChatColor.DARK_PURPLE + "Drop: " + ChatColor.GRAY + drop);
         }
 
         if (options != null) {
@@ -1130,13 +1128,13 @@ public class LBType {
             for (int var8 = 0; var8 < var9; ++var8) {
                 LBOption option = var10[var8];
                 if (option == LBOption.PROTECTED) {
-                    item = ItemMaker.addLore(item, ChatColor.GRAY + "Protected: " + ChatColor.GREEN + "true");
+                    item = ItemStackUtils.addLore(item, ChatColor.GRAY + "Protected: " + ChatColor.GREEN + "true");
                 }
             }
         }
 
         if (randomLuck) {
-            item = ItemReflection.setBoolean(item, "hasRandomLuck", true);
+            item = ItemStackUtils.setItemTag(item, ItemStackUtils.getItemTag(item).setBoolean("hasRandomLuck", true));
         }
 
         LuckyDB.makeLucky(item, amount);

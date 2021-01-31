@@ -7,7 +7,7 @@ package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
@@ -353,7 +353,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
     }
 
     private void loadRecipes() {
-        ItemStack craftLB = ItemMaker.createItem(Material.NOTE_BLOCK, 1, 0, ChatColor.YELLOW + "Lucky Crafting Table");
+        ItemStack craftLB = ItemStackUtils.createItem(Material.NOTE_BLOCK, 1, 0, ChatColor.YELLOW + "Lucky Crafting Table");
         NamespacedKey k = new NamespacedKey(this, "lucky_crafting_table");
         ShapedRecipe sh = new ShapedRecipe(k, craftLB);
         sh.shape("cac", "aba", "cac");

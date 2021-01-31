@@ -1,6 +1,7 @@
 package com.mcgamer199.luckyblock.util;
 
 import com.google.common.collect.Lists;
+import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@UtilityClass
 public class ChatComponentUtils {
 
     private static final HashMap<String, String> mapFormatting = loadFomatting();

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.engine;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
@@ -40,7 +40,7 @@ public class IObjects {
     private static boolean MISSING_SOUNDS = false;
 
     static {
-        ITEM_SPAWN_ENTITY = ItemMaker.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity");
+        ITEM_SPAWN_ENTITY = ItemStackUtils.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity");
     }
 
     public static Object getValue(String key) {

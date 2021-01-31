@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions;
 import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions.ParticleHelper;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
@@ -34,8 +34,8 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
     private static final ItemStack winItem;
 
     static {
-        trophy = ItemMaker.createSkull(ItemMaker.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.BLUE + "Underwater Boss", Arrays.asList("", ChatColor.GRAY + "Obtained by killing underwater bosses.")), "e56a8749-8a4a-40cc-9ded-3c90f8ae8c63", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM3OTc0ODJhMTRiZmNiODc3MjU3Y2IyY2ZmMWI2ZTZhOGI4NDEzMzM2ZmZiNGMyOWE2MTM5Mjc4YjQzNmIifX19");
-        winItem = ItemMaker.addEnchant(ItemMaker.createItem(Material.PAPER, 1, 0, ChatColor.GREEN + "Congratulations", Arrays.asList("", ChatColor.GRAY + "You beat the underwater boss!")), LuckyBlockPlugin.enchantment_glow, 1);
+        trophy = ItemStackUtils.createSkull(ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.BLUE + "Underwater Boss", Arrays.asList("", ChatColor.GRAY + "Obtained by killing underwater bosses.")), "e56a8749-8a4a-40cc-9ded-3c90f8ae8c63", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM3OTc0ODJhMTRiZmNiODc3MjU3Y2IyY2ZmMWI2ZTZhOGI4NDEzMzM2ZmZiNGMyOWE2MTM5Mjc4YjQzNmIifX19");
+        winItem = ItemStackUtils.addEnchant(ItemStackUtils.createItem(Material.PAPER, 1, 0, ChatColor.GREEN + "Congratulations", Arrays.asList("", ChatColor.GRAY + "You beat the underwater boss!")), LuckyBlockPlugin.enchantment_glow, 1);
     }
 
     ElderGuardian elder;
@@ -333,7 +333,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
     }
 
     public ItemStack[] getDrops() {
-        return new ItemStack[]{LBItem.KEY_4.getItem(), trophy, winItem, ItemMaker.createItem(Material.PRISMARINE_SHARD, this.random.nextInt(3) + 1, 0, ChatColor.DARK_AQUA + "Prismarine Shard")};
+        return new ItemStack[]{LBItem.KEY_4.getItem(), trophy, winItem, ItemStackUtils.createItem(Material.PRISMARINE_SHARD, this.random.nextInt(3) + 1, 0, ChatColor.DARK_AQUA + "Prismarine Shard")};
     }
 
     protected int[] getPercents() {

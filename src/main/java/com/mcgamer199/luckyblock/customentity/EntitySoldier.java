@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -110,14 +110,14 @@ public class EntitySoldier extends CustomEntity {
             while (var3.hasNext()) {
                 String s = (String) var3.next();
                 if (!s.startsWith("Entity")) {
-                    ItemStack item = ItemMaker.createItem(Material.SKULL_ITEM, 1, 3);
-                    item = ItemMaker.setSkullOwner(item, s);
+                    ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+                    item = ItemStackUtils.setSkullOwner(item, s);
                     event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), item);
                 } else {
                     String[] d = s.split("Entity_");
                     if (d.length == 2) {
                         int data = Integer.parseInt(d[1]);
-                        ItemStack item = ItemMaker.createItem(Material.SKULL_ITEM, 1, data);
+                        ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) data);
                         event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), item);
                     }
                 }

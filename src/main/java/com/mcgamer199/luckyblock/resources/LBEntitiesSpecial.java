@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
 import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
 import com.mcgamer199.luckyblock.customentity.EntitySuperSlime;
@@ -27,13 +27,13 @@ public class LBEntitiesSpecial {
         zombie.setCanPickupItems(true);
         zombie.setCustomName("" + ChatColor.YELLOW + ChatColor.BOLD + "Bob");
         zombie.setCustomNameVisible(true);
-        ItemStack item = ItemMaker.createItem(Material.DIAMOND_SWORD, 1, 0);
-        item = ItemMaker.addEnchants(item, new int[]{5, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
+        ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1, (short) 0);
+        item = ItemStackUtils.addEnchants(item, new int[]{5, 2}, Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT);
         zombie.getEquipment().setItemInMainHand(item);
-        ItemStack item1 = ItemMaker.createItem(Material.DIAMOND_HELMET);
-        item1 = ItemMaker.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
+        ItemStack item1 = new ItemStack(Material.DIAMOND_HELMET);
+        item1 = ItemStackUtils.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
         if ((new Random()).nextInt(100) + 1 >= 65) {
-            item1 = ItemMaker.addEnchant(item1, Enchantment.THORNS, 3);
+            item1 = ItemStackUtils.addEnchant(item1, Enchantment.THORNS, 3);
         }
 
         zombie.getEquipment().setHelmet(item1);
@@ -62,11 +62,11 @@ public class LBEntitiesSpecial {
         skeleton.setCanPickupItems(true);
         skeleton.setCustomName("" + ChatColor.GRAY + ChatColor.BOLD + "Peter");
         skeleton.setCustomNameVisible(true);
-        ItemStack item = ItemMaker.createItem(Material.BOW, 1, 0);
-        item = ItemMaker.addEnchants(item, new int[]{5, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
+        ItemStack item = new ItemStack(Material.BOW, 1, (short) 0);
+        item = ItemStackUtils.addEnchants(item, new int[]{5, 1}, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE);
         skeleton.getEquipment().setItemInMainHand(item);
-        ItemStack item1 = ItemMaker.createItem(Material.DIAMOND_HELMET);
-        item1 = ItemMaker.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
+        ItemStack item1 = new ItemStack(Material.DIAMOND_HELMET);
+        item1 = ItemStackUtils.addEnchants(item1, new int[]{4, 4, 4, 4, 4}, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE);
         skeleton.getEquipment().setHelmet(item1);
         item1.setType(Material.DIAMOND_CHESTPLATE);
         skeleton.getEquipment().setChestplate(item1);

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
@@ -459,7 +459,7 @@ public class DropEvents1 extends ColorsClass {
                                                 LuckyWell well = new LuckyWell();
                                                 well.build(bloc);
                                                 if (player != null) {
-                                                    ItemStack item = ItemMaker.addEnchant(ItemMaker.createItem(Material.GOLD_NUGGET, 1, 0, "" + gold + bold + "Coin", Arrays.asList(gray + "Drop it in the well")), Enchantment.DURABILITY, 1);
+                                                    ItemStack item = ItemStackUtils.addEnchant(ItemStackUtils.createItem(Material.GOLD_NUGGET, 1, 0, "" + gold + bold + "Coin", Arrays.asList(gray + "Drop it in the well")), Enchantment.DURABILITY, 1);
                                                     ItemMeta itemM = item.getItemMeta();
                                                     itemM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                                                     item.setItemMeta(itemM);

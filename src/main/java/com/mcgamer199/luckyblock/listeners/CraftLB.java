@@ -1,9 +1,8 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.api.item.ItemNBT;
-import com.mcgamer199.luckyblock.api.item.ItemReflection;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
@@ -15,7 +14,10 @@ import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.TitleSender;
 import com.mcgamer199.luckyblock.tellraw.TextAction;
 import com.mcgamer199.luckyblock.util.LocationUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
@@ -49,7 +51,7 @@ public class CraftLB extends ColorsClass implements Listener {
     }
 
     public static boolean isRandom(ItemStack item) {
-        return ItemReflection.getBoolean(item, "hasRandomLuck");
+        return ItemStackUtils.getItemTag(item).getBoolean("hasRandomLuck");
     }
 
     public static int getTotalLuck(Inventory inv) {
@@ -616,11 +618,14 @@ public class CraftLB extends ColorsClass implements Listener {
                     if (player.hasPermission("lb.placelct")) {
                         if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
                             String p = event.getPlayer().getName();
-                            y = ItemReflection.getInt(item, "lct_level");
-                            z = ItemReflection.getInt(item, "lct_extra");
-                            int fuel = ItemReflection.getInt(item, "lct_fuel");
-                            int stored = ItemReflection.getInt(item, "lct_stored");
-                            String s = ItemReflection.getString(item, "lct_player");
+
+                            NBTCompoundWrapper<?> itemTag = ItemStackUtils.getItemTag(item);
+                            y = itemTag.getInt("lct_level");
+                            z = itemTag.getInt("lct_extra");
+                            int fuel = itemTag.getInt("lct_fuel");
+                            int stored = itemTag.getInt("lct_stored");
+                            String s = itemTag.getString("lct_player");
+
                             if (s != null) {
                                 p = s;
                             }
@@ -659,39 +664,42 @@ public class CraftLB extends ColorsClass implements Listener {
             }
 
             block.setType(Material.AIR);
-            LuckyCraftingTable cr = LuckyCraftingTable.getByBlock(block);
-            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-                ItemStack item = ItemMaker.createItem(Material.NOTE_BLOCK, 1, 0, ChatColor.YELLOW + "Lucky Crafting Table " + ChatColor.GOLD + "[Data]", Arrays.asList("", ChatColor.GRAY + "Contains stored data"));
-                ItemNBT nbt = new ItemNBT(item);
-                nbt.set("lct_level", nbt.getNewNBTTagInt(cr.getLevel()));
-                nbt.set("lct_extra", nbt.getNewNBTTagInt(cr.getExtraLuck()));
-                nbt.set("lct_fuel", nbt.getNewNBTTagInt(cr.getFuel()));
-                nbt.set("lct_player", nbt.getNewNBTTagString(cr.getPlayer()));
-                nbt.set("lct_stored", nbt.getNewNBTTagInt(cr.getStoredLuck()));
-                item = nbt.getItem();
+            LuckyCraftingTable craftingTable = LuckyCraftingTable.getByBlock(block);
+            if ((player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) && craftingTable != null) {
+                ItemStack item = ItemStackUtils.createItem(Material.NOTE_BLOCK, 1, 0, ChatColor.YELLOW + "Lucky Crafting Table " + ChatColor.GOLD + "[Data]", Arrays.asList("", ChatColor.GRAY + "Contains stored data"));
+
+                NBTCompoundWrapper<?> itemTag = ItemStackUtils.getItemTag(item);
+                itemTag.setInt("lct_level", craftingTable.getLevel())
+                        .setInt("lct_extra", craftingTable.getExtraLuck())
+                        .setInt("lct_fuel", craftingTable.getFuel())
+                        .setString("lct_player", craftingTable.getPlayer())
+                        .setInt("lct_stored", craftingTable.getStoredLuck());
+
+                item = ItemStackUtils.setItemTag(item, itemTag);
+
                 block.getWorld().dropItem(block.getLocation(), item);
             }
 
             Item i;
             int x;
             ItemStack item;
-            for (x = 0; x < cr.i().getSize(); ++x) {
-                if (x < 26 && x % 9 < 3 && cr.i().getItem(x) != null) {
-                    item = cr.i().getItem(x);
-                    i = cr.getBlock().getWorld().dropItem(cr.getBlock().getLocation().add(0.5D, 1.0D, 0.5D), item);
+            for (x = 0; x < craftingTable.i().getSize(); ++x) {
+                if (x < 26 && x % 9 < 3 && craftingTable.i().getItem(x) != null) {
+                    item = craftingTable.i().getItem(x);
+                    i = craftingTable.getBlock().getWorld().dropItem(craftingTable.getBlock().getLocation().add(0.5D, 1.0D, 0.5D), item);
                     i.setPickupDelay(25);
                 }
             }
 
-            for (x = 0; x < cr.i().getSize(); ++x) {
-                if (x < 45 && x % 9 > 3 && cr.i().getItem(x) != null) {
-                    item = cr.i().getItem(x);
-                    i = cr.getBlock().getWorld().dropItem(cr.getBlock().getLocation().add(0.5D, 1.0D, 0.5D), item);
+            for (x = 0; x < craftingTable.i().getSize(); ++x) {
+                if (x < 45 && x % 9 > 3 && craftingTable.i().getItem(x) != null) {
+                    item = craftingTable.i().getItem(x);
+                    i = craftingTable.getBlock().getWorld().dropItem(craftingTable.getBlock().getLocation().add(0.5D, 1.0D, 0.5D), item);
                     i.setPickupDelay(25);
                 }
             }
 
-            cr.remove();
+            craftingTable.remove();
             TestSend(player, "lct.break.success");
         }
 

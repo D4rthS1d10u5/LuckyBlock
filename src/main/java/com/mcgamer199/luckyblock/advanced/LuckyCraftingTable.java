@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.advanced;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTNameTag;
@@ -64,7 +64,7 @@ public class LuckyCraftingTable extends ColorsClass {
             this.inv = Bukkit.createInventory(null, 54, red + val("lct.display_name", false));
         }
 
-        ItemStack glass = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 15, red + val("lct.gui.itemlocked.name", false));
+        ItemStack glass = ItemStackUtils.createItem(Material.STAINED_GLASS_PANE, 1, 15, red + val("lct.gui.itemlocked.name", false));
         int s = this.inv.getSize();
         int[] glasses = new int[]{1, 2, 3, 4, 5, 6, 15, 24, 25, 26, 27, 33, 42, 51};
         int[] var10 = glasses;
@@ -75,12 +75,12 @@ public class LuckyCraftingTable extends ColorsClass {
             this.inv.setItem(s - i, glass);
         }
 
-        this.inv.setItem(s - 9, ItemMaker.createItem(Material.COMPASS, 1, 0, red + val("lct.gui.itemclose.name", false), Arrays.asList("", gray + val("lct.gui.itemclose.lore", false))));
-        this.inv.setItem(this.inv.getSize() - 8, ItemMaker.createItem(Material.EMERALD, 1, 0, yellow + val("lct.gui.itemresult.name", false), Arrays.asList("", gray + val("lct.gui.itemresult.lore", false))));
-        this.inv.setItem(this.inv.getSize() - 7, ItemMaker.createItem(Material.EYE_OF_ENDER, 1, 0, darkblue + val("lct.gui.itemother.name", false), Arrays.asList("", gray + val("lct.gui.itemother.lore", false))));
-        this.inv.setItem(this.inv.getSize() - 17, ItemMaker.createItem(Material.NETHER_STAR, 1, 0, yellow + val("lct.display_name", false), Arrays.asList(gray + LocationUtils.asString(block.getLocation()))));
-        this.inv.setItem(this.inv.getSize() - 16, ItemMaker.createItem(Material.REDSTONE, 1, 0, green + val("lct.gui.iteminsert.name", false), Arrays.asList("", gray + val("lct.gui.iteminsert.lore", false))));
-        this.inv.setItem(this.inv.getSize() - 18, ItemMaker.createItem(Material.REDSTONE, 1, 0, green + val("lct.gui.itemextract.name", false), Arrays.asList("", gray + val("lct.gui.itemextract.lore"))));
+        this.inv.setItem(s - 9, ItemStackUtils.createItem(Material.COMPASS, 1, 0, red + val("lct.gui.itemclose.name", false), Arrays.asList("", gray + val("lct.gui.itemclose.lore", false))));
+        this.inv.setItem(this.inv.getSize() - 8, ItemStackUtils.createItem(Material.EMERALD, 1, 0, yellow + val("lct.gui.itemresult.name", false), Arrays.asList("", gray + val("lct.gui.itemresult.lore", false))));
+        this.inv.setItem(this.inv.getSize() - 7, ItemStackUtils.createItem(Material.EYE_OF_ENDER, 1, 0, darkblue + val("lct.gui.itemother.name", false), Arrays.asList("", gray + val("lct.gui.itemother.lore", false))));
+        this.inv.setItem(this.inv.getSize() - 17, ItemStackUtils.createItem(Material.NETHER_STAR, 1, 0, yellow + val("lct.display_name", false), Arrays.asList(gray + LocationUtils.asString(block.getLocation()))));
+        this.inv.setItem(this.inv.getSize() - 16, ItemStackUtils.createItem(Material.REDSTONE, 1, 0, green + val("lct.gui.iteminsert.name", false), Arrays.asList("", gray + val("lct.gui.iteminsert.lore", false))));
+        this.inv.setItem(this.inv.getSize() - 18, ItemStackUtils.createItem(Material.REDSTONE, 1, 0, green + val("lct.gui.itemextract.name", false), Arrays.asList("", gray + val("lct.gui.itemextract.lore"))));
         if (first && IObjects.getValue("lct_nameVisible").toString().equalsIgnoreCase("true")) {
             EntityLCTNameTag e = new EntityLCTNameTag();
             e.spawn(this);
@@ -602,8 +602,8 @@ public class LuckyCraftingTable extends ColorsClass {
             l = "" + ChatColor.RED + this.storedLuck;
         }
 
-        this.inv.setItem(this.inv.getSize() - 17, ItemMaker.createItem(Material.NETHER_STAR, 1, 0, yellow + val("lct.display_name", false), Arrays.asList(gray + LocationUtils.asString(this.block.getLocation()), blue + val("lct.data.main.stored_luck", false) + ": " + l, blue + val("lct.data.main.level", false) + ": " + white + this.level, blue + val("lct.data.main.max_luck", false) + ": " + white + this.maxLuck, blue + val("lct.data.main.player", false) + ": " + white + this.player, blue + val("lct.data.main.fuel", false) + ": " + white + this.fuel, blue + val("lct.data.main.extra_luck", false) + ": " + white + this.extraLuck)));
-        this.inv.setItem(this.inv.getSize() - 8, ItemMaker.createItem(Material.EMERALD, 1, 0, yellow + val("lct.gui.itemtotal.name", false), Arrays.asList("", gray + val("lct.gui.itemtotal.lore", false))));
+        this.inv.setItem(this.inv.getSize() - 17, ItemStackUtils.createItem(Material.NETHER_STAR, 1, 0, yellow + val("lct.display_name", false), Arrays.asList(gray + LocationUtils.asString(this.block.getLocation()), blue + val("lct.data.main.stored_luck", false) + ": " + l, blue + val("lct.data.main.level", false) + ": " + white + this.level, blue + val("lct.data.main.max_luck", false) + ": " + white + this.maxLuck, blue + val("lct.data.main.player", false) + ": " + white + this.player, blue + val("lct.data.main.fuel", false) + ": " + white + this.fuel, blue + val("lct.data.main.extra_luck", false) + ": " + white + this.extraLuck)));
+        this.inv.setItem(this.inv.getSize() - 8, ItemStackUtils.createItem(Material.EMERALD, 1, 0, yellow + val("lct.gui.itemtotal.name", false), Arrays.asList("", gray + val("lct.gui.itemtotal.lore", false))));
         player.openInventory(this.inv);
     }
 

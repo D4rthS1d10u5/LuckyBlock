@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +25,7 @@ public class RecipeLB implements Listener {
 
     public static void open(Player player, ItemStack item, int id, int page) {
         Inventory inv = Bukkit.createInventory(player, 45, ChatColor.BLUE + "LB Recipes#ID:" + id + "#Page:" + page);
-        ItemStack itemN = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 15, ChatColor.RED + "Locked");
+        ItemStack itemN = ItemStackUtils.createItem(Material.STAINED_GLASS_PANE, 1, 15, ChatColor.RED + "Locked");
 
         for (int x = 0; x < inv.getSize(); ++x) {
             inv.setItem(x, itemN);
@@ -51,13 +51,13 @@ public class RecipeLB implements Listener {
             }
         }
 
-        inv.setItem(0, ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to open recipes gui")));
+        inv.setItem(0, ItemStackUtils.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to open recipes gui")));
         if (page > 1) {
-            inv.setItem(inv.getSize() - 9, ItemMaker.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Prev page", Arrays.asList("", ChatColor.GRAY + "Click to open previous page")));
+            inv.setItem(inv.getSize() - 9, ItemStackUtils.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Prev page", Arrays.asList("", ChatColor.GRAY + "Click to open previous page")));
         }
 
         if (recipes.size() > page) {
-            inv.setItem(inv.getSize() - 1, ItemMaker.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Next page", Arrays.asList("", ChatColor.GRAY + "Click to open next page")));
+            inv.setItem(inv.getSize() - 1, ItemStackUtils.createItem(Material.ARROW, 1, 0, ChatColor.GREEN + "Next page", Arrays.asList("", ChatColor.GRAY + "Click to open next page")));
         }
 
         if (recipes.size() > 0) {

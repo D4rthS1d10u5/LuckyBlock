@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
@@ -114,7 +114,7 @@ public class LBCOther extends LBCommand {
                 }
             } else if (args[0].equalsIgnoreCase("lct")) {
                 if (sender instanceof Player && sender.isOp()) {
-                    ((Player) sender).getInventory().addItem(ItemMaker.createItem(Material.NOTE_BLOCK, 1, 0, yellow + "Lucky Crafting Table"));
+                    ((Player) sender).getInventory().addItem(ItemStackUtils.createItem(Material.NOTE_BLOCK, 1, 0, yellow + "Lucky Crafting Table"));
                     return true;
                 }
             } else {

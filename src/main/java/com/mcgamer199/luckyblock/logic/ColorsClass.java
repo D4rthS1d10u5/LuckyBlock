@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.logic;
 
-import com.mcgamer199.luckyblock.api.item.ItemFactory;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
@@ -259,7 +259,7 @@ public class ColorsClass {
         IDebug.sendDebug(name, datas);
     }
 
-    protected static final boolean compareItems(ItemStack item1, ItemStack item2) {
+    protected static boolean compareItems(ItemStack item1, ItemStack item2) {
         if (item1 != null && item2 != null) {
             if (item1.getType() != item2.getType()) {
                 return false;
@@ -293,7 +293,7 @@ public class ColorsClass {
     }
 
     protected final boolean isSword(ItemStack item) {
-        return (item != null && item.getType() != Material.AIR) && ItemFactory.isSword(item);
+        return (item != null && item.getType() != Material.AIR) && ItemStackUtils.isSword(item);
     }
 
     protected enum ObjectType {

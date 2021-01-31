@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
-import com.mcgamer199.luckyblock.api.item.ItemNBT;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ITask;
 import org.bukkit.*;
@@ -678,16 +678,19 @@ public class CustomEntity {
     public final ItemStack getSpawnEgg() {
         String[] d = this.getClass().getName().replace(".", "_").split("_");
         String a = d[d.length - 1];
-        ItemStack item = ItemMaker.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity", Arrays.asList("", ChatColor.GOLD + "Entity: " + ChatColor.GRAY + a, ChatColor.GRAY + "Right click to spawn"));
-        ItemNBT nbt = new ItemNBT(item);
-        nbt.set("EntityClass", nbt.getNewNBTTagString(this.getClass().getName()));
-        if (this.getSpawnEggEntity() != null) {
-            String s = this.getSpawnEggEntity();
-            Object o = nbt.setTag("id", nbt.getNewNBT(), nbt.getNewNBTTagString(s));
-            nbt.set("EntityTag", o);
+        ItemStack item = ItemStackUtils.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity", Arrays.asList("", ChatColor.GOLD + "Entity: " + ChatColor.GRAY + a, ChatColor.GRAY + "Right click to spawn"));
+
+        NBTCompoundWrapper<?> itemTag = ItemStackUtils.getItemTag(item);
+
+        itemTag.setString("EntityClass", getClass().getName());
+        String entitySpawnEgg = getSpawnEggEntity();
+        if(entitySpawnEgg != null) {
+            NBTCompoundWrapper<?> entityTag = itemTag.newCompound();
+            entityTag.setString("id", entitySpawnEgg);
+            itemTag.setCompound("EntityTag", entityTag);
         }
 
-        return nbt.getItem();
+        return ItemStackUtils.setItemTag(item, itemTag);
     }
 
     public void interact(Player player) {

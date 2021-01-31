@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customentity.boss.main.EntityHealer;
 import com.mcgamer199.luckyblock.customentity.boss.main.EntityIPart;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
@@ -36,7 +36,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
         ARMOR_CHESTPLATES = new ItemStack[]{new ItemStack(Material.LEATHER_CHESTPLATE), new ItemStack(Material.IRON_CHESTPLATE), new ItemStack(Material.GOLD_CHESTPLATE), new ItemStack(Material.DIAMOND_CHESTPLATE)};
         ARMOR_LEGGINGS = new ItemStack[]{new ItemStack(Material.LEATHER_LEGGINGS), new ItemStack(Material.IRON_LEGGINGS), new ItemStack(Material.GOLD_LEGGINGS), new ItemStack(Material.DIAMOND_LEGGINGS)};
         ARMOR_BOOTS = new ItemStack[]{new ItemStack(Material.LEATHER_BOOTS), new ItemStack(Material.IRON_BOOTS), new ItemStack(Material.GOLD_BOOTS), new ItemStack(Material.DIAMOND_BOOTS)};
-        ARMY_SWORD = ItemMaker.addEnchant(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 10);
+        ARMY_SWORD = ItemStackUtils.addEnchant(new ItemStack(Material.WOOD_SWORD), Enchantment.DAMAGE_ALL, 10);
     }
 
     private final boolean damageable = true;
@@ -162,7 +162,7 @@ public class EntityMC extends CustomEntity implements EntityLBBoss {
         task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (!EntityMC.this.e.isDead()) {
-                    Item item = EntityMC.this.e.getWorld().dropItem(EntityMC.this.e.getLocation().add(0.0D, 2.0D, 0.0D), ItemMaker.createItem(Material.WOOL, 1, 11, ChatColor.GOLD + "LBWither's Bomb"));
+                    Item item = EntityMC.this.e.getWorld().dropItem(EntityMC.this.e.getLocation().add(0.0D, 2.0D, 0.0D), ItemStackUtils.createItem(Material.WOOL, 1, 11, ChatColor.GOLD + "LBWither's Bomb"));
                     double i1 = EntityMC.this.random.nextInt(80) - 40;
                     double i2 = EntityMC.this.random.nextInt(80) - 40;
                     double d1 = i1 / 100.0D;

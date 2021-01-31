@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.structures.*;
@@ -290,8 +290,8 @@ public class LuckyBlockWorld extends ChunkGenerator implements Listener {
                     }
                 } else if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM) {
                     Skeleton sk = (Skeleton) event.getEntity();
-                    ItemStack i = ItemMaker.createItem(Material.BOW, 1, 0);
-                    i = ItemMaker.addEnchant(i, Enchantment.ARROW_FIRE, 1);
+                    ItemStack i = new ItemStack(Material.BOW, 1, (short) 0);
+                    i = ItemStackUtils.addEnchant(i, Enchantment.ARROW_FIRE, 1);
                     sk.getEquipment().setItemInMainHand(i);
                 }
             } else if (event.getEntity() instanceof Pig) {

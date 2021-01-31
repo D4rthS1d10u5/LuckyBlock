@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
@@ -854,7 +854,7 @@ public class DropEvents extends ColorsClass {
                                         v.setCustomNameVisible(true);
                                         List<MerchantRecipe> recipes = new ArrayList();
                                         randomP = luckyBlock.getType().getRandomP();
-                                        i = ItemMaker.createItem(Material.POTION, 1, random.nextInt(3) + 1, "" + yellow + bold + "Lucky Potion");
+                                        i = ItemStackUtils.createItem(Material.POTION, 1, random.nextInt(3) + 1, "" + yellow + bold + "Lucky Potion");
                                         PotionMeta iM = (PotionMeta) i.getItemMeta();
                                         PotionData data = new PotionData(PotionType.FIRE_RESISTANCE);
                                         iM.setBasePotionData(data);
@@ -890,7 +890,7 @@ public class DropEvents extends ColorsClass {
                                             Zombie zombie = (Zombie) player.getWorld().spawnEntity(bloc, EntityType.ZOMBIE);
                                             zombie.setMaxHealth(300.0D);
                                             zombie.setHealth(300.0D);
-                                            zombie.getEquipment().setItemInMainHand(ItemMaker.addEnchant(ItemMaker.createItem(Material.DIAMOND_SWORD), Enchantment.DAMAGE_ALL, 200));
+                                            zombie.getEquipment().setItemInMainHand(ItemStackUtils.addEnchant(new ItemStack(Material.DIAMOND_SWORD), Enchantment.DAMAGE_ALL, 200));
                                             zombie.setTarget(player);
                                             HTasks.a(player, zombie);
                                         }

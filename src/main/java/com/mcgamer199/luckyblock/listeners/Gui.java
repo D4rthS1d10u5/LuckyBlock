@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
@@ -50,16 +50,16 @@ public class Gui extends ColorsClass implements Listener {
                     }
                 }
 
-                inv.setItem(inv.getSize() - 1, ItemMaker.createItem(Material.COMPASS, 1, 0, red + "Back", Arrays.asList(gray + "Click to return")));
+                inv.setItem(inv.getSize() - 1, ItemStackUtils.createItem(Material.COMPASS, 1, 0, red + "Back", Arrays.asList(gray + "Click to return")));
                 if (show) {
-                    inv.setItem(inv.getSize() - 2, ItemMaker.createItem(Material.ARROW, 1, 0, green + "Next Page", Arrays.asList(gray + "Click to open next page")));
+                    inv.setItem(inv.getSize() - 2, ItemStackUtils.createItem(Material.ARROW, 1, 0, green + "Next Page", Arrays.asList(gray + "Click to open next page")));
                 }
 
                 if (page > 1) {
-                    inv.setItem(inv.getSize() - 8, ItemMaker.createItem(Material.ARROW, 1, 0, green + "Previous Page", Arrays.asList(gray + "Click to open previous page")));
+                    inv.setItem(inv.getSize() - 8, ItemStackUtils.createItem(Material.ARROW, 1, 0, green + "Previous Page", Arrays.asList(gray + "Click to open previous page")));
                 }
 
-                inv.setItem(inv.getSize() - 5, ItemMaker.createItem(Material.ARROW, 1, 0, green + "Current Page: " + page));
+                inv.setItem(inv.getSize() - 5, ItemStackUtils.createItem(Material.ARROW, 1, 0, green + "Current Page: " + page));
                 player.openInventory(inv);
             }
         }
@@ -78,7 +78,7 @@ public class Gui extends ColorsClass implements Listener {
     }
 
     public static void fill_glass(Inventory inv) {
-        ItemStack item = ItemMaker.createItem(Material.STAINED_GLASS_PANE, 1, 11, ChatColor.RED + "Lucky Block");
+        ItemStack item = ItemStackUtils.createItem(Material.STAINED_GLASS_PANE, 1, 11, ChatColor.RED + "Lucky Block");
 
         for (int x = 0; x < inv.getSize(); ++x) {
             if (x >= 9 && x <= inv.getSize() - 9) {
@@ -95,9 +95,9 @@ public class Gui extends ColorsClass implements Listener {
     public static ItemStack getIItem(String name) {
         ItemStack item = null;
         if (name.equalsIgnoreCase("back")) {
-            item = ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to back"));
+            item = ItemStackUtils.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Back", Arrays.asList("", ChatColor.GRAY + "Click to back"));
         } else if (name.equalsIgnoreCase("close")) {
-            item = ItemMaker.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Close", Arrays.asList("", ChatColor.GRAY + "Click to close"));
+            item = ItemStackUtils.createItem(Material.COMPASS, 1, 0, ChatColor.RED + "Close", Arrays.asList("", ChatColor.GRAY + "Click to close"));
         }
 
         return item;

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.api.item.ItemMaker;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
 import org.bukkit.ChatColor;
@@ -83,7 +83,7 @@ public class EntityLBShulker extends CustomEntity {
                 }
             }
 
-            e.getWorld().dropItem(event.getEntity().getLocation(), ItemMaker.createItem(Material.WEB, 1, 0, "" + ChatColor.RED + ChatColor.BOLD + t.toLowerCase() + " was killed by shulker"));
+            e.getWorld().dropItem(event.getEntity().getLocation(), ItemStackUtils.createItem(Material.WEB, 1, 0, "" + ChatColor.RED + ChatColor.BOLD + t.toLowerCase() + " was killed by shulker"));
             ++this.killedEntities;
             this.save_def();
         }
