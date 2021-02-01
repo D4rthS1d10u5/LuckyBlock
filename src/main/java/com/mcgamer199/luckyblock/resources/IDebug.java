@@ -1,7 +1,9 @@
 package com.mcgamer199.luckyblock.resources;
 
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -14,29 +16,21 @@ public class IDebug {
     }
 
     public static void sendError(Player player, String[] msgs) {
-        com.mcgamer199.luckyblock.tellraw.RawText text1 = new com.mcgamer199.luckyblock.tellraw.RawText("" + ChatColor.DARK_PURPLE + ChatColor.BOLD + "[" + ChatColor.YELLOW + ChatColor.BOLD + "LBDebug" + ChatColor.DARK_PURPLE + ChatColor.BOLD + "]");
-        text1.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.YELLOW + "Errors detector"));
-        com.mcgamer199.luckyblock.tellraw.RawText text2 = new com.mcgamer199.luckyblock.tellraw.RawText(ChatColor.RED + " An error has occured! for more information hover ");
-        com.mcgamer199.luckyblock.tellraw.RawText text3 = new com.mcgamer199.luckyblock.tellraw.RawText(ChatColor.YELLOW + "Here");
-        text3.bold = true;
-        String a = "";
-        if (msgs != null && msgs.length > 0) {
-            for (int x = 0; x < msgs.length; ++x) {
-                if (x > 0) {
-                    a = a + "\n";
-                }
+        String errorMessage = "unknown";
 
-                a = a + msgs[x];
+        if(!ArrayUtils.isEmpty(msgs)) {
+            StringBuilder builder = new StringBuilder();
+            for (String msg : msgs) {
+                builder.append(msg).append('\n');
             }
+            errorMessage = builder.toString();
         }
 
-        if (a.equalsIgnoreCase("")) {
-            a = "unknown";
-        }
+        ChatComponent component = new ChatComponent();
+        component.addText("§5§b[§e§bLBDebug§5§b]", Hover.show_text, "§eErrors detector\n");
+        component.addText("§c An error has occurred! For more information hover §ehere.", Hover.show_text, "§9§b" + errorMessage);
 
-        a = ChatColor.stripColor(a);
-        text3.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.BLUE + a));
-        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text1, text2, text3);
+        component.send(player);
     }
 
     public static void sendDebug(String name, DebugData... datas) {
@@ -44,14 +38,11 @@ public class IDebug {
             ConsoleCommandSender c = Bukkit.getServer().getConsoleSender();
             c.sendMessage(ChatColor.RED + "[Lucky Block Debug]");
             Calendar cal = Calendar.getInstance();
-            c.sendMessage(ChatColor.AQUA + "Time: " + ChatColor.YELLOW + cal.get(11) + ":" + cal.get(12) + ":" + cal.get(13));
+            c.sendMessage(ChatColor.AQUA + "Time: " + ChatColor.YELLOW + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
             c.sendMessage(ChatColor.AQUA + "Event: " + ChatColor.YELLOW + name);
-            DebugData[] var7 = datas;
-            int var6 = datas.length;
 
-            for (int var5 = 0; var5 < var6; ++var5) {
-                DebugData d = var7[var5];
-                c.sendMessage(ChatColor.AQUA + d.dataName + ": " + ChatColor.YELLOW + d.dataValue);
+            for (DebugData data : datas) {
+                c.sendMessage(ChatColor.AQUA + data.dataName + ": " + ChatColor.YELLOW + data.dataValue);
             }
 
             c.sendMessage(ChatColor.RED + "-------------------");

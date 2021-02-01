@@ -1,28 +1,20 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
-import org.bukkit.ChatColor;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class LBCVersion extends LBCommand {
     public LBCVersion() {
     }
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(green + val("command.version", false) + " " + gold + "2.2.5");
-        } else {
-            Player player = (Player) sender;
-            com.mcgamer199.luckyblock.tellraw.RawText r = new com.mcgamer199.luckyblock.tellraw.RawText(val("command.version", false) + ": ");
-            r.color = ChatColor.GREEN;
-            com.mcgamer199.luckyblock.tellraw.RawText r1 = new com.mcgamer199.luckyblock.tellraw.RawText("2.2.5");
-            r1.color = ChatColor.GOLD;
-            r1.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "2.2.5"));
-            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, r, r1);
-        }
+        ChatComponent component = new ChatComponent();
+        component.addText(String.format("§a%s: %s", val("command.version", false), LuckyBlockPlugin.instance.getDescription().getVersion()), Hover.show_text, String.format("§e%s", LuckyBlockPlugin.instance.getDescription().getVersion()));
+        component.send(sender);
 
         return true;
     }

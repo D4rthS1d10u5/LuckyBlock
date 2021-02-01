@@ -1,11 +1,12 @@
 package com.mcgamer199.luckyblock.command.engine;
 
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Click;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -224,76 +225,35 @@ public class ILBCmd extends ColorsClass {
     }
 
     public final void send1(CommandSender sender, String cmd, int page) {
-        int u = 0;
-        int y = (page - 1) * 9 + u;
+        int y = (page - 1) * 9;
         sender.sendMessage(color + "------ [" + color4 + val("command.help.1", false) + color + "] ------");
         sender.sendMessage(color + val("command.help.2", false) + " " + page + "/" + getPagesCount(sender, cmd));
-        List<String> al = getFullAllowedCommands(sender, cmd);
+        List<String> allowedCommands = getFullAllowedCommands(sender, cmd);
         boolean a = false;
 
-        int i;
-        for (i = y; i < y + 9; ++i) {
-            if (al.size() > i) {
+        for (int i = y; i < y + 9; ++i) {
+            if (allowedCommands.size() > i) {
                 a = true;
                 break;
             }
         }
 
         if (a) {
-            if (sender instanceof Player) {
-                com.mcgamer199.luckyblock.tellraw.RawText[] texts = new com.mcgamer199.luckyblock.tellraw.RawText[32];
-                int place = 0;
-
-                for (int anotherCounter = y; anotherCounter < y + 9; ++anotherCounter) {
-                    if (al.size() > anotherCounter) {
-                        boolean f = false;
-                        String s = al.get(anotherCounter).split(" ")[0];
-                        if (com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s) != null) {
-                            com.mcgamer199.luckyblock.command.engine.LBCommand lbc = com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s);
-                            if (lbc.isDeprecated()) {
-                                texts[place] = new com.mcgamer199.luckyblock.tellraw.RawText(yellow + "/" + cmd + " " + al.get(anotherCounter));
-                                f = true;
-                            }
-                        }
-
-                        if (!f) {
-                            texts[place] = new com.mcgamer199.luckyblock.tellraw.RawText(color1 + "/" + color2 + cmd + " " + color3 + al.get(anotherCounter));
-                        }
-
-                        ++place;
-                    }
-                }
-
-                com.mcgamer199.luckyblock.tellraw.RawText[] var21 = texts;
-                int var19 = texts.length;
-
-                for (int var18 = 0; var18 < var19; ++var18) {
-                    com.mcgamer199.luckyblock.tellraw.RawText t = var21[var18];
-                    if (t != null) {
-                        t.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, ChatColor.YELLOW + val("command.help.4", false)));
-                        t.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.CLICK_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SUGGEST_COMMAND, ChatColor.stripColor(t.getText())));
-                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, t);
-                    }
-                }
-            } else {
-                for (i = y; i < y + 9; ++i) {
-                    if (al.size() > i) {
-                        boolean f = false;
-                        String s = al.get(i).split(" ")[0];
-                        if (com.mcgamer199.luckyblock.command.engine.LBCommand.getByName(s) != null) {
-                            com.mcgamer199.luckyblock.command.engine.LBCommand lbc = LBCommand.getByName(s);
-                            if (lbc.isDeprecated()) {
-                                sender.sendMessage(yellow + "/" + cmd + " " + al.get(i));
-                                f = true;
-                            }
-                        }
-
-                        if (!f) {
-                            sender.sendMessage(color1 + "/" + color2 + cmd + " " + color3 + al.get(i));
-                        }
+            ChatComponent component = new ChatComponent();
+            int onPageCommandCounter = y;
+            for (String allowedCommand : allowedCommands) {
+                if(allowedCommands.size() > onPageCommandCounter) {
+                    String commandName = allowedCommand.split(" ")[0];
+                    LBCommand command = LBCommand.getByName(commandName);
+                    if(command != null) {
+                        String commandText = String.format("/%s %s", cmd, allowedCommand);
+                        component.addText("§e" + commandText, Hover.show_text, String.format("%s\n%s", command.isDeprecated() ? "§cDeprecated" : "", val("command.help.4", false)), Click.suggest_command, commandText);
+                        onPageCommandCounter++;
                     }
                 }
             }
+
+            component.send(sender);
         } else {
             sender.sendMessage(darkgreen + val("command.help.3", false));
         }

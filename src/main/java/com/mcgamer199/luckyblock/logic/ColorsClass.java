@@ -1,17 +1,19 @@
 package com.mcgamer199.luckyblock.logic;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Click;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -184,68 +186,37 @@ public class ColorsClass {
         msg_a(sender, loc, null, objectTypes);
     }
 
-    protected static final void sendMessage(CommandSender sender, String loc, com.mcgamer199.luckyblock.tellraw.TextAction[] actions, ColorsClass.ObjectType... objectTypes) {
-        String s = getMessage(loc, objectTypes);
-        if (s != null && !s.equalsIgnoreCase("")) {
-            if (sender instanceof Player) {
-                com.mcgamer199.luckyblock.tellraw.RawText _a = new com.mcgamer199.luckyblock.tellraw.RawText("");
-                com.mcgamer199.luckyblock.tellraw.RawText pl = new com.mcgamer199.luckyblock.tellraw.RawText(green + "[" + yellow + bold + "LB" + green + "]");
-                pl.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "Lucky Block"));
-                com.mcgamer199.luckyblock.tellraw.RawText text1 = new com.mcgamer199.luckyblock.tellraw.RawText(": ");
-                com.mcgamer199.luckyblock.tellraw.RawText text2 = new com.mcgamer199.luckyblock.tellraw.RawText(s);
-                com.mcgamer199.luckyblock.tellraw.TextAction[] var12 = actions;
-                int var11 = actions.length;
-
-                for (int var10 = 0; var10 < var11; ++var10) {
-                    com.mcgamer199.luckyblock.tellraw.TextAction a = var12[var10];
-                    if (a != null) {
-                        text2.addAction(a);
-                    }
-                }
-
-                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, _a, pl, text1, text2);
-            } else {
-                sender.sendMessage(green + "[" + yellow + "LB" + green + "]" + reset + ": " + s);
-            }
+    protected static void sendInvalid(CommandSender sender) {
+        String invalidCommand = getMessage("invalid_command");
+        if(StringUtils.isNotEmpty(invalidCommand)) {
+            ChatComponent component = new ChatComponent();
+            component.addText("§a[§e§bLB§a]: ", Hover.show_text, "§Lucky Block");
+            String command = String.format("/%s help", ILBCmd.lcmd);
+            component.addText(invalidCommand, Hover.show_text, command, Click.run_command, command);
+            component.send(sender);
         }
-
     }
 
-    private static void msg_a(CommandSender sender, String loc, String ap, ColorsClass.ObjectType... objectTypes) {
-        String s = getMessage(loc, objectTypes);
-        if (s != null && !s.equalsIgnoreCase("")) {
+    private static void msg_a(CommandSender sender, String loc, String ap, ObjectType... objectTypes) {
+        String message = getMessage(loc, objectTypes);
+        if (message != null && !message.equalsIgnoreCase("")) {
             if (ap != null) {
-                s = s + ap;
+                message = message + ap;
             }
 
-            if (sender instanceof Player) {
-                com.mcgamer199.luckyblock.tellraw.RawText _a = new com.mcgamer199.luckyblock.tellraw.RawText("");
-                com.mcgamer199.luckyblock.tellraw.RawText pl = new com.mcgamer199.luckyblock.tellraw.RawText(green + "[" + yellow + bold + "LB" + green + "]");
-                pl.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "Lucky Block"));
-                com.mcgamer199.luckyblock.tellraw.RawText text1 = new com.mcgamer199.luckyblock.tellraw.RawText(": ");
-                com.mcgamer199.luckyblock.tellraw.RawText text2 = new com.mcgamer199.luckyblock.tellraw.RawText(s);
-                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, _a, pl, text1, text2);
-            } else {
-                sender.sendMessage(green + "[" + yellow + "LB" + green + "]" + reset + ": " + s);
-            }
+            ChatComponent component = new ChatComponent();
+            component.addText(String.format("§a[§e§bLB§a]: %s", message), Hover.show_text, "§Lucky Block");
+            component.send(sender);
         }
-
     }
 
-    private static void msg_b(CommandSender sender, String string, ColorsClass.ObjectType... objectTypes) {
-        if (string != null) {
-            string = ChatColor.translateAlternateColorCodes('&', string);
-            if (!string.equalsIgnoreCase("")) {
-                if (sender instanceof Player) {
-                    com.mcgamer199.luckyblock.tellraw.RawText _a = new com.mcgamer199.luckyblock.tellraw.RawText("");
-                    com.mcgamer199.luckyblock.tellraw.RawText pl = new com.mcgamer199.luckyblock.tellraw.RawText(green + "[" + yellow + bold + "LB" + green + "]");
-                    pl.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + "Lucky Block"));
-                    com.mcgamer199.luckyblock.tellraw.RawText text1 = new com.mcgamer199.luckyblock.tellraw.RawText(": ");
-                    com.mcgamer199.luckyblock.tellraw.RawText text2 = new com.mcgamer199.luckyblock.tellraw.RawText(string);
-                    com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, _a, pl, text1, text2);
-                } else {
-                    sender.sendMessage(green + "[" + yellow + "LB" + green + "]" + reset + ": " + string);
-                }
+    private static void msg_b(CommandSender sender, String message, ColorsClass.ObjectType... objectTypes) {
+        if (message != null) {
+            message = ChatColor.translateAlternateColorCodes('&', message);
+            if (!message.equalsIgnoreCase("")) {
+                ChatComponent component = new ChatComponent();
+                component.addText(String.format("§a[§e§bLB§a]: %s", message), Hover.show_text, "§Lucky Block");
+                component.send(sender);
             }
         }
 
@@ -255,7 +226,7 @@ public class ColorsClass {
         msg_b(sender, string);
     }
 
-    protected static final void Debug(String name, DebugData... datas) {
+    protected static void Debug(String name, DebugData... datas) {
         IDebug.sendDebug(name, datas);
     }
 

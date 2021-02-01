@@ -1,20 +1,20 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LBDrop;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
-import org.bukkit.ChatColor;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class LBCDropList extends LBCommand {
     public LBCDropList() {
@@ -52,105 +52,75 @@ public class LBCDropList extends LBCommand {
                 }
             }
 
-            Iterator var22 = CustomDropManager.getCustomDrops().iterator();
-
-            while (var22.hasNext()) {
-                CustomDrop c = (CustomDrop) var22.next();
+            for (CustomDrop c : CustomDropManager.getCustomDrops()) {
                 d.add(c.getName());
             }
 
             send_no(sender, "command.droplist.page", " " + white + page);
-            if (sender instanceof Player) {
-                com.mcgamer199.luckyblock.tellraw.RawText[] texts = new com.mcgamer199.luckyblock.tellraw.RawText[16];
-                i = 0;
-                String no_desc = val("command.droplist.no_desc", false);
-                String desc_ = ChatColor.GOLD + val("command.droplist.desc", false);
 
-                for (int x = (page - 1) * 10; x < page * 10; ++x) {
-                    if (x < d.size()) {
-                        texts[i] = new com.mcgamer199.luckyblock.tellraw.RawText(aqua + "[" + green + d.get(x) + aqua + "]");
-                        String text;
-                        String desc;
-                        int z;
-                        String all;
-                        if (LBDrop.isValid(d.get(x))) {
-                            LBDrop dr = LBDrop.getByName(d.get(x));
-                            DropOption[] s = dr.getDefaultOptions();
-                            text = null;
-                            String description = no_desc;
-                            description = IObjects.getString("desc.drop." + dr.name().toLowerCase(), false);
-                            if (!description.equalsIgnoreCase("null")) {
-                                description = desc_ + ":\n" + white + description;
-                            }
+            ChatComponent component = new ChatComponent();
+            String missingDescription = val("command.droplist.no_desc", false);
+            String listDescription = "§6" + val("command.droplist.desc", false);
+            for (int x = (page - 1) * 10; x < page * 10; ++x) {
+                if (x < d.size()) {
+                    String dropName = d.get(x);
+                    StringBuilder descriptionBuilder = new StringBuilder();
+                    LBDrop drop = LBDrop.getByName(dropName);
+                    if(drop != null) {
+                        String optionDescription = IObjects.getString("desc.drop." + drop.name().toLowerCase(), false);
+                        if(optionDescription.equalsIgnoreCase("null")) {
+                            optionDescription = missingDescription;
+                        }
 
-                            for (z = 0; z < s.length; ++z) {
-                                if (s[z] != null && s[z].getName() != null && z < 11) {
-                                    if (z == 0) {
-                                        text = "\n" + yellow + s[z].getName();
-                                    } else {
-                                        text = text + "\n" + yellow + s[z].getName();
+                        descriptionBuilder.append(listDescription).append(":\n").append("§f").append(optionDescription);
+                        StringJoiner joiner = new StringJoiner("\n");
+
+                        DropOption[] options = drop.getDefaultOptions();
+                        if(ArrayUtils.isNotEmpty(options)) {
+                            int limit = 0;
+                            for (DropOption option : options) {
+                                if(limit++ > 10) {
+                                    break;
+                                } else {
+                                    if(option != null) {
+                                        joiner.add("§e" + option.getName());
                                     }
                                 }
                             }
-
-                            all = description;
-                            if (text != null) {
-                                all = description + "\n\n" + red + val("command.droplist.drop_options", false) + ":" + white + text;
-                            }
-
-                            texts[i].addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, all));
                         }
 
-                        if (CustomDropManager.getByName(d.get(x)) != null) {
-                            CustomDrop cd = CustomDropManager.getByName(d.get(x));
-                            String text2blyat = null;
-                            text2blyat = cd.getDescription();
-                            DropOption[] dr = cd.getDefaultOptions();
-                            desc = no_desc;
-                            if (text2blyat != null) {
-                                desc = desc_ + ":\n" + white + text2blyat;
-                            }
+                        descriptionBuilder.append(String.format("\n\n§c%s:\n%s", val("command.droplist.drop_options", false), joiner.toString()));
+                    }
 
-                            if (dr != null) {
-                                for (z = 0; z < dr.length; ++z) {
-                                    if (dr[z] != null && dr[z].getName() != null && z < 11) {
-                                        if (z == 0) {
-                                            text2blyat = "\n" + yellow + dr[z].getName();
-                                        } else {
-                                            text2blyat = text2blyat + "\n" + yellow + dr[z].getName();
-                                        }
+                    CustomDrop customDrop = CustomDropManager.getByName(d.get(x));
+                    if(customDrop != null) {
+                        String optionDescription = customDrop.getDescription() != null ? customDrop.getDescription() : missingDescription;
+                        descriptionBuilder.append("§cCUSTOM ").append(listDescription).append(":\n").append("§f").append(optionDescription);
+
+                        StringJoiner joiner = new StringJoiner("\n");
+
+                        DropOption[] options = customDrop.getDefaultOptions();
+                        if(ArrayUtils.isNotEmpty(options)) {
+                            int limit = 0;
+                            for (DropOption option : options) {
+                                if(limit++ > 10) {
+                                    break;
+                                } else {
+                                    if(option != null) {
+                                        joiner.add("§e" + option.getName());
                                     }
                                 }
                             }
-
-                            all = desc;
-                            if (text2blyat != null) {
-                                all = desc + "\n\n" + red + val("command.droplist.drop_options", false) + ":" + white + text2blyat;
-                            }
-
-                            texts[i].addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, all));
                         }
 
-                        ++i;
+                        descriptionBuilder.append("§cCUSTOM ").append(String.format("\n\n§c%s:\n%s", val("command.droplist.drop_options", false), joiner.toString()));
                     }
-                }
 
-                com.mcgamer199.luckyblock.tellraw.RawText[] var30 = texts;
-                int var29 = texts.length;
-
-                for (int var27 = 0; var27 < var29; ++var27) {
-                    com.mcgamer199.luckyblock.tellraw.RawText r = var30[var27];
-                    if (r != null) {
-                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo((Player) sender, r);
-                    }
-                }
-            } else {
-                for (int x = (page - 1) * 10; x < page * 10; ++x) {
-                    if (x < d.size()) {
-                        sender.sendMessage(aqua + "[" + green + d.get(x) + aqua + "]");
-                    }
+                    component.addText(String.format("§b[§a%s§b]\n", dropName), Hover.show_text, descriptionBuilder.toString());
                 }
             }
+
+            component.send(sender);
 
             sender.sendMessage(aqua + "---------------------");
             return true;

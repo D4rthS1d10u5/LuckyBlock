@@ -1155,8 +1155,7 @@ public class LBType {
             luck = -9999;
         }
 
-        String g = "" + this.getPercentColor(luck) + luck + "%";
-        return g;
+        return "" + this.getPercentColor(luck) + luck + "%";
     }
 
     public int getRandomP() {

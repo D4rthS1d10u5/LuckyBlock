@@ -1,7 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Click;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
@@ -12,7 +14,7 @@ import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.TitleSender;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -343,34 +345,33 @@ public class CraftLB extends ColorsClass implements Listener {
                             return;
                         }
 
-                        com.mcgamer199.luckyblock.tellraw.RawText raw = new com.mcgamer199.luckyblock.tellraw.RawText("[" + val("lct.data.viewers", false) + "]");
-                        if (inv.getViewers().size() > 1) {
-                            raw.bold = true;
-                        }
+                        ChatComponent component = new ChatComponent();
 
-                        s = val("lct.data.none", false);
+                        StringBuilder viewers = new StringBuilder();
                         if (inv.getViewers().size() > 0) {
                             p = 0;
-                            Iterator var12 = inv.getViewers().iterator();
 
-                            while (var12.hasNext()) {
-                                HumanEntity h = (HumanEntity) var12.next();
-                                if (h != player) {
+                            for (HumanEntity human : inv.getViewers()) {
+                                if (human != player) {
                                     if (p == 0) {
-                                        s = gold + h.getName();
+                                        viewers.append("§6");
                                     } else if (p % 3 == 0) {
-                                        s = s + "\n" + gold + h.getName();
+                                        viewers.append("\n§6");
                                     } else {
-                                        s = s + white + "," + gold + h.getName();
+                                        viewers.append("§f,§6");
                                     }
+
+                                    viewers.append(human.getName());
 
                                     ++p;
                                 }
                             }
+                        } else {
+                            viewers.append(val("lct.data.none", false));
                         }
 
-                        raw.addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, s));
-                        raw.sendTo(player);
+                        component.addText(String.format("[%s]", val("lct.data.viewers", false)), Hover.show_text, viewers.toString());
+                        component.send(player);
                     }
 
                     if (item.getType() == Material.REDSTONE) {
@@ -434,14 +435,13 @@ public class CraftLB extends ColorsClass implements Listener {
                         event.setCancelled(true);
                         player.closeInventory();
                         cr = this.getLTable(inv.getItem(inv.getSize() - 17));
-                        com.mcgamer199.luckyblock.tellraw.RawText[] texts = new com.mcgamer199.luckyblock.tellraw.RawText[]{new com.mcgamer199.luckyblock.tellraw.RawText(red + "=== [" + bold + val("lct.data.settings", false) + red + "] ===\n"), new com.mcgamer199.luckyblock.tellraw.RawText(aqua + "========= " + darkpurple + bold + "►" + blue + bold + " " + val("lct.data.stop.name", false) + " " + darkpurple + bold + "◄" + aqua + " ========="), null, null};
-                        texts[1].addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + val("lct.data.stop.lore", false)));
-                        texts[1].addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.CLICK_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.RUN_COMMAND, "/" + ILBCmd.lcmd + " lctstop " + cr.getId()));
-                        texts[2] = new com.mcgamer199.luckyblock.tellraw.RawText("\n" + aqua + "========= " + darkpurple + bold + "►" + blue + bold + " " + val("lct.data.exluck.name", false) + " " + darkpurple + bold + "◄" + aqua + " =========");
-                        texts[2].addAction(new com.mcgamer199.luckyblock.tellraw.TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, yellow + val("lct.data.exluck.lore", false)));
-                        texts[2].addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.CLICK_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.RUN_COMMAND, "/" + ILBCmd.lcmd + " lctextra " + cr.getId()));
-                        texts[3] = new com.mcgamer199.luckyblock.tellraw.RawText("\n" + red + "======================================");
-                        com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, texts);
+                        ChatComponent component = new ChatComponent();
+                        component.addText(String.format("§c=== [§b%s§c] ===\n", val("lct.data.settings", false)));
+                        component.addText(String.format("§b========= §5§b►§9§b %s §5§b◄§b=========\n", val("lct.data.stop.name", false)), Hover.show_text, String.format("§e%s", val("lct.data.stop.lore", false)), Click.run_command, String.format("/%s lctstop %s", ILBCmd.lcmd, cr.getId()));
+                        component.addText(String.format("§b========= §5§b>§9§b %s §5§b<§b =========\n", val("lct.data.exluck.name", false)), Hover.show_text, String.format("§e%s", val("lct.data.exluck.lore", false)), Click.run_command, String.format("/%s lctextra %s", ILBCmd.lcmd, cr.getId()));
+                        component.addText("§c======================================");
+
+                        component.send(player);
                     }
                 }
             }

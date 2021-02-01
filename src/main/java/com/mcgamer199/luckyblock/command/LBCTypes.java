@@ -1,14 +1,12 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Click;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
-import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
-import com.mcgamer199.luckyblock.tellraw.RawText;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,7 @@ public class LBCTypes extends LBCommand {
 
             if (page >= 1 && page <= 128) {
                 sender.sendMessage(aqua + val("command.types.page", false) + " " + white + page);
-                List<LBType> types = new ArrayList();
+                List<LBType> types = new ArrayList<>();
 
                 int x;
                 LBType t;
@@ -48,36 +46,19 @@ public class LBCTypes extends LBCommand {
                     }
                 }
 
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
-
-                    for (int counter = 0; counter < types.size(); ++counter) {
-                        LBType type = types.get(counter);
-                        short data = type.getData();
-                        if (data < 0) {
-                            boolean var16 = false;
-                        }
-
-                        RawText r = new RawText("" + red + type.getId() + green + ", " + reset + type.getName());
-                        String i = type.getName();
-                        if (type.disabled) {
-                            i = i + "\n" + red + val("command.types.disabled", false);
-                        }
-
-                        r.addAction(new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, i));
-                        r.addAction(new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " lb " + player.getName() + " 1 0 " + type.getId()));
-                        r.sendTo(player);
+                for (LBType type : types) {
+                    short data = type.getData();
+                    if (data < 0) {
+                        boolean var16 = false;
                     }
 
-                    return true;
-                } else {
-                    for (x = 0; x < types.size(); ++x) {
-                        t = types.get(x);
-                        sender.sendMessage("" + red + t.getId() + green + ", " + t.getName());
-                    }
-
-                    return true;
+                    ChatComponent component = new ChatComponent();
+                    String typeName = String.format("%s%s", type.getName(), type.disabled ? "\n§c" + val("command.types.disabled", false) : "");
+                    component.addText(String.format("§c%s§a, §r%s", type.getId(), type.getName()), Hover.show_text, typeName, Click.run_command, String.format("/%s lb %s 1 0 %s", lcmd, sender.getName(), type.getId()));
+                    component.send(sender);
                 }
+
+                return true;
             } else {
                 send_invalid_number(sender);
                 return false;

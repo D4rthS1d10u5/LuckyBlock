@@ -1,12 +1,11 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,27 +15,19 @@ public class LBCLbs extends LBCommand {
     }
 
     static void sendLB(CommandSender sender, LuckyBlock luckyBlock) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            ChatColor color = ChatColor.GOLD;
-            String dr = ChatColor.RED + "null";
-            if (luckyBlock.hasDropOption("Title")) {
-                dr = ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString());
-            }
-
-            com.mcgamer199.luckyblock.tellraw.RawText text = new com.mcgamer199.luckyblock.tellraw.RawText("" + color + bold + "LB " + ChatColor.BLUE + "(" + val("command.lbs.data.hover", false) + ")");
-            text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, green + luckyBlock.blockToString() + "\n" + aqua + val("command.lbs.data.drop", false) + ": " + lightpurple + dr + "\n" + aqua + val("command.lbs.data.placedby", false) + ": " + blue + luckyBlock.getPlacedByClass() + "\n" + aqua + val("command.lbs.data.luck", false) + ": " + gold + luckyBlock.getType().getLuckString(luckyBlock.getLuck()) + "\n" + aqua + val("command.lbs.data.type", false) + ": " + luckyBlock.getType().getName()));
-            com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text);
-        } else {
-            ChatColor color = ChatColor.GOLD;
-            String dr = ChatColor.RED + "null";
-            if (luckyBlock.hasDropOption("Title")) {
-                dr = ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString());
-            }
-
-            sender.sendMessage("" + color + bold + "LB" + aqua + "," + green + luckyBlock.blockToString() + aqua + "," + val("command.lbs.data.drop", false) + ":" + lightpurple + dr + aqua + "," + val("command.lbs.data.placedby", false) + ":" + blue + luckyBlock.getPlacedByClass() + aqua + "," + val("command.lbs.data.luck", false) + ":" + luckyBlock.getType().getLuckString(luckyBlock.getLuck()) + aqua + "," + val("command.lbs.data.type", false) + ":" + luckyBlock.getType().getName());
+        ChatComponent component = new ChatComponent();
+        String luckyBlockTitle = "&cnull";
+        if(luckyBlock.hasDropOption("Title")) {
+            luckyBlockTitle = luckyBlock.getDropOption("Title").getValues()[0].toString();
         }
 
+        component.addText(String.format("§6§bLB §9(%s§9)", val("command.lbs.data.hover", false)), Hover.show_text, String.format("§a%s\n§b%s: §d%s\n§b%s: §9%s\n§b%s: §6%s\n§b%s: %s",
+                luckyBlock.blockToString(),
+                val("command.lbs.data.drop", false), luckyBlockTitle,
+                val("command.lbs.data.placedby", false), luckyBlock.getPlacedByClass(),
+                val("command.lbs.data.luck", false), luckyBlock.getType().getLuckString(luckyBlock.getLuck()),
+                val("command.lbs.data.type", false), luckyBlock.getType().getName()));
+        component.send(sender);
     }
 
     public boolean receive(CommandSender sender, Command cmd, String label, String[] args) {

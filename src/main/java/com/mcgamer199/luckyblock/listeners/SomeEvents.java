@@ -1,17 +1,18 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBInteractEvent;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.structures.BossDungeon;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -94,37 +95,21 @@ public class SomeEvents extends ColorsClass implements Listener {
                         }
 
                         if (luckyBlock.getDropOptions().size() > 1) {
-                            com.mcgamer199.luckyblock.tellraw.RawText text = new com.mcgamer199.luckyblock.tellraw.RawText("" + green + bold + "Drop Options");
-                            String r = "";
-                            int g = 0;
-
-                            for (int x = 0; x < luckyBlock.getDropOptions().size(); ++x) {
-                                DropOption dr = luckyBlock.getDropOptions().get(x);
-                                if (!LuckyBlock.isHidden(dr.getName())) {
-                                    if (g == 0) {
-                                        r = lightpurple + dr.getName() + ": ";
-                                    } else {
-                                        r = r + lightpurple + "\n" + lightpurple + dr.getName() + ": ";
-                                    }
-
-                                    for (int i = 0; i < dr.getValues().length; ++i) {
-                                        if (dr.getValues()[i] != null) {
-                                            if (i == 0) {
-                                                r = r + blue + ChatColor.translateAlternateColorCodes('&', dr.getValues()[i].toString());
-                                            } else {
-                                                r = r + lightpurple + "," + blue + ChatColor.translateAlternateColorCodes('&', dr.getValues()[i].toString());
-                                            }
+                            StringJoiner newLineJoiner = new StringJoiner("\n");
+                            for (DropOption dropOption : luckyBlock.getDropOptions()) {
+                                if(!LuckyBlock.isHidden(dropOption.getName())) {
+                                    StringJoiner commaJoiner = new StringJoiner("§5,");
+                                    for (Object value : dropOption.getValues()) {
+                                        if(value != null) {
+                                            commaJoiner.add(ChatColor.translateAlternateColorCodes('&', value.toString()));
                                         }
                                     }
 
-                                    ++g;
+                                    newLineJoiner.add(String.format("§d%s: %s", dropOption.getName(), commaJoiner.toString()));
                                 }
                             }
 
-                            if (g > 0) {
-                                text.addAction(new TextAction(com.mcgamer199.luckyblock.tellraw.EnumTextEvent.HOVER_EVENT, com.mcgamer199.luckyblock.tellraw.EnumTextAction.SHOW_TEXT, r));
-                                com.mcgamer199.luckyblock.tellraw.TellRawSender.sendTo(player, text);
-                            }
+                            new ChatComponent().addText("§a§bDrop Options", Hover.show_text, newLineJoiner.toString()).send(player);
                         }
                     } else {
                         player.sendMessage(blue + "Lucky Block : " + red + "false");

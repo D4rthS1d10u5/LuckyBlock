@@ -1,22 +1,21 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
+import com.mcgamer199.luckyblock.api.chatcomponent.Click;
+import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ActionPerformer;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
-import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
-import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
-import com.mcgamer199.luckyblock.tellraw.RawText;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -502,10 +501,9 @@ public class DropEvents1 extends ColorsClass {
                                                 HTasks.Met(bloc, t);
                                             } else if (drop == LBDrop.ILLUMINATI) {
                                                 if (player != null) {
-                                                    RawText text = new RawText(ChatColor.DARK_PURPLE + "[" + ChatColor.GOLD + "Illuminati" + ChatColor.DARK_PURPLE + "]");
-                                                    text.addAction(new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, ChatColor.RED + "Illuminati confirmed!\n\n" + ChatColor.YELLOW + "Don't click"));
-                                                    text.addAction(new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + ILBCmd.lcmd + " illuminati"));
-                                                    text.sendTo(player);
+                                                    ChatComponent component = new ChatComponent();
+                                                    component.addText("§5[§6Illuminati§5]", Hover.show_text, "§cIlluminati confirmed!\n\n§eDon't click!", Click.run_command, String.format("/%s illuminati", ILBCmd.lcmd));
+                                                    component.send(player);
                                                 }
                                             } else if (drop == LBDrop.SCHEMATIC_STRUCTURE) {
                                                 if (LuckyBlockPlugin.isWorldEditValid()) {

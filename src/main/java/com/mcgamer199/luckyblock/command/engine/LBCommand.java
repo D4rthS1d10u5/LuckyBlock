@@ -3,9 +3,6 @@ package com.mcgamer199.luckyblock.command.engine;
 import com.mcgamer199.luckyblock.command.LBCOther;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.tellraw.EnumTextAction;
-import com.mcgamer199.luckyblock.tellraw.EnumTextEvent;
-import com.mcgamer199.luckyblock.tellraw.TextAction;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -56,7 +53,7 @@ public class LBCommand extends ILBCmd implements CommandExecutor {
             return false;
         } else {
             if (args.length < 1) {
-                sendMessage(sender, "invalid_command", new TextAction[]{new TextAction(EnumTextEvent.HOVER_EVENT, EnumTextAction.SHOW_TEXT, yellow + "/" + lcmd + " help"), new TextAction(EnumTextEvent.CLICK_EVENT, EnumTextAction.RUN_COMMAND, "/" + lcmd + " help")});
+                sendInvalid(sender);
             } else {
                 String a = args[0];
                 if (getByName(a) != null) {
