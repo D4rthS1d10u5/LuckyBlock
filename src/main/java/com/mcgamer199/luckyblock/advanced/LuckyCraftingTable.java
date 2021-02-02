@@ -1,7 +1,6 @@
 package com.mcgamer199.luckyblock.advanced;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.EntityLCTNameTag;
 import com.mcgamer199.luckyblock.engine.IObjects;
@@ -11,6 +10,7 @@ import com.mcgamer199.luckyblock.listeners.CraftLB;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -26,24 +26,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class LuckyCraftingTable extends ColorsClass {
+
+    private static final Map<Location, LuckyCraftingTable> craftingTables = new HashMap<>();
     public static List<LuckyCraftingTable> tables;
-    static File fileF;
-    static FileConfiguration file;
+    private static final File tablesConfigFile;
+    private static final FileConfiguration tablesConfig;
 
     static {
-        fileF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "data/LuckyTables.yml");
-        file = YamlConfiguration.loadConfiguration(fileF);
+        tablesConfigFile = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "data/LuckyTables.yml");
+        tablesConfig = YamlConfiguration.loadConfiguration(tablesConfigFile);
         tables = new ArrayList();
     }
 
     public int slot = -1;
-    Inventory inv;
+    private Inventory inv;
     private final Block block;
     private int storedLuck;
     private int fuel = 360;
@@ -55,6 +54,7 @@ public class LuckyCraftingTable extends ColorsClass {
     private int extraLuck;
     private final int[] u_luck = new int[]{4, 1};
     private final int[] u_fuel = new int[]{7, 2};
+    private static final int[] glasses = new int[]{1, 2, 3, 4, 5, 6, 15, 24, 25, 26, 27, 33, 42, 51};
 
     public LuckyCraftingTable(Block block, String player, boolean first) {
         this.id = random.nextInt(100000) + 1;
@@ -66,12 +66,8 @@ public class LuckyCraftingTable extends ColorsClass {
 
         ItemStack glass = ItemStackUtils.createItem(Material.STAINED_GLASS_PANE, 1, 15, red + val("lct.gui.itemlocked.name", false));
         int s = this.inv.getSize();
-        int[] glasses = new int[]{1, 2, 3, 4, 5, 6, 15, 24, 25, 26, 27, 33, 42, 51};
-        int[] var10 = glasses;
-        int var9 = glasses.length;
 
-        for (int var8 = 0; var8 < var9; ++var8) {
-            int i = var10[var8];
+        for (int i : glasses) {
             this.inv.setItem(s - i, glass);
         }
 
@@ -91,40 +87,26 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public static LuckyCraftingTable getByBlock(Block block) {
-        for (int x = 0; x < tables.size(); ++x) {
-            LuckyCraftingTable c = tables.get(x);
-            Block b = c.block;
-            String s = LocationUtils.asString(b.getLocation());
-            if (s.equalsIgnoreCase(LocationUtils.asString(block.getLocation()))) {
-                return c;
-            }
-        }
-
-        return null;
+        return craftingTables.get(block.getLocation());
     }
 
     public static LuckyCraftingTable getById(int id) {
-        for (int x = 0; x < tables.size(); ++x) {
-            LuckyCraftingTable c = tables.get(x);
-            if (c.id == id) {
-                return c;
-            }
-        }
-
-        return null;
+        return craftingTables.values().stream()
+                .filter(table -> table.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     private static void saveFile() {
         try {
-            file.save(fileF);
+            tablesConfig.save(tablesConfigFile);
         } catch (IOException var1) {
             var1.printStackTrace();
         }
-
     }
 
     public static void load() {
-        ConfigurationSection c = file.getConfigurationSection("Tables");
+        ConfigurationSection c = tablesConfig.getConfigurationSection("Tables");
         if (c != null) {
             Iterator var2 = c.getKeys(false).iterator();
 
@@ -210,7 +192,7 @@ public class LuckyCraftingTable extends ColorsClass {
     public void stop() {
         if (this.running) {
             this.running = false;
-            SoundManager.playFixedSound(this.block.getLocation(), SoundManager.getSound("lct_stop"), 1.0F, 0.0F, 8);
+            SoundUtils.playFixedSound(this.block.getLocation(), SoundUtils.getSound("lct_stop"), 1.0F, 0.0F, 8);
         }
 
     }
@@ -224,17 +206,13 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public void refresh() {
-        Iterator var2 = this.inv.getViewers().iterator();
-
-        while (var2.hasNext()) {
-            HumanEntity h = (HumanEntity) var2.next();
+        for (HumanEntity h : this.inv.getViewers()) {
             if (h instanceof Player) {
                 this.open((Player) h);
             } else {
                 h.closeInventory();
             }
         }
-
     }
 
     private void spawn_items() {
@@ -279,7 +257,7 @@ public class LuckyCraftingTable extends ColorsClass {
             HumanEntity h = (HumanEntity) var2.next();
             if (h instanceof Player) {
                 Player player = (Player) h;
-                player.playSound(player.getLocation(), SoundManager.getSound("lct_run"), 1.0F, 2.0F);
+                player.playSound(player.getLocation(), SoundUtils.getSound("lct_run"), 1.0F, 2.0F);
             }
         }
 
@@ -346,13 +324,13 @@ public class LuckyCraftingTable extends ColorsClass {
                                 }
                             }
                         } else if (this.working == 1) {
-                            SoundManager.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundManager.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                            SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             task.run();
                             LuckyCraftingTable.this.running = false;
                             LuckyCraftingTable.this.save(true);
                         } else {
                             if (this.changed) {
-                                SoundManager.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundManager.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                                SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             }
 
                             task.run();
@@ -449,7 +427,7 @@ public class LuckyCraftingTable extends ColorsClass {
                         st.setItemMeta(stM);
                     } else {
                         LuckyCraftingTable.this.running = false;
-                        SoundManager.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundManager.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                        SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                     }
                 } else {
                     task.run();
@@ -624,13 +602,11 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public void remove() {
-        tables.remove(this);
-        FileConfiguration file = YamlConfiguration.loadConfiguration(fileF);
-        if (file.getConfigurationSection("Tables") != null) {
-            Iterator var3 = file.getConfigurationSection("Tables").getKeys(false).iterator();
+        craftingTables.remove(getBlock().getLocation());
 
-            while (var3.hasNext()) {
-                String s = (String) var3.next();
+        FileConfiguration file = YamlConfiguration.loadConfiguration(tablesConfigFile);
+        if (file.getConfigurationSection("Tables") != null) {
+            for (String s : file.getConfigurationSection("Tables").getKeys(false)) {
                 ConfigurationSection f = file.getConfigurationSection("Tables").getConfigurationSection(s);
                 if (f != null) {
                     int id = f.getInt("ID");
@@ -642,7 +618,7 @@ public class LuckyCraftingTable extends ColorsClass {
         }
 
         try {
-            file.save(fileF);
+            file.save(tablesConfigFile);
         } catch (IOException var6) {
             var6.printStackTrace();
         }
@@ -650,14 +626,7 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public void save(boolean saveToFile) {
-        for (int x = 0; x < tables.size(); ++x) {
-            LuckyCraftingTable c = tables.get(x);
-            if (c.id == this.id) {
-                tables.remove(c);
-            }
-        }
-
-        tables.add(this);
+        craftingTables.replace(getBlock().getLocation(), this);
         if (saveToFile) {
             this.saveToFile();
         }
@@ -666,29 +635,29 @@ public class LuckyCraftingTable extends ColorsClass {
 
     private void saveToFile() {
         String path = "Tables.Table" + this.id;
-        file.set(path + ".ID", this.id);
-        file.set(path + ".Block", LocationUtils.asString(this.block.getLocation()));
-        file.set(path + ".Fuel", this.fuel);
-        file.set(path + ".StoredLuck", this.storedLuck);
-        file.set(path + ".Level", this.level);
-        file.set(path + ".Player", this.player);
-        file.set(path + ".Extra", this.extraLuck);
-        file.set(path + ".uLuck", this.u_luck[0] + "," + this.u_luck[1]);
-        file.set(path + ".uFuel", this.u_fuel[0] + "," + this.u_fuel[1]);
+        tablesConfig.set(path + ".ID", this.id);
+        tablesConfig.set(path + ".Block", LocationUtils.asString(this.block.getLocation()));
+        tablesConfig.set(path + ".Fuel", this.fuel);
+        tablesConfig.set(path + ".StoredLuck", this.storedLuck);
+        tablesConfig.set(path + ".Level", this.level);
+        tablesConfig.set(path + ".Player", this.player);
+        tablesConfig.set(path + ".Extra", this.extraLuck);
+        tablesConfig.set(path + ".uLuck", this.u_luck[0] + "," + this.u_luck[1]);
+        tablesConfig.set(path + ".uFuel", this.u_fuel[0] + "," + this.u_fuel[1]);
         this.saveItems();
     }
 
     private void saveItems() {
         String path = "Tables.Table" + this.id;
-        file.set(path + ".LBItem.1", this.inv.getItem(this.inv.getSize() - 54));
-        file.set(path + ".LBItem.2", this.inv.getItem(this.inv.getSize() - 53));
-        file.set(path + ".LBItem.3", this.inv.getItem(this.inv.getSize() - 52));
-        file.set(path + ".LBItem.4", this.inv.getItem(this.inv.getSize() - 45));
-        file.set(path + ".LBItem.5", this.inv.getItem(this.inv.getSize() - 44));
-        file.set(path + ".LBItem.6", this.inv.getItem(this.inv.getSize() - 43));
-        file.set(path + ".LBItem.7", this.inv.getItem(this.inv.getSize() - 36));
-        file.set(path + ".LBItem.8", this.inv.getItem(this.inv.getSize() - 35));
-        file.set(path + ".LBItem.9", this.inv.getItem(this.inv.getSize() - 34));
+        tablesConfig.set(path + ".LBItem.1", this.inv.getItem(this.inv.getSize() - 54));
+        tablesConfig.set(path + ".LBItem.2", this.inv.getItem(this.inv.getSize() - 53));
+        tablesConfig.set(path + ".LBItem.3", this.inv.getItem(this.inv.getSize() - 52));
+        tablesConfig.set(path + ".LBItem.4", this.inv.getItem(this.inv.getSize() - 45));
+        tablesConfig.set(path + ".LBItem.5", this.inv.getItem(this.inv.getSize() - 44));
+        tablesConfig.set(path + ".LBItem.6", this.inv.getItem(this.inv.getSize() - 43));
+        tablesConfig.set(path + ".LBItem.7", this.inv.getItem(this.inv.getSize() - 36));
+        tablesConfig.set(path + ".LBItem.8", this.inv.getItem(this.inv.getSize() - 35));
+        tablesConfig.set(path + ".LBItem.9", this.inv.getItem(this.inv.getSize() - 34));
         saveFile();
     }
 

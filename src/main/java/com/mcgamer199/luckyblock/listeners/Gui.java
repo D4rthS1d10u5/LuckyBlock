@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import org.bukkit.Bukkit;
@@ -123,7 +123,7 @@ public class Gui extends ColorsClass implements Listener {
                 Inventory inv = event.getInventory();
                 if (LBType.isLB(item)) {
                     player.getInventory().addItem(item);
-                    player.playSound(player.getLocation(), SoundManager.getSound("lb_gui_getitem"), 1.0F, 0.0F);
+                    player.playSound(player.getLocation(), SoundUtils.getSound("lb_gui_getitem"), 1.0F, 0.0F);
                 } else if (item.getType() == Material.COMPASS) {
                     LBGui.open(player);
                 } else if (item.getType() == Material.ARROW && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {

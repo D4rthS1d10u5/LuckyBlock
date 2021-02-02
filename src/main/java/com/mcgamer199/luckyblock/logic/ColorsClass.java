@@ -9,6 +9,7 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -133,17 +134,11 @@ public class ColorsClass {
         }
     }
 
-    protected static final void addToList(final UUID uuid) {
+    protected static void addToList(final UUID uuid) {
         if (!wait.contains(uuid)) {
             wait.add(uuid);
-            SchedulerTask task = new SchedulerTask();
-            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-                public void run() {
-                    ColorsClass.wait.remove(uuid);
-                }
-            }, delay));
+            Scheduler.later(() -> wait.remove(uuid), delay);
         }
-
     }
 
     protected static final boolean canRun(UUID uuid) {

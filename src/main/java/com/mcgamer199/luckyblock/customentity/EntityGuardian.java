@@ -1,12 +1,12 @@
 package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.structures.Treasure;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -56,12 +57,12 @@ public class EntityGuardian extends CustomEntity {
 
     protected List<String> getNames() {
         LivingEntity living = (LivingEntity) this.entity;
-        return Arrays.asList(ChatColor.YELLOW + "Guardian " + ChatColor.GREEN + (int) living.getHealth() + ChatColor.WHITE + "/" + ChatColor.GREEN + living.getMaxHealth());
+        return Collections.singletonList(ChatColor.YELLOW + "Guardian " + ChatColor.GREEN + (int) living.getHealth() + ChatColor.WHITE + "/" + ChatColor.GREEN + living.getMaxHealth());
     }
 
     private void run1() {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!EntityGuardian.this.getEntity().isDead()) {
                     int total = 0;
@@ -108,15 +109,15 @@ public class EntityGuardian extends CustomEntity {
                         }
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
             }
-        }, 10L, 60L));
+        }, 10, 60);
     }
 
     private void run2() {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!EntityGuardian.this.getEntity().isDead()) {
                     int x = 0;
@@ -137,21 +138,20 @@ public class EntityGuardian extends CustomEntity {
                         EntityGuardian.this.army.add(p.getEntity().getUniqueId());
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 100L, 150L));
+        }, 100, 150);
     }
 
     public ItemStack[] getDrops() {
         if (LuckyBlockWorld.equals(this.entity.getWorld().getGenerator())) {
             Treasure t = Treasure.getRandomTreasure();
-            List list;
+            List<String> list;
             if (t != null) {
                 list = Arrays.asList(ChatColor.BLUE + "Location: " + t.getLocation().getBlockX() + "," + t.getLocation().getBlockY() + "," + t.getLocation().getBlockZ(), ChatColor.RED + "<<Right click to break the top bedrock block>>");
             } else {
-                list = Arrays.asList(ChatColor.RED + "No treasure found!");
+                list = Collections.singletonList(ChatColor.RED + "No treasure found!");
             }
 
             ItemStack map = ItemStackUtils.createItem(Material.MAP, 1, 0, "" + ChatColor.GREEN + ChatColor.ITALIC + "Treasure Map", list);

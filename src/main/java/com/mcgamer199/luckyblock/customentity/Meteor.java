@@ -1,20 +1,15 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import com.mcgamer199.luckyblock.util.RandomUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.Random;
-
 public class Meteor {
-    Random random = new Random();
-
-    public Meteor() {
-    }
 
     public void spawn(Location loc) {
         Fireball ball = (Fireball) loc.getWorld().spawnEntity(loc, EntityType.FIREBALL);
@@ -25,23 +20,20 @@ public class Meteor {
     }
 
     private double randomDir() {
-        int h = this.random.nextInt(24) - 12;
-        double g = (double) h / 10.0D;
-        return g;
+        return (double) RandomUtils.nextInt(24) - 12 / 10.0D;
     }
 
     private void particles(final Fireball ball) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timerAsync(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (ball.isValid()) {
                     ball.getWorld().spawnParticle(Particle.FLAME, ball.getLocation(), 120, 1.0D, 1.0D, 1.0D, 0.0D);
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 }
 

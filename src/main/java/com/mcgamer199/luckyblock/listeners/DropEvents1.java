@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Click;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
@@ -56,7 +56,7 @@ public class DropEvents1 extends ColorsClass {
                     player.playSound(player.getLocation(), Sound.valueOf(luckyBlock.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F);
                 }
             } else if (clss.equalsIgnoreCase("nearby")) {
-                SoundManager.playFixedSound(bloc, Sound.valueOf(luckyBlock.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F, 30);
+                SoundUtils.playFixedSound(bloc, Sound.valueOf(luckyBlock.getDropOption("SoundName").getValues()[0].toString().toUpperCase()), 1.0F, 1.0F, 30);
             }
         } else if (drop == LBDrop.XP_RAIN) {
             HTasks.f(bloc.add(0.0D, 1.0D, 0.0D), luckyBlock);

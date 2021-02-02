@@ -3,13 +3,13 @@ package com.mcgamer199.luckyblock.api;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -143,17 +143,12 @@ public class LuckyBlockAPI implements Listener {
                             ++total;
                         }
 
-                        final SchedulerTask task = new SchedulerTask();
-                        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-                            public void run() {
-                                luckyBlock.playEffects();
-                                if (luckyBlock.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
-                                    LuckyBlockPlugin.instance.Loops(luckyBlock);
-                                }
-
-                                task.run();
+                        Scheduler.later(() -> {
+                            luckyBlock.playEffects();
+                            if(luckyBlock.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
+                                LuckyBlockPlugin.instance.Loops(luckyBlock);
                             }
-                        }, 10L));
+                        }, 10L);
                     }
                 }
 

@@ -1,18 +1,17 @@
 package com.mcgamer199.luckyblock.customdrop;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import com.mcgamer199.luckyblock.util.RandomUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-
-import java.util.Random;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class EffectsDrop implements CustomDrop {
-    public EffectsDrop() {
-    }
+
+    private static final DropOption[] DEFAULT_OPTIONS = new DropOption[]{new DropOption("Particles", new String[]{"BARRIER", "CLOUD", "CRIT", "CRIT_MAGIC", "DRIP_LAVA", "DRIP_WATER", "ENCHANTMENT_TABLE", "FIREWORKS_SPARK", "FLAME", "FOOTSTEP", "\nHEART", "LAVA", "NOTE", "PORTAL", "REDSTONE", "SLIME", "SMOKE_NORMAL", "SPELL", "SPELL_MOB", "SPELL_MOB_AMBIENT", "SPELL_WITCH", "SUSPENDED_DEPTH", "TOWN_AURA", "VILLAGER_ANGRY", "VILLAGER_HAPPY"})};
 
     public String getName() {
         return "EFFECTS_DROP";
@@ -31,28 +30,24 @@ public class EffectsDrop implements CustomDrop {
     }
 
     public DropOption[] getDefaultOptions() {
-        return new DropOption[]{new DropOption("Particles", new String[]{"BARRIER", "CLOUD", "CRIT", "CRIT_MAGIC", "DRIP_LAVA", "DRIP_WATER", "ENCHANTMENT_TABLE", "FIREWORKS_SPARK", "FLAME", "FOOTSTEP", "\nHEART", "LAVA", "NOTE", "PORTAL", "REDSTONE", "SLIME", "SMOKE_NORMAL", "SPELL", "SPELL_MOB", "SPELL_MOB_AMBIENT", "SPELL_WITCH", "SUSPENDED_DEPTH", "TOWN_AURA", "VILLAGER_ANGRY", "VILLAGER_HAPPY"})};
+        return DEFAULT_OPTIONS;
     }
 
     public void function(final LuckyBlock luckyBlock, Player player) {
         if (luckyBlock.hasDropOption("Particles")) {
-            final String[] s = (String[]) luckyBlock.getDropOption("Particles").getValues();
-            final SchedulerTask task = new SchedulerTask();
-            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-                int x = 10;
+            String[] s = (String[]) luckyBlock.getDropOption("Particles").getValues();
+            Scheduler.timerAsync(new BukkitRunnable() {
+                private int x = 10;
 
+                @Override
                 public void run() {
-                    int r = (new Random()).nextInt(s.length);
-                    Particle e = Particle.valueOf(s[r].toUpperCase());
-                    luckyBlock.getBlock().getWorld().spawnParticle(e, luckyBlock.getBlock().getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
-                    --this.x;
-                    if (this.x < 1) {
-                        task.run();
+                    Particle particle = Particle.valueOf(RandomUtils.getRandomObject(s));
+                    luckyBlock.getBlock().getWorld().spawnParticle(particle, luckyBlock.getBlock().getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
+                    if(--x < 1) {
+                        Scheduler.cancelTask(this);
                     }
-
                 }
-            }, 5L, 5L));
+            }, 5, 5);
         }
-
     }
 }

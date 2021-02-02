@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
@@ -117,7 +117,7 @@ public class IObjects {
             objects.add(new com.mcgamer199.luckyblock.command.LBCBook());
             objects.add(new com.mcgamer199.luckyblock.command.LBCSaveItem());
             objects.add(new LBCRecDeleted());
-            SoundManager.loadSounds();
+            SoundUtils.loadSounds();
             loadStrings();
         }
     }

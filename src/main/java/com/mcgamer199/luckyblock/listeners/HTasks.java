@@ -1,22 +1,24 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import com.mcgamer199.luckyblock.util.RandomUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.*;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.block.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.Iterator;
 import java.util.Random;
 
 public class HTasks extends ColorsClass {
@@ -35,14 +37,11 @@ public class HTasks extends ColorsClass {
         int[] i1 = tower_rblock(type);
         FallingBlock fb = block.getWorld().spawnFallingBlock(loc.add(0.0D, 10.0D, 0.0D), i1[0], (byte) i1[1]);
         fb.setDropItem(false);
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int loop;
 
-            {
-                this.loop = LuckyBlockPlugin.randoms.nextInt(4) + 6;
-            }
+        Scheduler.timer(new BukkitRunnable() {
+            private int loop = RandomUtils.nextInt(4) + 6;
 
+            @Override
             public void run() {
                 if (this.loop > 1) {
                     int[] i2 = HTasks.tower_rblock(type);
@@ -51,13 +50,10 @@ public class HTasks extends ColorsClass {
                 } else if (this.loop == 1) {
                     FallingBlock bb = block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, Material.DIAMOND_BLOCK, (byte) 0);
                     HTasks.Tower1(bb);
-                    --this.loop;
-                } else if (this.loop < 1) {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 6L, 6L));
+        }, 6, 6);
     }
 
     private static int[] tower_rblock(String type) {
@@ -78,26 +74,7 @@ public class HTasks extends ColorsClass {
     }
 
     private static void Tower1(final FallingBlock fb) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                Location loc;
-                if (fb.isValid()) {
-                    if (fb.isOnGround()) {
-                        loc = fb.getLocation();
-                        loc = fb.getLocation();
-                        loc.getWorld().strikeLightning(loc);
-                        task.run();
-                    }
-                } else {
-                    loc = fb.getLocation();
-                    loc = fb.getLocation();
-                    loc.getWorld().strikeLightning(loc);
-                    task.run();
-                }
-
-            }
-        }, 3L, 1L));
+        Scheduler.later(() -> fb.getLocation().getWorld().strikeLightning(fb.getLocation()), 3);
     }
 
     static void STUCK(final Player player, final Location loc, final int time) {
@@ -144,18 +121,16 @@ public class HTasks extends ColorsClass {
     }
 
     static void Meteor(final FallingBlock fb, final float explosionPower) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = 0;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = 0;
 
+            @Override
             public void run() {
                 int xx;
                 if (fb.isValid()) {
                     fb.getWorld().spawnParticle(Particle.SMOKE_LARGE, fb.getLocation(), 170, 0.3D, 0.2D, 0.3D, 0.0D);
-                    Iterator var2 = fb.getNearbyEntities(6.0D, 6.0D, 6.0D).iterator();
 
-                    while (var2.hasNext()) {
-                        Entity e = (Entity) var2.next();
+                    for (Entity e : fb.getNearbyEntities(6.0D, 6.0D, 6.0D)) {
                         if (e instanceof LivingEntity) {
                             e.setFireTicks(100);
                             e.setFallDistance(15.0F);
@@ -187,32 +162,23 @@ public class HTasks extends ColorsClass {
                     }
 
                     fb.remove();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 3L));
+        }, 3, 3);
     }
 
     private static void met3(final Item item) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                item.remove();
-                task.run();
-            }
-        }, 300L));
+        Scheduler.later(item::remove, 300);
     }
 
     private static void met1(final Item item) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (item.isValid()) {
-                    Iterator var2 = item.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
 
-                    while (var2.hasNext()) {
-                        Entity e = (Entity) var2.next();
+                    for (Entity e : item.getNearbyEntities(7.0D, 7.0D, 7.0D)) {
                         if (e instanceof LivingEntity) {
                             e.setFireTicks(600);
                         }
@@ -224,50 +190,44 @@ public class HTasks extends ColorsClass {
                             Material mat = block.getType();
                             block.setType(item.getItemStack().getType());
                             HTasks.met2(block, mat, block.getData());
-                            task.run();
+                            cancel();
                         }
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 10L, 10L));
+        }, 10, 10);
     }
 
     private static void met2(final Block block, final Material mat, final byte data) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                block.setType(mat);
-                block.setData(data);
-                task.run();
-            }
-        }, 360L));
+        Scheduler.later(() -> {
+            block.setType(mat);
+            block.setData(data);
+        }, 360);
     }
 
     static void LightningR(final Player player, final Block block, final int count) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = count;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = count;
 
+            @Override
             public void run() {
                 if (this.x > 0) {
                     player.getWorld().strikeLightning(block.getLocation());
                     --this.x;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 0L, 4L));
+        }, 0, 4);
     }
 
     static void rain(final Location loc, final int times, final int fuse) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = times;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = times;
 
+            @Override
             public void run() {
                 if (this.x > 0) {
                     TNTPrimed tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
@@ -277,23 +237,17 @@ public class HTasks extends ColorsClass {
                     int h1 = HTasks.randoms.nextInt(4) - 2;
                     double g1 = (double) h1 / 10.0D;
                     tnt.setVelocity(new Vector(g, 1.0D, g1));
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
                     --this.x;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 5L, 5L));
+        }, 5, 5);
     }
 
     static void a(Player player, final Zombie zombie) {
-        SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                zombie.remove();
-            }
-        }, 80L));
+        Scheduler.later(zombie::remove, 80);
     }
 
     static void itemRain(final Location loc, final int time, final Material[] mats, Short[] data) {
@@ -314,25 +268,24 @@ public class HTasks extends ColorsClass {
             d = data[x];
         }
 
-        final SchedulerTask task = new SchedulerTask();
         short finalD = d;
         int finalX = x;
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int times = time;
+        Scheduler.timer(new BukkitRunnable() {
+            private int times = time;
 
+            @Override
             public void run() {
                 if (this.times > 0) {
                     Material mat = mats[finalX];
                     Item item = loc.getWorld().dropItem(loc, new ItemStack(mat, 1, finalD));
                     item.setVelocity(new Vector(0.0D, 0.8D, 0.0D));
                     --this.times;
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 20);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 20);
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 2L, 2L));
+        }, 2, 2);
     }
 
     static void b(final Location loc, final int times, Material[] mats) {
@@ -349,10 +302,10 @@ public class HTasks extends ColorsClass {
 
         x = randoms.nextInt(i);
         final Material m = mats[x];
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = times;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = times;
 
+            @Override
             public void run() {
                 if (this.x > 0) {
                     FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, m, (byte) 0);
@@ -362,37 +315,36 @@ public class HTasks extends ColorsClass {
                     int h1 = HTasks.randoms.nextInt(4) - 2;
                     double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
                     HTasks.b1(fb);
                     --this.x;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 3L));
+        }, 3, 3);
     }
 
     static void b1(final FallingBlock fb) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!fb.isValid()) {
                     MaterialData d = new MaterialData(fb.getMaterial(), fb.getBlockData());
                     fb.getWorld().spawnParticle(Particle.BLOCK_CRACK, fb.getLocation(), 100, 0.3D, 0.1D, 0.3D, 0.0D, d);
-                    SoundManager.playFixedSound(fb.getLocation(), SoundManager.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
-                    task.run();
+                    SoundUtils.playFixedSound(fb.getLocation(), SoundUtils.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
+                    cancel();
                 }
-
             }
-        }, 0L, 2L));
+        }, 0, 2);
     }
 
     static void c(final Location loc, final int times, final boolean critical, final boolean bounce) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = times;
+        Scheduler.timer(new BukkitRunnable() {
 
+            private int x = times;
+
+            @Override
             public void run() {
                 if (this.x > 0) {
                     Arrow a = (Arrow) loc.getWorld().spawnEntity(loc, EntityType.ARROW);
@@ -403,56 +355,54 @@ public class HTasks extends ColorsClass {
                     a.setVelocity(new Vector(g, 1.2D, g1));
                     a.setCritical(critical);
                     a.setBounce(bounce);
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_arrowrain"), 1.0F, 1.0F, 50);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_arrowrain"), 1.0F, 1.0F, 50);
                     --this.x;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     static void d(Location loc) {
-        final SchedulerTask task = new SchedulerTask();
         final ArmorStand s = (ArmorStand) loc.getWorld().spawnEntity(new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0D, loc.getZ()), EntityType.ARMOR_STAND);
         s.teleport(loc);
         s.setMetadata("hrocket", new FixedMetadataValue(LuckyBlockPlugin.instance, "" + s.getUniqueId()));
         s.setVisible(false);
         s.setGravity(false);
         s.setHelmet(new ItemStack(Material.IRON_BLOCK));
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = 80;
 
+        Scheduler.timer(new BukkitRunnable() {
+
+            private int times = 80;
+
+            @Override
             public void run() {
-                if (this.x > 0) {
+                if (this.times > 0) {
                     Location loc = new Location(s.getWorld(), s.getLocation().getX(), s.getLocation().getY() + 1.0D, s.getLocation().getZ());
                     if (loc.getBlock() != null && loc.getBlock().getType().isSolid() || loc.getBlock().getRelative(BlockFace.UP) != null && loc.getBlock().getRelative(BlockFace.UP).getType().isSolid()) {
-                        task.run();
+                        cancel();
                         s.getWorld().createExplosion(s.getLocation(), 7.0F, true);
                         s.remove();
                     }
 
                     s.teleport(s.getLocation().add(0.0D, 2.2D, 0.0D));
                     s.getWorld().spawnParticle(Particle.SMOKE_LARGE, s.getLocation(), 35, 1.0D, 0.5D, 1.0D, 0.0D);
-                    Iterator var3 = s.getNearbyEntities(2.0D, 4.0D, 2.0D).iterator();
 
-                    while (var3.hasNext()) {
-                        Entity e = (Entity) var3.next();
+                    for (Entity e : s.getNearbyEntities(2.0D, 4.0D, 2.0D)) {
                         if (!(e instanceof Player)) {
                             e.setFireTicks(60);
                         }
                     }
 
-                    --this.x;
+                    --this.times;
                 } else {
-                    task.run();
+                    cancel();
                     s.getWorld().spawnParticle(Particle.FLAME, s.getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
                     s.remove();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     static void f(final Location loc, LuckyBlock luckyBlock) {
@@ -461,11 +411,11 @@ public class HTasks extends ColorsClass {
             times = Integer.parseInt(luckyBlock.getDropOption("Times").getValues()[0].toString());
         }
 
-        final SchedulerTask task = new SchedulerTask();
         int finalTimes = times;
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = finalTimes;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = finalTimes;
 
+            @Override
             public void run() {
                 if (this.x > 0) {
                     ThrownExpBottle xp = (ThrownExpBottle) loc.getWorld().spawnEntity(loc, EntityType.THROWN_EXP_BOTTLE);
@@ -477,37 +427,35 @@ public class HTasks extends ColorsClass {
                     xp.setBounce(true);
                     --this.x;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 2L));
+        }, 1, 2);
     }
 
     static void g(final Dispenser dispenser) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (dispenser.getBlock().getType() != Material.DISPENSER) {
-                    task.run();
+                    cancel();
                 }
 
                 if (dispenser.getInventory().contains(Material.ARROW)) {
                     dispenser.dispense();
                 } else {
                     dispenser.getBlock().breakNaturally(null);
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 1L));
+        }, 3 ,1);
     }
 
     static void h(final Player player, final int times, int ticks) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int t = times;
+        Scheduler.timer(new BukkitRunnable() {
+            private int t = times;
 
+            @Override
             public void run() {
                 if (this.t > 0) {
                     if ((player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) && player.getHealth() > 0.0D) {
@@ -516,65 +464,45 @@ public class HTasks extends ColorsClass {
 
                     --this.t;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, ticks, ticks));
+        }, ticks, ticks);
     }
 
     static void FireWorks(final Block block) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x;
+        Scheduler.timer(new BukkitRunnable() {
+            private int times = RandomUtils.nextInt(5) + 5;
 
-            {
-                this.x = HTasks.randoms.nextInt(5) + 5;
-            }
-
+            @Override
             public void run() {
-                if (this.x > 0) {
+                if (this.times > 0) {
                     for (int x = LuckyBlockPlugin.randoms.nextInt(18) + 8; x > 0; --x) {
                         Firework fwork = (Firework) block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
                         FireworkMeta fwm = fwork.getFireworkMeta();
-                        Random r = new Random();
-                        int rt = r.nextInt(4) + 1;
-                        FireworkEffect.Type type = FireworkEffect.Type.BALL;
-                        if (rt == 1) {
-                            type = FireworkEffect.Type.BALL;
-                        }
+                        Type type = RandomUtils.getRandomObject(Type.values());
 
-                        if (rt == 2) {
-                            type = FireworkEffect.Type.BALL_LARGE;
-                        }
+                        FireworkEffect f = FireworkEffect.builder().flicker(RandomUtils.nextBoolean())
+                                .withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255)))
+                                .withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255)))
+                                .withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255)))
+                                .withFade(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255)))
+                                .with(type)
+                                .trail(RandomUtils.nextBoolean())
+                                .build();
 
-                        if (rt == 3) {
-                            type = FireworkEffect.Type.BURST;
-                        }
-
-                        if (rt == 4) {
-                            type = FireworkEffect.Type.CREEPER;
-                        }
-
-                        if (rt == 5) {
-                            type = FireworkEffect.Type.STAR;
-                        }
-
-                        FireworkEffect f = FireworkEffect.builder().flicker(r.nextBoolean()).withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).withColor(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).withFade(Color.fromBGR(LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255), LuckyBlockPlugin.randoms.nextInt(255))).with(type).trail(r.nextBoolean()).build();
                         fwm.clearEffects();
                         fwm.addEffect(f);
-                        int rp = r.nextInt(3) + 1;
-                        fwm.setPower(rp);
+                        fwm.setPower(RandomUtils.nextInt(3) + 1);
                         fwork.setFireworkMeta(fwm);
                     }
 
-                    --this.x;
+                    --this.times;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 5L, 20L));
+        }, 5, 20);
     }
 
     static void Tree(final Block block, final TreeType treetype) {
@@ -584,23 +512,11 @@ public class HTasks extends ColorsClass {
             block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
         }
 
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                block.getWorld().generateTree(block.getLocation(), treetype);
-                task.run();
-            }
-        }, 1L));
+        Scheduler.later(() -> block.getWorld().generateTree(block.getLocation(), treetype), 1);
     }
 
     static void FakeDiamond(final Item item, int ticks) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                item.remove();
-                task.run();
-            }
-        }, ticks));
+        Scheduler.later(item::remove, ticks);
     }
 
     static void Trap(Player player, int ticks) {
@@ -685,31 +601,20 @@ public class HTasks extends ColorsClass {
     }
 
     private static void trap2(final Block block, int ticks) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                block.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().setType(Material.AIR);
-                task.run();
-            }
-        }, ticks));
+        Scheduler.later(() -> block.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().setType(Material.AIR), ticks);
     }
 
     static void Bedrock(final Block block) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                block.setType(Material.BEDROCK);
-                if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
-                    block.getRelative(BlockFace.UP).setType(Material.SIGN_POST);
-                    Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
-                    sign.setLine(1, "Well, there's");
-                    sign.setLine(2, "your problem");
-                    sign.update(true);
-                    task.run();
-                }
-
+        Scheduler.later(() -> {
+            block.setType(Material.BEDROCK);
+            if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
+                block.getRelative(BlockFace.UP).setType(Material.SIGN_POST);
+                Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
+                sign.setLine(1, "Well, there's");
+                sign.setLine(2, "your problem");
+                sign.update(true);
             }
-        }, 1L));
+        }, 1);
     }
 
     public static void spawnLB(LuckyBlock luckyBlock, final Location bloc) {
@@ -740,14 +645,14 @@ public class HTasks extends ColorsClass {
             range = 0;
         }
 
-        final SchedulerTask task = new SchedulerTask();
         int finalRange = range;
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int r = finalRange;
-            int g = 1;
+        Scheduler.timer(new BukkitRunnable() {
+            private int taskRange = finalRange;
+            private int g = 1;
 
+            @Override
             public void run() {
-                if (this.r > 0) {
+                if (this.taskRange > 0) {
                     for (int x = this.g * -1; x < this.g + 1; ++x) {
                         for (int y = -4; y < 5; ++y) {
                             for (int z = this.g * -1; z < this.g + 1; ++z) {
@@ -759,21 +664,20 @@ public class HTasks extends ColorsClass {
                         }
                     }
 
-                    --this.r;
+                    --this.taskRange;
                     ++this.g;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 20L));
+        }, 3, 20);
     }
 
     static void d_Item(final ItemStack[] items, final Location loc, final LuckyBlock luckyBlock) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = 0;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = 0;
 
+            @Override
             public void run() {
                 if (items != null && this.x < items.length) {
                     if (items[this.x] != null) {
@@ -788,15 +692,14 @@ public class HTasks extends ColorsClass {
                             item.setCustomNameVisible(true);
                         }
 
-                        SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 50);
+                        SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 50);
                         ++this.x;
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 5L, 5L));
+        }, 5, 5);
     }
 
     static void j(final Location loc, int range, final Material mat, final byte data, int delay, String mode) {
@@ -812,15 +715,15 @@ public class HTasks extends ColorsClass {
             range = 32;
         }
 
-        final SchedulerTask task = new SchedulerTask();
+        int finalRange = range;
         if (mode.equalsIgnoreCase("surface")) {
-            int finalRange = range;
-            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-                int r = finalRange;
-                int g = 1;
+            Scheduler.timer(new BukkitRunnable() {
+                private int taskRange = finalRange;
+                private int g = 1;
 
+                @Override
                 public void run() {
-                    if (this.r > 0) {
+                    if (this.taskRange > 0) {
                         for (int x = this.g * -1; x < this.g + 1; ++x) {
                             for (int y = -4; y < 5; ++y) {
                                 for (int z = this.g * -1; z < this.g + 1; ++z) {
@@ -833,22 +736,21 @@ public class HTasks extends ColorsClass {
                             }
                         }
 
-                        --this.r;
+                        --this.taskRange;
                         ++this.g;
                     } else {
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, delay, delay));
+            }, delay, delay);
         } else if (mode.equalsIgnoreCase("all")) {
-            int finalRange = range;
-            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-                int r = finalRange;
-                int g = 1;
+            Scheduler.timer(new BukkitRunnable() {
+                private int taskRange = finalRange;
+                private int g = 1;
 
+                @Override
                 public void run() {
-                    if (this.r > 0) {
+                    if (this.taskRange > 0) {
                         for (int x = this.g * -1; x < this.g + 1; ++x) {
                             for (int y = this.g * -1; y < this.g + 1; ++y) {
                                 for (int z = this.g * -1; z < this.g + 1; ++z) {
@@ -861,58 +763,48 @@ public class HTasks extends ColorsClass {
                             }
                         }
 
-                        --this.r;
+                        --this.taskRange;
                         ++this.g;
                     } else {
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, delay, delay));
+            }, delay, delay);
         }
-
     }
 
     static void k(final Player player) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (player.getLocation().getY() > 0.0D) {
-                    player.teleport(player.getLocation().add(0.0D, -1.0D, 0.0D));
-                } else {
-                    task.run();
-                }
-
-            }
-        }, 7L, 7L));
+        Scheduler.create(() -> player.teleport(player.getLocation().add(0.0D, -1.0D, 0.0D)))
+                .predicate(() -> player.getLocation().getY() > 0)
+                .timer(7, 7);
     }
 
     static void l(final Dropper dropper) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (dropper.getBlock().getType() != Material.DROPPER) {
-                    task.run();
+                    cancel();
                 }
 
                 if (dropper.getInventory().contains(Material.DIAMOND)) {
                     dropper.drop();
                 } else {
                     dropper.getBlock().breakNaturally(null);
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 1L));
+        }, 3, 3);
     }
 
-    public static void m(final Location loc, final int times, final LBType type) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-            int x = times;
+    public static void m(final Location loc, int repeat, final LBType type) {
+        Scheduler.timer(new BukkitRunnable() {
 
+            private int times = repeat;
+
+            @Override
             public void run() {
-                if (this.x > 0) {
+                if(times > 0) {
                     FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, type.getType(), (byte) type.getData());
                     fb.setDropItem(false);
                     int h = HTasks.randoms.nextInt(4) - 2;
@@ -920,42 +812,35 @@ public class HTasks extends ColorsClass {
                     int h1 = HTasks.randoms.nextInt(4) - 2;
                     double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
                     HTasks.m_1(fb, type.getType(), (byte) type.getData());
-                    --this.x;
+                    times--;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 3L));
+        }, 3, 3);
     }
 
-    private static void m_1(final FallingBlock b, final Material type, final byte data) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+    private static void m_1(final FallingBlock fallingBlock, final Material type, final byte data) {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
-                if (!b.isValid()) {
-                    Block block = b.getLocation().getBlock();
+                if (!fallingBlock.isValid()) {
+                    Block block = fallingBlock.getLocation().getBlock();
                     if (block.getType() == type) {
                         LuckyBlock luckyBlock = new LuckyBlock(LBType.fromMaterialAndData(type, data), block, 0, null, true, true);
                         luckyBlock.playEffects();
                     }
 
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 5L, 5L));
+        }, 5, 5);
     }
 
     static void n(final Location loc, int ticks) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                loc.getBlock().setType(Material.LAVA);
-            }
-        }, ticks));
+        Scheduler.later(() -> loc.getBlock().setType(Material.LAVA), ticks);
     }
 
     static void rip(Player player, Block block) {

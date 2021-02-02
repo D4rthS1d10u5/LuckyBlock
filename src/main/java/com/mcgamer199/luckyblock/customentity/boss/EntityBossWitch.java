@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
@@ -356,7 +356,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
         task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
             public void run() {
                 if (EntityBossWitch.this.getEntity() != null && EntityBossWitch.this.getEntity().isValid()) {
-                    SoundManager.playFixedSound(EntityBossWitch.this.w.getLocation(), SoundManager.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26);
+                    SoundUtils.playFixedSound(EntityBossWitch.this.w.getLocation(), SoundUtils.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26);
                 } else {
                     task.run();
                 }
@@ -385,7 +385,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
             }
 
             if (!event.isCancelled()) {
-                SoundManager.playFixedSound(this.w.getLocation(), SoundManager.getSound("boss_witch_hurt"), 1.0F, 0.0F, 20);
+                SoundUtils.playFixedSound(this.w.getLocation(), SoundUtils.getSound("boss_witch_hurt"), 1.0F, 0.0F, 20);
             }
         }
     }
@@ -402,7 +402,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     protected void onDeath(EntityDeathEvent event) {
-        SoundManager.playFixedSound(this.w.getLocation(), SoundManager.getSound("boss_witch_death"), 1.0F, 0.0F, 20);
+        SoundUtils.playFixedSound(this.w.getLocation(), SoundUtils.getSound("boss_witch_death"), 1.0F, 0.0F, 20);
     }
 
     public Immunity[] getImmuneTo() {

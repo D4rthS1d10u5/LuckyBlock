@@ -1,22 +1,19 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.IDirection;
 import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.BlockTags;
-import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.*;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.block.Block;
@@ -38,6 +35,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
@@ -350,32 +348,27 @@ public class DropEvents extends ColorsClass {
                             rp = r.nextInt(2) + 1;
                             fwm.setPower(rp);
                             fwork.setFireworkMeta(fwm);
-                            final SchedulerTask task = new SchedulerTask();
-                            task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-                                public void run() {
-                                    int trap = LuckyBlockPlugin.randoms.nextInt(2);
-                                    if (trap > 0) {
-                                        TNTPrimed t = (TNTPrimed) fwork.getWorld().spawnEntity(fwork.getLocation(), EntityType.PRIMED_TNT);
+                            Scheduler.later(() -> {
+                                int trap = LuckyBlockPlugin.randoms.nextInt(2);
+                                if (trap > 0) {
+                                    TNTPrimed t = (TNTPrimed) fwork.getWorld().spawnEntity(fwork.getLocation(), EntityType.PRIMED_TNT);
 
-                                        try {
-                                            boolean breakBlocks = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
-                                            if (!breakBlocks) {
-                                                t.setMetadata("tnt", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
-                                            }
-                                        } catch (Exception var4) {
-                                            var4.printStackTrace();
+                                    try {
+                                        boolean allowExplosionGrief = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
+                                        if (!allowExplosionGrief) {
+                                            t.setMetadata("tnt", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
                                         }
-
-                                        t.setFuseTicks(70);
-                                        t.setYield(5.0F);
-                                    } else if (trap == 0) {
-                                        FallingBlock tntfake = fwork.getWorld().spawnFallingBlock(fwork.getLocation().add(0.5D, 0.0D, 0.5D), Material.TNT, (byte) 0);
-                                        tntfake.setDropItem(false);
+                                    } catch (Exception var4) {
+                                        var4.printStackTrace();
                                     }
 
-                                    task.run();
+                                    t.setFuseTicks(70);
+                                    t.setYield(5.0F);
+                                } else if (trap == 0) {
+                                    FallingBlock tntfake = fwork.getWorld().spawnFallingBlock(fwork.getLocation().add(0.5D, 0.0D, 0.5D), Material.TNT, (byte) 0);
+                                    tntfake.setDropItem(false);
                                 }
-                            }, 60L));
+                            }, 60);
                         } else {
                             ItemStack i;
                             ItemStack[] var46;
@@ -445,7 +438,6 @@ public class DropEvents extends ColorsClass {
 
                                 HTasks.Tower(block, LuckyBlockPlugin.randoms.nextInt(10) + 1, path);
                             } else {
-                                SchedulerTask task;
                                 if (drop == LBDrop.F_PIGS) {
                                     for (times = LuckyBlockPlugin.randoms.nextInt(5) + 4; times > 0; --times) {
                                         final Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation().add(0.0D, 0.0D, 0.0D), EntityType.BAT);
@@ -460,18 +452,17 @@ public class DropEvents extends ColorsClass {
                                         pig.setCustomNameVisible(true);
                                         bat.setPassenger(pig);
                                         bat.setMetadata("luckybat", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
-                                        task = new SchedulerTask();
-                                        SchedulerTask finalTask = task;
-                                        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+
+                                        Scheduler.timer(new BukkitRunnable() {
+                                            @Override
                                             public void run() {
                                                 if (!pig.isDead() && !bat.isDead()) {
                                                     pig.getWorld().spawnParticle(Particle.REDSTONE, pig.getLocation(), 100, 0.3D, 0.3D, 0.3D, 1.0D);
                                                 } else {
-                                                    finalTask.run();
+                                                    cancel();
                                                 }
-
                                             }
-                                        }, 2L, 2L));
+                                        }, 2, 2);
                                     }
                                 } else if (drop == LBDrop.SLIMES) {
                                     times = (new Random()).nextInt(3) + 1;
@@ -506,27 +497,14 @@ public class DropEvents extends ColorsClass {
                                         bat.setPassenger(fb);
                                         bat.setMetadata("flyinglb", new FixedMetadataValue(LuckyBlockPlugin.instance, "true"));
                                         fb.setDropItem(false);
-                                        task = new SchedulerTask();
-                                        final LBType t = luckyBlock.getType();
-                                        SchedulerTask finalTask1 = task;
-                                        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
-                                            public void run() {
-                                                ItemStack lucky;
-                                                if (bat.isValid()) {
-                                                    if (bat.getPassenger() == null) {
-                                                        bat.remove();
-                                                        lucky = t.toItemStack(LBType.getRandomP(0, 20));
-                                                        bat.getWorld().dropItem(bat.getLocation(), lucky);
-                                                        finalTask1.run();
-                                                    }
-                                                } else {
-                                                    lucky = t.toItemStack(LBType.getRandomP(0, 20));
-                                                    bat.getWorld().dropItem(bat.getLocation(), lucky);
-                                                    finalTask1.run();
-                                                }
 
+                                        Scheduler.later(() -> {
+                                            if (bat.isValid() && bat.getPassengers().isEmpty()) {
+                                                bat.remove();
                                             }
-                                        }, 20L, 20L));
+
+                                            bat.getWorld().dropItem(bat.getLocation(), luckyBlock.getType().toItemStack(RandomUtils.randInt(0, 20)));
+                                        }, 20);
                                     } else if (drop == LBDrop.SOLDIER) {
                                         com.mcgamer199.luckyblock.customentity.EntitySoldier soldier = new com.mcgamer199.luckyblock.customentity.EntitySoldier();
                                         soldier.spawn(bloc);
@@ -680,7 +658,7 @@ public class DropEvents extends ColorsClass {
                                                 }
 
                                                 if (fuse > 0) {
-                                                    SoundManager.playFixedSound(player.getLocation(), SoundManager.getSound("lb_drop_repair"), 1.0F, 1.0F, 20);
+                                                    SoundUtils.playFixedSound(player.getLocation(), SoundUtils.getSound("lb_drop_repair"), 1.0F, 1.0F, 20);
                                                     s = val("drops.repair.2");
                                                     s = s.replace("%total%", String.valueOf(fuse));
                                                     player.sendMessage(s);

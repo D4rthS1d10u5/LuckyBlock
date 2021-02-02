@@ -411,7 +411,7 @@ public class CustomEntity {
     protected void onCombustByBlock(EntityCombustByBlockEvent event) {
     }
 
-    protected void onInterPortal(EntityPortalEnterEvent event) {
+    protected void onEnterPortal(EntityPortalEnterEvent event) {
     }
 
     protected void onExitPortal(EntityPortalExitEvent event) {

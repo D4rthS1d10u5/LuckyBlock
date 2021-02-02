@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
@@ -366,7 +366,7 @@ public class BlockTags extends HTag {
 
     protected static void playSound(ConfigurationSection c, Location location) {
         if (c.getString("Sound") != null) {
-            SoundManager.playFixedSound(location, Sound.valueOf(c.getString("Sound").toUpperCase()), 1.0F, 1.0F, 15);
+            SoundUtils.playFixedSound(location, Sound.valueOf(c.getString("Sound").toUpperCase()), 1.0F, 1.0F, 15);
         }
 
     }

@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
@@ -152,7 +152,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                     }
                 }
 
-                SoundManager.playFixedSound(block.getLocation(), sound, vol, pit, 30);
+                SoundUtils.playFixedSound(block.getLocation(), sound, vol, pit, 30);
             }
 
             if (!LBType.getFolder(type).exists() && placedBy != null && placedBy instanceof Player) {

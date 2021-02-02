@@ -6,17 +6,17 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.mcgamer199.luckyblock.yottaevents.YottaEvents;
 import org.bukkit.*;
@@ -84,7 +84,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 } catch (NumberFormatException var10) {
                 }
 
-                SoundManager.playFixedSound(bloc, sound, vol, pit, 30);
+                SoundUtils.playFixedSound(bloc, sound, vol, pit, 30);
             }
 
             luckyBlock.remove();
@@ -238,13 +238,8 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 Bukkit.getPluginManager().callEvent(le);
                 if (!le.isCancelled()) {
                     if (luckyBlock.getType().getDelay() > 0) {
-                        SchedulerTask task = new SchedulerTask();
-                        LuckyBlock finalLuckyBlock = luckyBlock;
-                        task.setId(Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(LuckyBlockPlugin.instance, new Runnable() {
-                            public void run() {
-                                BreakLuckyBlock.openLB(finalLuckyBlock, player);
-                            }
-                        }, luckyBlock.getType().getDelay()));
+                        LuckyBlock finalLuckyBlock1 = luckyBlock;
+                        Scheduler.later(() -> openLB(finalLuckyBlock1, player), luckyBlock.getType().getDelay());
                     } else {
                         openLB(luckyBlock, player);
                     }
@@ -284,10 +279,10 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                         Player pl = (Player) p;
                         if (r == 1) {
                             send_no(pl, "drops.well.lucky");
-                            pl.playSound(pl.getLocation(), SoundManager.getSound("lb_stwell_lucky"), 1.0F, 1.0F);
+                            pl.playSound(pl.getLocation(), SoundUtils.getSound("lb_stwell_lucky"), 1.0F, 1.0F);
                         } else {
                             send_no(pl, "drops.well.unlucky");
-                            pl.playSound(pl.getLocation(), SoundManager.getSound("lb_stwell_unlucky"), 1.0F, 1.0F);
+                            pl.playSound(pl.getLocation(), SoundUtils.getSound("lb_stwell_unlucky"), 1.0F, 1.0F);
                         }
                     }
                 }

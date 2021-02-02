@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Click;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
@@ -536,7 +536,7 @@ public class CraftLB extends ColorsClass implements Listener {
             HumanEntity h = (HumanEntity) var8.next();
             if (h instanceof Player) {
                 Player p = (Player) h;
-                p.playSound(p.getLocation(), SoundManager.getSound("lct_insert"), 0.4F, 2.0F);
+                p.playSound(p.getLocation(), SoundUtils.getSound("lct_insert"), 0.4F, 2.0F);
                 c.open(p);
             }
         }
@@ -718,7 +718,7 @@ public class CraftLB extends ColorsClass implements Listener {
                             table.setLevel((byte) (table.getLevel() + 1));
                             table.save(true);
                             table.refresh();
-                            SoundManager.playFixedSound(table.getBlock().getLocation(), SoundManager.getSound("lct_upgrade"), 1.0F, 0.0F, 7);
+                            SoundUtils.playFixedSound(table.getBlock().getLocation(), SoundUtils.getSound("lct_upgrade"), 1.0F, 0.0F, 7);
                             EntityFloatingText e = new EntityFloatingText();
                             e.mode = 1;
                             e.text = val("lct.level_up");

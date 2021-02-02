@@ -1,6 +1,7 @@
-package com.mcgamer199.luckyblock.api.sound;
+package com.mcgamer199.luckyblock.util;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,9 +12,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SoundManager {
+@UtilityClass
+public class SoundUtils {
 
-    private static Map<String, Sound> sounds = new HashMap<>();
+    private static final Map<String, Sound> sounds = new HashMap<>();
 
     public static void playFixedSound(Location loc, Sound sound, float vol, float pit) {
         playFixedSound(loc, sound, vol, pit, 30);

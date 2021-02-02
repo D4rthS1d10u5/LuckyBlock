@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.logic.SchedulerTask;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -22,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 
 public class LBShootEvent implements Listener {
@@ -40,22 +41,21 @@ public class LBShootEvent implements Listener {
 
     }
 
-    private void run(final Entity p, final Entity entity) {
-        final SchedulerTask task = new SchedulerTask();
-        task.setId(LuckyBlockPlugin.instance.getServer().getScheduler().scheduleSyncRepeatingTask(LuckyBlockPlugin.instance, new Runnable() {
+    private void run(final Entity projectile, final Entity target) {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
-                if (p.isOnGround()) {
-                    LBShootEvent.this.place(p.getLocation(), entity);
-                    p.remove();
-                    task.run();
+                if (projectile.isOnGround()) {
+                    LBShootEvent.this.place(projectile.getLocation(), target);
+                    projectile.remove();
+                    cancel();
                 }
 
-                if (!p.isValid()) {
-                    task.run();
+                if (!projectile.isValid()) {
+                    cancel();
                 }
-
             }
-        }, 2L, 2L));
+        }, 2, 2);
     }
 
     private void place(Location loc, Entity entity) {

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.sound.SoundManager;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ITask;
@@ -94,7 +94,7 @@ public class LBSpawnBoss implements Listener {
             public void run() {
                 if (this.i > 0) {
                     MyTasks.playEffects(Particle.CLOUD, loc, 110, new double[]{1.0D, 0.0D, 1.0D}, 0.5F);
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("ritual_witch_particles"), 1.0F, 0.0F, 59);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("ritual_witch_particles"), 1.0F, 0.0F, 59);
                     --this.i;
                 } else {
                     for (int x = -1; x < 2; ++x) {
@@ -105,7 +105,7 @@ public class LBSpawnBoss implements Listener {
                     }
 
                     FileStructure.generateWitchDungeon(loc);
-                    SoundManager.playFixedSound(loc, SoundManager.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
+                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
                     task.run();
                 }
 
