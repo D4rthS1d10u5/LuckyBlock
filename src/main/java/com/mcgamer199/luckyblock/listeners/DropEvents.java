@@ -9,7 +9,6 @@ import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.IDirection;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.BlockTags;
@@ -175,17 +174,14 @@ public class DropEvents extends ColorsClass {
                         }
 
                         final Chest c = (Chest) block.getState();
-                        ITask task = new ITask();
                         boolean finalBreakBlocks = breakBlocks;
-                        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-                            public void run() {
-                                if (finalBreakBlocks) {
-                                    c.getBlockInventory().clear();
-                                }
-
-                                block.getWorld().createExplosion(block.getLocation(), 3.5F);
+                        Scheduler.later(() -> {
+                            if (finalBreakBlocks) {
+                                c.getBlockInventory().clear();
                             }
-                        }, times));
+
+                            block.getWorld().createExplosion(block.getLocation(), 3.5F);
+                        }, times);
                     } else if (drop == LBDrop.FALLING_BLOCK) {
                         path = "FallingBlocks";
                         path1 = null;
@@ -968,8 +964,7 @@ public class DropEvents extends ColorsClass {
             if (Structure.class.isAssignableFrom(c)) {
                 return c.newInstance();
             }
-        } catch (Exception var3) {
-        }
+        } catch (Exception ignored) {}
 
         return null;
     }

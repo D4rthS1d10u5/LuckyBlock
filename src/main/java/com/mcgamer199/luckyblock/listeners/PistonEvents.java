@@ -1,10 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -13,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Iterator;
@@ -40,17 +40,13 @@ public class PistonEvents implements Listener {
                 }
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_THROWN) && event.getDirection() == BlockFace.UP && block.getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
-                    final ITask task = new ITask();
-                    task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-                        public void run() {
-                            luckyBlock.freeze();
-                            block.getRelative(BlockFace.UP).setType(Material.AIR);
-                            FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), luckyBlock.getType().getType(), (byte) luckyBlock.getType().getData());
-                            fb.setVelocity(new Vector(0.0D, 1.2D, 0.0D));
-                            PistonEvents.this.fb_run(fb, luckyBlock);
-                            task.run();
-                        }
-                    }, 5L));
+                    Scheduler.later(() -> {
+                        luckyBlock.freeze();
+                        block.getRelative(BlockFace.UP).setType(Material.AIR);
+                        FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), luckyBlock.getType().getType(), (byte) luckyBlock.getType().getData());
+                        fb.setVelocity(new Vector(0.0D, 1.2D, 0.0D));
+                        PistonEvents.this.fb_run(fb, luckyBlock);
+                    }, 5);
                 }
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
@@ -106,8 +102,8 @@ public class PistonEvents implements Listener {
     }
 
     private void fb_run(final FallingBlock fb, final LuckyBlock luckyBlock) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!fb.isValid()) {
                     if (fb.getLocation().getBlock().getRelative(BlockFace.DOWN) != null) {
@@ -115,10 +111,9 @@ public class PistonEvents implements Listener {
                     }
 
                     luckyBlock.unfreeze();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 }

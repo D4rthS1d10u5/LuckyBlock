@@ -7,6 +7,8 @@ package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.title.ITitle;
+import com.mcgamer199.luckyblock.api.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
@@ -25,16 +27,14 @@ import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.*;
 import com.mcgamer199.luckyblock.logic.IRange;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.Trophy;
 import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.EntityTags;
-import com.mcgamer199.luckyblock.api.title.ITitle;
-import com.mcgamer199.luckyblock.api.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -54,6 +54,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -269,25 +270,24 @@ public class LuckyBlockPlugin extends JavaPlugin {
 
     public void Loops(final LuckyBlock luckyBlock) {
         final Block block = luckyBlock.getBlock();
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(this, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (block.getRelative(BlockFace.UP).getType() == Material.FIRE) {
                     if (luckyBlock.getType().getProperties().contains(BlockProperty.FIRE_RESISTANCE)) {
                         block.getRelative(BlockFace.UP).setType(Material.AIR);
                     } else {
-                        task.run();
+                        cancel();
                     }
                 }
-
             }
-        }, 2L, 3L));
+        }, 2, 3);
     }
 
     public void LuckyBlockConfig() {
         this.detectors.options().copyDefaults(true);
         Calendar calendar = Calendar.getInstance();
-        if (calendar.get(2) == 9 && calendar.get(5) == 31 && LBType.getDefaultType() != null) {
+        if (calendar.get(Calendar.MONTH) == Calendar.OCTOBER && calendar.get(Calendar.DATE) == 31 && LBType.getDefaultType() != null) {
             LBEffects.md(LBType.getDefaultType(), Material.PUMPKIN, (short) 0);
         }
 
@@ -361,12 +361,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
         sh.setIngredient('b', Material.WORKBENCH);
         sh.setIngredient('c', Material.LAPIS_BLOCK);
         Bukkit.getServer().addRecipe(sh);
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(this, new Runnable() {
-            public void run() {
-                LuckyCraftingTable.load();
-            }
-        }, 6L));
+        Scheduler.later(LuckyCraftingTable::load, 6);
         ItemStack adv = LBItem.A_LUCKY_TOOL.getItem();
         NamespacedKey k1 = new NamespacedKey(this, "advanced_lucky_tool");
         ShapedRecipe sh1 = new ShapedRecipe(k1, adv);
@@ -433,11 +428,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
     }
 
     private void loadCustomEntities1() {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(this, new Runnable() {
-            public void run() {
-                CustomEntityLoader.load();
-            }
-        }, 3L));
+        Scheduler.later(CustomEntityLoader::load, 3);
     }
 }

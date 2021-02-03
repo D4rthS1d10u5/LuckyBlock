@@ -1,18 +1,18 @@
 package com.mcgamer199.luckyblock.lb;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class LBLoops {
     public LBLoops() {
     }
 
     static void loop(final LuckyBlock luckyBlock) {
-        final ITask task = new ITask();
-        LuckyBlockPlugin var10001 = LuckyBlockPlugin.instance;
-        Runnable var10002 = new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+
+            @Override
             public void run() {
                 if (luckyBlock.isValid()) {
                     if (luckyBlock.getBlock().getRelative(BlockFace.UP).getType() == Material.FIRE) {
@@ -23,11 +23,9 @@ public class LBLoops {
                         }
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        };
-        task.setId(ITask.getNewRepeating(var10001, var10002, 5L, 5L));
+        }, 5, 5);
     }
 }

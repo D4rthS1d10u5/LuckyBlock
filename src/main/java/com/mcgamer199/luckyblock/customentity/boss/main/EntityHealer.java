@@ -1,12 +1,12 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
-import com.mcgamer199.luckyblock.util.SoundUtils;
-import com.mcgamer199.luckyblock.customentity.nametag.EntityTagHealer;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.customentity.nametag.EntityTagHealer;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -15,6 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,12 +64,7 @@ public class EntityHealer extends CustomEntity {
     }
 
     private void spawn_nametag() {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                EntityHealer.this.a();
-            }
-        }, 3L));
+        Scheduler.later(this::a, 3);
     }
 
     private void a() {
@@ -85,8 +81,8 @@ public class EntityHealer extends CustomEntity {
         if (this.delay > 0 && this.healValue > 0.0D && this.healEntity != null) {
             this.running = true;
             this.save_def();
-            final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+            Scheduler.timer(new BukkitRunnable() {
+                @Override
                 public void run() {
                     if (!EntityHealer.this.healEntity.isDead() && !EntityHealer.this.ender.isDead()) {
                         if (EntityHealer.this.running && EntityHealer.this.healEntity.getHealth() < EntityHealer.this.healEntity.getMaxHealth()) {
@@ -101,28 +97,25 @@ public class EntityHealer extends CustomEntity {
                         }
                     } else {
                         EntityHealer.this.remove();
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, this.delay, this.delay));
+            }, delay, delay);
         }
-
     }
 
     private void func_target() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!EntityHealer.this.healEntity.isDead() && !EntityHealer.this.ender.isDead()) {
                     EntityHealer.this.ender.setBeamTarget(EntityHealer.this.healEntity.getLocation());
                 } else {
                     EntityHealer.this.remove();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 20L, 10L));
+        }, 20, 10);
     }
 
     public boolean isDamageable() {
@@ -130,28 +123,25 @@ public class EntityHealer extends CustomEntity {
     }
 
     private void func_protect() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!EntityHealer.this.ender.isDead()) {
                     if (EntityHealer.this.damageNearby) {
                         List<LivingEntity> l = EntityHealer.this.getNearbyEnemies(EntityHealer.this.ender.getNearbyEntities(3.0D, 2.0D, 3.0D));
                         if (l.size() > 0) {
                             MyTasks.playEffects(Particle.CRIT, EntityHealer.this.ender.getLocation(), 250, new double[]{1.5D, 0.0D, 1.5D}, 0.0F);
-                            Iterator var3 = l.iterator();
 
-                            while (var3.hasNext()) {
-                                LivingEntity e = (LivingEntity) var3.next();
+                            for (LivingEntity e : l) {
                                 e.damage(3.0D);
                             }
                         }
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 20L, 15L));
+        }, 20, 15);
     }
 
     public void func_stop() {
@@ -159,11 +149,9 @@ public class EntityHealer extends CustomEntity {
     }
 
     private List<LivingEntity> getNearbyEnemies(List<Entity> l) {
-        List<LivingEntity> list = new ArrayList();
-        Iterator var4 = l.iterator();
+        List<LivingEntity> list = new ArrayList<>();
 
-        while (var4.hasNext()) {
-            Entity e = (Entity) var4.next();
+        for (Entity e : l) {
             if (e instanceof Player) {
                 list.add((LivingEntity) e);
             }
@@ -221,13 +209,7 @@ public class EntityHealer extends CustomEntity {
 
     private void func_wait_damage() {
         this.damageable = false;
-        final ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                EntityHealer.this.damageable = true;
-                task.run();
-            }
-        }, 20L));
+        Scheduler.later(() -> this.damageable = true, 20);
     }
 
     protected void onSave(ConfigurationSection c) {
@@ -246,17 +228,14 @@ public class EntityHealer extends CustomEntity {
         this.running = c.getBoolean("Running");
         this.damageNearby = c.getBoolean("DamageNearby");
         this.health = c.getInt("Health");
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                EntityHealer.this.healEntity = (LivingEntity) CustomEntity.getByUUID(UUID.fromString(c.getString("HealEntity"))).getEntity();
-                if (EntityHealer.this.running) {
-                    EntityHealer.this.func_run();
-                }
-
-                EntityHealer.this.func_target();
-                EntityHealer.this.func_protect();
+        Scheduler.later(() -> {
+            EntityHealer.this.healEntity = (LivingEntity) CustomEntity.getByUUID(UUID.fromString(c.getString("HealEntity"))).getEntity();
+            if (EntityHealer.this.running) {
+                EntityHealer.this.func_run();
             }
-        }, 15L));
+
+            EntityHealer.this.func_target();
+            EntityHealer.this.func_protect();
+        }, 15);
     }
 }

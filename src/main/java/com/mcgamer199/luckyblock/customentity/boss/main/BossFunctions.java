@@ -1,12 +1,12 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
 import com.mcgamer199.luckyblock.customentity.boss.EntityLBBoss;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class BossFunctions {
@@ -24,17 +24,17 @@ public class BossFunctions {
     public static void shoot_beam(final Location start, final EntityLBBoss boss, final LivingEntity target, int max, final double s, final BossFunctions.ParticleHelper helper, final String tag) {
         start.setDirection(target.getLocation().toVector().subtract(start.toVector()));
         final Vector increase = start.getDirection().multiply(s);
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
             private int m = max;
             private int a = 0;
 
+            @Override
             public void run() {
                 if (this.m < 1) {
-                    task.run();
+                    cancel();
                 } else {
                     if (target.isDead()) {
-                        task.run();
+                        cancel();
                         return;
                     }
 
@@ -47,15 +47,14 @@ public class BossFunctions {
                             boss.onHitEntityWithBeam(target, tag);
                         }
 
-                        task.run();
+                        cancel();
                     } else if (this.a > 10) {
-                        task.run();
+                        cancel();
                         BossFunctions.shoot_beam(point, boss, target, this.m, s, helper, tag);
                     }
                 }
-
             }
-        }, 0L, 1L));
+        }, 0, 1);
     }
 
     public enum LaserType {

@@ -1,15 +1,15 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.util.SoundUtils;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
-import com.mcgamer199.luckyblock.util.EntityUtils;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.SkullData;
+import com.mcgamer199.luckyblock.util.EntityUtils;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -106,8 +107,8 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_1(final FallingBlock fb) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!fb.isValid()) {
                     if (EntityKnight.this.angry) {
@@ -120,11 +121,10 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                         fb.getLocation().getBlock().setType(Material.AIR);
                     }
 
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     protected void onTick() {
@@ -274,19 +274,11 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_boss_bar() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityKnight.this.l.isDead()) {
-                    if (EntityKnight.this.bar != null) {
-                        EntityKnight.this.bar.setProgress(EntityKnight.this.l.getHealth() / EntityKnight.this.l.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityKnight.this.bar != null) {
+                EntityKnight.this.bar.setProgress(EntityKnight.this.l.getHealth() / EntityKnight.this.l.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             }
-        }, 1L, 1L));
+        }).predicate(() -> !EntityKnight.this.l.isDead()).timer(1, 1);
     }
 
     public BossBar getBossBar() {
@@ -340,10 +332,10 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                 x_1 = this.random.nextInt(18) + 12;
             }
 
-            final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+            Scheduler.timer(new BukkitRunnable() {
                 private int x = x_1;
 
+                @Override
                 public void run() {
                     if (this.x > 0) {
                         if (!EntityKnight.this.l.isDead()) {
@@ -366,29 +358,26 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                             EntityKnight.this.func_a(arrow);
                             --this.x;
                         } else {
-                            task.run();
+                            cancel();
                         }
                     }
-
                 }
-            }, 2L, 2L));
+            }, 2, 2);
         }
-
     }
 
     private void func_a(final Projectile p) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (p.isValid() && !p.isOnGround()) {
                     p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getLocation(), 3, 0.1D, 0.1D, 0.1D, 0.0D);
                 } else {
                     p.remove();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     protected void onDamage(EntityDamageEvent event) {
@@ -403,75 +392,41 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_ambient() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (EntityKnight.this.getEntity() != null && !EntityKnight.this.getEntity().isDead()) {
-                    SoundUtils.playFixedSound(EntityKnight.this.l.getLocation(), SoundUtils.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35);
-                } else {
-                    task.run();
-                }
-
-            }
-        }, 150L, 150L));
+        Scheduler.create(() -> SoundUtils.playFixedSound(EntityKnight.this.l.getLocation(), SoundUtils.getSound("boss_lb_ambient"), 1.0F, 0.0F, 35))
+                .predicate(() -> EntityKnight.this.getEntity() != null && !EntityKnight.this.getEntity().isDead())
+                .timer(150, 150);
     }
 
     private void func_angry() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (EntityKnight.this.l != null && EntityKnight.this.l.isValid()) {
-                    if (EntityKnight.this.angry) {
-                        Iterator var2 = EntityKnight.this.l.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
+        Scheduler.create(() -> {
+            if (EntityKnight.this.angry) {
 
-                        while (var2.hasNext()) {
-                            Entity e = (Entity) var2.next();
-                            if (e instanceof Animals) {
-                                e.getWorld().strikeLightning(e.getLocation());
-                            }
-                        }
+                for (Entity e : EntityKnight.this.l.getNearbyEntities(7.0D, 7.0D, 7.0D)) {
+                    if (e instanceof Animals) {
+                        e.getWorld().strikeLightning(e.getLocation());
                     }
-
-                    if (EntityKnight.this.l.getTarget() == null) {
-                        Block b = EntityKnight.this.getB(4);
-                        if (b != null) {
-                            EntityUtils.followEntity(b.getLocation(), EntityKnight.this.l, 1.1D);
-                        }
-                    }
-                } else {
-                    task.run();
                 }
-
             }
-        }, 60L, 60L));
-        final ITask task1 = new ITask();
-        task1.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (EntityKnight.this.l != null && EntityKnight.this.l.isValid()) {
-                    if (EntityKnight.this.angry && EntityKnight.this.l.getTarget() != null) {
-                        Zombie zombie = (Zombie) EntityKnight.this.l.getWorld().spawnEntity(EntityKnight.this.l.getLocation().add(EntityKnight.this.random.nextInt(10) - 5, 5.0D, EntityKnight.this.random.nextInt(10) - 5), EntityType.ZOMBIE);
-                        zombie.setTarget(EntityKnight.this.l.getTarget());
-                        EntityKnight.this.func_zombie(zombie);
-                    }
-                } else {
-                    task1.run();
+
+            if (EntityKnight.this.l.getTarget() == null) {
+                Block b = EntityKnight.this.getB(4);
+                if (b != null) {
+                    EntityUtils.followEntity(b.getLocation(), EntityKnight.this.l, 1.1D);
                 }
-
             }
-        }, 150L, 150L));
+        }).predicate(() -> EntityKnight.this.l != null && EntityKnight.this.l.isValid()).timer(60, 60);
+
+        Scheduler.create(() -> {
+            if (EntityKnight.this.angry && EntityKnight.this.l.getTarget() != null) {
+                Zombie zombie = (Zombie) EntityKnight.this.l.getWorld().spawnEntity(EntityKnight.this.l.getLocation().add(EntityKnight.this.random.nextInt(10) - 5, 5.0D, EntityKnight.this.random.nextInt(10) - 5), EntityType.ZOMBIE);
+                zombie.setTarget(EntityKnight.this.l.getTarget());
+                EntityKnight.this.func_zombie(zombie);
+            }
+        }).predicate(() -> EntityKnight.this.l != null && EntityKnight.this.l.isValid()).timer(150, 150);
     }
 
     private void func_zombie(final Zombie zombie) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!zombie.isDead()) {
-                    zombie.remove();
-                }
-
-                task.run();
-            }
-        }, 138L));
+        Scheduler.create(zombie::remove).predicate(() -> !zombie.isDead()).later(138);
     }
 
     public boolean isAngry() {
@@ -498,17 +453,13 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_2() {
-        ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                LuckyCraftingTable c = LuckyCraftingTable.getByBlock(EntityKnight.this.l.getLocation().getBlock().getRelative(BlockFace.DOWN));
-                if (c != null) {
-                    c.remove();
-                    c.getBlock().setType(Material.AIR);
-                }
-
+        Scheduler.timer(() -> {
+            LuckyCraftingTable c = LuckyCraftingTable.getByBlock(EntityKnight.this.l.getLocation().getBlock().getRelative(BlockFace.DOWN));
+            if (c != null) {
+                c.remove();
+                c.getBlock().setType(Material.AIR);
             }
-        }, 20L, 20L));
+        }, 20, 20);
     }
 
     public void makeAngry() {

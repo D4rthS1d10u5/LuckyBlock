@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class EntityFloatingText extends CustomEntity {
     public int mode = 0;
@@ -41,15 +41,11 @@ public class EntityFloatingText extends CustomEntity {
     }
 
     private void run_1(final ArmorStand a) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
             double iY = 1.0D;
-            int i;
+            int i = EntityFloatingText.this.b;
 
-            {
-                this.i = EntityFloatingText.this.b;
-            }
-
+            @Override
             public void run() {
                 if (EntityFloatingText.this.age > 0) {
                     if (this.i > 0) {
@@ -59,45 +55,42 @@ public class EntityFloatingText extends CustomEntity {
                         this.i -= 4;
                     }
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1,1);
     }
 
     private void run_2(final ArmorStand a) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
             double iX = 1.0D;
             int i = 0;
 
+            @Override
             public void run() {
                 if (EntityFloatingText.this.age > 0) {
                     this.iX = Math.sin(this.i);
                     a.teleport(a.getLocation().add(this.iX / 20.0D, 0.1D, 0.0D));
                     ++this.i;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     private void func_age() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (EntityFloatingText.this.age > 0) {
                     --EntityFloatingText.this.age;
                 } else {
                     EntityFloatingText.this.remove();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     protected void onLoad(ConfigurationSection c) {

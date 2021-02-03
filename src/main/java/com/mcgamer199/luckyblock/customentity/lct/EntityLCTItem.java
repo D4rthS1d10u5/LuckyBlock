@@ -1,10 +1,9 @@
 package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -12,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class EntityLCTItem extends CustomEntity {
     private LuckyCraftingTable lct;
@@ -37,8 +37,8 @@ public class EntityLCTItem extends CustomEntity {
     }
 
     private void func_loop() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (EntityLCTItem.this.lct != null && EntityLCTItem.this.lct.isValid()) {
                     boolean setAir = false;
@@ -52,22 +52,18 @@ public class EntityLCTItem extends CustomEntity {
                     }
                 } else {
                     EntityLCTItem.this.remove();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 20L, 2L));
+        }, 20, 2);
     }
 
     protected void onLoad(final ConfigurationSection c) {
         this.armorStand = (ArmorStand) this.entity;
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                EntityLCTItem.this.lct = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(c.getString("LCT_Block")));
-                EntityLCTItem.this.func_loop();
-            }
-        }, 10L));
+        Scheduler.later(() -> {
+            EntityLCTItem.this.lct = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(c.getString("LCT_Block")));
+            EntityLCTItem.this.func_loop();
+        }, 10);
     }
 
     protected void onSave(ConfigurationSection c) {

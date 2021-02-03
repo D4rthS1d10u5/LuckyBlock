@@ -4,7 +4,6 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import com.mcgamer199.luckyblock.util.SoundUtils;
@@ -78,27 +77,26 @@ public class HTasks extends ColorsClass {
     }
 
     static void STUCK(final Player player, final Location loc, final int time) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int a = time;
+        Scheduler.timer(new BukkitRunnable() {
+            private int a = time;
 
+            @Override
             public void run() {
                 if (this.a > 0) {
                     player.teleport(loc);
                     --this.a;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 5L, 10L));
+        }, 5, 10);
     }
 
     static void Met(final Location loc, final int times) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int i = times;
+        Scheduler.timer(new BukkitRunnable() {
+            private int i = times;
 
+            @Override
             public void run() {
                 if (this.i > 0) {
                     FallingBlock fb = loc.getWorld().spawnFallingBlock(loc.add(0.0D, 1.0D, 0.0D), Material.COBBLESTONE, (byte) 0);
@@ -113,11 +111,10 @@ public class HTasks extends ColorsClass {
                     HTasks.Meteor(fb, 15.0F);
                     --this.i;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 2L, 2L));
+        }, 2, 2);
     }
 
     static void Meteor(final FallingBlock fb, final float explosionPower) {
@@ -626,14 +623,10 @@ public class HTasks extends ColorsClass {
         }
 
         final ItemStack it = luckyBlock.getType().toItemStack(luckyBlock.getLuck(), null, s);
-        final ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                bloc.getWorld().dropItem(bloc, it);
-                bloc.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, bloc, 150, 0.3D, 0.3D, 0.3D, 0.0D);
-                task.run();
-            }
-        }, 3L));
+        Scheduler.later(() -> {
+            bloc.getWorld().dropItem(bloc, it);
+            bloc.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, bloc, 150, 0.3D, 0.3D, 0.3D, 0.0D);
+        }, 3);
     }
 
     static void i(final Location loc, int range) {

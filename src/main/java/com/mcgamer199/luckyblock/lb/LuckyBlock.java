@@ -12,9 +12,9 @@ import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityLBNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.tags.BlockTags;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -24,6 +24,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
@@ -235,10 +236,7 @@ public class LuckyBlock {
             this.b = "a=None";
         }
 
-        Iterator var8 = luckyBlocks.iterator();
-
-        while (var8.hasNext()) {
-            LuckyBlock luckyBlock = (LuckyBlock) var8.next();
+        for (LuckyBlock luckyBlock : luckyBlocks) {
             if (this.blockToString().equalsIgnoreCase(luckyBlock.blockToString())) {
                 return;
             }
@@ -638,13 +636,7 @@ public class LuckyBlock {
     }
 
     public boolean isValid() {
-        for (int x = 0; x < luckyBlocks.size(); ++x) {
-            if (luckyBlocks.get(x).equals(this)) {
-                return true;
-            }
-        }
-
-        return false;
+        return luckyBlocks.contains(this);
     }
 
     public boolean equals(LuckyBlock luckyBlock) {
@@ -653,22 +645,21 @@ public class LuckyBlock {
 
     public void explode() {
         this.remove();
-        final Location l = this.block.getLocation().add(0.4D, 0.6D, 0.4D);
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int x = 10;
+        final Location location = this.block.getLocation().add(0.4D, 0.6D, 0.4D);
+        Scheduler.timer(new BukkitRunnable() {
+            private int times = 10;
 
+            @Override
             public void run() {
-                if (this.x > 0) {
-                    LuckyBlock.this.block.getWorld().spawnParticle(Particle.SPELL, l, 50, 0.3D, 0.7D, 0.3D, 0.0D);
-                    --this.x;
+                if (this.times > 0) {
+                    LuckyBlock.this.block.getWorld().spawnParticle(Particle.SPELL, location, 50, 0.3D, 0.7D, 0.3D, 0.0D);
+                    --this.times;
                 } else {
                     LuckyBlock.this.block.getWorld().createExplosion(LuckyBlock.this.block.getLocation(), 3.0F);
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 3L, 3L));
+        }, 3, 3);
     }
 
     public void changeTo(LBType type) {

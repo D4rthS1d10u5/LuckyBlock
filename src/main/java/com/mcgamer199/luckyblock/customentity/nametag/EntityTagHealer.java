@@ -1,9 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.customentity.boss.main.EntityHealer;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.customentity.boss.main.EntityHealer;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -41,16 +40,12 @@ public class EntityTagHealer extends EntityNameTag {
     protected void onload(ConfigurationSection c) {
         if (c.getString("Source") != null) {
             final UUID uuid = UUID.fromString(c.getString("Source"));
-            ITask task = new ITask();
-            task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-                public void run() {
-                    CustomEntity c = CustomEntity.getByUUID(uuid);
-                    if (c != null) {
-                        EntityTagHealer.this.source = (EntityHealer) c;
-                    }
-
+            Scheduler.later(() -> {
+                CustomEntity customEntity = CustomEntity.getByUUID(uuid);
+                if (customEntity != null) {
+                    EntityTagHealer.this.source = (EntityHealer) customEntity;
                 }
-            }, 5L));
+            }, 5);
         }
 
     }

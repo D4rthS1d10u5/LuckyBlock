@@ -4,13 +4,14 @@ import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.IRange;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,31 +160,21 @@ public class Detector {
             searcher.sendMessage(ChatColor.GREEN + "Already running!");
         } else {
             this.running = true;
-            final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-                final int x;
-                final int y;
-                final int z;
-                int total;
+            Scheduler.timer(new BukkitRunnable() {
+                private final int x = Detector.this.range.getX() * -1;
+                private final int y = Detector.this.range.getY() * -1;
+                private final int z = Detector.this.range.getZ() * -1;
 
-                {
-                    this.x = Detector.this.range.getX() * -1;
-                    this.y = Detector.this.range.getY() * -1;
-                    this.z = Detector.this.range.getZ() * -1;
-                    this.total = 0;
-                }
-
+                @Override
                 public void run() {
                     if (this.x == Detector.this.range.getX() && this.y == Detector.this.range.getY() && this.z == Detector.this.range.getZ()) {
-                        task.run();
+                        cancel();
                     } else {
                         Detector.this.checkBlock(0, 0, 0);
                         Detector.this.getLB(0, 0, 0);
-                        this.total = this.total;
                     }
-
                 }
-            }, 20L, 20L));
+            }, 20, 20);
         }
     }
 
@@ -191,32 +182,19 @@ public class Detector {
         if (this.running) {
             searcher.sendMessage(ChatColor.GREEN + "Already running!");
         } else {
-            final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-                int x;
-                int y;
-                int z;
-                final int x1;
-                final int z1;
-                final int x2;
-                final int y2;
-                final int z2;
-                int total;
-                boolean finish;
+            Scheduler.timer(new BukkitRunnable() {
+                int x = Detector.this.range.getX() * -1;
+                int y = Detector.this.range.getY() * -1;
+                int z = Detector.this.range.getZ() * -1;
+                final int x1 = Detector.this.range.getX() * -1;
+                final int z1 = Detector.this.range.getZ() * -1;
+                final int x2 = Detector.this.range.getX();
+                final int y2 = Detector.this.range.getY();
+                final int z2 = Detector.this.range.getZ();
+                int total = 0;
+                boolean finish = false;
 
-                {
-                    this.x = Detector.this.range.getX() * -1;
-                    this.y = Detector.this.range.getY() * -1;
-                    this.z = Detector.this.range.getZ() * -1;
-                    this.x1 = Detector.this.range.getX() * -1;
-                    this.z1 = Detector.this.range.getZ() * -1;
-                    this.x2 = Detector.this.range.getX();
-                    this.y2 = Detector.this.range.getY();
-                    this.z2 = Detector.this.range.getZ();
-                    this.total = 0;
-                    this.finish = false;
-                }
-
+                @Override
                 public void run() {
                     boolean changeX = true;
                     boolean changeZ = true;
@@ -249,11 +227,10 @@ public class Detector {
 
                     if (this.finish) {
                         searcher.sendMessage("Total: " + this.total);
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, 3L, 5L));
+            }, 3, 5);
         }
     }
 }

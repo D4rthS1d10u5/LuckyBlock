@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BossBar;
@@ -13,6 +13,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -68,10 +69,8 @@ public class CustomEntity {
     public static CustomEntity getClassByName(String name) {
         name = name.replace("-", ".");
         name = name.replace("LB_", "com.LuckyBlock.customentity.");
-        Iterator var2 = classes.iterator();
 
-        while (var2.hasNext()) {
-            CustomEntity e = (CustomEntity) var2.next();
+        for (CustomEntity e : classes) {
             if (e.getClass().getName().equalsIgnoreCase(name)) {
                 return e;
             }
@@ -104,10 +103,10 @@ public class CustomEntity {
         }
 
         this.d();
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int x = 0;
+        Scheduler.timer(new BukkitRunnable() {
+            private int x = 0;
 
+            @Override
             public void run() {
                 if (!CustomEntity.this.entity.isDead()) {
                     if (CustomEntity.this.isAnimated() && CustomEntity.this.getNames() != null && CustomEntity.this.getNames().size() > 0) {
@@ -119,23 +118,22 @@ public class CustomEntity {
                         }
                     }
                 } else {
-                    task.run();
+                    cancel();
                     CustomEntity.this.remove();
                 }
-
             }
-        }, 1L, this.getNamesDelay()));
+        }, 1, getNamesDelay());
     }
 
     private void c() {
         if (this.entity != null && this.entity instanceof Creature) {
             final Creature cr = (Creature) this.entity;
-            final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+            Scheduler.timer(new BukkitRunnable() {
+                @Override
                 public void run() {
                     if (!CustomEntity.this.entity.isDead()) {
                         if (cr.getTarget() == null) {
-                            List<Entity> entities = new ArrayList();
+                            List<Entity> entities = new ArrayList<>();
                             Iterator var3 = CustomEntity.this.entity.getNearbyEntities(15.0D, 10.0D, 15.0D).iterator();
 
                             while (true) {
@@ -160,10 +158,7 @@ public class CustomEntity {
                                                                 uuid = entities.get(CustomEntity.this.random.nextInt(entities.size())).getUniqueId();
                                                             }
 
-                                                            Iterator var8 = CustomEntity.this.entity.getNearbyEntities(25.0D, 20.0D, 25.0D).iterator();
-
-                                                            while (var8.hasNext()) {
-                                                                Entity e = (Entity) var8.next();
+                                                            for (Entity e : CustomEntity.this.entity.getNearbyEntities(25.0D, 20.0D, 25.0D)) {
                                                                 if (e.getUniqueId() == uuid) {
                                                                     cr.setTarget((LivingEntity) e);
                                                                 }
@@ -193,26 +188,22 @@ public class CustomEntity {
                         }
                     } else {
                         CustomEntity.this.remove();
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, 30L, 30L));
+            }, 30, 30);
         }
-
     }
 
     private void d() {
         if (this.hasBossBar() && this.getBossBar() != null && this.getBossBarRange() > 0 && this.getBossBarRange() < 225) {
-            final ITask task = new ITask();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+            Scheduler.timer(new BukkitRunnable() {
+                @Override
                 public void run() {
                     if (!CustomEntity.this.entity.isDead()) {
                         if (CustomEntity.this.hasBossBar() && CustomEntity.this.getBossBar() != null && CustomEntity.this.getBossBarRange() > 0 && CustomEntity.this.getBossBarRange() < 225) {
-                            Iterator var2 = CustomEntity.this.entity.getWorld().getPlayers().iterator();
 
-                            while (var2.hasNext()) {
-                                Player p = (Player) var2.next();
+                            for (Player p : CustomEntity.this.entity.getWorld().getPlayers()) {
                                 int d = (int) CustomEntity.this.entity.getLocation().distance(p.getLocation());
                                 if (d <= CustomEntity.this.getBossBarRange()) {
                                     if (CustomEntity.this.getBossBar().getPlayers() != null && !CustomEntity.this.getBossBar().getPlayers().contains(p)) {
@@ -223,16 +214,14 @@ public class CustomEntity {
                                 }
                             }
                         } else {
-                            task.run();
+                            cancel();
                         }
                     } else {
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, 40L, 40L));
+            }, 40, 40);
         }
-
     }
 
     private boolean containsTarget(EntityType entitytype) {

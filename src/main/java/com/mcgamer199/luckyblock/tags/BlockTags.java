@@ -1,15 +1,15 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.IDirection;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.resources.Schematic;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.Pattern;
@@ -798,57 +798,33 @@ public class BlockTags extends HTag {
     }
 
     private static void perform_schem(final Location location, final File file, int ticks) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                Schematic.loadArea(file, location);
-            }
-        }, ticks));
+        Scheduler.later(() -> Schematic.loadArea(file, location), ticks);
     }
 
     private static void perform_piece(final ConfigurationSection c, final Location location, int ticks) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                BlockTags.setBlocks(c, location);
-            }
-        }, ticks));
+        Scheduler.later(() -> BlockTags.setBlocks(c, location), ticks);
     }
 
     private static void perform_setblock(final ConfigurationSection c, final Location location, final String locationType, int ticks) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                BlockTags.setBlock(c, location, locationType);
-            }
-        }, ticks));
+        Scheduler.later(() -> BlockTags.setBlock(c, location, locationType), ticks);
     }
 
     private static void perform_spawnentity(final ConfigurationSection c1, final ConfigurationSection c2, final Location location, int ticks) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                EntityTags.spawnEntity(c1, location, c2.getConfigurationSection("Entities"), true, null);
-            }
-        }, ticks));
+        Scheduler.later(() -> EntityTags.spawnEntity(c1, location, c2.getConfigurationSection("Entities"), true, null), ticks);
     }
 
     private static void perform_filler(final Location location, final Material blockMat, final byte blockData, final int xM, final int yM, final int zM, final int xL, final int yL, final int zL, int ticks) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                for (int x = xM; x < xL; ++x) {
-                    for (int y = yM; y < yL; ++y) {
-                        for (int z = zM; z < zL; ++z) {
-                            Location newL = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) y, location.getZ() + (double) z);
-                            Block b = newL.getBlock();
-                            b.setType(blockMat);
-                            b.setData(blockData);
-                        }
+        Scheduler.later(() -> {
+            for (int x = xM; x < xL; ++x) {
+                for (int y = yM; y < yL; ++y) {
+                    for (int z = zM; z < zL; ++z) {
+                        Location newL = new Location(location.getWorld(), location.getX() + (double) x, location.getY() + (double) y, location.getZ() + (double) z);
+                        Block b = newL.getBlock();
+                        b.setType(blockMat);
+                        b.setData(blockData);
                     }
                 }
-
             }
-        }, ticks));
+        }, ticks);
     }
 }

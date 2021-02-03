@@ -2,14 +2,15 @@ package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.customentity.nametag.EntityTrophyNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,16 +87,15 @@ public class Trophy {
     }
 
     private void func_loop() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
-                if (Trophy.this.block.getType() != Material.SKULL) {
-                    Trophy.this.remove();
-                    task.run();
+                if(block.getType() != Material.SKULL) {
+                    remove();
+                    cancel();
                 }
-
             }
-        }, 20L, 20L));
+        }, 20, 20);
     }
 
     private void save(boolean saveToFile) {

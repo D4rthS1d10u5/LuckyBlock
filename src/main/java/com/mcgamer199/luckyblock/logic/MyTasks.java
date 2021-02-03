@@ -24,8 +24,8 @@ public class MyTasks {
         return p;
     }
 
-    public static final String val(String loc, boolean colors) {
-        return com.mcgamer199.luckyblock.logic.ColorsClass.val(loc, colors);
+    public static String val(String loc, boolean colors) {
+        return ColorsClass.val(loc, colors);
     }
 
     public static void playEffects(Particle particle, Location loc, int amount, double[] r, float speed) {

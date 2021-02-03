@@ -1,14 +1,13 @@
 package com.mcgamer199.luckyblock.customdrop;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.RandomUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import java.util.Random;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class RandomBlockDrop implements CustomDrop {
 
@@ -37,33 +36,31 @@ public class RandomBlockDrop implements CustomDrop {
 
     public void function(LuckyBlock luckyBlock, Player player) {
         if (luckyBlock.hasDropOption("Materials")) {
-            final String[] mats = (String[]) luckyBlock.getDropOption("Materials").getValues();
-            final ITask task = new ITask();
-            final Block b = luckyBlock.getBlock();
-            final Random random = new Random();
-            task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-                int x = random.nextInt(5) + 6;
+            final String[] materials = (String[]) luckyBlock.getDropOption("Materials").getValues();
+            final Block block = luckyBlock.getBlock();
+            Scheduler.timer(new BukkitRunnable() {
+                private int times = RandomUtils.nextInt(5) + 6;
 
+                @Override
                 public void run() {
-                    if (this.x > 0) {
-                        String s = mats[random.nextInt(mats.length)].toUpperCase();
-                        String[] d = s.split(" ");
-                        if (d.length == 2) {
-                            byte data = Byte.parseByte(d[1]);
-                            b.setType(Material.getMaterial(d[0]));
-                            b.setData(data);
+                    if (this.times > 0) {
+                        String materialName = RandomUtils.getRandomObject(materials).toUpperCase();
+
+                        String[] materialData = materialName.split(" ");
+                        if (materialData.length == 2) {
+                            byte data = Byte.parseByte(materialData[1]);
+                            block.setType(Material.getMaterial(materialData[0]));
+                            block.setData(data);
                         } else {
-                            b.setType(Material.getMaterial(s));
+                            block.setType(Material.getMaterial(materialName));
                         }
 
-                        --this.x;
+                        --this.times;
                     } else {
-                        task.run();
+                        cancel();
                     }
-
                 }
-            }, 5L, 5L));
+            }, 5, 5);
         }
-
     }
 }

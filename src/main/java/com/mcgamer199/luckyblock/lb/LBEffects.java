@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.lb;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class LBEffects {
     public LBEffects() {
@@ -18,8 +18,8 @@ public class LBEffects {
     }
 
     protected static void testEffects(final LuckyBlock luckyBlock) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 final Block block = luckyBlock.getBlock();
                 LBType type = luckyBlock.getType();
@@ -49,28 +49,22 @@ public class LBEffects {
                                 Location l = new Location(block.getWorld(), (double) block.getX() + 0.4D + lx, (double) block.getY() + 0.4D + ly, (double) block.getZ() + 0.4D + lz);
                                 block.getWorld().spawnParticle(Particle.valueOf(part[0].toUpperCase()), l, amount, rx, ry, rz, speed);
                             }
-                        } catch (Exception var18) {
-                        }
+                        } catch (Exception ignored) {}
                     }
                 } else if (!luckyBlock.isFreezed()) {
                     if (LuckyBlock.luckyBlocks.contains(luckyBlock)) {
-                        final ITask tsk = new ITask();
-                        tsk.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-                            public void run() {
-                                if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {
-                                    luckyBlock.remove();
-                                    tsk.run();
-                                    task.run();
-                                }
-
+                        Scheduler.later(() -> {
+                            if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {
+                                luckyBlock.remove();
+                                cancel();
                             }
-                        }, 1L));
+                        }, 1);
                     } else {
-                        task.run();
+                        cancel();
                     }
                 }
 
             }
-        }, luckyBlock.a, luckyBlock.a));
+        }, luckyBlock.a, luckyBlock.a);
     }
 }

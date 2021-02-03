@@ -1,15 +1,14 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -64,16 +63,10 @@ public class DispenserEvents extends ColorsClass implements Listener {
                 Block b = block.getRelative(getDispenserF(block));
                 if (!b.getType().isSolid()) {
                     LuckyBlock.placeLB(b.getLocation(), null, event.getItem(), b);
-                    ITask task = new ITask();
-                    task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-                        public void run() {
-                            DispenserEvents.removeLBItem(event.getItem(), (Dispenser) event.getBlock().getState());
-                        }
-                    }, 3L));
+                    Scheduler.later(() -> DispenserEvents.removeLBItem(event.getItem(), (Dispenser) event.getBlock().getState()), 3);
                 }
             }
         }
-
     }
 
     @EventHandler

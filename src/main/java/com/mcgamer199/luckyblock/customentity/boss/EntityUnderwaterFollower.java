@@ -1,9 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,14 +36,8 @@ public class EntityUnderwaterFollower extends CustomEntity {
 
     private void func_age() {
         if (this.age > 0) {
-            ITask task = new ITask();
-            task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-                public void run() {
-                    EntityUnderwaterFollower.this.remove();
-                }
-            }, this.age));
+            Scheduler.later(this::remove, age);
         }
-
     }
 
     public Immunity[] getImmuneTo() {

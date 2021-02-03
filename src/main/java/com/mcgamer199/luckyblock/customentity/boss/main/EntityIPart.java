@@ -1,14 +1,14 @@
 package com.mcgamer199.luckyblock.customentity.boss.main;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 
 import java.util.Iterator;
@@ -66,19 +66,11 @@ public class EntityIPart extends CustomEntity {
     }
 
     private void run1() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (EntityIPart.this.running && !EntityIPart.this.a.isDead()) {
-                    if (EntityIPart.this.amountDegree > 0.0D) {
-                        EntityIPart.this.rotate_head(EntityIPart.this.amountDegree);
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityIPart.this.amountDegree > 0.0D) {
+                EntityIPart.this.rotate_head(EntityIPart.this.amountDegree);
             }
-        }, this.t, this.t));
+        }).predicate(() -> EntityIPart.this.running && !EntityIPart.this.a.isDead()).timer(t, t);
     }
 
     private void func_tick() {
@@ -93,19 +85,18 @@ public class EntityIPart extends CustomEntity {
     }
 
     private void func_tick1() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (!EntityIPart.this.attachedEntity.isDead()) {
                     Location loc = EntityIPart.this.attachedEntity.getLocation();
                     EntityIPart.this.a.teleport(loc.add(EntityIPart.this.offset[0], EntityIPart.this.offset[1], EntityIPart.this.offset[2]));
                 } else {
-                    task.run();
+                    cancel();
                     EntityIPart.this.remove();
                 }
-
             }
-        }, 1L, 1L));
+        }, 1, 1);
     }
 
     private void rotate_head(double degree) {
@@ -146,18 +137,14 @@ public class EntityIPart extends CustomEntity {
         this.amountDegree = c.getDouble("AmountDegree");
         this.t = c.getInt("TickTime");
         this.item = c.getItemStack("Item");
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                EntityIPart.this.attachedEntity = CustomEntity.getByUUID(UUID.fromString(c.getString("attachedEntity"))).getEntity();
-                EntityIPart.this.a = (ArmorStand) EntityIPart.this.entity;
-                EntityIPart.this.func_tick();
-                if (EntityIPart.this.running) {
-                    EntityIPart.this.run_rotate();
-                }
-
+        Scheduler.later(() -> {
+            EntityIPart.this.attachedEntity = CustomEntity.getByUUID(UUID.fromString(c.getString("attachedEntity"))).getEntity();
+            EntityIPart.this.a = (ArmorStand) EntityIPart.this.entity;
+            EntityIPart.this.func_tick();
+            if (EntityIPart.this.running) {
+                EntityIPart.this.run_rotate();
             }
-        }, 15L));
+        }, 15);
     }
 }
 

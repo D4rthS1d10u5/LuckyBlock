@@ -1,16 +1,16 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.Immunity;
 import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions;
 import com.mcgamer199.luckyblock.customentity.boss.main.BossFunctions.ParticleHelper;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBItem;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -24,10 +24,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
     private static final ItemStack trophy;
@@ -76,29 +76,19 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_Beam() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    int x = 0;
-                    Iterator var3 = EntityUnderwaterBoss.this.elder.getNearbyEntities(15.0D, 15.0D, 15.0D).iterator();
+        Scheduler.create(() -> {
+            int x = 0;
 
-                    while (var3.hasNext()) {
-                        Entity e = (Entity) var3.next();
-                        if (EntityUnderwaterBoss.this.isTarget(e)) {
-                            EntityUnderwaterBoss.this.shootBeam((LivingEntity) e);
-                            ++x;
-                            if (x > 6) {
-                                break;
-                            }
-                        }
+            for (Entity e : EntityUnderwaterBoss.this.elder.getNearbyEntities(15.0D, 15.0D, 15.0D)) {
+                if (EntityUnderwaterBoss.this.isTarget(e)) {
+                    EntityUnderwaterBoss.this.shootBeam((LivingEntity) e);
+                    ++x;
+                    if (x > 6) {
+                        break;
                     }
-                } else {
-                    task.run();
                 }
-
             }
-        }, 10L, 100L));
+        }).predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(10, 100);
     }
 
     private void shootBeam(LivingEntity target) {
@@ -119,157 +109,99 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_Effects() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    Iterator var2 = EntityUnderwaterBoss.this.elder.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
-
-                    while (var2.hasNext()) {
-                        Entity e = (Entity) var2.next();
-                        if (e instanceof Player) {
-                            Player p = (Player) e;
-                            if (EntityUnderwaterBoss.this.bPlayer(p)) {
-                                p.spawnParticle(Particle.MOB_APPEARANCE, p.getLocation(), 1);
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 260, 0));
-                                p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 300, 1));
-                            }
-                        }
+        Scheduler.create(() -> {
+            for (Entity e : EntityUnderwaterBoss.this.elder.getNearbyEntities(7.0D, 7.0D, 7.0D)) {
+                if (e instanceof Player) {
+                    Player p = (Player) e;
+                    if (EntityUnderwaterBoss.this.bPlayer(p)) {
+                        p.spawnParticle(Particle.MOB_APPEARANCE, p.getLocation(), 1);
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 260, 0));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 300, 1));
                     }
-                } else {
-                    task.run();
                 }
-
             }
-        }, 265L, 265L));
+        }).predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(256, 256);
     }
 
     private void func_Tnt() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    if (EntityUnderwaterBoss.this.elder.getTarget() != null) {
-                        TNTPrimed tnt = (TNTPrimed) EntityUnderwaterBoss.this.elder.getWorld().spawnEntity(EntityUnderwaterBoss.this.elder.getLocation(), EntityType.PRIMED_TNT);
-                        tnt.setFuseTicks(2000);
-                        tnt.setVelocity(EntityUnderwaterBoss.this.getRandomVelocity());
-                        tnt.setCustomName("" + ChatColor.RED + ChatColor.BOLD + "5s");
-                        tnt.setCustomNameVisible(true);
-                        EntityUnderwaterBoss.this.spawnTnt(tnt);
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityUnderwaterBoss.this.elder.getTarget() != null) {
+                TNTPrimed tnt = (TNTPrimed) EntityUnderwaterBoss.this.elder.getWorld().spawnEntity(EntityUnderwaterBoss.this.elder.getLocation(), EntityType.PRIMED_TNT);
+                tnt.setFuseTicks(2000);
+                tnt.setVelocity(EntityUnderwaterBoss.this.getRandomVelocity());
+                tnt.setCustomName("" + ChatColor.RED + ChatColor.BOLD + "5s");
+                tnt.setCustomNameVisible(true);
+                EntityUnderwaterBoss.this.spawnTnt(tnt);
             }
-        }, 340L, 340L));
+        }).predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(340, 340);
     }
 
     private void func_boss_bar() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    if (EntityUnderwaterBoss.this.bar != null) {
-                        EntityUnderwaterBoss.this.bar.setProgress(EntityUnderwaterBoss.this.elder.getHealth() / EntityUnderwaterBoss.this.elder.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityUnderwaterBoss.this.bar != null) {
+                EntityUnderwaterBoss.this.bar.setProgress(EntityUnderwaterBoss.this.elder.getHealth() / EntityUnderwaterBoss.this.elder.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             }
-        }, 1L, 1L));
+        }).predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(1, 1);
     }
 
     private void spawnTnt(final TNTPrimed tnt) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int x = 4;
+        Scheduler.timer(new BukkitRunnable() {
+            private int times = 4;
 
+            @Override
             public void run() {
-                if (this.x > 0) {
-                    tnt.setCustomName("" + ChatColor.RED + ChatColor.BOLD + this.x + "s");
-                    --this.x;
+                if (this.times > 0) {
+                    tnt.setCustomName("" + ChatColor.RED + ChatColor.BOLD + this.times + "s");
+                    --this.times;
                 } else {
                     if (!tnt.isDead()) {
                         tnt.remove();
                         tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 3.0F, false, false);
                     }
 
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 20L, 20L));
+        }, 20, 20);
     }
 
     private void func_Invisible() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    EntityUnderwaterBoss.this.elder.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 120, 0));
-                } else {
-                    task.run();
-                }
-
-            }
-        }, 250L, 440L));
+        Scheduler.create(() -> EntityUnderwaterBoss.this.elder.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 120, 0)))
+                .predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(250, 440);
     }
 
     private void func_Followers() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    if (EntityUnderwaterBoss.this.checkFollowers() < 6) {
-                        com.mcgamer199.luckyblock.customentity.boss.EntityUnderwaterFollower follower = new com.mcgamer199.luckyblock.customentity.boss.EntityUnderwaterFollower();
-                        follower.age = 280;
-                        follower.target = EntityUnderwaterBoss.this.elder.getTarget();
-                        follower.spawn(EntityUnderwaterBoss.this.elder.getLocation());
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityUnderwaterBoss.this.checkFollowers() < 6) {
+                com.mcgamer199.luckyblock.customentity.boss.EntityUnderwaterFollower follower = new com.mcgamer199.luckyblock.customentity.boss.EntityUnderwaterFollower();
+                follower.age = 280;
+                follower.target = EntityUnderwaterBoss.this.elder.getTarget();
+                follower.spawn(EntityUnderwaterBoss.this.elder.getLocation());
             }
-        }, 160L, 160L));
+        }).predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(160, 160);
     }
 
     private void func_Squids() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityUnderwaterBoss.this.elder.isDead()) {
-                    Iterator var2 = EntityUnderwaterBoss.this.elder.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
-
-                    while (var2.hasNext()) {
-                        Entity e = (Entity) var2.next();
-                        if (e.getType() == EntityType.SQUID) {
-                            LivingEntity l = (LivingEntity) e;
-                            l.damage(60.0D);
-                            MyTasks.playEffects(Particle.FLAME, l.getLocation(), 20, new double[]{0.5D, 0.5D, 0.5D}, 0.1F);
-                            if (EntityUnderwaterBoss.this.power < 20 && EntityUnderwaterBoss.this.random.nextInt(100) > 58) {
-                                EntityUnderwaterBoss var10000 = EntityUnderwaterBoss.this;
-                                var10000.power = var10000.power + 1;
-                                EntityUnderwaterBoss.this.save_def();
-                            }
-                        }
+        Scheduler.create(() -> {
+            for (Entity e : EntityUnderwaterBoss.this.elder.getNearbyEntities(7.0D, 7.0D, 7.0D)) {
+                if (e.getType() == EntityType.SQUID) {
+                    LivingEntity l = (LivingEntity) e;
+                    l.damage(60.0D);
+                    MyTasks.playEffects(Particle.FLAME, l.getLocation(), 20, new double[]{0.5D, 0.5D, 0.5D}, 0.1F);
+                    if (EntityUnderwaterBoss.this.power < 20 && EntityUnderwaterBoss.this.random.nextInt(100) > 58) {
+                        EntityUnderwaterBoss var10000 = EntityUnderwaterBoss.this;
+                        var10000.power = var10000.power + 1;
+                        EntityUnderwaterBoss.this.save_def();
                     }
-                } else {
-                    task.run();
                 }
-
             }
-        }, 70L, 70L));
+        }).predicate(() -> !EntityUnderwaterBoss.this.elder.isDead()).timer(70, 70);
     }
 
     private int checkFollowers() {
         int total = 0;
-        Iterator var3 = this.elder.getNearbyEntities(20.0D, 20.0D, 20.0D).iterator();
 
-        while (var3.hasNext()) {
-            Entity e = (Entity) var3.next();
+        for (Entity e : this.elder.getNearbyEntities(20.0D, 20.0D, 20.0D)) {
             CustomEntity c = CustomEntity.getByUUID(e.getUniqueId());
             if (c != null && c instanceof EntityUnderwaterFollower) {
                 ++total;
@@ -389,20 +321,19 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_gatling(final LivingEntity target, int times) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
             private int t = times;
 
+            @Override
             public void run() {
                 if (!EntityUnderwaterBoss.this.elder.isDead() && this.t > 0) {
                     EntityUnderwaterBoss.this.shootBeam(target, 220, 0.32D);
                     --this.t;
                 } else {
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 5L, 30L));
+        }, 5, 30);
     }
 
     protected void onDamage(EntityDamageEvent event) {

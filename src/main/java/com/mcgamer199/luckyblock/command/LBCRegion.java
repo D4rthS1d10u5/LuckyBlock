@@ -8,13 +8,14 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -185,68 +186,67 @@ public class LBCRegion extends LBCommand {
     }
 
     void action1(final Selection s, final Player player, final LBType type) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int x = s.getMinimumPoint().getBlockX();
-            int y = s.getMinimumPoint().getBlockY();
-            int z = s.getMinimumPoint().getBlockZ();
-            final int x1 = s.getMinimumPoint().getBlockX();
-            final int z1 = s.getMinimumPoint().getBlockZ();
-            final int x2 = s.getMaximumPoint().getBlockX();
-            final int y2 = s.getMaximumPoint().getBlockY();
-            final int z2 = s.getMaximumPoint().getBlockZ();
-            int total = 0;
-            boolean finish = false;
+        Scheduler.timer(new BukkitRunnable() {
+                int x = s.getMinimumPoint().getBlockX();
+                int y = s.getMinimumPoint().getBlockY();
+                int z = s.getMinimumPoint().getBlockZ();
+                final int x1 = s.getMinimumPoint().getBlockX();
+                final int z1 = s.getMinimumPoint().getBlockZ();
+                final int x2 = s.getMaximumPoint().getBlockX();
+                final int y2 = s.getMaximumPoint().getBlockY();
+                final int z2 = s.getMaximumPoint().getBlockZ();
+                int total = 0;
+                boolean finish = false;
 
-            public void run() {
-                boolean changeX = true;
-                boolean changeZ = true;
-                if (!LuckyBlock.canSaveMore()) {
-                    task.run();
-                } else {
-                    if (!LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
-                        LuckyBlock.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
-                        ++this.total;
-                    }
-
-                    if (this.y == this.y2 && this.x == this.x2 && this.z == this.z2) {
-                        this.finish = true;
-                    }
-
-                    if (this.z == this.z2 && this.x == this.x2) {
-                        ++this.y;
-                        this.z = this.z1;
-                        changeZ = false;
-                    }
-
-                    if (this.x == this.x2) {
-                        if (changeZ) {
-                            ++this.z;
+                @Override
+                public void run() {
+                    boolean changeX = true;
+                    boolean changeZ = true;
+                    if (!LuckyBlock.canSaveMore()) {
+                        cancel();
+                    } else {
+                        if (!LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
+                            LuckyBlock.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
+                            ++this.total;
                         }
 
-                        this.x = this.x1;
-                        changeX = false;
-                    }
+                        if (this.y == this.y2 && this.x == this.x2 && this.z == this.z2) {
+                            this.finish = true;
+                        }
 
-                    if (changeX) {
-                        ++this.x;
-                    }
+                        if (this.z == this.z2 && this.x == this.x2) {
+                            ++this.y;
+                            this.z = this.z1;
+                            changeZ = false;
+                        }
 
-                    if (this.finish) {
-                        String a = LBCRegion.val("command.region.action1.success", false);
-                        a = a.replace("%total%", String.valueOf(this.total));
-                        LBCRegion.send_2(player, a);
-                        task.run();
-                    }
+                        if (this.x == this.x2) {
+                            if (changeZ) {
+                                ++this.z;
+                            }
 
-                }
+                            this.x = this.x1;
+                            changeX = false;
+                        }
+
+                        if (changeX) {
+                            ++this.x;
+                        }
+
+                        if (this.finish) {
+                            String a = LBCRegion.val("command.region.action1.success", false);
+                            a = a.replace("%total%", String.valueOf(this.total));
+                            LBCRegion.send_2(player, a);
+                            cancel();
+                        }
+
+                    }
             }
-        }, 5L, 6L));
+        }, 5, 6);
     }
 
     void action2(final Selection s, final Player player, final LBDrop drop, final CustomDrop cd) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
             int x = s.getMinimumPoint().getBlockX();
             int y = s.getMinimumPoint().getBlockY();
             int z = s.getMinimumPoint().getBlockZ();
@@ -309,11 +309,11 @@ public class LBCRegion extends LBCommand {
                         LBCRegion.send(player, "command.region.no_changes");
                     }
 
-                    task.run();
+                    cancel();
                 }
 
             }
-        }, 5L, 3L));
+        }, 5, 3);
     }
 }
 

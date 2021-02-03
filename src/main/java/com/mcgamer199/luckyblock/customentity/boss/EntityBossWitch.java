@@ -1,14 +1,13 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.util.SoundUtils;
-import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.customentity.nametag.INameTagHealth;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBItem;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -26,10 +25,10 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
@@ -138,64 +137,40 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_boss_bar() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityBossWitch.this.w.isDead()) {
-                    if (EntityBossWitch.this.bar != null) {
-                        EntityBossWitch.this.bar.setTitle(EntityBossWitch.this.w.getCustomName());
-                        EntityBossWitch.this.bar.setProgress(EntityBossWitch.this.w.getHealth() / EntityBossWitch.this.w.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityBossWitch.this.bar != null) {
+                EntityBossWitch.this.bar.setTitle(EntityBossWitch.this.w.getCustomName());
+                EntityBossWitch.this.bar.setProgress(EntityBossWitch.this.w.getHealth() / EntityBossWitch.this.w.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             }
-        }, 1L, 1L));
+        }).predicate(() -> !EntityBossWitch.this.w.isDead()).timer(1, 1);
     }
 
     private void func_potions() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityBossWitch.this.w.isDead()) {
-                    Location loc = new Location(EntityBossWitch.this.w.getWorld(), EntityBossWitch.this.w.getLocation().getX(), EntityBossWitch.this.w.getLocation().getY() + 2.5D, EntityBossWitch.this.w.getLocation().getZ());
-                    boolean isLingering = false;
-                    int i = EntityBossWitch.this.random.nextInt(13) + 1;
-                    Object s;
-                    if (i > 1) {
-                        s = EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.SPLASH_POTION);
-                    } else {
-                        s = EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.LINGERING_POTION);
-                        isLingering = true;
-                    }
-
-                    ((ThrownPotion) s).setShooter(EntityBossWitch.this.w);
-                    ((ThrownPotion) s).setVelocity(EntityBossWitch.this.getRandomVelocity());
-                    ((ThrownPotion) s).setBounce(true);
-                    ((ThrownPotion) s).setItem(EntityBossWitch.this.getRandomPotion(isLingering));
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            Location loc = new Location(EntityBossWitch.this.w.getWorld(), EntityBossWitch.this.w.getLocation().getX(), EntityBossWitch.this.w.getLocation().getY() + 2.5D, EntityBossWitch.this.w.getLocation().getZ());
+            boolean isLingering = false;
+            int i = EntityBossWitch.this.random.nextInt(13) + 1;
+            Object s;
+            if (i > 1) {
+                s = EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.SPLASH_POTION);
+            } else {
+                s = EntityBossWitch.this.w.getWorld().spawnEntity(loc, EntityType.LINGERING_POTION);
+                isLingering = true;
             }
-        }, 40L, 17L));
+
+            ((ThrownPotion) s).setShooter(EntityBossWitch.this.w);
+            ((ThrownPotion) s).setVelocity(EntityBossWitch.this.getRandomVelocity());
+            ((ThrownPotion) s).setBounce(true);
+            ((ThrownPotion) s).setItem(EntityBossWitch.this.getRandomPotion(isLingering));
+        }).predicate(() -> !EntityBossWitch.this.w.isDead()).timer(40, 17);
     }
 
     private void func_throw_fire1() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityBossWitch.this.w.isDead()) {
-                    if (EntityBossWitch.this.w.getTarget() != null && EntityBossWitch.this.aTarget(EntityBossWitch.this.w.getTarget())) {
-                        EntityBossWitch.this.func_throw_fire2();
-                    }
-                } else {
-                    task.run();
-                }
-
+        Scheduler.create(() -> {
+            if (EntityBossWitch.this.w.getTarget() != null && EntityBossWitch.this.aTarget(EntityBossWitch.this.w.getTarget())) {
+                EntityBossWitch.this.func_throw_fire2();
             }
-        }, 120L, 120L));
+        }).predicate(() -> !EntityBossWitch.this.w.isDead()).timer(120, 120);
     }
 
     private boolean aTarget(LivingEntity target) {
@@ -203,38 +178,34 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_throw_fire2() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int times = 15;
-
+        Scheduler.create(new BukkitRunnable() {
+            private int times = 15;
+            @Override
             public void run() {
-                if (!EntityBossWitch.this.w.isDead() && EntityBossWitch.this.w.getTarget() != null) {
-                    if (this.times > 0) {
-                        EntityBossWitch.this.spawn_fire_block(1.0D, 0.0D);
-                        EntityBossWitch.this.spawn_fire_block(0.0D, 1.0D);
-                        EntityBossWitch.this.spawn_fire_block(-1.0D, 0.0D);
-                        EntityBossWitch.this.spawn_fire_block(0.0D, -1.0D);
-                        EntityBossWitch.this.spawn_fire_block(1.0D, 1.0D);
-                        EntityBossWitch.this.spawn_fire_block(-1.0D, 1.0D);
-                        EntityBossWitch.this.spawn_fire_block(1.0D, -1.0D);
-                        EntityBossWitch.this.spawn_fire_block(-1.0D, -1.0D);
+                if (this.times > 0) {
+                    EntityBossWitch.this.spawn_fire_block(1.0D, 0.0D);
+                    EntityBossWitch.this.spawn_fire_block(0.0D, 1.0D);
+                    EntityBossWitch.this.spawn_fire_block(-1.0D, 0.0D);
+                    EntityBossWitch.this.spawn_fire_block(0.0D, -1.0D);
+                    EntityBossWitch.this.spawn_fire_block(1.0D, 1.0D);
+                    EntityBossWitch.this.spawn_fire_block(-1.0D, 1.0D);
+                    EntityBossWitch.this.spawn_fire_block(1.0D, -1.0D);
+                    EntityBossWitch.this.spawn_fire_block(-1.0D, -1.0D);
 
-                        for (int i = 10; i > 0; --i) {
-                            double x1 = EntityBossWitch.this.random.nextInt(200) - 100;
-                            double z1 = EntityBossWitch.this.random.nextInt(200) - 100;
-                            double x2 = x1 / 100.0D;
-                            double z2 = z1 / 100.0D;
-                            EntityBossWitch.this.spawn_fire_block(x2, z2);
-                        }
-
-                        --this.times;
-                    } else {
-                        task.run();
+                    for (int i = 10; i > 0; --i) {
+                        double x1 = EntityBossWitch.this.random.nextInt(200) - 100;
+                        double z1 = EntityBossWitch.this.random.nextInt(200) - 100;
+                        double x2 = x1 / 100.0D;
+                        double z2 = z1 / 100.0D;
+                        EntityBossWitch.this.spawn_fire_block(x2, z2);
                     }
-                }
 
+                    --this.times;
+                } else {
+                    cancel();
+                }
             }
-        }, 5L, 3L));
+        }).predicate(() -> !EntityBossWitch.this.w.isDead() && EntityBossWitch.this.w.getTarget() != null).timer(5, 3);
     }
 
     private void spawn_fire_block(double x, double z) {
@@ -250,42 +221,23 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
     private void func_throw_fire3(final FallingBlock fb) {
         final int dmg = this.fire_damage - this.random.nextInt(3);
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (fb.isValid()) {
-                    Iterator var2 = fb.getNearbyEntities(1.0D, 1.0D, 1.0D).iterator();
-
-                    while (var2.hasNext()) {
-                        Entity e = (Entity) var2.next();
-                        if (e instanceof LivingEntity) {
-                            LivingEntity l = (LivingEntity) e;
-                            if (e != EntityBossWitch.this.w) {
-                                l.damage(dmg);
-                                e.setFireTicks(100);
-                            }
-                        }
+        Scheduler.create(() -> {
+            for (Entity e : fb.getNearbyEntities(1.0D, 1.0D, 1.0D)) {
+                if (e instanceof LivingEntity) {
+                    LivingEntity l = (LivingEntity) e;
+                    if (e != EntityBossWitch.this.w) {
+                        l.damage(dmg);
+                        e.setFireTicks(100);
                     }
-                } else {
-                    task.run();
                 }
-
             }
-        }, 3L, 3L));
+        }).predicate(fb::isValid).timer(3, 3);
     }
 
     private void func_invisible() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityBossWitch.this.w.isDead()) {
-                    EntityBossWitch.this.w.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 180, 0));
-                } else {
-                    task.run();
-                }
-
-            }
-        }, 250L, 460L));
+        Scheduler.create(() -> EntityBossWitch.this.w.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 180, 0)))
+                .predicate(() -> !EntityBossWitch.this.w.isDead())
+                .timer(250, 460);
     }
 
     private PotionEffect getRandomEffect() {
@@ -338,31 +290,15 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
     }
 
     private void func_lightning() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityBossWitch.this.w.isDead()) {
-                    EntityBossWitch.this.w.getWorld().strikeLightning(EntityBossWitch.this.w.getLocation());
-                } else {
-                    task.run();
-                }
-
-            }
-        }, 100L, 100L));
+        Scheduler.create(() -> EntityBossWitch.this.w.getWorld().strikeLightning(EntityBossWitch.this.w.getLocation()))
+                .predicate(() -> !EntityBossWitch.this.w.isDead())
+                .timer(100, 100);
     }
 
     private void func_ambient() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (EntityBossWitch.this.getEntity() != null && EntityBossWitch.this.getEntity().isValid()) {
-                    SoundUtils.playFixedSound(EntityBossWitch.this.w.getLocation(), SoundUtils.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26);
-                } else {
-                    task.run();
-                }
-
-            }
-        }, 115L, 105L));
+        Scheduler.create(() -> SoundUtils.playFixedSound(EntityBossWitch.this.w.getLocation(), SoundUtils.getSound("boss_witch_ambient"), 1.0F, 0.0F, 26))
+                .predicate(() -> EntityBossWitch.this.getEntity() != null && EntityBossWitch.this.getEntity().isValid())
+                .timer(115, 105);
     }
 
     protected void onDamage(EntityDamageEvent event) {

@@ -1,10 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.util.SoundUtils;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.newstr.FileStructure;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,10 +55,8 @@ public class LBSpawnBoss implements Listener {
                     if (f) {
                         int a = 0;
                         List<Item> item = new ArrayList();
-                        Iterator var9 = event.getPotion().getNearbyEntities(2.0D, 2.0D, 2.0D).iterator();
 
-                        while (var9.hasNext()) {
-                            Entity e = (Entity) var9.next();
+                        for (Entity e : event.getPotion().getNearbyEntities(2.0D, 2.0D, 2.0D)) {
                             if (e instanceof Item) {
                                 Item i = (Item) e;
                                 if (i.getItemStack() != null && i.getItemStack().getType() == Material.SUGAR) {
@@ -70,10 +68,8 @@ public class LBSpawnBoss implements Listener {
 
                         if (a > 4) {
                             luckyBlock.remove(true);
-                            var9 = item.iterator();
 
-                            while (var9.hasNext()) {
-                                Item i = (Item) var9.next();
+                            for (Item i : item) {
                                 i.remove();
                             }
 
@@ -87,10 +83,10 @@ public class LBSpawnBoss implements Listener {
     }
 
     private void func_2(final Location loc) {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            int i = 25;
+        Scheduler.timer(new BukkitRunnable() {
+            private int i = 25;
 
+            @Override
             public void run() {
                 if (this.i > 0) {
                     MyTasks.playEffects(Particle.CLOUD, loc, 110, new double[]{1.0D, 0.0D, 1.0D}, 0.5F);
@@ -106,10 +102,9 @@ public class LBSpawnBoss implements Listener {
 
                     FileStructure.generateWitchDungeon(loc);
                     SoundUtils.playFixedSound(loc, SoundUtils.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 20L, 10L));
+        }, 20, 10);
     }
 }

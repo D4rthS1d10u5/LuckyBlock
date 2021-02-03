@@ -1,11 +1,10 @@
 package com.mcgamer199.luckyblock.customentity.nametag;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.resources.Trophy;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
@@ -60,16 +59,15 @@ public class EntityTrophyNameTag extends CustomEntity {
     }
 
     protected void onLoad(final ConfigurationSection c) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                String b = c.getString("Trophy_Block");
-                if (b != null && Trophy.getByBlock(LocationUtils.blockFromString(b)) != null) {
-                    EntityTrophyNameTag.this.t = Trophy.getByBlock(LocationUtils.blockFromString(b));
+        Scheduler.later(() -> {
+            String b = c.getString("Trophy_Block");
+            if(b != null) {
+                Trophy trophy = Trophy.getByBlock(LocationUtils.blockFromString(b));
+                if(trophy != null) {
+                    this.t = trophy;
                 }
-
             }
-        }, 15L));
+        }, 15);
     }
 
     public Immunity[] getImmuneTo() {

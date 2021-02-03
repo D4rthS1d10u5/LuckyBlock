@@ -149,7 +149,7 @@ public class ColorsClass {
         return getMessage(loc);
     }
 
-    protected static final String val(String loc, boolean colors) {
+    public static String val(String loc, boolean colors) {
         return getMessage1(loc, colors);
     }
 

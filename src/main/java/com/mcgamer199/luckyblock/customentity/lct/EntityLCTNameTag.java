@@ -1,12 +1,11 @@
 package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -55,21 +54,18 @@ public class EntityLCTNameTag extends CustomEntity {
     }
 
     protected void onLoad(final ConfigurationSection c) {
-        ITask task = new ITask();
-        task.setId(ITask.getNewDelayed(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                String b = c.getString("LCT_Block");
-                if (b != null) {
-                    if (LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(b)) != null) {
-                        EntityLCTNameTag.this.lct = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(b));
-                        EntityLCTNameTag.this.getEntity().setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
-                    }
-                } else {
-                    EntityLCTNameTag.this.remove();
+        Scheduler.later(() -> {
+            String b = c.getString("LCT_Block");
+            if (b != null) {
+                LuckyCraftingTable table = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(b));
+                if(table != null) {
+                    this.lct = table;
+                    this.getEntity().setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
                 }
-
+            } else {
+                EntityLCTNameTag.this.remove();
             }
-        }, 15L));
+        }, 15);
     }
 
     public Immunity[] getImmuneTo() {

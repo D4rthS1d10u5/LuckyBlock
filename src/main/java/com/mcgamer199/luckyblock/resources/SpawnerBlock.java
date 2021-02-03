@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.logic.ITask;
+import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,26 +85,23 @@ public class SpawnerBlock {
     }
 
     private void func_loop() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
+        Scheduler.timer(new BukkitRunnable() {
+            @Override
             public void run() {
                 if (SpawnerBlock.this.block.getType() == SpawnerBlock.this.mat) {
-                    Iterator var2 = SpawnerBlock.this.block.getWorld().getPlayers().iterator();
 
-                    while (var2.hasNext()) {
-                        Player p = (Player) var2.next();
+                    for (Player p : SpawnerBlock.this.block.getWorld().getPlayers()) {
                         if (p.getLocation().distance(SpawnerBlock.this.block.getLocation()) <= (double) SpawnerBlock.this.range) {
                             SpawnerBlock.this.activate();
-                            task.run();
+                            cancel();
                         }
                     }
                 } else {
                     SpawnerBlock.this.remove();
-                    task.run();
+                    cancel();
                 }
-
             }
-        }, 100L, 10L));
+        }, 100, 10);
     }
 
     private void activate() {

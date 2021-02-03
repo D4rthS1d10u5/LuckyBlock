@@ -1,12 +1,15 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
-import com.mcgamer199.luckyblock.util.SoundUtils;
-import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
 import com.mcgamer199.luckyblock.customentity.Immunity;
-import com.mcgamer199.luckyblock.logic.ITask;
-import org.bukkit.*;
+import com.mcgamer199.luckyblock.util.RandomUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
+import com.mcgamer199.luckyblock.util.SoundUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -115,59 +118,42 @@ public class EntityLBBlaze extends CustomEntity {
     }
 
     private void task1() {
-        final ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            public void run() {
-                if (!EntityLBBlaze.this.blaze.isDead()) {
-                    if (EntityLBBlaze.this.ai && EntityLBBlaze.this.blaze.getTarget() != null) {
-                        if (EntityLBBlaze.this.random.nextInt(100) > 50) {
-                            SmallFireball s = EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
-                            s.setDirection(EntityLBBlaze.this.blaze.getLocation().getDirection());
+        Scheduler.create(() -> {
+            if (EntityLBBlaze.this.ai && EntityLBBlaze.this.blaze.getTarget() != null) {
+                if (EntityLBBlaze.this.random.nextInt(100) > 50) {
+                    SmallFireball s = EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
+                    s.setDirection(EntityLBBlaze.this.blaze.getLocation().getDirection());
 
-                            for (int x = 3; x > 0; --x) {
-                                EntityLBBlaze.this.shoot(s);
-                            }
-                        } else {
-                            com.mcgamer199.luckyblock.customentity.EntityElementalCreeper c = new EntityElementalCreeper();
-                            c.life = 85;
-                            c.spawn(EntityLBBlaze.this.blaze.getLocation());
-                            c.changeMaterial(Material.STONE, (byte) 0);
-                            ((Creeper) c.getEntity()).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.38D);
-                            ((Creeper) c.getEntity()).setTarget(EntityLBBlaze.this.blaze.getTarget());
-                        }
+                    for (int x = 3; x > 0; --x) {
+                        EntityLBBlaze.this.shoot(s);
                     }
                 } else {
-                    task.run();
+                    com.mcgamer199.luckyblock.customentity.EntityElementalCreeper c = new EntityElementalCreeper();
+                    c.life = 85;
+                    c.spawn(EntityLBBlaze.this.blaze.getLocation());
+                    c.changeMaterial(Material.STONE, (byte) 0);
+                    ((Creeper) c.getEntity()).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.38D);
+                    ((Creeper) c.getEntity()).setTarget(EntityLBBlaze.this.blaze.getTarget());
                 }
-
             }
-        }, 80L, 80L));
+        }).predicate(() -> !EntityLBBlaze.this.blaze.isDead()).timer(80, 80);
     }
 
     private void shoot(Projectile p) {
         final Vector v = p.getVelocity();
-        int x_2 = this.random.nextInt(5) + 25;
-        ITask task = new ITask();
-        task.setId(ITask.getNewRepeating(LuckyBlockPlugin.instance, new Runnable() {
-            private int x = x_2;
 
-            public void run() {
-                if (this.x > 0) {
-                    double a1 = EntityLBBlaze.this.random.nextInt(20) - 10;
-                    double a2 = EntityLBBlaze.this.random.nextInt(20) - 10;
-                    double a3 = EntityLBBlaze.this.random.nextInt(20) - 10;
-                    double x1 = a1 / 70.0D;
-                    double x2 = a2 / 70.0D;
-                    double x3 = a3 / 70.0D;
-                    Vector v1 = new Vector(v.getX() + x1, v.getY() + x2, v.getZ() + x3);
-                    SmallFireball b = EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
-                    b.setShooter(EntityLBBlaze.this.blaze);
-                    b.setVelocity(v1);
-                    --this.x;
-                }
-
-            }
-        }, 1L, 1L));
+        Scheduler.create(() -> {
+            double a1 = EntityLBBlaze.this.random.nextInt(20) - 10;
+            double a2 = EntityLBBlaze.this.random.nextInt(20) - 10;
+            double a3 = EntityLBBlaze.this.random.nextInt(20) - 10;
+            double x1 = a1 / 70.0D;
+            double x2 = a2 / 70.0D;
+            double x3 = a3 / 70.0D;
+            Vector v1 = new Vector(v.getX() + x1, v.getY() + x2, v.getZ() + x3);
+            SmallFireball b = EntityLBBlaze.this.blaze.launchProjectile(SmallFireball.class);
+            b.setShooter(EntityLBBlaze.this.blaze);
+            b.setVelocity(v1);
+        }).count(RandomUtils.nextInt(5) + 25).timer(1, 1);
     }
 
     protected int getTickTime() {
