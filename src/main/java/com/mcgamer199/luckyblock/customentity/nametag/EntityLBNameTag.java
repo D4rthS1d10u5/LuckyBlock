@@ -26,10 +26,9 @@ public class EntityLBNameTag extends CustomEntity {
     }
 
     public static List<EntityLBNameTag> getByLB(LuckyBlock luckyBlock) {
-        List<EntityLBNameTag> list = new ArrayList();
+        List<EntityLBNameTag> list = new ArrayList<>();
 
-        for (int x = 0; x < entities.size(); ++x) {
-            CustomEntity c = entities.get(x);
+        for (CustomEntity c : entities) {
             if (c instanceof EntityLBNameTag) {
                 EntityLBNameTag e = (EntityLBNameTag) c;
                 if (e.luckyBlock.equals(luckyBlock)) {
@@ -111,7 +110,7 @@ public class EntityLBNameTag extends CustomEntity {
                 } else if (this.luckyBlock.customDrop != null) {
                     this.text = ChatColor.RED + this.luckyBlock.customDrop.getName();
                 } else {
-                    this.text = ChatColor.RED + this.luckyBlock.getDrop().name();
+                    this.text = ChatColor.RED + this.luckyBlock.getLuckyBlockDrop().name();
                 }
             } else if (i.equalsIgnoreCase("LBType")) {
                 this.text = this.luckyBlock.getType().getName();
@@ -147,16 +146,14 @@ public class EntityLBNameTag extends CustomEntity {
         this.a_[2] = c.getDouble("Loc3");
         this.armorS = (ArmorStand) this.entity;
         if (c.getConfigurationSection("Tags") != null) {
-            Iterator var4 = c.getConfigurationSection("Tags").getKeys(false).iterator();
 
-            while (var4.hasNext()) {
-                String s = (String) var4.next();
+            for (String s : c.getConfigurationSection("Tags").getKeys(false)) {
                 this.setValue(s, c.getConfigurationSection("Tags").get(s));
             }
         }
 
-        if (b != null && LuckyBlock.getFromBlock(LocationUtils.blockFromString(b)) != null) {
-            this.luckyBlock = LuckyBlock.getFromBlock(LocationUtils.blockFromString(b));
+        if (b != null && LuckyBlock.getByBlock(LocationUtils.blockFromString(b)) != null) {
+            this.luckyBlock = LuckyBlock.getByBlock(LocationUtils.blockFromString(b));
         }
 
         this.reload(false);

@@ -103,7 +103,7 @@ public class LuckyBlockAPI implements Listener {
                                         luckyBlock.setDrop(LBDrop.valueOf(a2[1]), false, false);
                                     }
                                 } else if (a2[0].equalsIgnoreCase("Tick_a")) {
-                                    luckyBlock.a = Integer.parseInt(a2[1]);
+                                    luckyBlock.tickDelay = Integer.parseInt(a2[1]);
                                 } else if (a2[0].equalsIgnoreCase("CustomDrop")) {
                                     luckyBlock.customDrop = CustomDropManager.getByName(a2[1]);
                                 } else if (a2[0].equalsIgnoreCase("Owner")) {

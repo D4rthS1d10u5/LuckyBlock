@@ -152,7 +152,7 @@ public class Detector {
     }
 
     private LuckyBlock getLB(int x, int y, int z) {
-        return LuckyBlock.getFromBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
+        return LuckyBlock.getByBlock(this.getMainBlock().getLocation().add(x, y, z).getBlock());
     }
 
     public void searchForBlocks(Player searcher) {

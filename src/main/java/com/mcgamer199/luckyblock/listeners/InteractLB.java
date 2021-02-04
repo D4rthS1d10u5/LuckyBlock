@@ -24,7 +24,7 @@ public class InteractLB implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
             if (block != null && LuckyBlock.isLuckyBlock(block)) {
-                LBInteractEvent e = new LBInteractEvent(event.getPlayer(), LuckyBlock.getFromBlock(block), event.getBlockFace());
+                LBInteractEvent e = new LBInteractEvent(event.getPlayer(), LuckyBlock.getByBlock(block), event.getBlockFace());
                 Bukkit.getPluginManager().callEvent(e);
             }
         }
@@ -34,7 +34,7 @@ public class InteractLB implements Listener {
     @EventHandler
     public void onInteract(LBInteractEvent event) {
         Block block = event.getClickedBlock();
-        LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+        LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
         Player player = event.getPlayer();
         if (luckyBlock != null) {
             if (luckyBlock.getLuck() == luckyBlock.getType().getMaxLuck() && block.getRelative(BlockFace.UP).getType() == Material.CHEST && block.getRelative(BlockFace.DOWN).getType() == Material.EMERALD_BLOCK && LuckyBlockWorld.equals(player.getWorld().getGenerator())) {

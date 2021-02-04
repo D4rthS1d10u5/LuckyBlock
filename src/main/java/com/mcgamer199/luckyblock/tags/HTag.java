@@ -29,8 +29,7 @@ public class HTag extends ColorsClass {
 
     protected static FileConfiguration getFileByLoc(String s) {
         File ff = new File(LuckyBlockPlugin.d() + "Drops/" + s);
-        FileConfiguration f = YamlConfiguration.loadConfiguration(ff);
-        return f;
+        return YamlConfiguration.loadConfiguration(ff);
     }
 
     public static ConfigurationSection getSectionMain(String s) {
@@ -67,10 +66,8 @@ public class HTag extends ColorsClass {
                     } while (c.getConfigurationSection(s) == null);
 
                     ConfigurationSection f = c.getConfigurationSection(s);
-                    Iterator var8 = f.getKeys(false).iterator();
 
-                    while (var8.hasNext()) {
-                        String t = (String) var8.next();
+                    for (String t : f.getKeys(false)) {
                         if (t.equalsIgnoreCase("Chance")) {
                             if (f.getInt(t) + x >= random) {
                                 return s;
@@ -106,10 +103,8 @@ public class HTag extends ColorsClass {
                 } while (cs.getConfigurationSection(s) == null);
 
                 ConfigurationSection c = cs.getConfigurationSection(s);
-                Iterator var6 = c.getKeys(false).iterator();
 
-                while (var6.hasNext()) {
-                    String t = (String) var6.next();
+                for (String t : c.getKeys(false)) {
                     if (t.equalsIgnoreCase("Chance")) {
                         total += c.getInt(t);
                     }
@@ -145,21 +140,19 @@ public class HTag extends ColorsClass {
         }
 
         a = "";
-        String[] var14 = d;
         int var13 = d.length;
 
         int var12;
         for (var12 = 0; var12 < var13; ++var12) {
-            String b = var14[var12];
+            String b = d[var12];
             a = a + b;
         }
 
         if (data != null && data.length > 0) {
-            HTag.IDataType[] var15 = data;
             var13 = data.length;
 
             for (var12 = 0; var12 < var13; ++var12) {
-                HTag.IDataType dat = var15[var12];
+                HTag.IDataType dat = data[var12];
                 Object o = dat.object;
                 if (o != null) {
                     if (o instanceof Entity) {

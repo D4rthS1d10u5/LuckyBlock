@@ -25,7 +25,7 @@ import java.util.*;
 public class LuckyBlockWorld extends ChunkGenerator implements Listener {
 
     public static String generatorName = LuckyBlockWorld.class.getName();
-    public static HashMap<String, List<WorldOptions>> worlds = new HashMap();
+    public static HashMap<String, List<WorldOptions>> worlds = new HashMap<>();
     int id = 0;
     private boolean inited = false;
 

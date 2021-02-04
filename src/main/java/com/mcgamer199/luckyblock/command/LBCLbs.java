@@ -7,8 +7,8 @@ import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LBCLbs extends LBCommand {
     public LBCLbs() {
@@ -48,26 +48,16 @@ public class LBCLbs extends LBCommand {
             send_invalid_args(sender);
             return false;
         } else {
-            List<LuckyBlock> luckyBlocks = new ArrayList();
-
-            int x;
-            for (x = (page - 1) * 10; x < page * 10; ++x) {
-                if (x < LuckyBlock.luckyBlocks.size()) {
-                    luckyBlocks.add(LuckyBlock.luckyBlocks.get(x));
-                }
-            }
+            List<LuckyBlock> luckyBlocks = LuckyBlock.getStorage().values().stream().skip(page * 10).limit(10).collect(Collectors.toList());
 
             if (luckyBlocks.size() < 1) {
                 send(sender, "command.lbs.no_lb");
                 return false;
             } else {
                 sender.sendMessage(white + val("command.lbs.page", false) + " " + page);
-                sender.sendMessage("Total: " + LuckyBlock.luckyBlocks.size());
+                sender.sendMessage("Total: " + LuckyBlock.getStorage().size());
 
-                for (x = 0; x < luckyBlocks.size(); ++x) {
-                    LuckyBlock luckyBlock = luckyBlocks.get(x);
-                    sendLB(sender, luckyBlock);
-                }
+                luckyBlocks.forEach(luckyBlock -> sendLB(sender, luckyBlock));
 
                 sender.sendMessage(white + "--------------");
                 return true;

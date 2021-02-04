@@ -96,8 +96,8 @@ public class LBShootEvent implements Listener {
                     }
                 }
 
-                if (LuckyBlock.getFromBlock(b) != null) {
-                    LuckyBlock luckyBlock = LuckyBlock.getFromBlock(b);
+                if (LuckyBlock.getByBlock(b) != null) {
+                    LuckyBlock luckyBlock = LuckyBlock.getByBlock(b);
                     if (luckyBlock.getType().arrowRun) {
                         if (event.getEntity().isValid()) {
                             event.getEntity().remove();

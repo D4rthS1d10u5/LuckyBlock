@@ -1,6 +1,5 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -28,7 +27,7 @@ public class PistonEvents implements Listener {
         while (var3.hasNext()) {
             final Block block = (Block) var3.next();
             if (LuckyBlock.isLuckyBlock(block)) {
-                final LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                final LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                 if (!luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH) && !luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_THROWN)) {
                     event.setCancelled(true);
                     return;
@@ -58,22 +57,16 @@ public class PistonEvents implements Listener {
                 if (luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
                     BreakLuckyBlock.openLB(luckyBlock, null);
                 }
-            } else if (LBType.isAdditionalBlocksFound() && LuckyBlock.getByABlock(block) != null) {
-                event.setCancelled(true);
-                return;
             }
         }
-
     }
 
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
-        Iterator var3 = event.getBlocks().iterator();
 
-        while (var3.hasNext()) {
-            Block block = (Block) var3.next();
+        for (Block block : event.getBlocks()) {
             if (LuckyBlock.isLuckyBlock(block)) {
-                LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                 if (!luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED) && !luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
                     event.setCancelled(true);
                     return;
@@ -93,12 +86,8 @@ public class PistonEvents implements Listener {
                 if (luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
                     BreakLuckyBlock.openLB(luckyBlock, null);
                 }
-            } else if (LBType.isAdditionalBlocksFound() && LuckyBlock.getByABlock(block) != null) {
-                event.setCancelled(true);
-                return;
             }
         }
-
     }
 
     private void fb_run(final FallingBlock fb, final LuckyBlock luckyBlock) {

@@ -31,7 +31,7 @@ public class LBSpawnBoss implements Listener {
     private void onPotionHit(PotionSplashEvent event) {
         Block block = event.getPotion().getLocation().getBlock().getRelative(BlockFace.DOWN);
         if (LuckyBlock.isLuckyBlock(block)) {
-            LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+            LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
             if (luckyBlock.getLuck() == luckyBlock.getType().getMaxLuck()) {
                 Block b = block.getRelative(BlockFace.DOWN);
                 if (b.getRelative(BlockFace.EAST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.WEST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.SOUTH).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.NORTH).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.NORTH_EAST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.NORTH_WEST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.SOUTH_EAST).getType() == Material.STATIONARY_WATER && b.getRelative(BlockFace.SOUTH_WEST).getType() == Material.STATIONARY_WATER && event.getPotion().getEffects() != null) {

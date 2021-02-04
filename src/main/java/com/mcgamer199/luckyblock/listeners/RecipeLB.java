@@ -41,7 +41,7 @@ public class RecipeLB implements Listener {
         inv.setItem(31, null);
         inv.setItem(32, null);
         inv.setItem(25, null);
-        List<ShapedRecipe> recipes = new ArrayList();
+        List<ShapedRecipe> recipes = new ArrayList<>();
 
         for (int x = 0; x < Bukkit.getRecipesFor(item).size(); ++x) {
             Recipe recipe = Bukkit.getRecipesFor(item).get(x);
@@ -61,20 +61,17 @@ public class RecipeLB implements Listener {
         }
 
         if (recipes.size() > 0) {
-            Recipe r = recipes.get(page - 1);
+            ShapedRecipe r = recipes.get(page - 1);
             inv.setItem(25, r.getResult());
-            if (r instanceof ShapedRecipe) {
-                ShapedRecipe s = (ShapedRecipe) r;
-                inv.setItem(12, s.getIngredientMap().get(s.getShape()[0].charAt(0)));
-                inv.setItem(13, s.getIngredientMap().get(s.getShape()[0].charAt(1)));
-                inv.setItem(14, s.getIngredientMap().get(s.getShape()[0].charAt(2)));
-                inv.setItem(21, s.getIngredientMap().get(s.getShape()[1].charAt(0)));
-                inv.setItem(22, s.getIngredientMap().get(s.getShape()[1].charAt(1)));
-                inv.setItem(23, s.getIngredientMap().get(s.getShape()[1].charAt(2)));
-                inv.setItem(30, s.getIngredientMap().get(s.getShape()[2].charAt(0)));
-                inv.setItem(31, s.getIngredientMap().get(s.getShape()[2].charAt(1)));
-                inv.setItem(32, s.getIngredientMap().get(s.getShape()[2].charAt(2)));
-            }
+            inv.setItem(12, r.getIngredientMap().get(r.getShape()[0].charAt(0)));
+            inv.setItem(13, r.getIngredientMap().get(r.getShape()[0].charAt(1)));
+            inv.setItem(14, r.getIngredientMap().get(r.getShape()[0].charAt(2)));
+            inv.setItem(21, r.getIngredientMap().get(r.getShape()[1].charAt(0)));
+            inv.setItem(22, r.getIngredientMap().get(r.getShape()[1].charAt(1)));
+            inv.setItem(23, r.getIngredientMap().get(r.getShape()[1].charAt(2)));
+            inv.setItem(30, r.getIngredientMap().get(r.getShape()[2].charAt(0)));
+            inv.setItem(31, r.getIngredientMap().get(r.getShape()[2].charAt(1)));
+            inv.setItem(32, r.getIngredientMap().get(r.getShape()[2].charAt(2)));
         }
 
         player.openInventory(inv);

@@ -113,7 +113,7 @@ public class LBCRegion extends LBCommand {
                                 for (minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {
                                     for (y = s.getMinimumPoint().getBlockZ(); y < s.getMaximumPoint().getBlockZ() + 1; ++y) {
                                         if (LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(minX, minX, y))) {
-                                            LuckyBlock.getFromBlock(s.getWorld().getBlockAt(minX, minX, y)).remove();
+                                            LuckyBlock.getByBlock(s.getWorld().getBlockAt(minX, minX, y)).remove();
                                             ++total;
                                         }
                                     }
@@ -145,7 +145,7 @@ public class LBCRegion extends LBCommand {
                                 for (y = s.getMinimumPoint().getBlockY(); y < s.getMaximumPoint().getBlockY() + 1; ++y) {
                                     for (int z = s.getMinimumPoint().getBlockZ(); z < s.getMaximumPoint().getBlockZ() + 1; ++z) {
                                         if (LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(x, y, z))) {
-                                            LuckyBlock.getFromBlock(s.getWorld().getBlockAt(x, y, z)).setOwner(uuid);
+                                            LuckyBlock.getByBlock(s.getWorld().getBlockAt(x, y, z)).setOwner(uuid);
                                             ++total;
                                         }
                                     }
@@ -263,7 +263,7 @@ public class LBCRegion extends LBCommand {
                 boolean changeZ = true;
                 Block b = s.getWorld().getBlockAt(this.x, this.y, this.z);
                 if (LuckyBlock.isLuckyBlock(b)) {
-                    LuckyBlock luckyBlock = LuckyBlock.getFromBlock(b);
+                    LuckyBlock luckyBlock = LuckyBlock.getByBlock(b);
                     if (cd != null) {
                         luckyBlock.customDrop = cd;
                         luckyBlock.refreshCustomDrop();

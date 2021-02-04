@@ -618,8 +618,8 @@ public class HTasks extends ColorsClass {
         String s = null;
         if (luckyBlock.customDrop != null) {
             s = luckyBlock.customDrop.getName();
-        } else if (luckyBlock.getDrop() != null) {
-            s = luckyBlock.getDrop().name();
+        } else if (luckyBlock.getLuckyBlockDrop() != null) {
+            s = luckyBlock.getLuckyBlockDrop().name();
         }
 
         final ItemStack it = luckyBlock.getType().toItemStack(luckyBlock.getLuck(), null, s);

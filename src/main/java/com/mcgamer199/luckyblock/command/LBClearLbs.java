@@ -1,12 +1,12 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class LBClearLbs extends LBCommand {
+
     public LBClearLbs() {
     }
 
@@ -14,23 +14,18 @@ public class LBClearLbs extends LBCommand {
         if (args.length == 2 && !args[1].equalsIgnoreCase("true") && !args[1].equalsIgnoreCase("false")) {
             send(sender, "command.tf");
             return false;
-        } else if (LuckyBlock.luckyBlocks.size() <= 0) {
+        } else if (LuckyBlock.getStorage().size() < 1) {
             send(sender, "command.clearlbs.no_lb");
             return false;
         } else {
-            int amount = LuckyBlock.luckyBlocks.size();
-            boolean a = false;
+            int amount = LuckyBlock.getStorage().size();
+            boolean removeBlocksFromWorld = false;
             if (args.length == 2 && args[1].equalsIgnoreCase("true")) {
-                a = true;
+                removeBlocksFromWorld = true;
             }
 
-            for (byte x = 0; x < LuckyBlock.luckyBlocks.size(); x = 0) {
-                LuckyBlock luckyBlock = LuckyBlock.luckyBlocks.get(x);
-                luckyBlock.remove(a);
-            }
+            LuckyBlock.clearStorage(removeBlocksFromWorld);
 
-            LuckyBlockAPI.lbs.set("LuckyBlocks", null);
-            LuckyBlockAPI.saveLBFile();
             String b = val("command.clearlbs.success", false);
             b = b.replace("%total%", "" + amount);
             send_2(sender, b);

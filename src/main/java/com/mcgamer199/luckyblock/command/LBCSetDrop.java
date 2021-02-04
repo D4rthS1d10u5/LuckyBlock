@@ -28,7 +28,7 @@ public class LBCSetDrop extends LBCommand {
                 if (player.getTargetBlock(null, 100) != null && player.getTargetBlock(null, 100).getType() != Material.AIR) {
                     Block block = player.getTargetBlock(null, 100);
                     if (LuckyBlock.isLuckyBlock(block)) {
-                        LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                        LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                         boolean x = false;
                         if (!LBDrop.isValid(args[1].toUpperCase())) {
                             if (CustomDropManager.getByName(args[1]) == null) {

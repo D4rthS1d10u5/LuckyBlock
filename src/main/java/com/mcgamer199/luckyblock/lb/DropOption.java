@@ -29,7 +29,6 @@ public class DropOption {
                 return;
             }
         }
-
     }
 
     public void removeValue(Object value) {
@@ -39,14 +38,11 @@ public class DropOption {
                 return;
             }
         }
-
     }
 
     public void removeValue(int num) {
         if (this.values[num] != null) {
             this.values[num] = null;
-        } else {
-            throw new Error("This value is already null!");
         }
     }
 
@@ -56,6 +52,5 @@ public class DropOption {
                 this.values[x] = null;
             }
         }
-
     }
 }

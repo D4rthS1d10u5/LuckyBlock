@@ -2,7 +2,6 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
@@ -15,6 +14,7 @@ import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,7 +26,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -208,7 +207,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 }
 
                 if (LuckyBlockPlugin.isDebugEnabled()) {
-                    Debug("Lucky block placed", new DebugData("Location", LocationUtils.asString(block.getLocation())), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
+                    Debug("Lucky block placed", new DebugData("Location", LocationUtils.asString(block.getLocation())), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
                 }
 
                 luckyBlock.save(true);
@@ -360,10 +359,8 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
         }
 
         Detector d = null;
-        Iterator var6 = LuckyBlockAPI.detectors.iterator();
 
-        while (var6.hasNext()) {
-            Detector detector = (Detector) var6.next();
+        for (Detector detector : LuckyBlockAPI.detectors) {
             String[] var10;
             int var9 = (var10 = detector.getBlocks()).length;
 

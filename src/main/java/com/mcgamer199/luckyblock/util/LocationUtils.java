@@ -5,6 +5,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 /**
  * Created by дартЪ on 02.05.2020
@@ -85,6 +86,33 @@ public final class LocationUtils {
         }
 
         return result;
+    }
+
+    public static BlockFace getFacingBetween(Location firstLocation, Location secondLocation) {
+        int bx = firstLocation.getBlockX();
+        int bz = firstLocation.getBlockZ();
+        int px = secondLocation.getBlockX();
+        int pz = secondLocation.getBlockZ();
+
+        if (px < bx && Math.abs(pz - bz) < 3) {
+            return BlockFace.NORTH;
+        } else if (px > bx && Math.abs(pz - bz) < 3) {
+            return BlockFace.SOUTH;
+        } else if (pz < bz && Math.abs(px - bx) < 3) {
+            return BlockFace.EAST;
+        } else if (pz > bz && Math.abs(px - bx) < 3) {
+            return BlockFace.WEST;
+        }
+
+        return BlockFace.SELF;
+    }
+
+    public static BlockFace[] horizontal() {
+        return new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+    }
+
+    public static BlockFace[] vertical() {
+        return new BlockFace[] {BlockFace.UP, BlockFace.DOWN};
     }
 }
 

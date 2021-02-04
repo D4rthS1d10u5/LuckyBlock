@@ -116,15 +116,12 @@ public class LBCOther extends LBCommand {
                 }
             } else {
                 if (args[0].equalsIgnoreCase("runall")) {
-                    if (LuckyBlock.luckyBlocks.size() <= 0) {
+                    if (LuckyBlock.getStorage().size() < 1) {
                         send(sender, "command.runall.no_lb");
                         return false;
                     }
 
-                    for (byte blocks = 0; blocks < LuckyBlock.luckyBlocks.size() && blocks < 65; blocks = 0) {
-                        LuckyBlock luckyBlock = LuckyBlock.luckyBlocks.get(blocks);
-                        BreakLuckyBlock.openLB(luckyBlock, null);
-                    }
+                    LuckyBlock.getStorage().values().stream().limit(65).forEach(luckyBlock -> BreakLuckyBlock.openLB(luckyBlock, null));
 
                     send(sender, "command.runall.success");
                     return true;

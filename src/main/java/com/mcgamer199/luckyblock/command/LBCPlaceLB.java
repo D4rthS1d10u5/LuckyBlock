@@ -99,7 +99,7 @@ public class LBCPlaceLB extends LBCommand {
                     return false;
                 }
 
-                if (LuckyBlock.getFromBlock(l.getBlock()) == null) {
+                if (LuckyBlock.getByBlock(l.getBlock()) == null) {
                     LuckyBlock.placeLB(l, type, null, b);
                     sendMessage(sender, "command.placelb.success");
                     return true;

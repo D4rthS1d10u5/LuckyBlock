@@ -52,7 +52,7 @@ public class LBEffects {
                         } catch (Exception ignored) {}
                     }
                 } else if (!luckyBlock.isFreezed()) {
-                    if (LuckyBlock.luckyBlocks.contains(luckyBlock)) {
+                    if (LuckyBlock.getStorage().containsValue(luckyBlock)) {
                         Scheduler.later(() -> {
                             if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {
                                 luckyBlock.remove();
@@ -65,6 +65,6 @@ public class LBEffects {
                 }
 
             }
-        }, luckyBlock.a, luckyBlock.a);
+        }, luckyBlock.tickDelay, luckyBlock.tickDelay);
     }
 }

@@ -8,7 +8,6 @@ import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.logic.IDirection;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.BlockTags;
@@ -107,7 +106,7 @@ public class DropEvents extends ColorsClass {
         }
 
         if (LuckyBlockPlugin.isDebugEnabled()) {
-            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", LocationUtils.asString(bloc)), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
+            Debug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", LocationUtils.asString(bloc)), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
         }
 
         if (customDrop == null) {
@@ -579,7 +578,7 @@ public class DropEvents extends ColorsClass {
                                             org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
                                             if (path1.equalsIgnoreCase("PLAYER")) {
                                                 if (player != null) {
-                                                    signData.setFacingDirection(BlockFace.valueOf(IDirection.getByLoc(bloc, player.getLocation()).name()));
+                                                    signData.setFacingDirection(LocationUtils.getFacingBetween(bloc, player.getLocation()));
                                                 }
                                             } else {
                                                 signData.setFacingDirection(BlockFace.valueOf(path1.toUpperCase()));

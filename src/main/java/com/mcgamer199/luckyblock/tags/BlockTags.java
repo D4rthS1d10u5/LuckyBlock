@@ -6,8 +6,8 @@ import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LBDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.IDirection;
 import com.mcgamer199.luckyblock.resources.Schematic;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import com.mcgamer199.luckyblock.util.SoundUtils;
 import org.bukkit.*;
@@ -36,11 +36,11 @@ public class BlockTags extends HTag {
     public BlockTags() {
     }
 
-    protected static void setBlock(ConfigurationSection c1, Location location, String locationType) {
+    protected static void setBlock(ConfigurationSection c1, Location secondLoc, String locationType) {
         Block block = null;
-        Location l = getLocation(c1.getConfigurationSection("Location"), location, locationType);
-        if (l != null) {
-            block = l.getBlock();
+        Location firstLoc = getLocation(c1.getConfigurationSection("Location"), secondLoc, locationType);
+        if (firstLoc != null) {
+            block = firstLoc.getBlock();
         }
 
         if (block != null) {
@@ -107,7 +107,7 @@ public class BlockTags extends HTag {
                         a = c1.getString("Sign.Facing");
                         org.bukkit.material.Sign si = (org.bukkit.material.Sign) sign.getData();
                         if (a.equalsIgnoreCase("player")) {
-                            a = IDirection.getByLoc(l, location).name();
+                            a = LocationUtils.getFacingBetween(firstLoc, secondLoc).name();
                         }
 
                         si.setFacingDirection(BlockFace.valueOf(a.toUpperCase()));
@@ -299,16 +299,16 @@ public class BlockTags extends HTag {
 
                 if (t.equalsIgnoreCase("LB_LUCK")) {
                     luck = getRandomNumber(c1.getString(t).split(":"));
-                    if (LuckyBlock.getFromBlock(block) != null) {
-                        LuckyBlock.getFromBlock(block).setLuck(luck);
-                        LuckyBlock.getFromBlock(block).save(true);
+                    if (LuckyBlock.getByBlock(block) != null) {
+                        LuckyBlock.getByBlock(block).setLuck(luck);
+                        LuckyBlock.getByBlock(block).save(true);
                     }
                 }
 
                 if (t.equalsIgnoreCase("LB_DROP")) {
                     String drop = c1.getString(t);
-                    if (LuckyBlock.getFromBlock(block) != null) {
-                        LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                    if (LuckyBlock.getByBlock(block) != null) {
+                        LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                         if (LBDrop.isValid(drop)) {
                             luckyBlock.setDrop(LBDrop.valueOf(drop.toUpperCase()), true, true);
                             luckyBlock.save(true);
@@ -319,8 +319,8 @@ public class BlockTags extends HTag {
                     }
                 }
 
-                if (t.equalsIgnoreCase("LB_DROP_OPTIONS") && c1.getConfigurationSection(t) != null && LuckyBlock.getFromBlock(block) != null) {
-                    LuckyBlock luckyBlock = LuckyBlock.getFromBlock(block);
+                if (t.equalsIgnoreCase("LB_DROP_OPTIONS") && c1.getConfigurationSection(t) != null && LuckyBlock.getByBlock(block) != null) {
+                    LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                     var18 = c1.getConfigurationSection(t).getKeys(false).iterator();
 
                     while (var18.hasNext()) {
@@ -373,10 +373,8 @@ public class BlockTags extends HTag {
 
     protected static void buildSchem(ConfigurationSection c, Location location) {
         if (c.getConfigurationSection("Schematics") != null) {
-            Iterator var3 = c.getConfigurationSection("Schematics").getKeys(false).iterator();
 
-            while (var3.hasNext()) {
-                String s = (String) var3.next();
+            for (String s : c.getConfigurationSection("Schematics").getKeys(false)) {
                 ConfigurationSection f = c.getConfigurationSection("Schematics").getConfigurationSection(s);
                 if (f != null) {
                     String[] d = f.getString("Loc").split(",");
@@ -394,7 +392,6 @@ public class BlockTags extends HTag {
                 }
             }
         }
-
     }
 
     protected static Location newLoc(ConfigurationSection c, Location location) {
@@ -412,10 +409,8 @@ public class BlockTags extends HTag {
     protected static void buildPieces(ConfigurationSection c, Location location) {
         if (c.getConfigurationSection("Pieces") != null) {
             ConfigurationSection f = c.getConfigurationSection("Pieces");
-            Iterator var4 = f.getKeys(false).iterator();
 
-            while (var4.hasNext()) {
-                String s = (String) var4.next();
+            for (String s : f.getKeys(false)) {
                 ConfigurationSection f1 = f.getConfigurationSection(s);
                 if (f1 != null) {
                     String fil = f1.getString("File");

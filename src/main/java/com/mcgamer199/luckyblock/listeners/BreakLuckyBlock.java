@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 public class BreakLuckyBlock extends ColorsClass implements Listener {
+
     public BreakLuckyBlock() {
         this.injectYottaEvents();
     }
@@ -75,14 +76,12 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
 
                 try {
                     sound = Sound.valueOf(s[0].toUpperCase());
-                } catch (Exception var11) {
-                }
+                } catch (Exception ignored) {}
 
                 try {
                     vol = Float.parseFloat(s[1]);
                     pit = Float.parseFloat(s[2]);
-                } catch (NumberFormatException var10) {
-                }
+                } catch (NumberFormatException ignored) {}
 
                 SoundUtils.playFixedSound(bloc, sound, vol, pit, 30);
             }
@@ -98,7 +97,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 spawnParticle(bloc, types.breakparticles);
             }
 
-            DropEvents.run(block, luckyBlock, player, luckyBlock.getDrop(), luckyBlock.customDrop, true);
+            DropEvents.run(block, luckyBlock, player, luckyBlock.getLuckyBlockDrop(), luckyBlock.customDrop, true);
         }
     }
 
@@ -143,18 +142,16 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
         Bukkit.getPluginManager().registerEvents(new YottaEvents(), LuckyBlockPlugin.instance);
     }
 
-    @EventHandler(
-            ignoreCancelled = true
-    )
+    @EventHandler(ignoreCancelled = true)
     public void LuckyBlockEvent(BlockBreakEvent event) {
         final Player player = event.getPlayer();
         Block block = event.getBlock();
-        LuckyBlock l = LuckyBlock.getByABlock(block);
+        LuckyBlock l = LuckyBlock.getByBlock(block);
         if (l != null) {
             openLB(l, player);
         } else {
             if (LuckyBlock.isLuckyBlock(block)) {
-                LBType t = LuckyBlock.getFromBlock(block).getType();
+                LBType t = LuckyBlock.getByBlock(block).getType();
                 if (t.getPermission("Breaking") != null && !player.hasPermission(t.getPermission("Breaking")) && !player.getName().equalsIgnoreCase(pn)) {
                     send(player, "event.breaklb.error.permission");
                     event.setCancelled(true);
@@ -168,18 +165,18 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
             Material type = block.getType();
             while (var7.hasNext()) {
                 LBType t = (LBType) var7.next();
-                boolean g = false;
+                boolean global = false;
                 if (t.getWorlds().contains("*All*")) {
-                    g = true;
+                    global = true;
                 }
 
                 for (int x = 0; x < t.getWorlds().size(); ++x) {
                     if (t.getWorlds().get(x).equalsIgnoreCase(player.getWorld().getName())) {
-                        g = true;
+                        global = true;
                     }
                 }
 
-                if (!g) {
+                if (!global) {
                     return;
                 }
 
@@ -192,11 +189,11 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                         if (!LuckyBlock.isLuckyBlock(block)) {
                             luckyBlock = new LuckyBlock(LBType.getTypes().get(0), block, 0, player, false, true);
                         } else {
-                            luckyBlock = LuckyBlock.getFromBlock(block);
+                            luckyBlock = LuckyBlock.getByBlock(block);
                         }
                     }
                 } else if (LuckyBlock.isLuckyBlock(block)) {
-                    luckyBlock = LuckyBlock.getFromBlock(block);
+                    luckyBlock = LuckyBlock.getByBlock(block);
                 }
             }
 
@@ -313,7 +310,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
     @EventHandler
     private void onRightClickLB(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && LuckyBlock.isLuckyBlock(event.getClickedBlock())) {
-            LuckyBlock luckyBlock = LuckyBlock.getFromBlock(event.getClickedBlock());
+            LuckyBlock luckyBlock = LuckyBlock.getByBlock(event.getClickedBlock());
             if (luckyBlock.getType().rightClick) {
                 event.setCancelled(true);
                 openLB(luckyBlock, event.getPlayer());

@@ -1,7 +1,6 @@
 package com.mcgamer199.luckyblock.logic;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -39,9 +38,17 @@ public class ActionPerformer {
                 entity.setGlowing(Boolean.parseBoolean(val));
             }
 
-            name.equalsIgnoreCase("set_gravity");
-            name.equalsIgnoreCase("set_invulnerable");
-            name.equalsIgnoreCase("set_silent");
+            if (name.equalsIgnoreCase("set_gravity")) {
+                entity.setGravity(Boolean.parseBoolean(val));
+            }
+
+            if (name.equalsIgnoreCase("set_invulnerable")) {
+                entity.setInvulnerable(Boolean.parseBoolean(val));
+            }
+            if (name.equalsIgnoreCase("set_silent")) {
+                entity.setSilent(Boolean.parseBoolean(val));
+            }
+
             if (obj instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) entity;
                 if (name.equalsIgnoreCase("clear_inventory")) {
@@ -56,8 +63,14 @@ public class ActionPerformer {
                     living.setMaxHealth(Integer.parseInt(val));
                 }
 
-                name.equalsIgnoreCase("set_collidable");
-                name.equalsIgnoreCase("set_ai");
+                if (name.equalsIgnoreCase("set_collidable")) {
+                    living.setCollidable(Boolean.parseBoolean(val));
+                }
+
+                if (name.equalsIgnoreCase("set_ai")) {
+                    living.setAI(Boolean.parseBoolean(val));
+                }
+
                 if (obj instanceof Player) {
                     Player player = (Player) obj;
                     if (name.equalsIgnoreCase("set_allow_flight")) {
@@ -93,8 +106,6 @@ public class ActionPerformer {
                     }
 
                     if (name.equalsIgnoreCase("open_chest")) {
-                        boolean var8 = true;
-
                         try {
                             int size = Integer.parseInt(val);
                             if (size % 9 != 0) {

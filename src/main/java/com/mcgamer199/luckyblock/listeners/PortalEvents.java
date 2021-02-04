@@ -90,16 +90,16 @@ public class PortalEvents extends ColorsClass implements Listener {
                             if (LuckyBlock.isLuckyBlock(block)) {
                                 Player player = event.getPlayer();
                                 if (player.hasPermission("lb.createportal")) {
-                                    if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP)) && LuckyBlock.getFromBlock(block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP)).getType().isPortal()) {
+                                    if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.EAST, player);
                                         SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
-                                    } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP)) && LuckyBlock.getFromBlock(block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP)).getType().isPortal()) {
+                                    } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.WEST, player);
                                         SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
-                                    } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP)) && LuckyBlock.getFromBlock(block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP)).getType().isPortal()) {
+                                    } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.SOUTH, player);
                                         SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
-                                    } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP)) && LuckyBlock.getFromBlock(block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP)).getType().isPortal()) {
+                                    } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.NORTH, player);
                                         SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
                                     }
