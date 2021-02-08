@@ -1,9 +1,10 @@
 package com.mcgamer199.luckyblock.api;
 
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -99,8 +100,8 @@ public class LuckyBlockAPI implements Listener {
                             String[] a2 = s.split(":=");
                             if (a2.length == 2) {
                                 if (a2[0].equalsIgnoreCase("Drop")) {
-                                    if (LBDrop.isValid(a2[1])) {
-                                        luckyBlock.setDrop(LBDrop.valueOf(a2[1]), false, false);
+                                    if (LuckyBlockDrop.isValid(a2[1])) {
+                                        luckyBlock.setDrop(LuckyBlockDrop.valueOf(a2[1]), false, false);
                                     }
                                 } else if (a2[0].equalsIgnoreCase("Tick_a")) {
                                     luckyBlock.tickDelay = Integer.parseInt(a2[1]);
@@ -130,7 +131,7 @@ public class LuckyBlockAPI implements Listener {
                                                 op[ii] = g[ii];
                                             }
 
-                                            luckyBlock.getDropOptions().add(new DropOption(u[0], op));
+                                            luckyBlock.getOldOptions().add(new DropOption(u[0], op));
                                         }
                                     }
                                 }
@@ -145,7 +146,7 @@ public class LuckyBlockAPI implements Listener {
 
                         Scheduler.later(() -> {
                             luckyBlock.playEffects();
-                            if(luckyBlock.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
+                            if(luckyBlock.getType().getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
                                 LuckyBlockPlugin.instance.Loops(luckyBlock);
                             }
                         }, 10L);

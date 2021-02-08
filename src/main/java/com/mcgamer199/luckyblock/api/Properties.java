@@ -1,9 +1,6 @@
 package com.mcgamer199.luckyblock.api;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.Location;
@@ -11,8 +8,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Properties {
 
     private final static Pattern INT        = Pattern.compile("-?[1-9]+[0-9]*");
@@ -47,6 +47,39 @@ public class Properties {
 
     public JsonObject getJsonParams() {
         return jsonParams;
+    }
+
+    public boolean has(String key) {
+        return jsonParams.has(key);
+    }
+
+    public int size() {
+        return jsonParams.size();
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    public Set<String> keys() {
+        return jsonParams.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toSet());
+    }
+
+    public Properties merge(Properties properties, boolean rewriteValuesIfPresent) {
+        if(properties != null) {
+            Set<Map.Entry<String, JsonElement>> entries = properties.getJsonParams().entrySet();
+            entries.forEach(sourceEntry -> {
+                if(!getJsonParams().has(sourceEntry.getKey()) || rewriteValuesIfPresent) {
+                    getJsonParams().add(sourceEntry.getKey(), sourceEntry.getValue());
+                }
+            });
+        }
+
+        return this;
+    }
+
+    public void clear() {
+        jsonParams.entrySet().clear();
     }
 
     public void remove(String key) {
@@ -185,6 +218,10 @@ public class Properties {
         return array;
     }
 
+    public String[] getStringArray(String key) {
+        return getStringArray(key, new String[0]);
+    }
+
     public Properties putStringArray(String key, String[] value) {
         JsonArray jsonArray = new JsonArray();
         for(String s : value) {
@@ -195,10 +232,10 @@ public class Properties {
         return this;
     }
 
-    public short[] getShortArray(String key, short[] defaultValue) {
+    public Short[] getShortArray(String key, Short[] defaultValue) {
         if(!jsonParams.has(key)) { return defaultValue; }
         JsonArray jsonArray = jsonParams.get(key).getAsJsonArray();
-        short[] array = new short[jsonArray.size()];
+        Short[] array = new Short[jsonArray.size()];
         for(int i = 0; i < jsonArray.size(); i++) {
             array[i] = jsonArray.get(i).getAsShort();
         }
@@ -215,14 +252,18 @@ public class Properties {
         return this;
     }
 
-    public int[] getIntArray(String key, int[] defParam) {
+    public Integer[] getIntArray(String key, Integer[] defParam) {
         if(!jsonParams.has(key)) { return defParam; }
         JsonArray jsonArray = jsonParams.get(key).getAsJsonArray();
-        int[] array = new int[jsonArray.size()];
+        Integer[] array = new Integer[jsonArray.size()];
         for(int i = 0; i < jsonArray.size(); i++) {
             array[i] = jsonArray.get(i).getAsInt();
         }
         return array;
+    }
+
+    public Integer[] getIntArray(String key) {
+        return getIntArray(key, new Integer[0]);
     }
 
     public Properties putIntArray(String key, Integer[] value) {
@@ -277,9 +318,18 @@ public class Properties {
         return this;
     }
 
-    public <T extends Enum<T>> Enum<T> getEnum(String key, Class<T> enumType) {
-        return Arrays.stream(enumType.getEnumConstants())
-                .filter(constant -> constant.name().equals(key))
+    public <T extends Enum<T>> T getEnum(String key, Class<T> enumType, T defaultValue) {
+        String enumName = getString(key);
+        return enumName == null ? defaultValue : Arrays.stream(enumType.getEnumConstants())
+                .filter(constant -> constant.name().equals(enumName))
+                .findFirst()
+                .orElse(defaultValue);
+    }
+
+    public <T extends Enum<T>> T getEnum(String key, Class<T> enumType) {
+        String enumName = getString(key);
+        return enumName == null ? null : Arrays.stream(enumType.getEnumConstants())
+                .filter(constant -> constant.name().equals(enumName))
                 .findFirst()
                 .orElse(null);
     }

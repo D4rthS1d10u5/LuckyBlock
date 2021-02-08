@@ -4,7 +4,7 @@ import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,13 +57,13 @@ public class LBGui implements Listener {
             Gui.fill_glass(inv);
             boolean next = false;
             boolean finished = false;
-            List<LBDrop> dr = new ArrayList();
-            LBDrop[] var9;
-            int var8 = (var9 = LBDrop.values()).length;
+            List<LuckyBlockDrop> dr = new ArrayList();
+            LuckyBlockDrop[] var9;
+            int var8 = (var9 = LuckyBlockDrop.values()).length;
 
             int x;
             for (x = 0; x < var8; ++x) {
-                LBDrop d = var9[x];
+                LuckyBlockDrop d = var9[x];
                 if (d.isVisible()) {
                     dr.add(d);
                 }
@@ -71,7 +71,7 @@ public class LBGui implements Listener {
 
             for (int i = (page - 1) * 21; i < page * 21; ++i) {
                 if (dr.size() > i) {
-                    LBDrop drop = dr.get(i);
+                    LuckyBlockDrop drop = dr.get(i);
                     ItemStack item = ItemStackUtils.createItem(Material.BRICK, 1, 0, ChatColor.GREEN + drop.name(), Arrays.asList(""));
                     String a = IObjects.getString("desc.drop." + drop.name().toLowerCase(), false);
                     if (!a.equalsIgnoreCase("null")) {
@@ -81,7 +81,7 @@ public class LBGui implements Listener {
                     }
 
                     inv.addItem(item);
-                    if (LBDrop.values().length > i + 1) {
+                    if (LuckyBlockDrop.values().length > i + 1) {
                         next = true;
                     }
                 } else {

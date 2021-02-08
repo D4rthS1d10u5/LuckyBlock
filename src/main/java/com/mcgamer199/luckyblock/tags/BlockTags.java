@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.tags;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.resources.Schematic;
@@ -309,8 +309,8 @@ public class BlockTags extends HTag {
                     String drop = c1.getString(t);
                     if (LuckyBlock.getByBlock(block) != null) {
                         LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
-                        if (LBDrop.isValid(drop)) {
-                            luckyBlock.setDrop(LBDrop.valueOf(drop.toUpperCase()), true, true);
+                        if (LuckyBlockDrop.isValid(drop)) {
+                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(drop.toUpperCase()), true, true);
                             luckyBlock.save(true);
                         } else if (CustomDropManager.getByName(drop) != null) {
                             luckyBlock.customDrop = CustomDropManager.getByName(drop);
@@ -330,7 +330,7 @@ public class BlockTags extends HTag {
                         List<String> list = c2.getStringList("Values");
                         if (name != null && list != null && list.size() > 0) {
                             DropOption dr = new DropOption(name, list.toArray());
-                            luckyBlock.getDropOptions().add(dr);
+                            luckyBlock.getOldOptions().add(dr);
                             luckyBlock.save(true);
                         }
                     }

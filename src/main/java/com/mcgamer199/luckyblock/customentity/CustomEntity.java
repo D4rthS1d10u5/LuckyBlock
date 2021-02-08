@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import com.google.common.collect.Iterators;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
@@ -27,6 +28,10 @@ public class CustomEntity {
     private BossBar bossBar;
 
     public CustomEntity() {
+    }
+
+    private boolean isValid() {
+        return entity != null && !entity.isDead() && entity.isValid();
     }
 
     public static boolean isClassValid(String name) {
@@ -103,29 +108,17 @@ public class CustomEntity {
         }
 
         this.d();
-        Scheduler.timer(new BukkitRunnable() {
-            private int x = 0;
-
-            @Override
-            public void run() {
-                if (!CustomEntity.this.entity.isDead()) {
-                    if (CustomEntity.this.isAnimated() && CustomEntity.this.getNames() != null && CustomEntity.this.getNames().size() > 0) {
-                        CustomEntity.this.entity.setCustomName(CustomEntity.this.getNames().get(this.x));
-                        if (this.x < CustomEntity.this.getNames().size() - 1) {
-                            ++this.x;
-                        } else {
-                            this.x = 0;
-                        }
-                    }
-                } else {
-                    cancel();
-                    CustomEntity.this.remove();
+        if(getNames() != null) {
+            Iterator<String> names = Iterators.cycle(getNames());
+            Scheduler.create(() -> {
+                if(isAnimated()) {
+                    entity.setCustomName(names.next());
                 }
-            }
-        }, 1, getNamesDelay());
+            }).predicate(() -> isValid() && names.hasNext()).timer(1, getNamesDelay());
+        }
     }
 
-    private void c() {
+    private void c() { //спаси сохрани
         if (this.entity != null && this.entity instanceof Creature) {
             final Creature cr = (Creature) this.entity;
             Scheduler.timer(new BukkitRunnable() {
@@ -706,10 +699,7 @@ public class CustomEntity {
     public final void hideBar(boolean pl) {
         if (this.getBossBar() != null && this.getBossBar().getPlayers() != null) {
             if (pl) {
-                Iterator var3 = this.getBossBar().getPlayers().iterator();
-
-                while (var3.hasNext()) {
-                    Player p = (Player) var3.next();
+                for (Player p : this.getBossBar().getPlayers()) {
                     this.getBossBar().removePlayer(p);
                 }
             }

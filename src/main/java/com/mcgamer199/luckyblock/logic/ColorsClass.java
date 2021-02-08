@@ -262,11 +262,12 @@ public class ColorsClass {
         return (item != null && item.getType() != Material.AIR) && ItemStackUtils.isSword(item);
     }
 
-    protected enum ObjectType {
+    public enum ObjectType {
         BLOCK,
         ENTITY,
         ITEM,
-        PLAYER;
+        PLAYER,
+        NONE;
 
         private Object obj;
 

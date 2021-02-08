@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Material;

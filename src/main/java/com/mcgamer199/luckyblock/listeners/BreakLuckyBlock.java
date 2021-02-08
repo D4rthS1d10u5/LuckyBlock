@@ -17,6 +17,7 @@ import com.mcgamer199.luckyblock.structures.LuckyWell;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.util.TemporaryUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.mcgamer199.luckyblock.yottaevents.YottaEvents;
 import org.bukkit.*;
@@ -50,13 +51,13 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && player.getGameMode() != GameMode.CREATIVE) {
                     if (luckyBlock.getType().getPermission("SilkTouch") == null) {
-                        HTasks.spawnLB(luckyBlock, bloc);
+                        TemporaryUtils.spawnLB(luckyBlock, bloc);
                         luckyBlock.remove(true);
                         return;
                     }
 
                     if (player.hasPermission(luckyBlock.getType().getPermission("SilkTouch"))) {
-                        HTasks.spawnLB(luckyBlock, bloc);
+                        TemporaryUtils.spawnLB(luckyBlock, bloc);
                         luckyBlock.remove(true);
                         return;
                     }
@@ -97,7 +98,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 spawnParticle(bloc, types.breakparticles);
             }
 
-            DropEvents.run(block, luckyBlock, player, luckyBlock.getLuckyBlockDrop(), luckyBlock.customDrop, true);
+            TemporaryUtils.run(block, luckyBlock, player, luckyBlock.getLuckyBlockDrop(), luckyBlock.customDrop, true);
         }
     }
 

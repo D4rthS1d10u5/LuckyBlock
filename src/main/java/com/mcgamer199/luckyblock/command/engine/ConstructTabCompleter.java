@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.resources.LBItem;
@@ -77,13 +77,13 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                 }
                             }
                         } else {
-                            LBDrop drop;
-                            LBDrop[] var19;
+                            LuckyBlockDrop drop;
+                            LuckyBlockDrop[] var19;
                             CustomDrop customDrop;
                             if (args[0].equalsIgnoreCase("setdrop")) {
                                 if (args.length == 2 && sender instanceof Player && LuckyBlock.isLuckyBlock(((Player) sender).getTargetBlock(null, 100))) {
                                     if (args[1] == null) {
-                                        var8 = (var19 = LBDrop.values()).length;
+                                        var8 = (var19 = LuckyBlockDrop.values()).length;
 
                                         for (var16 = 0; var16 < var8; ++var16) {
                                             drop = var19[var16];
@@ -99,7 +99,7 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                             }
                                         }
                                     } else {
-                                        var8 = (var19 = LBDrop.values()).length;
+                                        var8 = (var19 = LuckyBlockDrop.values()).length;
 
                                         for (var16 = 0; var16 < var8; ++var16) {
                                             drop = var19[var16];
@@ -141,7 +141,7 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                     } else if (args.length == 3) {
                                         if (args[1].equalsIgnoreCase("setdrop")) {
                                             if (args[2] == null) {
-                                                var8 = (var19 = LBDrop.values()).length;
+                                                var8 = (var19 = LuckyBlockDrop.values()).length;
 
                                                 for (var16 = 0; var16 < var8; ++var16) {
                                                     drop = var19[var16];
@@ -157,7 +157,7 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                                     }
                                                 }
                                             } else {
-                                                var8 = (var19 = LBDrop.values()).length;
+                                                var8 = (var19 = LuckyBlockDrop.values()).length;
 
                                                 for (var16 = 0; var16 < var8; ++var16) {
                                                     drop = var19[var16];

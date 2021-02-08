@@ -7,7 +7,7 @@ import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -41,12 +41,12 @@ public class LBCDropList extends LBCommand {
             return false;
         } else {
             List<String> d = new ArrayList();
-            LBDrop[] var10;
-            int var9 = (var10 = LBDrop.values()).length;
+            LuckyBlockDrop[] var10;
+            int var9 = (var10 = LuckyBlockDrop.values()).length;
 
             int i;
             for (i = 0; i < var9; ++i) {
-                LBDrop drop = var10[i];
+                LuckyBlockDrop drop = var10[i];
                 if (drop.isVisible()) {
                     d.add(drop.name());
                 }
@@ -65,7 +65,7 @@ public class LBCDropList extends LBCommand {
                 if (x < d.size()) {
                     String dropName = d.get(x);
                     StringBuilder descriptionBuilder = new StringBuilder();
-                    LBDrop drop = LBDrop.getByName(dropName);
+                    LuckyBlockDrop drop = LuckyBlockDrop.getByName(dropName);
                     if(drop != null) {
                         String optionDescription = IObjects.getString("desc.drop." + drop.name().toLowerCase(), false);
                         if(optionDescription.equalsIgnoreCase("null")) {
@@ -75,16 +75,13 @@ public class LBCDropList extends LBCommand {
                         descriptionBuilder.append(listDescription).append(":\n").append("§f").append(optionDescription);
                         StringJoiner joiner = new StringJoiner("\n");
 
-                        DropOption[] options = drop.getDefaultOptions();
-                        if(ArrayUtils.isNotEmpty(options)) {
+                        if(!drop.getDropOptions().isEmpty()) {
                             int limit = 0;
-                            for (DropOption option : options) {
+                            for (String option : drop.getDropOptions().keys()) {
                                 if(limit++ > 10) {
                                     break;
                                 } else {
-                                    if(option != null) {
-                                        joiner.add("§e" + option.getName());
-                                    }
+                                    joiner.add("§e" + option);
                                 }
                             }
                         }

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Server" type="JarApplication" singleton="true">
+  <configuration default="false" name="build: maven" type="JarApplication" singleton="true">
     <option name="JAR_PATH" value="$PROJECT_DIR$/TestServer/core.jar" />
     <option name="VM_PARAMETERS" value="-Dfile.encoding=UTF-8" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$/TestServer" />

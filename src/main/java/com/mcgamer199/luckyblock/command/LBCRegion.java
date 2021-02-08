@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -75,14 +75,14 @@ public class LBCRegion extends LBCommand {
                     if (args[1].equalsIgnoreCase("setdrop")) {
                         if (args.length == 3) {
                             boolean i = false;
-                            if (!LBDrop.isValid(args[2].toUpperCase())) {
+                            if (!LuckyBlockDrop.isValid(args[2].toUpperCase())) {
                                 if (CustomDropManager.getByName(args[2]) == null) {
                                     send(sender, "lb.invalid_drop");
                                     return false;
                                 }
 
                                 i = true;
-                            } else if (!LBDrop.valueOf(args[2].toUpperCase()).isVisible()) {
+                            } else if (!LuckyBlockDrop.valueOf(args[2].toUpperCase()).isVisible()) {
                                 send(sender, "lb.invalid_drop");
                                 return false;
                             }
@@ -91,7 +91,7 @@ public class LBCRegion extends LBCommand {
                             a = a.replace("%total%", String.valueOf(total));
                             send_2(sender, a);
                             if (!i) {
-                                LBDrop drop = LBDrop.valueOf(args[2].toUpperCase());
+                                LuckyBlockDrop drop = LuckyBlockDrop.valueOf(args[2].toUpperCase());
                                 this.action2(s, player, drop, null);
                             } else {
                                 CustomDrop d = CustomDropManager.getByName(args[2]);
@@ -245,7 +245,7 @@ public class LBCRegion extends LBCommand {
         }, 5, 6);
     }
 
-    void action2(final Selection s, final Player player, final LBDrop drop, final CustomDrop cd) {
+    void action2(final Selection s, final Player player, final LuckyBlockDrop drop, final CustomDrop cd) {
         Scheduler.timer(new BukkitRunnable() {
             int x = s.getMinimumPoint().getBlockX();
             int y = s.getMinimumPoint().getBlockY();

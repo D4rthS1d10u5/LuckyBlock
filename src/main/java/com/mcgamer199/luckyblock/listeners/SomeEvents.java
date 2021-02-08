@@ -3,6 +3,8 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
+import com.mcgamer199.luckyblock.api.enums.ItemProperty;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBInteractEvent;
 import com.mcgamer199.luckyblock.lb.DropOption;
@@ -94,9 +96,9 @@ public class SomeEvents extends ColorsClass implements Listener {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) luckyBlock.getDropOption("Title").getValues()[0]));
                         }
 
-                        if (luckyBlock.getDropOptions().size() > 1) {
+                        if (luckyBlock.getOldOptions().size() > 1) {
                             StringJoiner newLineJoiner = new StringJoiner("\n");
-                            for (DropOption dropOption : luckyBlock.getDropOptions()) {
+                            for (DropOption dropOption : luckyBlock.getOldOptions()) {
                                 if(!LuckyBlock.isHiddenOption(dropOption.getName())) {
                                     StringJoiner commaJoiner = new StringJoiner("§5,");
                                     for (Object value : dropOption.getValues()) {
@@ -168,7 +170,7 @@ public class SomeEvents extends ColorsClass implements Listener {
     @EventHandler
     public void onExplodeSuperLuckyBlock(EntityExplodeEvent event) {
         for (int x = 0; x < event.blockList().size(); ++x) {
-            if (LuckyBlock.getByBlock(event.blockList().get(x)) != null && LuckyBlock.getByBlock(event.blockList().get(x)).getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
+            if (LuckyBlock.getByBlock(event.blockList().get(x)) != null && LuckyBlock.getByBlock(event.blockList().get(x)).getType().getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
                 event.blockList().get(x).getWorld().spawnParticle(Particle.CRIT_MAGIC, event.blockList().get(x).getLocation(), 150, 0.5D, 0.5D, 0.5D, 0.0D);
                 event.blockList().remove(x);
             }
@@ -293,7 +295,7 @@ public class SomeEvents extends ColorsClass implements Listener {
             block = effected.get(x);
             if (LuckyBlock.isLuckyBlock(block)) {
                 luckyBlock = LuckyBlock.getByBlock(block);
-                if (!luckyBlock.getType().getProperties().contains(LBType.BlockProperty.EXPLOSION_RESISTANCE)) {
+                if (!luckyBlock.getType().getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
                     event.blockList().remove(block);
                     blks.add(block);
                 }
@@ -306,7 +308,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                 luckyBlock = LuckyBlock.getByBlock(block);
                 luckyBlock.remove();
                 block.setType(Material.AIR);
-                if (luckyBlock.getType().hasProperty(LBType.BlockProperty.DROP_ON_EXPLODE)) {
+                if (luckyBlock.getType().hasProperty(BlockProperty.DROP_ON_EXPLODE)) {
                     this.spawnItem(luckyBlock);
                 }
             }
@@ -362,7 +364,7 @@ public class SomeEvents extends ColorsClass implements Listener {
             ItemStack i = item.getItemStack();
             if (LBType.isLB(i)) {
                 LBType type = LBType.fromItem(i);
-                if (type.hasItemProperty(LBType.ItemProperty.SHOW_ITEM_DROPPED_NAME)) {
+                if (type.hasItemProperty(ItemProperty.SHOW_ITEM_DROPPED_NAME)) {
                     item.setCustomName(type.getName());
                     item.setCustomNameVisible(true);
                 }

@@ -6,12 +6,14 @@
 package com.mcgamer199.luckyblock.lb;
 
 import com.mcgamer199.luckyblock.LBOption;
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
+import com.mcgamer199.luckyblock.api.enums.ItemProperty;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.resources.CItem;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -81,8 +83,8 @@ public class LBType {
     private final String folder;
     private List<String> allowedWorlds = new ArrayList();
     private final int id;
-    private final List<LBType.BlockProperty> properties = new ArrayList();
-    private final List<LBType.ItemProperty> itemProperties = new ArrayList();
+    private final List<BlockProperty> properties = new ArrayList();
+    private final List<ItemProperty> itemProperties = new ArrayList();
     private boolean useSkin;
     private int delay = 0;
     private int version = 225;
@@ -164,10 +166,8 @@ public class LBType {
 
     public static boolean isLB(ItemStack item) {
         boolean is = false;
-        Iterator var3 = lbs.iterator();
 
-        while (var3.hasNext()) {
-            LBType type = (LBType) var3.next();
+        for (LBType type : lbs) {
             if (item.getType() == type.getType() && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(type.getName())) {
                 is = true;
             }
@@ -340,10 +340,9 @@ public class LBType {
 
                     String s;
                     if (c.getStringList("Lore") != null) {
-                        Iterator var12 = c.getStringList("Lore").iterator();
 
-                        while (var12.hasNext()) {
-                            s = (String) var12.next();
+                        for (String value : c.getStringList("Lore")) {
+                            s = value;
                             type.itemLore.add(ChatColor.translateAlternateColorCodes('&', s));
                         }
                     }
@@ -351,7 +350,7 @@ public class LBType {
                     int i;
                     if (c.getStringList("Properties").size() > 0) {
                         for (i = 0; i < c.getStringList("Properties").size(); ++i) {
-                            LBType.BlockProperty p = LBType.BlockProperty.valueOf(c.getStringList("Properties").get(i).toUpperCase());
+                            BlockProperty p = BlockProperty.valueOf(c.getStringList("Properties").get(i).toUpperCase());
                             if (!type.properties.contains(p)) {
                                 type.properties.add(p);
                             }
@@ -360,7 +359,7 @@ public class LBType {
 
                     if (c.getStringList("ItemProperties").size() > 0) {
                         for (i = 0; i < c.getStringList("ItemProperties").size(); ++i) {
-                            LBType.ItemProperty p = LBType.ItemProperty.valueOf(c.getStringList("ItemProperties").get(i).toUpperCase());
+                            ItemProperty p = ItemProperty.valueOf(c.getStringList("ItemProperties").get(i).toUpperCase());
                             if (!type.itemProperties.contains(p)) {
                                 type.itemProperties.add(p);
                             }
@@ -483,7 +482,7 @@ public class LBType {
                     }
 
                     type.showData = c.getBoolean("ShowData");
-                    if (c.getStringList("PercentColors") != null && type.hasItemProperty(LBType.ItemProperty.CUSTOM_PERCENT_COLORS)) {
+                    if (c.getStringList("PercentColors") != null && type.hasItemProperty(ItemProperty.CUSTOM_PERCENT_COLORS)) {
                         for (i_kek = 0; i_kek < c.getStringList("PercentColors").size(); ++i_kek) {
                             type.percent_colors[i_kek] = c.getStringList("PercentColors").get(i_kek);
                         }
@@ -728,11 +727,11 @@ public class LBType {
                             items = f.getStringList("Recipes." + s + ".Ingredients");
                             int amount = f.getInt("Recipes." + s + ".Amount");
                             o = f.getInt("Recipes." + s + ".Luck");
-                            com.mcgamer199.luckyblock.lb.LBDrop drop = null;
+                            LuckyBlockDrop drop = null;
                             CustomDrop cdrop = null;
-                            String a = f.getString("Recipes." + s + ".Drop");
-                            if (com.mcgamer199.luckyblock.lb.LBDrop.isValid(a)) {
-                                drop = LBDrop.valueOf(a.toUpperCase());
+                            String a = f.getString("Recipes." + s + ".Drop"); //value might be null
+                            if (LuckyBlockDrop.isValid(a)) {
+                                drop = LuckyBlockDrop.valueOf(a.toUpperCase());
                             } else if (CustomDropManager.isValid(a)) {
                                 cdrop = CustomDropManager.getByName(a.toUpperCase());
                             }
@@ -868,10 +867,10 @@ public class LBType {
         return this.breakItem;
     }
 
-    public boolean hasProperty(LBType.BlockProperty property) {
+    public boolean hasProperty(BlockProperty property) {
         if (this.properties != null) {
-            for (int x = 0; x < this.properties.size(); ++x) {
-                if (this.properties.get(x) == property) {
+            for (BlockProperty blockProperty : this.properties) {
+                if (blockProperty == property) {
                     return true;
                 }
             }
@@ -880,10 +879,10 @@ public class LBType {
         return false;
     }
 
-    public boolean hasItemProperty(LBType.ItemProperty property) {
+    public boolean hasItemProperty(ItemProperty property) {
         if (this.itemProperties != null) {
-            for (int x = 0; x < this.itemProperties.size(); ++x) {
-                if (this.itemProperties.get(x) == property) {
+            for (ItemProperty itemProperty : this.itemProperties) {
+                if (itemProperty == property) {
                     return true;
                 }
             }
@@ -987,11 +986,11 @@ public class LBType {
 
     }
 
-    public List<LBType.BlockProperty> getProperties() {
+    public List<BlockProperty> getProperties() {
         return this.properties;
     }
 
-    public List<LBType.ItemProperty> getItemProperties() {
+    public List<ItemProperty> getItemProperties() {
         return this.itemProperties;
     }
 
@@ -1289,30 +1288,6 @@ public class LBType {
             }
         } else {
             return false;
-        }
-    }
-
-    public enum ItemProperty {
-        INVINCIBLE,
-        HOPPER,
-        CUSTOM_PERCENT_COLORS,
-        SHOW_ITEM_DROPPED_NAME;
-
-        ItemProperty() {
-        }
-    }
-
-    public enum BlockProperty {
-        EXPLOSION_RESISTANCE,
-        EXPLODE_ON_FIRE,
-        REMOVE_ON_FIRE,
-        RUN_ON_PUSH,
-        CAN_BE_PUSHED,
-        CAN_BE_THROWN,
-        FIRE_RESISTANCE,
-        DROP_ON_EXPLODE;
-
-        BlockProperty() {
         }
     }
 }

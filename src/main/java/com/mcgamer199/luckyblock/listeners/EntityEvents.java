@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.mcgamer199.luckyblock.api.enums.ItemProperty;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -174,7 +175,7 @@ public class EntityEvents extends ColorsClass implements Listener {
     private void onLBItemDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Item) {
             Item itemI = (Item) event.getEntity();
-            if (itemI.getItemStack() != null && LBType.isLB(itemI.getItemStack()) && LBType.fromItem(itemI.getItemStack()).hasItemProperty(LBType.ItemProperty.INVINCIBLE)) {
+            if (itemI.getItemStack() != null && LBType.isLB(itemI.getItemStack()) && LBType.fromItem(itemI.getItemStack()).hasItemProperty(ItemProperty.INVINCIBLE)) {
                 event.setCancelled(true);
             }
         }
@@ -183,7 +184,7 @@ public class EntityEvents extends ColorsClass implements Listener {
 
     @EventHandler
     private void onLBItemDespawn(ItemDespawnEvent event) {
-        if (LBType.isLB(event.getEntity().getItemStack()) && LBType.fromItem(event.getEntity().getItemStack()).hasItemProperty(LBType.ItemProperty.HOPPER)) {
+        if (LBType.isLB(event.getEntity().getItemStack()) && LBType.fromItem(event.getEntity().getItemStack()).hasItemProperty(ItemProperty.HOPPER)) {
             event.setCancelled(true);
         }
 

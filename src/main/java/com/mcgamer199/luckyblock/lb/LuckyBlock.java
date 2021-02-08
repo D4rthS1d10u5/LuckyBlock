@@ -7,6 +7,7 @@ package com.mcgamer199.luckyblock.lb;
 
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityLBNameTag;
@@ -39,7 +40,7 @@ public class LuckyBlock {
     public static Map<LBType, FileConfiguration> cache = new HashMap<>();
     private static final Map<Location, LuckyBlock> luckyBlockStorage = new HashMap<>();
     private LBType type;
-    private LBDrop luckyBlockDrop;
+    private LuckyBlockDrop luckyBlockDrop;
     public CustomDrop customDrop;
     public BlockFace facing;
     private Block block;
@@ -50,9 +51,12 @@ public class LuckyBlock {
     public static final int MAX_LB_COUNT = 1048;
     public static List<LuckyBlock> lastDeleted = new ArrayList<>();
     @Getter
-    private final List<DropOption> dropOptions = new ArrayList<>();
+    private final Properties dropOptions = new Properties();
+    @Getter
+    private final List<DropOption> oldOptions = new ArrayList<>();
     private Object placedBy;
     private FileConfiguration file;
+    private FileConfiguration customFile;
     private String floc; //TODO продебажить это поле, вообще неясно что оно значит
     private final String folder = "Drops";
     private boolean freezed;
@@ -176,7 +180,8 @@ public class LuckyBlock {
             this.setRandomDrop();
             if (this.placedBy != null && this.placedBy.toString().startsWith("pl:")) {
                 String[] d = this.placedBy.toString().split("pl:");
-                this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Player", new String[]{d[1]}));
+                dropOptions.putString("Player", d[1]);
+                this.oldOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Player", new String[]{d[1]}));
             }
         }
 
@@ -227,7 +232,17 @@ public class LuckyBlock {
         return this.placedBy;
     }
 
+    //TODO добавить свои конфиги
     public FileConfiguration getFile() {
+        String customFileName = getDropOptions().getString("File", null);
+        if(customFileName != null && customFile == null) {
+            File drops = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "Drops/" + customFileName);
+            if (drops.exists()) {
+                customFile = YamlConfiguration.loadConfiguration(drops);
+                return customFile;
+            }
+        }
+
         return this.file;
     }
 
@@ -293,8 +308,8 @@ public class LuckyBlock {
                     ConfigurationSection c = this.file.getConfigurationSection("Drops").getConfigurationSection(g);
                     String dropName = c.getString("DropName");
                     if (dropName != null) {
-                        if (com.mcgamer199.luckyblock.lb.LBDrop.isValid(dropName)) {
-                            this.luckyBlockDrop = com.mcgamer199.luckyblock.lb.LBDrop.getByName(dropName);
+                        if (LuckyBlockDrop.isValid(dropName)) {
+                            this.luckyBlockDrop = LuckyBlockDrop.getByName(dropName);
                         } else if (CustomDropManager.getByName(dropName) != null) {
                             this.customDrop = CustomDropManager.getByName(dropName);
                         }
@@ -309,15 +324,21 @@ public class LuckyBlock {
 
     public void reloadOptions() {
         if (this.luckyBlockDrop != null || this.customDrop != null) {
-            com.mcgamer199.luckyblock.lb.DropOption pn = null;
-            if (this.hasDropOption("Player")) {
-                pn = this.getDropOption("Player");
+            String player = dropOptions.getString("Player");
+            dropOptions.clear();
+            if(player != null) {
+                dropOptions.putString("Player", player);
             }
 
-            this.dropOptions.clear();
-            if (pn != null) {
-                this.dropOptions.add(pn);
-            }
+//            com.mcgamer199.luckyblock.lb.DropOption pn = null;
+//            if (this.hasDropOption("Player")) {
+//                pn = this.getDropOption("Player");
+//            }
+//
+//            this.dropOptions.clear();
+//            if (pn != null) {
+//                this.dropOptions.add(pn);
+//            }
 
             int var11;
             if (this.floc != null) {
@@ -335,40 +356,48 @@ public class LuckyBlock {
                         }
 
                         if (s.equalsIgnoreCase("TreeType")) {
-                            this.dropOptions.add(new DropOption(s, new TreeType[]{TreeType.valueOf(obj[0].toString().toUpperCase())}));
+                            dropOptions.putEnum("TreeType", TreeType.valueOf(obj[0].toString().toUpperCase()));
+                            //this.dropOptions.add(new DropOption(s, new TreeType[]{TreeType.valueOf(obj[0].toString().toUpperCase())}));
                         } else if (!s.equalsIgnoreCase("DropName") && !s.equalsIgnoreCase("Chance")) {
-                            this.dropOptions.add(new DropOption(s, obj));
+                            dropOptions.putString(s, Arrays.toString(obj));
+                            //this.dropOptions.add(new DropOption(s, obj));
                         }
                     }
 
-                    com.mcgamer199.luckyblock.lb.DropOption[] var14;
-                    int var12 = (var14 = this.luckyBlockDrop.getDefaultOptions()).length;
-
-                    for (var11 = 0; var11 < var12; ++var11) {
-                        com.mcgamer199.luckyblock.lb.DropOption o = var14[var11];
-                        if (o != null && !this.hasDropOption(o.getName())) {
-                            this.dropOptions.add(o);
-                        }
+                    dropOptions.merge(luckyBlockDrop.getDropOptions(), false);
+                    if(dropOptions.has("Title")) {
+                        dropOptions.putString("Title", "§c" + luckyBlockDrop.name());
                     }
-
-                    if (!this.hasDropOption("Title")) {
-                        this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.luckyBlockDrop.name()}));
-                    }
+//
+//                    com.mcgamer199.luckyblock.lb.DropOption[] var14;
+//                    int var12 = (var14 = this.luckyBlockDrop.getDefaultOptions()).length;
+//
+//                    for (var11 = 0; var11 < var12; ++var11) {
+//                        com.mcgamer199.luckyblock.lb.DropOption o = var14[var11];
+//                        if (o != null && !this.hasDropOption(o.getName())) {
+//                            this.dropOptions.add(o);
+//                        }
+//                    }
+//
+//                    if (!this.hasDropOption("Title")) {
+//                        this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.luckyBlockDrop.name()}));
+//                    }
                 }
             } else {
-                com.mcgamer199.luckyblock.lb.DropOption[] var13;
-                var11 = (var13 = this.luckyBlockDrop.getDefaultOptions()).length;
-
-                for (int var10 = 0; var10 < var11; ++var10) {
-                    com.mcgamer199.luckyblock.lb.DropOption o = var13[var10];
-                    if (o != null) {
-                        this.dropOptions.add(o);
-                    }
-                }
-
-                this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.luckyBlockDrop.name()}));
+                dropOptions.merge(luckyBlockDrop.getDropOptions(), true);
+                dropOptions.putString("Title", "§c" + luckyBlockDrop.name());
+//                com.mcgamer199.luckyblock.lb.DropOption[] var13;
+//                var11 = (var13 = this.luckyBlockDrop.getDefaultOptions()).length;
+//
+//                for (int var10 = 0; var10 < var11; ++var10) {
+//                    com.mcgamer199.luckyblock.lb.DropOption o = var13[var10];
+//                    if (o != null) {
+//                        this.dropOptions.add(o);
+//                    }
+//                }
+//
+//                this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.luckyBlockDrop.name()}));
             }
-
         }
     }
 
@@ -404,7 +433,7 @@ public class LuckyBlock {
 
     }
 
-    public void setDrop(com.mcgamer199.luckyblock.lb.LBDrop drop, boolean s, boolean dp) {
+    public void setDrop(LuckyBlockDrop drop, boolean s, boolean dp) {
         if (this.luckyBlockDrop != null && this.luckyBlockDrop != drop && this.getDropOption("Title") != null) {
             this.removeDropOptions("Title");
         }
@@ -444,33 +473,34 @@ public class LuckyBlock {
 
     }
 
+    //TODO прописать Properties для CustomDrop
     public void refreshCustomDrop() {
-        this.dropOptions.clear();
+        this.oldOptions.clear();
         if (this.customDrop.getDefaultOptions() != null) {
             for (int x = 0; x < this.customDrop.getDefaultOptions().length; ++x) {
                 if (this.customDrop.getDefaultOptions()[x] != null) {
-                    this.dropOptions.add(this.customDrop.getDefaultOptions()[x]);
+                    this.oldOptions.add(this.customDrop.getDefaultOptions()[x]);
                 }
             }
         }
 
         if (!this.hasDropOption("Title")) {
-            this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.customDrop.getName()}));
+            this.oldOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.customDrop.getName()}));
         }
 
     }
 
     public void removeDropOptions(String dropOption) {
-        for (int x = 0; x < this.dropOptions.size(); ++x) {
-            if (this.dropOptions.get(x).getName().equalsIgnoreCase(dropOption)) {
-                this.dropOptions.remove(x);
-                x = 0;
-            }
-        }
-
+        dropOptions.remove(dropOption);
+//        for (int x = 0; x < this.dropOptions.size(); ++x) {
+//            if (this.dropOptions.get(x).getName().equalsIgnoreCase(dropOption)) {
+//                this.dropOptions.remove(x);
+//                x = 0;
+//            }
+//        }
     }
 
-    public LBDrop getLuckyBlockDrop() {
+    public LuckyBlockDrop getLuckyBlockDrop() {
         return this.luckyBlockDrop;
     }
 
@@ -538,7 +568,7 @@ public class LuckyBlock {
     }
 
     public com.mcgamer199.luckyblock.lb.DropOption getDropOption(String name) {
-        for (DropOption dropOption : this.dropOptions) {
+        for (DropOption dropOption : this.oldOptions) {
             if (dropOption.getName().equalsIgnoreCase(name)) {
                 return dropOption;
             }
@@ -558,7 +588,7 @@ public class LuckyBlock {
     }
 
     public boolean hasDropOption(String name) {
-        return this.getDropOption(name) != null;
+        return dropOptions.has(name);
     }
 
     public String getPlacedByClass() {
@@ -634,11 +664,11 @@ public class LuckyBlock {
             s = this.addVal(s, "Freezed:=" + this.freezed, false);
         }
 
-        if (this.dropOptions.size() > 0) {
+        if (this.oldOptions.size() > 0) {
             s = s + "/s/" + "Options:={";
 
-            for (int x = 0; x < this.dropOptions.size(); ++x) {
-                com.mcgamer199.luckyblock.lb.DropOption o = this.dropOptions.get(x);
+            for (int x = 0; x < this.oldOptions.size(); ++x) {
+                com.mcgamer199.luckyblock.lb.DropOption o = this.oldOptions.get(x);
                 if (o != null) {
                     if (x == 0) {
                         s = s + o.getName() + ":[";

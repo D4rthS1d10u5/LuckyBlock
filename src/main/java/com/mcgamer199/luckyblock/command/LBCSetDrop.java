@@ -5,7 +5,7 @@ import com.mcgamer199.luckyblock.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -30,20 +30,20 @@ public class LBCSetDrop extends LBCommand {
                     if (LuckyBlock.isLuckyBlock(block)) {
                         LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                         boolean x = false;
-                        if (!LBDrop.isValid(args[1].toUpperCase())) {
+                        if (!LuckyBlockDrop.isValid(args[1].toUpperCase())) {
                             if (CustomDropManager.getByName(args[1]) == null) {
                                 send(sender, "lb.invalid_drop");
                                 return false;
                             }
 
                             x = true;
-                        } else if (!LBDrop.valueOf(args[1].toUpperCase()).isVisible()) {
+                        } else if (!LuckyBlockDrop.valueOf(args[1].toUpperCase()).isVisible()) {
                             send(sender, "lb.invalid_drop");
                             return false;
                         }
 
                         if (!x) {
-                            luckyBlock.setDrop(LBDrop.valueOf(args[1].toUpperCase()), true, true);
+                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(args[1].toUpperCase()), true, true);
                         } else {
                             CustomDrop d = CustomDropManager.getByName(args[1]);
                             if (!d.isEnabledByCommands()) {
@@ -96,7 +96,7 @@ public class LBCSetDrop extends LBCommand {
                                         luckyBlock.removeDropOptions(u[0]);
                                     }
 
-                                    luckyBlock.getDropOptions().add(new DropOption(u[0], op));
+                                    luckyBlock.getOldOptions().add(new DropOption(u[0], op));
                                     luckyBlock.save(true);
                                 }
                             }

@@ -6,7 +6,7 @@ import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.events.LanguageChangedEvent;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -326,7 +326,7 @@ public class IObjects {
 
             while (var3.hasNext()) {
                 String s = (String) var3.next();
-                if (!LBDrop.isValid(s) && !CustomDropManager.isValid(s)) {
+                if (!LuckyBlockDrop.isValid(s) && !CustomDropManager.isValid(s)) {
                     throw new Error("Could not add string for " + s + " (invalid drop exception)");
                 }
 

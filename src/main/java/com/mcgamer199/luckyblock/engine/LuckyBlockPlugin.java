@@ -7,6 +7,7 @@ package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.title.ITitle;
 import com.mcgamer199.luckyblock.api.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
@@ -23,7 +24,6 @@ import com.mcgamer199.luckyblock.enchantments.Lightning;
 import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
 import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.*;
 import com.mcgamer199.luckyblock.logic.IRange;

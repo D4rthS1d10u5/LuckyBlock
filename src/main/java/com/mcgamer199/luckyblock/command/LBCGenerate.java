@@ -2,10 +2,10 @@ package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.listeners.DropEvents;
 import com.mcgamer199.luckyblock.resources.MapEndCastle;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.structures.Structure;
+import com.mcgamer199.luckyblock.util.TemporaryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -16,7 +16,6 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.io.File;
-import java.util.Iterator;
 
 public class LBCGenerate extends LBCommand {
     public LBCGenerate() {
@@ -31,7 +30,7 @@ public class LBCGenerate extends LBCommand {
             Player player = (Player) sender;
             boolean b = false;
             if (Structure.isStructure(s)) {
-                DropEvents.b(s, player.getLocation());
+                TemporaryUtils.b(s, player.getLocation());
             } else {
                 File file = new File(LuckyBlockPlugin.d() + "Drops/" + s);
                 if (!file.exists()) {
@@ -69,10 +68,8 @@ public class LBCGenerate extends LBCommand {
             if (i != null && i.getType() == Material.MAP && i.hasItemMeta() && i.getItemMeta().hasDisplayName() && i.getItemMeta().getDisplayName().equalsIgnoreCase("Test")) {
                 short d = i.getDurability();
                 MapView map = Bukkit.getServer().getMap(d);
-                Iterator var10 = map.getRenderers().iterator();
 
-                while (var10.hasNext()) {
-                    MapRenderer r = (MapRenderer) var10.next();
+                for (MapRenderer r : map.getRenderers()) {
                     map.removeRenderer(r);
                 }
 

@@ -2,12 +2,12 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
-import com.mcgamer199.luckyblock.lb.LBDrop;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.lb.LBType.BlockProperty;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
@@ -166,8 +166,8 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 if (drop != null) {
                     particleData = drop.split(":");
                     if (particleData[0].equalsIgnoreCase("LBDrop")) {
-                        if (LBDrop.isValid(particleData[1])) {
-                            luckyBlock.setDrop(LBDrop.getByName(particleData[1]), true, true);
+                        if (LuckyBlockDrop.isValid(particleData[1])) {
+                            luckyBlock.setDrop(LuckyBlockDrop.getByName(particleData[1]), true, true);
                         }
                     } else if (particleData[0].equalsIgnoreCase("CustomDrop") && CustomDropManager.isValid(particleData[1])) {
                         luckyBlock.customDrop = CustomDropManager.getByName(particleData[1]);
@@ -233,8 +233,8 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
     }
 
     public static String dropToString(String drop) {
-        if (LBDrop.isValid(drop)) {
-            return "LBDrop:" + LBDrop.getByName(drop);
+        if (LuckyBlockDrop.isValid(drop)) {
+            return "LBDrop:" + LuckyBlockDrop.getByName(drop);
         } else {
             return CustomDropManager.getByName(drop) != null ? "CustomDrop:" + CustomDropManager.getByName(drop).getName() : null;
         }
@@ -287,7 +287,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                             String[] s = l.split("Drop: ");
                             if (s.length == 2) {
                                 String g = ChatColor.stripColor(s[1].toUpperCase());
-                                if (LBDrop.isValid(g)) {
+                                if (LuckyBlockDrop.isValid(g)) {
                                     r = false;
                                     drop = "LBDrop:" + g;
                                 } else if (CustomDropManager.isValid(g)) {
