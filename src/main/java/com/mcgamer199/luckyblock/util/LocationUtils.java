@@ -111,6 +111,10 @@ public final class LocationUtils {
         return new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
     }
 
+    public static BlockFace[] allHorizontal() {
+        return new BlockFace[] {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST};
+    }
+
     public static BlockFace[] vertical() {
         return new BlockFace[] {BlockFace.UP, BlockFace.DOWN};
     }

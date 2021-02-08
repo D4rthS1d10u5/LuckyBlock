@@ -5,16 +5,20 @@ import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.api.nbt.NBTListWrapper;
 import com.mcgamer199.luckyblock.api.nbt.v1_12_R1.v1_12_R1_NBTCompoundWrapper;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
+import net.minecraft.server.v1_12_R1.MojangsonParseException;
+import net.minecraft.server.v1_12_R1.MojangsonParser;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftMetaBook;
 import org.bukkit.enchantments.Enchantment;
@@ -25,11 +29,33 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @UtilityClass
 public class ItemStackUtils {
+
+    private static final List<Material> repairable = Arrays.asList(
+            Material.DIAMOND_SWORD, Material.DIAMOND_AXE, Material.DIAMOND_SPADE,
+            Material.DIAMOND_PICKAXE, Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE,
+            Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS, Material.GOLD_SWORD,
+            Material.GOLD_AXE, Material.GOLD_SPADE, Material.GOLD_PICKAXE,
+            Material.GOLD_HELMET, Material.GOLD_CHESTPLATE, Material.GOLD_LEGGINGS,
+            Material.GOLD_BOOTS, Material.IRON_SWORD, Material.IRON_AXE,
+            Material.IRON_SPADE, Material.IRON_PICKAXE, Material.DIAMOND_HOE,
+            Material.GOLD_HOE, Material.IRON_HOE, Material.STONE_HOE,
+            Material.WOOD_HOE, Material.IRON_HELMET, Material.IRON_CHESTPLATE,
+            Material.IRON_LEGGINGS, Material.IRON_BOOTS, Material.STONE_SWORD,
+            Material.STONE_AXE, Material.STONE_SPADE, Material.STONE_PICKAXE,
+            Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS,
+            Material.LEATHER_BOOTS, Material.WOOD_SWORD, Material.WOOD_AXE,
+            Material.WOOD_SPADE, Material.WOOD_PICKAXE, Material.FISHING_ROD,
+            Material.ELYTRA, Material.BOW, Material.FLINT_AND_STEEL, Material.CARROT_STICK);
+
+    public static boolean isRepairable(Material type) {
+        return repairable.contains(type);
+    }
 
     public static NBTCompoundWrapper<?> getItemTag(ItemStack item) {
         NBTTagCompound itemTag = CraftItemStack.asNMSCopy(item).getTag();
@@ -288,11 +314,7 @@ public class ItemStackUtils {
             potion.setMainEffect(mainEffect);
         }
 
-        PotionEffect[] var8 = effects;
-        int var7 = effects.length;
-
-        for (int var6 = 0; var6 < var7; ++var6) {
-            PotionEffect effect = var8[var6];
+        for (PotionEffect effect : effects) {
             if (effect != null) {
                 potion.addCustomEffect(effect, true);
             }
@@ -472,6 +494,42 @@ public class ItemStackUtils {
         } else {
             return false;
         }
+    }
+
+    public static String serialize(ItemStack stack) {
+        YamlConfiguration configuration = new YamlConfiguration();
+        configuration.set("items", stack);
+        return configuration.saveToString();
+    }
+
+    @SneakyThrows
+    public static ItemStack deserialize(String code) {
+        YamlConfiguration configuration = new YamlConfiguration();
+        configuration.loadFromString(code);
+        return configuration.getItemStack("items");
+    }
+
+    public static String[] serializeArray(ItemStack[] stacks) {
+        String[] result = new String[stacks.length];
+        for (int i = 0; i < stacks.length; i++) {
+            result[i] = getItemTag(stacks[i]).toJson();
+        }
+
+        return result;
+    }
+
+    public static ItemStack[] deserializeArray(String[] keys) {
+        ItemStack[] result = new ItemStack[keys.length];
+
+        for (int i = 0; i < keys.length; i++) {
+            try {
+                result[i] = CraftItemStack.asBukkitCopy(new net.minecraft.server.v1_12_R1.ItemStack(MojangsonParser.parse(keys[i])));
+            } catch (MojangsonParseException ex) {
+                result[i] = new ItemStack(Material.STONE);
+            }
+        }
+
+        return result;
     }
 }
 

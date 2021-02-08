@@ -109,7 +109,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                                 }
                             }
 
-                            new ChatComponent().addText("§a§bDrop Options", Hover.show_text, newLineJoiner.toString()).send(player);
+                            new ChatComponent().addText("§a§lDrop Options", Hover.show_text, newLineJoiner.toString()).send(player);
                         }
                     } else {
                         player.sendMessage(blue + "Lucky Block : " + red + "false");
@@ -212,10 +212,8 @@ public class SomeEvents extends ColorsClass implements Listener {
             Player player = event.getPlayer();
             if (block.getType() == Material.GOLD_BLOCK) {
                 Detector detector = null;
-                Iterator var6 = LuckyBlockAPI.detectors.iterator();
 
-                while (var6.hasNext()) {
-                    Detector det = (Detector) var6.next();
+                for (Detector det : LuckyBlockAPI.detectors) {
                     String[] var10;
                     int var9 = (var10 = det.getBlocks()).length;
 

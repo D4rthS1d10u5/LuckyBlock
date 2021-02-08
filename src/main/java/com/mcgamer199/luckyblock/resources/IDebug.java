@@ -27,8 +27,8 @@ public class IDebug {
         }
 
         ChatComponent component = new ChatComponent();
-        component.addText("§5§b[§e§bLBDebug§5§b]", Hover.show_text, "§eErrors detector\n");
-        component.addText("§c An error has occurred! For more information hover §ehere.", Hover.show_text, "§9§b" + errorMessage);
+        component.addText("§5§l[§e§lLBDebug§5§l]", Hover.show_text, "§eErrors detector\n");
+        component.addText("§c An error has occurred! For more information hover §ehere.", Hover.show_text, "§9§l" + errorMessage);
 
         component.send(player);
     }

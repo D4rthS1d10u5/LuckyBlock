@@ -1,7 +1,9 @@
 package com.mcgamer199.luckyblock.util;
 
+import com.google.common.collect.Iterators;
 import lombok.experimental.UtilityClass;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -40,7 +42,11 @@ public class RandomUtils {
         return list.get(nextInt(list.size()));
     }
 
-    public static int randInt(int min, int max) {
+    public static <T> T getRandomObject(Iterator<T> iterator) {
+        return Iterators.get(iterator, nextInt(Iterators.size(iterator)));
+    }
+
+    public static int nextInt(int min, int max) {
         return random.nextInt(min, max);
     }
 

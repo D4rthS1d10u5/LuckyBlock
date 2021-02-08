@@ -38,6 +38,7 @@ public class DropEvents1 extends ColorsClass {
     }
 
     static void run(Block block, LuckyBlock luckyBlock, Player player, LBDrop drop, CustomDrop customDrop, boolean first) {
+        int duration;
         Location bloc = block.getLocation();
         FileConfiguration file = luckyBlock.getFile();
         String clss;
@@ -135,31 +136,25 @@ public class DropEvents1 extends ColorsClass {
 
                         HTasks.g(d);
                     } else {
-                        int wtfIsThisInt;
                         if (drop == LBDrop.POTION_EFFECT) {
                             if (player != null && luckyBlock.getDropOption("Effects") != null) {
-                                Object[] d = luckyBlock.getDropOption("Effects").getValues();
-                                Object[] var30 = d;
-                                playerX = d.length;
 
-                                for (fuse = 0; fuse < playerX; ++fuse) {
-                                    Object b = var30[fuse];
-                                    String s = b.toString();
+                                for (Object effect : luckyBlock.getDropOption("Effects").getValues()) {
+                                    String s = effect.toString();
                                     if (s != null) {
                                         String[] t = s.split("%");
                                         if (PotionEffectType.getByName(t[0].toUpperCase()) != null) {
-                                            boolean var16 = false;
 
-                                            byte am;
+                                            byte amplifier;
                                             try {
-                                                wtfIsThisInt = Integer.parseInt(t[1]);
-                                                am = Byte.parseByte(t[2]);
+                                                duration = Integer.parseInt(t[1]);
+                                                amplifier = Byte.parseByte(t[2]);
                                             } catch (NumberFormatException var20) {
                                                 send_no(player, "invalid_number");
                                                 return;
                                             }
 
-                                            player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(t[0].toUpperCase()), wtfIsThisInt, am));
+                                            player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(t[0].toUpperCase()), duration, amplifier));
                                         } else {
                                             send_no(player, "drops.potion_effect.invalid_effect");
                                         }
@@ -233,29 +228,29 @@ public class DropEvents1 extends ColorsClass {
 
                                         int y;
                                         Location blockLocation;
-                                        for (wtfIsThisInt = rad * -1 - 1; wtfIsThisInt < rad + 2; ++wtfIsThisInt) {
+                                        for (duration = rad * -1 - 1; duration < rad + 2; ++duration) {
                                             for (z = rad * -1 - 1; z < rad + 2; ++z) {
                                                 for (y = fuse - 1; y > 0; --y) {
-                                                    blockLocation = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, y, fuse + z);
+                                                    blockLocation = new Location(player.getLocation().getWorld(), t + duration, y, fuse + z);
                                                     blockLocation.getBlock().setType(ma);
                                                     blockLocation.getBlock().setData(data);
                                                 }
                                             }
                                         }
 
-                                        for (wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
+                                        for (duration = rad * -1; duration < rad + 1; ++duration) {
                                             for (z = rad * -1; z < rad + 1; ++z) {
                                                 for (y = fuse; y > 0; --y) {
-                                                    blockLocation = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, y, fuse + z);
+                                                    blockLocation = new Location(player.getLocation().getWorld(), t + duration, y, fuse + z);
                                                     blockLocation.getBlock().setType(Material.AIR);
                                                 }
                                             }
                                         }
 
                                         if (cobs) {
-                                            for (wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
+                                            for (duration = rad * -1; duration < rad + 1; ++duration) {
                                                 for (z = rad * -1; z < rad + 1; ++z) {
-                                                    blockLocation = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, 4.0D, fuse + z);
+                                                    blockLocation = new Location(player.getLocation().getWorld(), t + duration, 4.0D, fuse + z);
                                                     blockLocation.getBlock().setType(Material.WEB);
                                                 }
                                             }
@@ -282,10 +277,10 @@ public class DropEvents1 extends ColorsClass {
 
                                         sign.update();
 
-                                        for (wtfIsThisInt = rad * -1; wtfIsThisInt < rad + 1; ++wtfIsThisInt) {
+                                        for (duration = rad * -1; duration < rad + 1; ++duration) {
                                             for (z = rad * -1; z < rad + 1; ++z) {
                                                 for (y = 2; y > 0; --y) {
-                                                    loc = new Location(player.getLocation().getWorld(), t + wtfIsThisInt, y, fuse + z);
+                                                    loc = new Location(player.getLocation().getWorld(), t + duration, y, fuse + z);
                                                     loc.getBlock().setType(Material.LAVA);
                                                 }
                                             }
@@ -630,7 +625,6 @@ public class DropEvents1 extends ColorsClass {
                 }
             }
         }
-
     }
 
     private static void jail(Block b) {

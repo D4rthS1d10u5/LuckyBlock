@@ -6,8 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Iterator;
-
 public class ItemStackTags extends HTag {
     public ItemStackTags() {
     }
@@ -28,10 +26,8 @@ public class ItemStackTags extends HTag {
             if (c.getConfigurationSection("Items") == null && c.getString("Loc") == null && c.getKeys(false).size() > 0) {
                 return getItems(c.getConfigurationSection(getRandomLoc(c)));
             } else {
-                Iterator var4 = c.getKeys(false).iterator();
 
-                while (var4.hasNext()) {
-                    String s = (String) var4.next();
+                for (String s : c.getKeys(false)) {
                     int timesA = 1;
                     if (c.getString("Loc") != null) {
                         return getItems(getSection(c.getString("Loc")));
@@ -44,10 +40,8 @@ public class ItemStackTags extends HTag {
 
                     if (s.equalsIgnoreCase("Items") && c.getConfigurationSection(s) != null) {
                         for (int i = 0; i < timesA; ++i) {
-                            Iterator var8 = c.getConfigurationSection(s).getKeys(false).iterator();
 
-                            while (var8.hasNext()) {
-                                String t = (String) var8.next();
+                            for (String t : c.getConfigurationSection(s).getKeys(false)) {
                                 ConfigurationSection f = c.getConfigurationSection(s).getConfigurationSection(t);
                                 int times = 1;
                                 if (f.getString("Times") != null) {

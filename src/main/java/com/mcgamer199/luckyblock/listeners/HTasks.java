@@ -101,11 +101,11 @@ public class HTasks extends ColorsClass {
                 if (this.i > 0) {
                     FallingBlock fb = loc.getWorld().spawnFallingBlock(loc.add(0.0D, 1.0D, 0.0D), Material.COBBLESTONE, (byte) 0);
                     fb.setDropItem(false);
-                    int h = HTasks.randoms.nextInt(6) - 3;
+                    int h = RandomUtils.nextInt(6) - 3;
                     double g = (double) h / 5.0D;
-                    int h1 = HTasks.randoms.nextInt(6) - 3;
+                    int h1 = RandomUtils.nextInt(6) - 3;
                     double g1 = (double) h1 / 5.0D;
-                    int h2 = HTasks.randoms.nextInt(15) + 14;
+                    int h2 = RandomUtils.nextInt(15) + 14;
                     double g2 = (double) h2 / 10.0D;
                     fb.setVelocity(new Vector(g, g2, g1));
                     HTasks.Meteor(fb, 15.0F);
@@ -117,48 +117,34 @@ public class HTasks extends ColorsClass {
         }, 2, 2);
     }
 
-    static void Meteor(final FallingBlock fb, final float explosionPower) {
+    static void Meteor(final FallingBlock fallingBlock, final float explosionPower) {
         Scheduler.timer(new BukkitRunnable() {
-            private int x = 0;
+            private boolean disabled = false;
 
             @Override
             public void run() {
-                int xx;
-                if (fb.isValid()) {
-                    fb.getWorld().spawnParticle(Particle.SMOKE_LARGE, fb.getLocation(), 170, 0.3D, 0.2D, 0.3D, 0.0D);
+                if (fallingBlock.isValid()) {
+                    fallingBlock.getWorld().spawnParticle(Particle.SMOKE_LARGE, fallingBlock.getLocation(), 170, 0.3D, 0.2D, 0.3D, 0.0D);
 
-                    for (Entity e : fb.getNearbyEntities(6.0D, 6.0D, 6.0D)) {
+                    for (Entity e : fallingBlock.getNearbyEntities(6.0D, 6.0D, 6.0D)) {
                         if (e instanceof LivingEntity) {
                             e.setFireTicks(100);
                             e.setFallDistance(15.0F);
                         }
                     }
 
-                    xx = HTasks.randoms.nextInt(4) + 1;
-                    Material mat = Material.STONE;
-                    if (xx == 1) {
-                        mat = Material.COBBLESTONE;
-                    }
-
-                    Item item = fb.getWorld().dropItem(fb.getLocation(), new ItemStack(mat));
+                    Item item = fallingBlock.getWorld().dropItem(fallingBlock.getLocation(), new ItemStack(RandomUtils.nextBoolean() ? Material.COBBLESTONE : Material.STONE));
                     item.setPickupDelay(1000);
                     HTasks.met1(item);
                     HTasks.met3(item);
-                } else if ((fb.isDead() || fb.isOnGround()) && this.x == 0) {
-                    this.x = 1;
-                    xx = fb.getLocation().getBlockX();
-                    int y = fb.getLocation().getBlockY();
-                    int z = fb.getLocation().getBlockZ();
+                } else if ((fallingBlock.isDead() || fallingBlock.isOnGround()) && !this.disabled) {
+                    this.disabled = true;
 
-                    try {
-                        boolean breakBlocks = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
-                        boolean setFire = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionFire");
-                        fb.getWorld().createExplosion(xx, y, z, explosionPower, setFire, breakBlocks);
-                    } catch (Exception var6) {
-                        var6.printStackTrace();
-                    }
+                    boolean breakBlocks = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionGrief");
+                    boolean setFire = LuckyBlockPlugin.instance.config.getBoolean("Allow.ExplosionFire");
+                    fallingBlock.getWorld().createExplosion(fallingBlock.getLocation().getBlockX(), fallingBlock.getLocation().getBlockY(), fallingBlock.getLocation().getBlockZ(), explosionPower, setFire, breakBlocks);
 
-                    fb.remove();
+                    fallingBlock.remove();
                     cancel();
                 }
             }
@@ -229,9 +215,9 @@ public class HTasks extends ColorsClass {
                 if (this.x > 0) {
                     TNTPrimed tnt = (TNTPrimed) loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
                     tnt.setFuseTicks(fuse);
-                    int h = HTasks.randoms.nextInt(4) - 2;
+                    int h = RandomUtils.nextInt(4) - 2;
                     double g = (double) h / 10.0D;
-                    int h1 = HTasks.randoms.nextInt(4) - 2;
+                    int h1 = RandomUtils.nextInt(4) - 2;
                     double g1 = (double) h1 / 10.0D;
                     tnt.setVelocity(new Vector(g, 1.0D, g1));
                     SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
@@ -307,9 +293,9 @@ public class HTasks extends ColorsClass {
                 if (this.x > 0) {
                     FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, m, (byte) 0);
                     fb.setDropItem(false);
-                    int h = HTasks.randoms.nextInt(4) - 2;
+                    int h = RandomUtils.nextInt(4) - 2;
                     double g = (double) h / 5.0D;
-                    int h1 = HTasks.randoms.nextInt(4) - 2;
+                    int h1 = RandomUtils.nextInt(4) - 2;
                     double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
                     SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
@@ -345,9 +331,9 @@ public class HTasks extends ColorsClass {
             public void run() {
                 if (this.x > 0) {
                     Arrow a = (Arrow) loc.getWorld().spawnEntity(loc, EntityType.ARROW);
-                    int h = HTasks.randoms.nextInt(16) - 8;
+                    int h = RandomUtils.nextInt(16) - 8;
                     double g = (double) h / 50.0D;
-                    int h1 = HTasks.randoms.nextInt(16) - 8;
+                    int h1 = RandomUtils.nextInt(16) - 8;
                     double g1 = (double) h1 / 50.0D;
                     a.setVelocity(new Vector(g, 1.2D, g1));
                     a.setCritical(critical);
@@ -416,9 +402,9 @@ public class HTasks extends ColorsClass {
             public void run() {
                 if (this.x > 0) {
                     ThrownExpBottle xp = (ThrownExpBottle) loc.getWorld().spawnEntity(loc, EntityType.THROWN_EXP_BOTTLE);
-                    int h = HTasks.randoms.nextInt(8) - 4;
+                    int h = RandomUtils.nextInt(8) - 4;
                     double g = (double) h / 50.0D;
-                    int h1 = HTasks.randoms.nextInt(8) - 4;
+                    int h1 = RandomUtils.nextInt(8) - 4;
                     double g1 = (double) h1 / 60.0D;
                     xp.setVelocity(new Vector(g, 0.9D, g1));
                     xp.setBounce(true);
@@ -675,9 +661,9 @@ public class HTasks extends ColorsClass {
                 if (items != null && this.x < items.length) {
                     if (items[this.x] != null) {
                         Item item = loc.getWorld().dropItem(loc, items[this.x]);
-                        int h = HTasks.randoms.nextInt(4) - 2;
+                        int h = RandomUtils.nextInt(4) - 2;
                         double g = (double) h / 50.0D;
-                        int h1 = HTasks.randoms.nextInt(4) - 2;
+                        int h1 = RandomUtils.nextInt(4) - 2;
                         double g1 = (double) h1 / 50.0D;
                         item.setVelocity(new Vector(g, 0.4D, g1));
                         if (luckyBlock.hasDropOption("ShowItemName") && luckyBlock.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && items[this.x].hasItemMeta() && items[this.x].getItemMeta().hasDisplayName()) {
@@ -800,9 +786,9 @@ public class HTasks extends ColorsClass {
                 if(times > 0) {
                     FallingBlock fb = loc.getWorld().spawnFallingBlock(loc, type.getType(), (byte) type.getData());
                     fb.setDropItem(false);
-                    int h = HTasks.randoms.nextInt(4) - 2;
+                    int h = RandomUtils.nextInt(4) - 2;
                     double g = (double) h / 5.0D;
-                    int h1 = HTasks.randoms.nextInt(4) - 2;
+                    int h1 = RandomUtils.nextInt(4) - 2;
                     double g1 = (double) h1 / 5.0D;
                     fb.setVelocity(new Vector(g, 1.0D, g1));
                     SoundUtils.playFixedSound(loc, SoundUtils.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);

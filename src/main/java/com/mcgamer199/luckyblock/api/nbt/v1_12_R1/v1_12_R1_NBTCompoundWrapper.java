@@ -249,5 +249,10 @@ public final class v1_12_R1_NBTCompoundWrapper extends NBTCompoundWrapper<NBTTag
     public String asString() {
         return tag.map.entrySet().stream().map(entry -> String.format("§7%s: %s", entry.getKey(), entry.getValue().toString())).collect(Collectors.joining("\n"));
     }
+
+    @Override
+    public String toJson() {
+        return tag.toString();
+    }
 }
 

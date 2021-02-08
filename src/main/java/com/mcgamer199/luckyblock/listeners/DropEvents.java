@@ -498,7 +498,7 @@ public class DropEvents extends ColorsClass {
                                                 bat.remove();
                                             }
 
-                                            bat.getWorld().dropItem(bat.getLocation(), luckyBlock.getType().toItemStack(RandomUtils.randInt(0, 20)));
+                                            bat.getWorld().dropItem(bat.getLocation(), luckyBlock.getType().toItemStack(RandomUtils.nextInt(0, 20)));
                                         }, 20);
                                     } else if (drop == LBDrop.SOLDIER) {
                                         com.mcgamer199.luckyblock.customentity.EntitySoldier soldier = new com.mcgamer199.luckyblock.customentity.EntitySoldier();
@@ -717,10 +717,7 @@ public class DropEvents extends ColorsClass {
                                         }
                                     } else if (drop == LBDrop.POISON_ENTITIES) {
                                         if (player != null) {
-                                            Iterator var87 = player.getNearbyEntities(10.0D, 10.0D, 10.0D).iterator();
-
-                                            while (var87.hasNext()) {
-                                                Entity e = (Entity) var87.next();
+                                            for (Entity e : player.getNearbyEntities(10.0D, 10.0D, 10.0D)) {
                                                 if (e instanceof LivingEntity) {
                                                     LivingEntity l = (LivingEntity) e;
                                                     if (l.getUniqueId() != player.getUniqueId()) {
@@ -812,10 +809,8 @@ public class DropEvents extends ColorsClass {
                                         }
 
                                         com.mcgamer199.luckyblock.customentity.EntityRandomItem r = new com.mcgamer199.luckyblock.customentity.EntityRandomItem();
-                                        Iterator var49 = file.getConfigurationSection(path + "." + s + ".Items").getKeys(false).iterator();
 
-                                        while (var49.hasNext()) {
-                                            String g = (String) var49.next();
+                                        for (String g : file.getConfigurationSection(path + "." + s + ".Items").getKeys(false)) {
                                             r.items.add(com.mcgamer199.luckyblock.tags.ItemStackGetter.getItemStack(file, path + "." + s + ".Items." + g));
                                         }
 

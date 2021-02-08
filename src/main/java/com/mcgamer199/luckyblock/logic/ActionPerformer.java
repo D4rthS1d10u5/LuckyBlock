@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.logic;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+@UtilityClass
 public class ActionPerformer {
-    public ActionPerformer() {
-    }
 
     public static boolean perform(ColorsClass.ObjectType objectType, String name, Object value) {
         if (value == null) {

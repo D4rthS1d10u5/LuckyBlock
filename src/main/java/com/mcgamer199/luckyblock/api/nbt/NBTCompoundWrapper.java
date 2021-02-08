@@ -138,4 +138,6 @@ public abstract class NBTCompoundWrapper<T> {
     }
 
     public abstract String asString();
+
+    public abstract String toJson();
 }

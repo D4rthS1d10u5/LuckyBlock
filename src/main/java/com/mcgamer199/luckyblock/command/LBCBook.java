@@ -83,13 +83,13 @@ public class LBCBook extends LBCommand {
         thirdPage.addText("§1●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n");
         thirdPage.addText("§3Lucky Crafting Table:\n§a-Crafting recipe:\n§68x Gold Ingot\n§51x Crafting Table\n");
         thirdPage.addText("§9-Can be upgraded by\n§9right clicking with 8\n§9emerald blocks.\n§9-Max level is 10\n\n");
-        thirdPage.addText("§6§bClick here go get\n\n\n", Hover.show_text, "§eClick here", Click.run_command, String.format("/%s lct", ILBCmd.lcmd));
+        thirdPage.addText("§6§lClick here go get\n\n\n", Hover.show_text, "§eClick here", Click.run_command, String.format("/%s lct", ILBCmd.lcmd));
 
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 
         BookMeta meta = (BookMeta) book.getItemMeta();
         meta.setAuthor("MCGamer199");
-        meta.setTitle("§e§bLucky Block Book");
+        meta.setTitle("§e§lLucky Block Book");
         book.setItemMeta(meta);
 
         player.getInventory().addItem(ItemStackUtils.setPages(book, Arrays.asList(firstPage, secondPage, thirdPage)));

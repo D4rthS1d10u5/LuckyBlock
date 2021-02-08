@@ -145,7 +145,7 @@ public class ColorsClass {
         return !wait.contains(uuid);
     }
 
-    protected static final String val(String loc) {
+    public static String val(String loc) {
         return getMessage(loc);
     }
 
@@ -153,7 +153,7 @@ public class ColorsClass {
         return getMessage1(loc, colors);
     }
 
-    protected static final void send(CommandSender sender, String loc) {
+    public static void send(CommandSender sender, String loc) {
         sendMessage(sender, loc);
     }
 
@@ -161,7 +161,7 @@ public class ColorsClass {
         msg_a(sender, loc, apnd);
     }
 
-    protected static final void send_no(CommandSender sender, String loc) {
+    public static void send_no(CommandSender sender, String loc) {
         send_no(sender, loc, null);
     }
 
@@ -185,7 +185,7 @@ public class ColorsClass {
         String invalidCommand = getMessage("invalid_command");
         if(StringUtils.isNotEmpty(invalidCommand)) {
             ChatComponent component = new ChatComponent();
-            component.addText("§a[§e§bLB§a]: ", Hover.show_text, "§Lucky Block");
+            component.addText("§a[§e§lLB§a]: ", Hover.show_text, "§Lucky Block");
             String command = String.format("/%s help", ILBCmd.lcmd);
             component.addText(invalidCommand, Hover.show_text, command, Click.run_command, command);
             component.send(sender);
@@ -200,7 +200,7 @@ public class ColorsClass {
             }
 
             ChatComponent component = new ChatComponent();
-            component.addText(String.format("§a[§e§bLB§a]: %s", message), Hover.show_text, "§Lucky Block");
+            component.addText(String.format("§a[§e§lLB§a]: %s", message), Hover.show_text, "§Lucky Block");
             component.send(sender);
         }
     }
@@ -210,7 +210,7 @@ public class ColorsClass {
             message = ChatColor.translateAlternateColorCodes('&', message);
             if (!message.equalsIgnoreCase("")) {
                 ChatComponent component = new ChatComponent();
-                component.addText(String.format("§a[§e§bLB§a]: %s", message), Hover.show_text, "§Lucky Block");
+                component.addText(String.format("§a[§e§lLB§a]: %s", message), Hover.show_text, "§Lucky Block");
                 component.send(sender);
             }
         }

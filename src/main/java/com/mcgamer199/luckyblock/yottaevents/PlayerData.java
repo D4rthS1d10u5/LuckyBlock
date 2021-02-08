@@ -34,6 +34,10 @@ public class PlayerData {
         return (V) getMetadata(player).put(key, val);
     }
 
+    public static <V> V remove(Player player, String key) {
+        return (V) getMetadata(player).remove(key);
+    }
+
     public static Map<String, Object> getMetadata(Player player) {
         List<MetadataValue> luckydata = player.getMetadata("luckydata");
         if (!luckydata.isEmpty()) {
