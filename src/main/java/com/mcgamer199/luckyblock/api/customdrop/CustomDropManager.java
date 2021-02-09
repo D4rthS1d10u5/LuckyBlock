@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.customdrop;
+package com.mcgamer199.luckyblock.api.customdrop;
 
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import lombok.experimental.UtilityClass;
@@ -56,7 +56,7 @@ public class CustomDropManager {
         return Collections.unmodifiableList(customdrops);
     }
 
-    public static com.mcgamer199.luckyblock.customdrop.CustomDrop getByName(String name) {
+    public static com.mcgamer199.luckyblock.api.customdrop.CustomDrop getByName(String name) {
         for (int x = 0; x < customdrops.size(); ++x) {
             if (customdrops.get(x).getName().equalsIgnoreCase(name)) {
                 return customdrops.get(x);

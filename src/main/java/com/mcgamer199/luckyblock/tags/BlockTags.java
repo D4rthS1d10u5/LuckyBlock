@@ -1,11 +1,10 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -328,9 +327,8 @@ public class BlockTags extends HTag {
                         c2 = c1.getConfigurationSection(t).getConfigurationSection(a);
                         String name = c2.getString("Name");
                         List<String> list = c2.getStringList("Values");
-                        if (name != null && list != null && list.size() > 0) {
-                            DropOption dr = new DropOption(name, list.toArray());
-                            luckyBlock.getOldOptions().add(dr);
+                        if (luckyBlock != null && name != null && list != null && list.size() > 0) {
+                            luckyBlock.getDropOptions().putStringArray(name, list.toArray(new String[0]));
                             luckyBlock.save(true);
                         }
                     }

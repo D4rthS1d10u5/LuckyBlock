@@ -106,7 +106,7 @@ public class EntityLBNameTag extends CustomEntity {
             String i = this.getTag("IType").toString();
             if (i.equalsIgnoreCase("Drop")) {
                 if (this.luckyBlock.hasDropOption("Title")) {
-                    this.text = ChatColor.translateAlternateColorCodes('&', this.luckyBlock.getDropOption("Title").getValues()[0].toString());
+                    this.text = ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull"));
                 } else if (this.luckyBlock.customDrop != null) {
                     this.text = ChatColor.RED + this.luckyBlock.customDrop.getName();
                 } else {

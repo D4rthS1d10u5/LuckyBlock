@@ -86,6 +86,26 @@ public class Properties {
         jsonParams.remove(key);
     }
 
+    public String toString(JsonElement element) {
+        if(element == null || element.isJsonNull()) {
+            return "null";
+        }
+
+        if(element.isJsonPrimitive()) {
+            return element.toString();
+        } else if(element.isJsonArray()) {
+            StringBuilder array = new StringBuilder();
+            element.getAsJsonArray().forEach(jsonElement -> array.append(toString(jsonElement)).append(", "));
+            return array.toString();
+        } else if(element.isJsonObject()) {
+            StringBuilder object = new StringBuilder();
+            element.getAsJsonObject().entrySet().forEach(entry -> object.append(String.format("%s: %s", entry.getKey(), toString(entry.getValue()))));
+            return object.toString();
+        }
+
+        return "";
+    }
+
     public String getString(String key, String defParam) {
         if(!jsonParams.has(key)) { return defParam; }
         return jsonParams.get(key).getAsString();

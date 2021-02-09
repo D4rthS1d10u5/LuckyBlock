@@ -7,13 +7,17 @@ package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.customdrop.impl.DropInventoryDrop;
+import com.mcgamer199.luckyblock.api.customdrop.impl.EffectsDrop;
+import com.mcgamer199.luckyblock.api.customdrop.impl.FakeTntDrop;
+import com.mcgamer199.luckyblock.api.customdrop.impl.RandomBlockDrop;
 import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.title.ITitle;
 import com.mcgamer199.luckyblock.api.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.CustomEntityEvents;
 import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
@@ -162,10 +166,10 @@ public class LuckyBlockPlugin extends JavaPlugin {
         }
 
         allowLBGeneration = this.config.getBoolean("Allow.LBGeneration");
-        com.mcgamer199.luckyblock.customdrop.CustomDropManager.registerDrop(new com.mcgamer199.luckyblock.customdrop.EffectsDrop());
-        com.mcgamer199.luckyblock.customdrop.CustomDropManager.registerDrop(new com.mcgamer199.luckyblock.customdrop.FakeTntDrop());
-        com.mcgamer199.luckyblock.customdrop.CustomDropManager.registerDrop(new com.mcgamer199.luckyblock.customdrop.RandomBlockDrop());
-        CustomDropManager.registerDrop(new com.mcgamer199.luckyblock.customdrop.DropInventoryDrop());
+        com.mcgamer199.luckyblock.api.customdrop.CustomDropManager.registerDrop(new EffectsDrop());
+        com.mcgamer199.luckyblock.api.customdrop.CustomDropManager.registerDrop(new FakeTntDrop());
+        com.mcgamer199.luckyblock.api.customdrop.CustomDropManager.registerDrop(new RandomBlockDrop());
+        CustomDropManager.registerDrop(new DropInventoryDrop());
         PluginManager pm = this.getServer().getPluginManager();
         this.loadFiles();
         IObjects.load();

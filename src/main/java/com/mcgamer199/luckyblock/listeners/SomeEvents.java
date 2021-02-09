@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.enums.ItemProperty;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBInteractEvent;
-import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
@@ -72,42 +72,37 @@ public class SomeEvents extends ColorsClass implements Listener {
             Block block = event.getClickedBlock();
             if (player.getInventory().getItemInMainHand().getType() == Material.CARROT_STICK && this.isMainHand(event) && player.getInventory().getItemInMainHand().hasItemMeta() && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null) {
                 LuckyBlock luckyBlock;
-                int luckyb;
+                int luck;
                 if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(yellow + "Lucky Block Tool")) {
                     if (LuckyBlock.isLuckyBlock(block)) {
                         luckyBlock = LuckyBlock.getByBlock(block);
-                        luckyb = luckyBlock.getLuck();
+                        luck = luckyBlock.getLuck();
                         player.sendMessage(blue + "Lucky Block : " + green + "true");
-                        player.sendMessage(luckyBlock.getType().getLuckString(luckyb));
+                        player.sendMessage(luckyBlock.getType().getLuckString(luck));
                     } else {
                         player.sendMessage(blue + "Lucky Block : " + red + "false");
                     }
                 } else if (player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(yellow + "Advanced Lucky Block Tool")) {
                     if (LuckyBlock.isLuckyBlock(block)) {
                         luckyBlock = LuckyBlock.getByBlock(block);
-                        luckyb = luckyBlock.getLuck();
+                        luck = luckyBlock.getLuck();
                         player.sendMessage(blue + "Lucky Block : " + green + "true");
-                        player.sendMessage(luckyBlock.getType().getLuckString(luckyb));
+                        player.sendMessage(luckyBlock.getType().getLuckString(luck));
                         if (luckyBlock.getPlacedByClass() != null) {
                             player.sendMessage(yellow + val("command.lbs.data.placedby") + ": " + gold + luckyBlock.getPlacedByClass());
                         }
 
-                        if ((luckyBlock.getLuckyBlockDrop() != null || luckyBlock.customDrop != null) && luckyBlock.getDropOption("Title") != null && luckyBlock.getDropOption("Title").getValues().length > 0) {
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) luckyBlock.getDropOption("Title").getValues()[0]));
+                        if ((luckyBlock.getLuckyBlockDrop() != null || luckyBlock.customDrop != null) && luckyBlock.hasDropOption("Title")) {
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull")));
                         }
 
-                        if (luckyBlock.getOldOptions().size() > 1) {
+                        if (!luckyBlock.getDropOptions().isEmpty()) {
                             StringJoiner newLineJoiner = new StringJoiner("\n");
-                            for (DropOption dropOption : luckyBlock.getOldOptions()) {
-                                if(!LuckyBlock.isHiddenOption(dropOption.getName())) {
-                                    StringJoiner commaJoiner = new StringJoiner("§5,");
-                                    for (Object value : dropOption.getValues()) {
-                                        if(value != null) {
-                                            commaJoiner.add(ChatColor.translateAlternateColorCodes('&', value.toString()));
-                                        }
-                                    }
+                            Properties properties = luckyBlock.getDropOptions();
 
-                                    newLineJoiner.add(String.format("§d%s: %s", dropOption.getName(), commaJoiner.toString()));
+                            for (String key : properties.keys()) {
+                                if(!LuckyBlock.isHiddenOption(key)) {
+                                    newLineJoiner.add(properties.toString(properties.getJsonParams().get(key)));
                                 }
                             }
 

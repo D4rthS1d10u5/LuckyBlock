@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.util;
 
-import com.mcgamer199.luckyblock.customdrop.CustomDrop;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
@@ -108,57 +108,54 @@ public class TemporaryUtils {
     public static void run(final Block block, LuckyBlock luckyBlock, Player player, LuckyBlockDrop drop, CustomDrop customDrop, boolean first) {
         Location bloc = block.getLocation();
         if (player != null && luckyBlock.hasDropOption("Message")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', (String) luckyBlock.getDropOption("Message").getValues()[0]));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull")));
         }
 
-        String[] objs;
-        int fuse;
-        if (luckyBlock.hasDropOption("IParticles")) {
-            objs = (String[]) luckyBlock.getDropOption("IParticles").getValues();
-
-            for (fuse = 0; fuse < objs.length; ++fuse) {
-                if (objs[fuse] != null) {
-                    BreakLuckyBlock.spawnParticle(bloc, objs[fuse]);
-                }
+        String[] particles = luckyBlock.getDropOptions().getStringArray("IParticles");
+        for (String particle : particles) {
+            if(particle != null) {
+                BreakLuckyBlock.spawnParticle(bloc, particle);
             }
         }
 
-        String path;
-        if (player == null && luckyBlock.hasDropOption("Player")) {
-            path = luckyBlock.getDropOption("Player").getValues()[0].toString();
-            if (Bukkit.getPlayer(path) != null) {
-                player = Bukkit.getPlayer(path);
+        String playerName = luckyBlock.getDropOptions().getString("Player", null);
+        if (player == null && playerName != null) {
+            Player search = Bukkit.getPlayer(playerName);
+            if(search != null) {
+                player = search;
             }
         }
 
-        int randomP;
-        int x;
-        String path1;
         if (luckyBlock.hasDropOption("With") && first) {
-            objs = (String[]) luckyBlock.getDropOption("With").getValues();
-            String[] var12 = objs;
-            x = objs.length;
-
-            for (randomP = 0; randomP < x; ++randomP) {
-                path1 = var12[randomP];
-                if (path1 != null) {
-                    if (CustomDropManager.getByName(path1) != null) {
-                        run(block, luckyBlock, player, null, CustomDropManager.getByName(path1), false);
+            String[] dropNames = luckyBlock.getDropOptions().getStringArray("With");
+            for (String dropName : dropNames) {
+                if (dropName != null) {
+                    CustomDrop custom = CustomDropManager.getByName(dropName);
+                    if(custom != null) {
+                        run(block, luckyBlock, player, null, custom, false);
                     } else {
-                        run(block, luckyBlock, player, LuckyBlockDrop.getByName(path1), null, false);
+                        run(block, luckyBlock, player, LuckyBlockDrop.getByName(dropName), null, false);
                     }
                 }
             }
         }
 
         if (LuckyBlockPlugin.isDebugEnabled()) {
-            IDebug.sendDebug("Lucky block broken", new DebugData("Player", player != null ? player.getName() : "none"), new DebugData("Location", LocationUtils.asString(bloc)), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOption("Title").getValues()[0].toString())) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
+            IDebug.sendDebug("Lucky block broken",
+                    new DebugData("Player", player != null ? player.getName() : "none"),
+                    new DebugData("Location", LocationUtils.asString(bloc)),
+                    new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())),
+                    new DebugData("Placed By", luckyBlock.getPlacedByClass()),
+                    new DebugData("Title", ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "unknown")))),
+                    new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()),
+                    new DebugData("Luck", String.valueOf(luckyBlock.getLuck())),
+                    new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
         }
 
         if (customDrop == null && drop != null) {
             drop.execute(luckyBlock, player);
         } else {
-            luckyBlock.customDrop.function(luckyBlock, player);
+            luckyBlock.customDrop.execute(luckyBlock, player);
         }
     }
 }

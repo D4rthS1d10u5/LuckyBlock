@@ -53,7 +53,7 @@ public enum LuckyBlockDrop {
 
     NONE(false),
     CHEST(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         block.setType(Material.CHEST);
         Chest chest = (Chest) block.getState();
 
@@ -74,13 +74,13 @@ public enum LuckyBlockDrop {
         }
     }),
     LAVA(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         for (BlockFace face : LocationUtils.allHorizontal()) {
             block.getRelative(face).setType(Material.STATIONARY_LAVA);
         }
     }),
     FIREWORK(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Firework firework = (Firework) block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
         FireworkEffect.Type type = FireworkEffect.Type.BALL_LARGE;
@@ -107,7 +107,7 @@ public enum LuckyBlockDrop {
         }, 60);
     }),
     F_PIGS(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Scheduler.create(() -> {
             Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation().add(0.0D, 0.0D, 0.0D), EntityType.BAT);
             bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
@@ -140,7 +140,7 @@ public enum LuckyBlockDrop {
         superSlime.ride();
     }),
     F_LB(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Bat bat = (Bat) block.getWorld().spawnEntity(block.getLocation(), EntityType.BAT);
         bat.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0));
         FallingBlock fallingBlock = bat.getWorld().spawnFallingBlock(bat.getLocation().add(0.0D, 5.0D, 0.0D), luckyBlock.getType().getBlockType(), (byte) luckyBlock.getType().getData());
@@ -159,7 +159,7 @@ public enum LuckyBlockDrop {
     SOLDIER(true, (luckyBlock, player) -> new EntitySoldier().spawn(luckyBlock.getBlock().getLocation())),
     LB_ITEM(true, (luckyBlock, player) -> luckyBlock.getBlock().getWorld().dropItem(luckyBlock.getBlock().getLocation(), luckyBlock.getType().toItemStack(RandomUtils.nextInt(-10, 10)))),
     BEDROCK(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Scheduler.later(() -> {
             block.setType(Material.BEDROCK);
             if (block.getRelative(BlockFace.UP).getType() == Material.AIR) {
@@ -179,7 +179,7 @@ public enum LuckyBlockDrop {
         }
     }),
     WOLVES_OCELOTS(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Scheduler.create(() -> {
             if (RandomUtils.nextBoolean()) {
                 Wolf wolf = (Wolf) block.getWorld().spawnEntity(block.getLocation(), EntityType.WOLF);
@@ -205,7 +205,7 @@ public enum LuckyBlockDrop {
         }).count(RandomUtils.nextInt(5) + 7).timer(1, 1);
     }),
     FIREWORKS(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Scheduler.create(() -> {
             for (int x = RandomUtils.nextInt(18) + 8; x > 0; --x) {
                 Firework fwork = (Firework) block.getWorld().spawnEntity(block.getLocation(), EntityType.FIREWORK);
@@ -300,7 +300,7 @@ public enum LuckyBlockDrop {
         }
     }),
     TRADES(true, (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Villager villager = (Villager) block.getWorld().spawnEntity(block.getLocation(), EntityType.VILLAGER);
         villager.setProfession(Villager.Profession.BLACKSMITH);
         villager.setCustomName("§e§lLucky Villager");
@@ -380,7 +380,7 @@ public enum LuckyBlockDrop {
     }),
     WATER_TRAP(true, (luckyBlock, player) -> {
         if (player != null) {
-            Block block = player.getLocation().getBlock();
+            org.bukkit.block.Block block = player.getLocation().getBlock();
 
             for (BlockFace face : LocationUtils.allHorizontal()) {
                 block.getRelative(face).setType(Material.OBSIDIAN);
@@ -403,7 +403,7 @@ public enum LuckyBlockDrop {
     }),
     LAVA_POOL(true, (luckyBlock, player) -> {
         if(player != null) {
-            Block block = player.getLocation().getBlock();
+            org.bukkit.block.Block block = player.getLocation().getBlock();
             block.getRelative(BlockFace.DOWN).setType(Material.STATIONARY_LAVA);
             for (BlockFace face : LocationUtils.allHorizontal()) {
                 block.getRelative(face).getRelative(BlockFace.DOWN).setType(Material.STATIONARY_LAVA);
@@ -458,7 +458,7 @@ public enum LuckyBlockDrop {
                                     }
 
                                     if (item.isOnGround()) {
-                                        Block block = item.getLocation().add(0.0D, -1.0D, 0.0D).getBlock();
+                                        org.bukkit.block.Block block = item.getLocation().add(0.0D, -1.0D, 0.0D).getBlock();
                                         if (block != null && block.getType() != item.getItemStack().getType() && block.getType().isSolid() && !block.getType().isTransparent()) {
                                             Material mat = block.getType();
                                             block.setType(item.getItemStack().getType());
@@ -513,7 +513,7 @@ public enum LuckyBlockDrop {
         villager.spawn(luckyBlock.getBlock().getLocation());
     }),
     SPLASH_POTION(true, new Properties().putStringArray("Effects", new String[] {"SPEED%200%0"}), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         ItemStack potion = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = (PotionMeta) potion.getItemMeta();
         potionMeta.setBasePotionData(new PotionData(PotionType.AWKWARD));
@@ -544,7 +544,7 @@ public enum LuckyBlockDrop {
         }
     }),
     PRIMED_TNT(true, new Properties().putFloat("TntPower", 3F).putInt("Fuse", 50), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         TNTPrimed tnt = (TNTPrimed) block.getWorld().spawnEntity(block.getLocation().add(0.0D, 20.0D, 0.0D), EntityType.PRIMED_TNT);
         tnt.setYield(luckyBlock.getDropOptions().getFloat("TntPower", 3F));
         tnt.setFireTicks(2000);
@@ -556,13 +556,13 @@ public enum LuckyBlockDrop {
     }),
     LIGHTNING(true, new Properties().putInt("Times", 10), (luckyBlock, player) -> {
         if (player != null) {
-            Block block = luckyBlock.getBlock();
+            org.bukkit.block.Block block = luckyBlock.getBlock();
             Scheduler.create(() -> player.getWorld().strikeLightning(block.getLocation())).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(0, 4);
         }
     }),
     FAKE_ITEM(true, new Properties().putEnum("ItemMaterial", Material.DIAMOND).putShort("ItemData", (short) 0).putInt("ItemAmount", 64).putInt("Ticks", 85), (luckyBlock, player) -> {
         if (luckyBlock.hasDropOption("ItemMaterial")) {
-            Block block = luckyBlock.getBlock();
+            org.bukkit.block.Block block = luckyBlock.getBlock();
             Material material = luckyBlock.getDropOptions().getEnum("ItemMaterial", Material.class, Material.DIAMOND);
             int itemAmount = luckyBlock.getDropOptions().getInt("ItemAmount", 1);
             short data = luckyBlock.getDropOptions().getShort("ItemData");
@@ -574,7 +574,7 @@ public enum LuckyBlockDrop {
     }),
     DROPPED_ITEMS(true, new Properties().putBoolean("Effects", false).putBoolean("ShowItemName", false), (luckyBlock, player) -> {
         FileConfiguration file = luckyBlock.getFile();
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         String path = luckyBlock.getDropOptions().getString("Path", "DroppedItems");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
 
@@ -585,7 +585,7 @@ public enum LuckyBlockDrop {
                 ItemStack itemStack = iterator.next();
                 Item item = block.getLocation().getWorld().dropItem(block.getLocation(), itemStack);
                 item.setVelocity(new Vector((RandomUtils.nextInt(4) - 2) / 50D, 0.4D, (RandomUtils.nextInt(4) - 2) / 50D));
-                if (luckyBlock.hasDropOption("ShowItemName") && luckyBlock.getDropOption("ShowItemName").getValues()[0].toString().equalsIgnoreCase("true") && itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
+                if (luckyBlock.getDropOptions().getBoolean("ShowItemName") && itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
                     item.setCustomName(itemStack.getItemMeta().getDisplayName());
                     item.setCustomNameVisible(true);
                 }
@@ -616,7 +616,7 @@ public enum LuckyBlockDrop {
         }
     }),
     TOWER(true, new Properties().putString("Type", "a"), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         String type = luckyBlock.getDropOptions().getString("Type", "a");
         Location loc = block.getLocation().add(0.5D, 0.0D, 0.5D);
         block.getWorld().playEffect(loc, Effect.POTION_BREAK, RandomUtils.nextInt(10) + 1);
@@ -641,7 +641,7 @@ public enum LuckyBlockDrop {
         }, 6, 6);
     }),
     METEORS(true, new Properties().putFloat("ExplosionPower", 11F), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         for (int times = 8; times > 0; --times) {
             FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation().add(RandomUtils.nextInt(10), 35.0D, RandomUtils.nextInt(10)), Material.STONE, (byte) 0);
             fallingBlock.setVelocity(fallingBlock.getVelocity().multiply(2));
@@ -675,7 +675,7 @@ public enum LuckyBlockDrop {
                                     }
 
                                     if (item.isOnGround()) {
-                                        Block block = item.getLocation().add(0.0D, -1.0D, 0.0D).getBlock();
+                                        org.bukkit.block.Block block = item.getLocation().add(0.0D, -1.0D, 0.0D).getBlock();
                                         if (block != null && block.getType() != item.getItemStack().getType() && block.getType().isSolid() && !block.getType().isTransparent()) {
                                             Material mat = block.getType();
                                             block.setType(item.getItemStack().getType());
@@ -714,8 +714,8 @@ public enum LuckyBlockDrop {
     }),
     JAIL(true, new Properties().putInt("Ticks", 70), (luckyBlock, player) -> {
         if (player != null) {
-            //TODO я так понимаю эту гору кода можно заменить методом #jail(Block), надо проверить
-            Block block = player.getLocation().getBlock();
+            //TODO я так понимаю эту гору кода можно заменить методом #jail(org.bukkit.block.Block), надо проверить
+            org.bukkit.block.Block block = player.getLocation().getBlock();
             block.getLocation().add(2.0D, 0.0D, 0.0D).getBlock().setType(Material.SMOOTH_BRICK);
             block.getLocation().add(2.0D, 0.0D, 1.0D).getBlock().setType(Material.SMOOTH_BRICK);
             block.getLocation().add(2.0D, 0.0D, -1.0D).getBlock().setType(Material.SMOOTH_BRICK);
@@ -796,13 +796,13 @@ public enum LuckyBlockDrop {
         }
     }),
     TREE(true, new Properties().putEnum("TreeType", TreeType.TREE), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         TreeType type = luckyBlock.getDropOptions().getEnum("TreeType", TreeType.class, TreeType.TREE);
         block.getRelative(BlockFace.DOWN).setType(type.equals(TreeType.CHORUS_PLANT) ? Material.ENDER_STONE : Material.DIRT);
         Scheduler.later(() -> block.getWorld().generateTree(block.getLocation(), type), 1);
     }),
     SIGN(true, new Properties().putStringArray("Texts", new String[]{"&cHello", "&5How are you?"}).putString("Facing", "PLAYER"), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         block.setType(Material.SIGN_POST);
         Sign sign = (Sign) block.getState();
         String facing = luckyBlock.getDropOptions().getString("Facing", "PLAYER");
@@ -1054,7 +1054,7 @@ public enum LuckyBlockDrop {
         }).count(luckyBlock.getDropOptions().getInt("Times", 30)).timer(1, 2);
     }),
     SET_BLOCK(true, new Properties().putEnum("BlockMaterial", Material.DIAMOND_BLOCK), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         byte blockType = luckyBlock.getDropOptions().getByte("BlockData");
         Material blockMaterial = luckyBlock.getDropOptions().getEnum("BlockMaterial", Material.class, Material.DIAMOND_BLOCK);
         if (luckyBlock.getDropOptions().getBoolean("ShowParticles")) {
@@ -1080,7 +1080,7 @@ public enum LuckyBlockDrop {
         }
     }),
     DISPENSER(true, new Properties().putInt("Times", 64), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         block.setType(Material.DISPENSER);
         block.setData((byte) 1);
         Dispenser dispenser = (Dispenser) block.getState();
@@ -1253,7 +1253,7 @@ public enum LuckyBlockDrop {
         }
     }),
     DROPPER(true, new Properties().putInt("Times", 64), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         block.setType(Material.DROPPER);
         block.setData((byte) 1);
         Dropper dropper = (Dropper) block.getState();
@@ -1273,7 +1273,7 @@ public enum LuckyBlockDrop {
                 .predicate(() -> dropper.getBlock().getType().equals(Material.DROPPER) && dropper.getInventory().contains(Material.DIAMOND)).timer(3, 3);
     }),
     EXPLOSIVE_CHEST(true, new Properties().putInt("Ticks", 50).putBoolean("ClearInventory", true), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         block.setType(Material.CHEST);
         int times = MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Ticks", 50), 0, 1024);
         String path = luckyBlock.getDropOptions().getString("Path", "Chests");
@@ -1317,7 +1317,7 @@ public enum LuckyBlockDrop {
                 @Override
                 public void run() {
                     if (!fallingBlock.isValid()) {
-                        Block block = fallingBlock.getLocation().getBlock();
+                        org.bukkit.block.Block block = fallingBlock.getLocation().getBlock();
                         if (block.getType().equals(type.getType())) {
                             LuckyBlock luckyBlock = new LuckyBlock(LBType.fromMaterialAndData(type.getType(), (byte) type.getData()), block, 0, null, true, true);
                             luckyBlock.playEffects();
@@ -1352,7 +1352,7 @@ public enum LuckyBlockDrop {
         }
     }),
     TNT_IN_THE_MIDDLE(true, new Properties().putEnum("BlocksMaterial", Material.DIAMOND_BLOCK).putByte("BlocksData", (byte) 0).putInt("Fuse", 65).putFloat("ExplosionPower", 5F), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
         Material material = luckyBlock.getDropOptions().getEnum("BlocksMaterial", Material.class, Material.DIAMOND_BLOCK);
         byte data = luckyBlock.getDropOptions().getByte("BlocksData");
 
@@ -1373,7 +1373,7 @@ public enum LuckyBlockDrop {
         tnt.setYield(luckyBlock.getDropOptions().getFloat("ExplosionPower", 5.0F));
     }),
     FLYING_TNTS(true, new Properties().putInt("Times", 8).putInt("Fuse", 80), (luckyBlock, player) -> {
-        Block block = luckyBlock.getBlock();
+        org.bukkit.block.Block block = luckyBlock.getBlock();
 
         int fuse = luckyBlock.getDropOptions().getInt("Fuse", 80);
         for (int i = 0; i < luckyBlock.getDropOptions().getInt("Times", 8); i++) {
@@ -1387,7 +1387,7 @@ public enum LuckyBlockDrop {
     }),
     ANVIL_JAIL(true, new Properties().putDouble("Height", 35D), (luckyBlock, player) -> {
         if (player != null) {
-            Block block = player.getLocation().getBlock();
+            org.bukkit.block.Block block = player.getLocation().getBlock();
             TemporaryUtils.jail(player.getLocation().getBlock());
             block.getWorld().spawnFallingBlock(player.getLocation().add(0.0D, luckyBlock.getDropOptions().getDouble("Height", 35.0D), 0.0D), new MaterialData(Material.ANVIL));
         }
@@ -1400,7 +1400,7 @@ public enum LuckyBlockDrop {
     }),
     RIP(false, new Properties().putBoolean("ClearInventory", true), (luckyBlock, player) -> {
         if(player != null) {
-            Block block = luckyBlock.getBlock();
+            org.bukkit.block.Block block = luckyBlock.getBlock();
             block.setType(Material.SKULL);
             block.setData((byte) 1);
             block.getRelative(BlockFace.DOWN).setType(Material.DIRT);

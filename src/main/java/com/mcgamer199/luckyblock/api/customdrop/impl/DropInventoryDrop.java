@@ -1,19 +1,19 @@
-package com.mcgamer199.luckyblock.customdrop;
+package com.mcgamer199.luckyblock.api.customdrop.impl;
 
-import com.mcgamer199.luckyblock.lb.DropOption;
+import com.mcgamer199.luckyblock.api.Properties;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Random;
-
 public class DropInventoryDrop implements CustomDrop {
-    static Random random = new Random();
 
-    public DropInventoryDrop() {
-    }
+    private static final Properties dropOptions = new Properties().putBoolean("ShowName", false);
+
+    public DropInventoryDrop() {}
 
     public String getName() {
         return "DROP_INVENTORY";
@@ -23,8 +23,8 @@ public class DropInventoryDrop implements CustomDrop {
         return true;
     }
 
-    public DropOption[] getDefaultOptions() {
-        return new DropOption[]{new DropOption("ShowName", new Boolean[]{false})};
+    public Properties getDropOptions() {
+        return dropOptions;
     }
 
     public String getDescription() {
@@ -35,15 +35,15 @@ public class DropInventoryDrop implements CustomDrop {
         return true;
     }
 
-    public void function(LuckyBlock luckyBlock, Player player) {
+    public void execute(LuckyBlock luckyBlock, Player player) {
         if (player.getInventory().getContents() != null) {
             ItemStack[] items = player.getInventory().getContents();
 
-            for (int x = 0; x < items.length; ++x) {
-                if (items[x] != null) {
-                    Item item = player.getWorld().dropItem(player.getLocation().add(random.nextInt(4) - 2, 0.0D, random.nextInt(4) - 2), items[x]);
+            for (ItemStack itemStack : items) {
+                if (itemStack != null) {
+                    Item item = player.getWorld().dropItem(player.getLocation().add(RandomUtils.nextInt(4) - 2, 0.0D, RandomUtils.nextInt(4) - 2), itemStack);
                     item.setPickupDelay(60);
-                    if (luckyBlock.hasDropOption("ShowName") && luckyBlock.getDropOption("ShowName").getValues()[0].toString().equalsIgnoreCase("true")) {
+                    if (luckyBlock.getDropOptions().getBoolean("ShowName")) {
                         if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta().hasDisplayName()) {
                             item.setCustomName("Your " + item.getItemStack().getItemMeta().getDisplayName());
                         } else {
@@ -57,6 +57,5 @@ public class DropInventoryDrop implements CustomDrop {
 
             player.getInventory().clear();
         }
-
     }
 }

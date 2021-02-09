@@ -1,14 +1,13 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.customdrop.CustomDrop;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -96,15 +95,15 @@ public class LBCDropList extends LBCommand {
 
                         StringJoiner joiner = new StringJoiner("\n");
 
-                        DropOption[] options = customDrop.getDefaultOptions();
-                        if(ArrayUtils.isNotEmpty(options)) {
+                        Properties dropOptions = customDrop.getDropOptions();
+                        if(dropOptions != null && !dropOptions.isEmpty()) {
                             int limit = 0;
-                            for (DropOption option : options) {
+                            for (String option: dropOptions.keys()) {
                                 if(limit++ > 10) {
                                     break;
                                 } else {
                                     if(option != null) {
-                                        joiner.add("§e" + option.getName());
+                                        joiner.add("§e" + option);
                                     }
                                 }
                             }

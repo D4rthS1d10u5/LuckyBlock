@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.api.Properties;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.customdrop.CustomDrop;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.lb.DropOption;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import org.bukkit.Material;
@@ -11,8 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Random;
 
 public class LBCSetDrop extends LBCommand {
     public LBCSetDrop() {
@@ -57,49 +55,14 @@ public class LBCSetDrop extends LBCommand {
                         }
 
                         if (args.length == 3) {
-                            String s = args[2];
-                            if (!s.startsWith("{") || !s.endsWith("}")) {
+                            String options = args[2];
+                            if (!options.startsWith("{") || !options.endsWith("}")) {
                                 send(sender, "lb.invalid_tag");
                                 return false;
                             }
 
-                            s = s.replace("{", "").replace("}", "").replace("'", "");
-                            String[] c = s.split(";");
-
-                            for (int v = 0; v < c.length; ++v) {
-                                String[] u = c[v].split(":");
-                                if (u.length == 2) {
-                                    String[] g = u[1].split(",");
-                                    String[] op = new String[64];
-
-                                    for (int ii = 0; ii < g.length; ++ii) {
-                                        String[] cc = g[ii].split("!");
-                                        if (cc.length == 2) {
-                                            try {
-                                                int i = Integer.parseInt(cc[0]);
-                                                int iii = Integer.parseInt(cc[1]);
-                                                int t = (new Random()).nextInt(iii - i + 1) + i;
-                                                op[ii] = String.valueOf(t);
-                                            } catch (NumberFormatException var20) {
-                                                op[ii] = g[ii];
-                                            }
-                                        } else {
-                                            op[ii] = g[ii];
-                                        }
-                                    }
-
-                                    if (luckyBlock.getDropOption(u[0]) != null) {
-                                        luckyBlock.removeDropOptions(u[0]);
-                                    }
-
-                                    if (luckyBlock.hasDropOption(u[0])) {
-                                        luckyBlock.removeDropOptions(u[0]);
-                                    }
-
-                                    luckyBlock.getOldOptions().add(new DropOption(u[0], op));
-                                    luckyBlock.save(true);
-                                }
-                            }
+                            Properties properties = new Properties(options);
+                            luckyBlock.getDropOptions().merge(properties, true);
                         }
 
                         send(sender, "command.setdrop.success");

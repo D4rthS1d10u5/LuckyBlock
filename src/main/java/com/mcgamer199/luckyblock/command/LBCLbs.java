@@ -16,10 +16,7 @@ public class LBCLbs extends LBCommand {
 
     static void sendLB(CommandSender sender, LuckyBlock luckyBlock) {
         ChatComponent component = new ChatComponent();
-        String luckyBlockTitle = "&cnull";
-        if(luckyBlock.hasDropOption("Title")) {
-            luckyBlockTitle = luckyBlock.getDropOption("Title").getValues()[0].toString();
-        }
+        String luckyBlockTitle = luckyBlock.getDropOptions().getString("Title", "&cnull");
 
         component.addText(String.format("§6§lLB §9(%s§9)", val("command.lbs.data.hover", false)), Hover.show_text, String.format("§a%s\n§b%s: §d%s\n§b%s: §9%s\n§b%s: §6%s\n§b%s: %s",
                 luckyBlock.blockToString(),

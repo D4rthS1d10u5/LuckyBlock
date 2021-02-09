@@ -4,7 +4,7 @@ import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.events.LanguageChangedEvent;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import lombok.experimental.UtilityClass;

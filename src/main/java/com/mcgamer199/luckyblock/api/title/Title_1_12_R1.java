@@ -8,8 +8,7 @@ import org.bukkit.entity.Player;
 
 public class Title_1_12_R1 implements ITitle {
 
-    public Title_1_12_R1() {
-    }
+    public Title_1_12_R1() {}
 
     public void sendTitle(Player p, String msg, int fadeIn, int stayTime, int fadeOut) {
         PacketPlayOutTitle title = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, IChatBaseComponent.ChatSerializer.a(ChatColor.translateAlternateColorCodes('&', "{\"text\": \"" + msg + "\"}")), fadeIn, stayTime, fadeOut);

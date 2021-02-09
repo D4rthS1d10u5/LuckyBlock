@@ -1,12 +1,11 @@
 package com.mcgamer199.luckyblock.api;
 
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.api.enums.BlockProperty;
-import com.mcgamer199.luckyblock.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.DropOption;
-import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.util.LocationUtils;
@@ -70,12 +69,11 @@ public class LuckyBlockAPI implements Listener {
                     Block block = null;
                     String placedBy = null;
                     int luck = 0;
-                    String[] var11 = d;
                     int var10 = d.length;
 
                     String[] a;
                     for (int var9 = 0; var9 < var10; ++var9) {
-                        String s = var11[var9];
+                        String s = d[var9];
                         a = s.split(":=");
                         if (a.length == 2) {
                             if (a[0].equalsIgnoreCase("LBType")) {
@@ -118,20 +116,18 @@ public class LuckyBlockAPI implements Listener {
                                         luckyBlock.freeze();
                                     }
                                 } else if (a2[0].equalsIgnoreCase("Options")) {
+                                    //TODO сделать обратную совместимость со старым форматом свойств
                                     String p = a2[1].replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("'", "");
                                     String[] c = p.split(";");
 
-                                    for (int v = 0; v < c.length; ++v) {
-                                        String[] u = c[v].split(":");
+                                    for (String value : c) {
+                                        String[] u = value.split(":");
                                         if (u.length > 1) {
                                             String[] g = u[1].split(",");
                                             String[] op = new String[64];
 
-                                            for (int ii = 0; ii < g.length; ++ii) {
-                                                op[ii] = g[ii];
-                                            }
-
-                                            luckyBlock.getOldOptions().add(new DropOption(u[0], op));
+                                            System.arraycopy(g, 0, op, 0, g.length);
+                                            luckyBlock.getDropOptions().putStringArray(u[0], op);
                                         }
                                     }
                                 }
