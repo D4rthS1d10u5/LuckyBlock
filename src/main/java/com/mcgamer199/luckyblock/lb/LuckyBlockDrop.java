@@ -1430,7 +1430,7 @@ public enum LuckyBlockDrop {
     @Getter
     private final boolean visible;
     private BiConsumer<LuckyBlock, Player> onBreakFunction;
-    public static final LuckyBlockDrop[] values = values();
+    private static final LuckyBlockDrop[] values = values();
     private static final TreeMap<String, LuckyBlockDrop> BY_NAME = new TreeMap<>();
 
     LuckyBlockDrop(boolean visible, Properties dropOptions, BiConsumer<LuckyBlock, Player> onBreakFunction) {

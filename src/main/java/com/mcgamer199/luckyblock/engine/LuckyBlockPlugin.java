@@ -137,7 +137,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
 
     public void onEnable() {
         instance = this;
-        this.getLogger().info("LuckyBlock , 2.2.5 Enabled.");
         this.getLogger().info("Created by MCGamer199!");
         this.saveDefaultConfig();
         this.config = this.getConfig();

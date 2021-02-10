@@ -98,7 +98,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 spawnParticle(bloc, types.breakparticles);
             }
 
-            TemporaryUtils.run(block, luckyBlock, player, luckyBlock.getLuckyBlockDrop(), luckyBlock.customDrop, true);
+            TemporaryUtils.run(block, luckyBlock, player, luckyBlock.getLuckyBlockDrop(), luckyBlock.getCustomDrop(), true);
         }
     }
 

@@ -8,29 +8,31 @@ import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
+import com.mcgamer199.luckyblock.util.JsonUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
+import lombok.experimental.UtilityClass;
+import lombok.extern.log4j.Log4j2;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-public class LuckyBlockAPI implements Listener {
+@UtilityClass
+@Log4j2
+public class LuckyBlockAPI {
+
     public static File lbsF;
     public static FileConfiguration lbs;
     public static List<String> lbwblocks;
@@ -51,113 +53,120 @@ public class LuckyBlockAPI implements Listener {
         loaded = false;
     }
 
-    public LuckyBlockAPI() {
-    }
-
     public static void loadLuckyBlocks() {
         if (!loaded) {
             loaded = true;
             LuckyBlockPlugin.instance.getLogger().info(MyTasks.val("log.lb.loading", false));
             int total = 0;
 
-            try {
-                for (int x = 0; x < lbs.getStringList("LuckyBlocks").size(); ++x) {
-                    String str = lbs.getStringList("LuckyBlocks").get(x);
-                    str = str.substring(1, str.length() - 1);
-                    String[] d = str.split("/s/");
-                    LBType type = null;
-                    Block block = null;
-                    String placedBy = null;
-                    int luck = 0;
-                    int var10 = d.length;
-
-                    String[] a;
-                    for (int var9 = 0; var9 < var10; ++var9) {
-                        String s = d[var9];
-                        a = s.split(":=");
-                        if (a.length == 2) {
-                            if (a[0].equalsIgnoreCase("LBType")) {
-                                type = LBType.fromId(Integer.parseInt(a[1]));
-                            } else if (a[0].equalsIgnoreCase("Block")) {
-                                block = LocationUtils.blockFromString(a[1]);
-                            } else if (a[0].equalsIgnoreCase("PlacedBy")) {
-                                placedBy = a[1];
-                            } else if (a[0].equalsIgnoreCase("Luck")) {
-                                luck = Integer.parseInt(a[1]);
-                            }
-                        }
+            List<String> luckyBlocks = lbs.getStringList("LuckyBlocks");
+            for (String luckyBlock : luckyBlocks) {
+                try {
+                    if(luckyBlock.startsWith("{")) {
+                        log.info(String.format("Loading Lucky Block %s", JsonUtils.deserialize(luckyBlock, LuckyBlock.class)));
+                        total++;
+                    } else if(luckyBlock.startsWith("[")) {
+                        legacyLoad(luckyBlock);
+                        total++;
                     }
+                } catch (Exception e) {
+                    log.warn(String.format("Error while loading Lucky Block '%s'", luckyBlock), e);
+                }
+            }
 
-                    if (block != null && type != null) {
-                        final LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, false, false);
-                        a = d;
-                        int var26 = d.length;
+            log.info(MyTasks.val("log.lb.found", false).replace("%total%", String.valueOf(total)));
+        }
+    }
 
-                        for (var10 = 0; var10 < var26; ++var10) {
-                            String s = a[var10];
-                            String[] a2 = s.split(":=");
-                            if (a2.length == 2) {
-                                if (a2[0].equalsIgnoreCase("Drop")) {
-                                    if (LuckyBlockDrop.isValid(a2[1])) {
-                                        luckyBlock.setDrop(LuckyBlockDrop.valueOf(a2[1]), false, false);
-                                    }
-                                } else if (a2[0].equalsIgnoreCase("Tick_a")) {
-                                    luckyBlock.tickDelay = Integer.parseInt(a2[1]);
-                                } else if (a2[0].equalsIgnoreCase("CustomDrop")) {
-                                    luckyBlock.customDrop = CustomDropManager.getByName(a2[1]);
-                                } else if (a2[0].equalsIgnoreCase("Owner")) {
-                                    if (!a2[1].equalsIgnoreCase("null")) {
-                                        luckyBlock.owner = UUID.fromString(a2[1]);
-                                    }
-                                } else if (a2[0].equalsIgnoreCase("Facing")) {
-                                    luckyBlock.facing = BlockFace.valueOf(a2[1].toUpperCase());
-                                } else if (a2[0].equalsIgnoreCase("Freezed")) {
-                                    if (a2[1].equalsIgnoreCase("true")) {
-                                        luckyBlock.freeze();
-                                    }
-                                } else if (a2[0].equalsIgnoreCase("Options")) {
-                                    //TODO сделать обратную совместимость со старым форматом свойств
-                                    String p = a2[1].replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("'", "");
-                                    String[] c = p.split(";");
+    private static void legacyLoad(String serializedLuckyBlock) {
+        if(LuckyBlockPlugin.isDebugEnabled()) {
+            log.info("Loading legacy-serialized Lucky Block " + serializedLuckyBlock);
+        }
 
-                                    for (String value : c) {
-                                        String[] u = value.split(":");
-                                        if (u.length > 1) {
-                                            String[] g = u[1].split(",");
-                                            String[] op = new String[64];
+        serializedLuckyBlock = serializedLuckyBlock.substring(1, serializedLuckyBlock.length() - 1);
+        String[] data = serializedLuckyBlock.split("/s/");
+        LBType type = null;
+        Block block = null;
+        String placedBy = null;
+        int luck = 0;
 
-                                            System.arraycopy(g, 0, op, 0, g.length);
-                                            luckyBlock.getDropOptions().putStringArray(u[0], op);
-                                        }
-                                    }
+        for (String part : data) {
+            String[] partData = part.split(":=");
+            if (partData.length == 2) {
+                if (partData[0].equalsIgnoreCase("LBType")) {
+                    type = LBType.fromId(Integer.parseInt(partData[1]));
+                } else if (partData[0].equalsIgnoreCase("Block")) {
+                    block = LocationUtils.blockFromString(partData[1]);
+                } else if (partData[0].equalsIgnoreCase("PlacedBy")) {
+                    placedBy = partData[1];
+                } else if (partData[0].equalsIgnoreCase("Luck")) {
+                    luck = Integer.parseInt(partData[1]);
+                }
+            }
+        }
+
+        if (block != null && type != null) {
+            LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, false, false);
+
+            if (block.getType() == Material.AIR) {
+                luckyBlock.remove();
+                return;
+            }
+
+            for (String part : data) {
+                String[] partData = part.split(":=");
+                if (partData.length == 2) {
+                    if (partData[0].equalsIgnoreCase("Drop")) {
+                        if (LuckyBlockDrop.isValid(partData[1])) {
+                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(partData[1]), false, false);
+                        }
+                    } else if (partData[0].equalsIgnoreCase("Tick_a")) {
+                        luckyBlock.tickDelay = Integer.parseInt(partData[1]);
+                    } else if (partData[0].equalsIgnoreCase("CustomDrop")) {
+                        luckyBlock.customDrop = CustomDropManager.getByName(partData[1]);
+                    } else if (partData[0].equalsIgnoreCase("Owner")) {
+                        if (!partData[1].equalsIgnoreCase("null")) {
+                            luckyBlock.owner = UUID.fromString(partData[1]);
+                        }
+                    } else if (partData[0].equalsIgnoreCase("Facing")) {
+                        luckyBlock.facing = BlockFace.valueOf(partData[1].toUpperCase());
+                    } else if (partData[0].equalsIgnoreCase("Freezed")) {
+                        if (partData[1].equalsIgnoreCase("true")) {
+                            luckyBlock.freeze();
+                        }
+                    } else if (partData[0].equalsIgnoreCase("Options")) {
+                        String p = partData[1].replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("'", "");
+                        String[] c = p.split(";");
+
+                        for (String value : c) {
+                            String[] propertyData = value.split(":");
+                            if (propertyData.length > 1) {
+                                String propertyName = propertyData[0];
+                                String propertyValue = propertyData[1];
+                                if(propertyValue.contains(",")) {
+                                    luckyBlock.getDropOptions().putStringArray(propertyName, propertyValue.split(","));
+                                } else if(Properties.BOOLEAN.matcher(propertyValue).matches()) {
+                                    luckyBlock.getDropOptions().putBoolean(propertyName, Boolean.parseBoolean(propertyValue));
+                                } else if(Properties.INT.matcher(propertyValue).matches()) {
+                                    luckyBlock.getDropOptions().putInt(propertyName, Integer.parseInt(propertyValue));
+                                } else if(Properties.FLOAT.matcher(propertyValue).matches()) {
+                                    luckyBlock.getDropOptions().putDouble(propertyName, Float.parseFloat(propertyValue));
+                                } else {
+                                    log.info(String.format("Неизвестный параметр %s для ключа %s, записываем как строку", propertyName, propertyValue));
+                                    luckyBlock.getDropOptions().putString(propertyName, propertyValue);
                                 }
                             }
                         }
-
-                        if (block.getType() == Material.AIR) {
-                            luckyBlock.remove();
-                        } else {
-                            ++total;
-                        }
-
-                        Scheduler.later(() -> {
-                            luckyBlock.playEffects();
-                            if(luckyBlock.getType().getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
-                                LuckyBlockPlugin.instance.Loops(luckyBlock);
-                            }
-                        }, 10L);
                     }
                 }
-
-                if (total == 1) {
-                    String s = MyTasks.val("log.lb.found", false);
-                    s = s.replace("%total%", String.valueOf(total));
-                    LuckyBlockPlugin.instance.getLogger().info(s);
-                }
-            } catch (Exception var21) {
-                var21.printStackTrace();
             }
 
+            Scheduler.later(() -> {
+                luckyBlock.playEffects();
+                if(luckyBlock.getType().getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
+                    LuckyBlockPlugin.instance.Loops(luckyBlock);
+                }
+            }, 10L);
         }
     }
 
@@ -168,8 +177,8 @@ public class LuckyBlockAPI implements Listener {
     }
 
     public static Location getLocation(Player player) {
-        for (int x = 0; x < locations.size(); ++x) {
-            String[] d = locations.get(x).split(",");
+        for (String location : locations) {
+            String[] d = location.split(",");
             if (d.length == 5) {
                 String uuid = d[0];
                 if (player.getUniqueId().toString().equalsIgnoreCase(uuid)) {
@@ -201,75 +210,10 @@ public class LuckyBlockAPI implements Listener {
     public static void loadPortals() {
         List<String> list = portals.getStringList("Portals");
         if (list.size() > 0) {
-            for (int x = 0; x < list.size(); ++x) {
-                lbwblocks.add(list.get(x));
-            }
+            lbwblocks.addAll(list);
         }
 
         locations = portals.getStringList("Locations");
-    }
-
-    public static ItemStack createItemStack(Material type, int amount, short data, String name, List<String> lore, Map<Enchantment, Integer> enchants) {
-        ItemStack item = new ItemStack(type);
-        if (amount > 0) {
-            item.setAmount(amount);
-        }
-
-        if (data > 0) {
-            item.setDurability(data);
-        }
-
-        ItemMeta itemM = item.getItemMeta();
-        if (name != null) {
-            itemM.setDisplayName(name);
-        }
-
-        if (lore != null && lore.size() > 0) {
-            itemM.setLore(lore);
-        }
-
-        if (enchants != null && enchants.size() > 0) {
-            Iterator var9 = enchants.keySet().iterator();
-
-            while (var9.hasNext()) {
-                Enchantment e = (Enchantment) var9.next();
-                itemM.addEnchant(e, enchants.get(e), true);
-            }
-        }
-
-        item.setItemMeta(itemM);
-        return item;
-    }
-
-    public static void removeDrops(World world) {
-        Iterator var2 = world.getEntities().iterator();
-
-        while (true) {
-            Entity e;
-            do {
-                if (!var2.hasNext()) {
-                    return;
-                }
-
-                e = (Entity) var2.next();
-            } while (!(e instanceof Item));
-
-            Item item = (Item) e;
-            ItemStack i = item.getItemStack();
-            LBType type = null;
-            Iterator var7 = LBType.getTypes().iterator();
-
-            while (var7.hasNext()) {
-                LBType t = (LBType) var7.next();
-                if (t.getType() == i.getType() && i.hasItemMeta() && i.getItemMeta().hasDisplayName() && i.getItemMeta().getDisplayName().equalsIgnoreCase(t.getName())) {
-                    type = t;
-                }
-            }
-
-            if (type != null) {
-                item.remove();
-            }
-        }
     }
 
     private static void savePortalsFile() {
@@ -281,7 +225,7 @@ public class LuckyBlockAPI implements Listener {
 
     }
 
-    public static String getDet(int id) {
+    public static String getDetector(int id) {
         String s = null;
         ConfigurationSection cs = LuckyBlockPlugin.instance.detectors.getConfigurationSection("Detectors");
 
@@ -313,11 +257,6 @@ public class LuckyBlockAPI implements Listener {
         } catch (IOException var1) {
             var1.printStackTrace();
         }
-
-    }
-
-    public static void spawnLuckyBlockItem(LuckyBlock luckyBlock, Location loc) {
-        spawnLuckyBlockItem(luckyBlock, luckyBlock.getLuck(), loc);
     }
 
     public static void spawnLuckyBlockItem(LuckyBlock luckyBlock, int luck, Location loc) {

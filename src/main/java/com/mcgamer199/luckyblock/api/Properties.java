@@ -15,11 +15,20 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class Properties {
 
-    private final static Pattern INT        = Pattern.compile("-?[1-9]+[0-9]*");
-    private final static Pattern FLOAT      = Pattern.compile("-?[0-9]+\\.?[0-9]*");
-    private final static Pattern BOOLEAN    = Pattern.compile("(?i)true|on|yes");
+    public static final Pattern INT        = Pattern.compile("-?[1-9]+[0-9]*");
+    public static final Pattern FLOAT      = Pattern.compile("-?[0-9]+\\.?[0-9]*");
+    public static final Pattern BOOLEAN    = Pattern.compile("(?i)true|false|on|off|yes|no");
     private static final JsonParser jsonParser = new JsonParser();
     private JsonObject jsonParams;
+
+    public Properties() {
+        this.jsonParams = new JsonObject();
+    }
+
+    public Properties(String key, String value) {
+        this();
+        this.jsonParams.addProperty(key, value);
+    }
 
     public Properties(String param) {
         try {
@@ -31,18 +40,13 @@ public class Properties {
         }
     }
 
-    public Properties(String key, String value) {
-        this();
-        this.jsonParams.addProperty(key, value);
-    }
-
     public Properties(Map<String, String> params) {
         this.jsonParams = new JsonObject();
         params.forEach(this.jsonParams::addProperty);
     }
 
-    public Properties() {
-        this.jsonParams = new JsonObject();
+    public Properties(JsonObject jsonParams) {
+        this.jsonParams = jsonParams;
     }
 
     public JsonObject getJsonParams() {

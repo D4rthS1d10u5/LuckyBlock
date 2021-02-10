@@ -10,6 +10,7 @@ import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.enums.PlacingSource;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityLBNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
@@ -17,14 +18,15 @@ import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -41,18 +43,25 @@ public class LuckyBlock {
     private static final Map<Location, LuckyBlock> luckyBlockStorage = new HashMap<>();
     private LBType type;
     private LuckyBlockDrop luckyBlockDrop;
+    @Getter @Setter
     public CustomDrop customDrop;
+    @Getter @Setter
     public BlockFace facing;
     private Block block;
     private int luck;
+    @Getter
     public UUID owner;
+    @Getter @Setter
     public int tickDelay;
 
     public static final int MAX_LB_COUNT = 1048;
     public static List<LuckyBlock> lastDeleted = new ArrayList<>();
     @Getter
     private final Properties dropOptions = new Properties();
-    private Object placedBy;
+    @Getter
+    private PlacingSource placingSource;
+    @Getter
+    private String placedBy;
     private FileConfiguration file;
     private FileConfiguration customFile;
     private String floc; //TODO продебажить это поле, вообще неясно что оно значит
@@ -63,11 +72,11 @@ public class LuckyBlock {
         this.facing = BlockFace.EAST;
     }
 
-    public LuckyBlock(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
+    public LuckyBlock(LBType type, Block block, int luck, Object placedBy, boolean saveAll, boolean random) {
         this.facing = BlockFace.EAST;
         if (getByBlock(block) == null) {
             if (canSaveMore()) {
-                init(type, block, luck, placedBy, s, r);
+                init(type, block, luck, placedBy, saveAll, random);
             }
         }
     }
@@ -148,7 +157,8 @@ public class LuckyBlock {
         }
     }
 
-    public void init(LBType type, Block block, int luck, Object placedBy, boolean s, boolean r) {
+    @SuppressWarnings("rawtypes")
+    public void init(LBType type, Block block, int luck, Object placedBy, boolean saveAll, boolean random) {
         if(luckyBlockStorage.containsKey(block.getLocation())) {
             return;
         }
@@ -156,35 +166,41 @@ public class LuckyBlock {
         this.block = block;
         this.type = type;
         this.luck = luck;
-        if (placedBy != null) {
-            if (placedBy instanceof Entity) {
-                if (placedBy instanceof Player) {
-                    this.placedBy = "pl=" + ((Player) placedBy).getName();
-                } else {
-                    this.placedBy = "a=Entity[" + ((Entity) placedBy).getType() + "," + ((Entity) placedBy).getUniqueId().toString() + "]";
-                }
-            } else if (placedBy instanceof Block) {
-                Block blk = (Block) placedBy;
-                this.placedBy = "a=Block[" + blk.getX() + "," + blk.getY() + "," + blk.getZ() + "]";
+
+        if (placedBy instanceof String) {
+            String placedByDefinition = (String) placedBy;
+            if(placedByDefinition.startsWith("pl=")) {
+                this.placingSource = PlacingSource.PLAYER;
+                this.placedBy = placedByDefinition.replace("pl=", "");
+            } else if(placedByDefinition.startsWith("a=Entity")) {
+                this.placingSource = PlacingSource.ENTITY;
+                this.placedBy = StringUtils.substringBetween(placedByDefinition, ",", "]");
+            } else if(placedByDefinition.startsWith("a=Block")) {
+                this.placingSource = PlacingSource.BLOCK;
+                this.placedBy = StringUtils.substringBetween(placedByDefinition, "[", "]");
             } else {
-                this.placedBy = placedBy;
+                this.placingSource = PlacingSource.NONE;
+                this.placedBy = "NONE";
             }
+        } else if(placedBy instanceof Pair) {
+            this.placingSource = (PlacingSource) ((Pair) placedBy).getKey();
+            this.placedBy = (String) ((Pair) placedBy).getValue();
         } else {
-            this.placedBy = "a=None";
+            this.placingSource = PlacingSource.define(placedBy);
+            this.placedBy = placingSource.fromObject(placedBy);
         }
 
         this.setFile();
-        if (r) {
+        if (random) {
             this.setRandomDrop();
-            if (this.placedBy != null && this.placedBy.toString().startsWith("pl:")) {
-                String[] d = this.placedBy.toString().split("pl:");
-                dropOptions.putString("Player", d[1]);
+            if (placingSource.equals(PlacingSource.PLAYER)) {
+                dropOptions.putString("Player", this.placedBy);
             }
         }
 
         LBLoops.loop(this);
-        this.save(s);
-        if (type.isNameVisible() && r) {
+        this.save(saveAll);
+        if (type.isNameVisible() && random) {
             EntityLBNameTag ent1;
             if (type.showData) {
                 ent1 = new EntityLBNameTag();
@@ -327,17 +343,6 @@ public class LuckyBlock {
                 dropOptions.putString("Player", player);
             }
 
-//            com.mcgamer199.luckyblock.lb.DropOption pn = null;
-//            if (this.hasDropOption("Player")) {
-//                pn = this.getDropOption("Player");
-//            }
-//
-//            this.dropOptions.clear();
-//            if (pn != null) {
-//                this.dropOptions.add(pn);
-//            }
-
-            int var11;
             if (this.floc != null) {
                 ConfigurationSection c = this.file.getConfigurationSection("Drops").getConfigurationSection(this.floc);
                 if (c != null) {
@@ -365,35 +370,10 @@ public class LuckyBlock {
                     if(dropOptions.has("Title")) {
                         dropOptions.putString("Title", "§c" + luckyBlockDrop.name());
                     }
-//
-//                    com.mcgamer199.luckyblock.lb.DropOption[] var14;
-//                    int var12 = (var14 = this.luckyBlockDrop.getDefaultOptions()).length;
-//
-//                    for (var11 = 0; var11 < var12; ++var11) {
-//                        com.mcgamer199.luckyblock.lb.DropOption o = var14[var11];
-//                        if (o != null && !this.hasDropOption(o.getName())) {
-//                            this.dropOptions.add(o);
-//                        }
-//                    }
-//
-//                    if (!this.hasDropOption("Title")) {
-//                        this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.luckyBlockDrop.name()}));
-//                    }
                 }
             } else {
                 dropOptions.merge(luckyBlockDrop.getDropOptions(), true);
                 dropOptions.putString("Title", "§c" + luckyBlockDrop.name());
-//                com.mcgamer199.luckyblock.lb.DropOption[] var13;
-//                var11 = (var13 = this.luckyBlockDrop.getDefaultOptions()).length;
-//
-//                for (int var10 = 0; var10 < var11; ++var10) {
-//                    com.mcgamer199.luckyblock.lb.DropOption o = var13[var10];
-//                    if (o != null) {
-//                        this.dropOptions.add(o);
-//                    }
-//                }
-//
-//                this.dropOptions.add(new com.mcgamer199.luckyblock.lb.DropOption("Title", new String[]{ChatColor.RED + this.luckyBlockDrop.name()}));
             }
         }
     }
@@ -430,7 +410,7 @@ public class LuckyBlock {
 
     }
 
-    public void setDrop(LuckyBlockDrop drop, boolean s, boolean dp) {
+    public void setDrop(LuckyBlockDrop drop, boolean s, boolean reload) {
         if (this.luckyBlockDrop != null && this.luckyBlockDrop != drop && hasDropOption("Title")) {
             this.removeDropOption("Title");
         }
@@ -452,7 +432,7 @@ public class LuckyBlock {
             this.floc = null;
         }
 
-        if (dp) {
+        if (reload) {
             this.reloadOptions();
         }
 
@@ -614,41 +594,5 @@ public class LuckyBlock {
         }
 
         return s1;
-    }
-
-    //TODO сделать обратную совместимость, формат сериализации будет JSON
-    @Override
-    public String toString() {
-        String s = "";
-        s = this.addVal(s, "[Block:=" + this.blockToString(), true);
-        if (this.customDrop != null) {
-            s = this.addVal(s, "CustomDrop:=" + this.customDrop.getName(), false);
-        } else if (this.luckyBlockDrop != null) {
-            s = this.addVal(s, "Drop:=" + this.luckyBlockDrop.name(), false);
-        }
-
-        s = this.addVal(s, "Luck:=" + this.luck, false);
-        s = this.addVal(s, "LBType:=" + this.type.getId(), false);
-        s = this.addVal(s, "Tick_a:=" + this.tickDelay, false);
-        if (this.owner != null) {
-            s = this.addVal(s, "Owner:=" + this.owner.toString(), false);
-        }
-
-        if (this.placedBy != null) {
-            s = this.addVal(s, "PlacedBy:=" + this.getPlacedByClass_1(), false);
-        }
-
-        s = this.addVal(s, "Facing:=" + this.facing.toString(), false);
-        if (this.freezed) {
-            s = this.addVal(s, "Freezed:=" + this.freezed, false);
-        }
-
-        if(!dropOptions.isEmpty()) {
-            s = s + "/s/" + "Options:=";
-            s = s + dropOptions.toString();
-        }
-
-        s = s + "]";
-        return s;
     }
 }

@@ -60,32 +60,31 @@ public final class LocationUtils {
     }
 
     public static String asString(Location location) {
+        location = location.toBlockLocation();
         return String.format("%s,%s,%s,%s", location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
     }
 
     public static Location locationFromString(String code) {
         String[] data = code.split(",");
         World world = Bukkit.getWorld(data[0]);
-        double x = Double.parseDouble(data[1]);
-        double y = Double.parseDouble(data[2]);
-        double z = Double.parseDouble(data[3]);
+        int x = Integer.parseInt(data[1]);
+        int y = Integer.parseInt(data[2]);
+        int z = Integer.parseInt(data[3]);
         return new Location(world, x, y, z);
     }
 
     public static Block blockFromString(String code) {
         String[] data = code.split(",");
         World world = Bukkit.getWorld(data[0]);
-        double x = Double.parseDouble(data[1]);
-        double y = Double.parseDouble(data[2]);
-        double z = Double.parseDouble(data[3]);
-
-        Block result = null;
-
-        if (world != null) {
-            result = world.getBlockAt((int) x, (int) y, (int) z);
+        if(world == null) {
+            return null;
         }
 
-        return result;
+        int x = Integer.parseInt(data[1]);
+        int y = Integer.parseInt(data[2]);
+        int z = Integer.parseInt(data[3]);
+
+        return world.getBlockAt(x, y, z);
     }
 
     public static BlockFace getFacingBetween(Location firstLocation, Location secondLocation) {

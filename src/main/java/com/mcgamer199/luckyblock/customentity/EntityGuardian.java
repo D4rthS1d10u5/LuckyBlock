@@ -1,6 +1,5 @@
 package com.mcgamer199.luckyblock.customentity;
 
-import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
@@ -38,7 +37,7 @@ public class EntityGuardian extends CustomEntity {
         Map<Enchantment, Integer> m = new HashMap();
         m.put(LuckyBlockPlugin.enchantment_lightning, 10);
         m.put(Enchantment.DAMAGE_ALL, 4);
-        ItemStack item = LuckyBlockAPI.createItemStack(Material.DIAMOND_AXE, 1, (short) 0, null, null, m);
+        ItemStack item = ItemStackUtils.createItem(Material.DIAMOND_AXE, 1, (short) 0, null, null, m);
         skeleton.getEquipment().setItemInMainHand(item);
         skeleton.getEquipment().setHelmet(this.type.toItemStack());
         ItemStack item1 = new ItemStack(Material.GOLD_CHESTPLATE);

@@ -96,7 +96,7 @@ public class Detector {
 
     public void dispose() {
         if (LuckyBlockAPI.detectors.contains(this)) {
-            LuckyBlockPlugin.instance.detectors.set(LuckyBlockAPI.getDet(this.id), null);
+            LuckyBlockPlugin.instance.detectors.set(LuckyBlockAPI.getDetector(this.id), null);
             LuckyBlockAPI.detectors.remove(this);
         }
 

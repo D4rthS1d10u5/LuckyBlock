@@ -76,7 +76,7 @@ public class SoundUtils {
         addSound(config, "boss_healer_death", "core.boss.healer.death");
         addSound(config, "boss_healer_heal", "core.boss.healer.heal");
         addSound(config, "ritual_witch_particles", "core.lb.spawn_boss_ritual.witch.particles");
-        addSound(config, "ritual_witch_spawn", "core.lb.spawn_boss_ritual.witch.spawn");
+        addSound(config, "ritual_wch_spawn", "core.lb.spawn_boss_ritual.witch.spawn");
     }
 
     private static void addSound(ConfigurationSection section, String soundName, String path) {
@@ -85,6 +85,12 @@ public class SoundUtils {
                 Sound sound = Sound.valueOf(section.getString(path));
                 sounds.put(soundName, sound);
             } catch (Exception ignored) {}
+        }
+    }
+
+    static {
+        for (Sound value : Sound.values()) {
+            sounds.put(value.name(), value);
         }
     }
 }

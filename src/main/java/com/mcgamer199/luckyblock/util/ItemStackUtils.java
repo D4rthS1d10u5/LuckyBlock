@@ -31,6 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -117,6 +118,36 @@ public class ItemStackUtils {
         ItemMeta itemM = item.getItemMeta();
         itemM.setDisplayName(displayName);
         itemM.setLore(list);
+        item.setItemMeta(itemM);
+        return item;
+    }
+
+    public static ItemStack createItem(Material type, int amount, short data, String name, List<String> lore, Map<Enchantment, Integer> enchants) {
+        ItemStack item = new ItemStack(type);
+        if (amount > 0) {
+            item.setAmount(amount);
+        }
+
+        if (data > 0) {
+            item.setDurability(data);
+        }
+
+        ItemMeta itemM = item.getItemMeta();
+        if (name != null) {
+            itemM.setDisplayName(name);
+        }
+
+        if (lore != null && lore.size() > 0) {
+            itemM.setLore(lore);
+        }
+
+        if (enchants != null && enchants.size() > 0) {
+
+            for (Enchantment e : enchants.keySet()) {
+                itemM.addEnchant(e, enchants.get(e), true);
+            }
+        }
+
         item.setItemMeta(itemM);
         return item;
     }

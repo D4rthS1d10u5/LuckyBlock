@@ -1,6 +1,7 @@
 package com.mcgamer199.luckyblock.api.enums;
 
 public enum BlockProperty {
+
     EXPLOSION_RESISTANCE,
     EXPLODE_ON_FIRE,
     REMOVE_ON_FIRE,
