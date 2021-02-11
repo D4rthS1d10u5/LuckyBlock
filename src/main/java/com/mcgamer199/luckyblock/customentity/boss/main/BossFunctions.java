@@ -31,10 +31,10 @@ public class BossFunctions {
             @Override
             public void run() {
                 if (this.m < 1) {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 } else {
                     if (target.isDead()) {
-                        cancel();
+                        Scheduler.cancelTask(this);
                         return;
                     }
 
@@ -47,9 +47,9 @@ public class BossFunctions {
                             boss.onHitEntityWithBeam(target, tag);
                         }
 
-                        cancel();
+                        Scheduler.cancelTask(this);
                     } else if (this.a > 10) {
-                        cancel();
+                        Scheduler.cancelTask(this);
                         BossFunctions.shoot_beam(point, boss, target, this.m, s, helper, tag);
                     }
                 }

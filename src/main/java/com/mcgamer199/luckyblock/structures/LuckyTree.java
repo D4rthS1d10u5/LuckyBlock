@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,7 +20,7 @@ public class LuckyTree extends Structure {
         Block block = loc.getBlock();
         block.setType(Material.IRON_BLOCK);
         int y = 1;
-        int g = this.random.nextInt(Tall[0]) + (Tall[1] - Tall[0]);
+        int g = RandomUtils.nextInt(Tall[0]) + (Tall[1] - Tall[0]);
 
         int x;
         for (x = 1; x < g; ++x) {
@@ -31,7 +32,7 @@ public class LuckyTree extends Structure {
         for (x = -3; x < 4; ++x) {
             for (z = -3; z < 4; ++z) {
                 block.getLocation().add(x, y, z).getBlock().setType(Material.SPONGE);
-                if (this.random.nextInt(100) > 90) {
+                if (RandomUtils.nextInt(100) > 90) {
                     this.locs.add(block.getLocation().add(x, y, z));
                 }
             }
@@ -54,7 +55,7 @@ public class LuckyTree extends Structure {
         for (x = -2; x < 3; ++x) {
             for (z = -2; z < 3; ++z) {
                 block.getLocation().add(x, y, z).getBlock().setType(Material.SPONGE);
-                if (this.random.nextInt(100) > 90) {
+                if (RandomUtils.nextInt(100) > 90) {
                     this.locs.add(block.getLocation().add(x, y, z));
                 }
             }
@@ -69,7 +70,7 @@ public class LuckyTree extends Structure {
         for (x = -1; x < 2; ++x) {
             for (z = -1; z < 2; ++z) {
                 block.getLocation().add(x, y, z).getBlock().setType(Material.SPONGE);
-                if (this.random.nextInt(100) > 90) {
+                if (RandomUtils.nextInt(100) > 90) {
                     this.locs.add(block.getLocation().add(x, y, z));
                 }
             }
@@ -77,7 +78,7 @@ public class LuckyTree extends Structure {
 
         ++y;
         block.getLocation().add(0.0D, y, 0.0D).getBlock().setType(Material.SPONGE);
-        if (this.random.nextInt(100) > 90) {
+        if (RandomUtils.nextInt(100) > 90) {
             this.locs.add(block.getLocation().add(0.0D, y, 0.0D));
         }
 

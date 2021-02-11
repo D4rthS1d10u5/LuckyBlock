@@ -3,6 +3,7 @@ package com.mcgamer199.luckyblock.customentity;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
+import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.structures.Treasure;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -108,7 +109,7 @@ public class EntityGuardian extends CustomEntity {
                         }
                     }
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 10, 60);
@@ -137,7 +138,7 @@ public class EntityGuardian extends CustomEntity {
                         EntityGuardian.this.army.add(p.getEntity().getUniqueId());
                     }
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 100, 150);
@@ -145,7 +146,7 @@ public class EntityGuardian extends CustomEntity {
 
     public ItemStack[] getDrops() {
         if (LuckyBlockWorld.equals(this.entity.getWorld().getGenerator())) {
-            Treasure t = Treasure.getRandomTreasure();
+            Treasure t = Structure.getRandomTreasure();
             List<String> list;
             if (t != null) {
                 list = Arrays.asList(ChatColor.BLUE + "Location: " + t.getLocation().getBlockX() + "," + t.getLocation().getBlockY() + "," + t.getLocation().getBlockZ(), ChatColor.RED + "<<Right click to break the top bedrock block>>");

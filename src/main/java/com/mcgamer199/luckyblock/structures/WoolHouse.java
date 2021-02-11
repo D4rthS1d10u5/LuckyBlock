@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,7 +17,7 @@ public class WoolHouse extends Structure {
 
     public void build(Location loc) {
         Block block = loc.getBlock();
-        int r = this.random.nextInt(Tall[0]) + (Tall[1] - Tall[0]);
+        int r = RandomUtils.nextInt(Tall[0]) + (Tall[1] - Tall[0]);
         int s = 0;
 
         int g;
@@ -26,13 +27,13 @@ public class WoolHouse extends Structure {
             ++s;
         }
 
-        g = this.random.nextInt(7) + 3;
+        g = RandomUtils.nextInt(7) + 3;
         if (g % 2 == 0) {
             ++g;
         }
 
-        byte b = (byte) this.random.nextInt(16);
-        int k = this.random.nextInt(2) + 1;
+        byte b = (byte) RandomUtils.nextInt(16);
+        int k = RandomUtils.nextInt(2) + 1;
 
         for (int h = g; h > 0; --h) {
             for (int x = g * -1; x < g - 1; ++x) {

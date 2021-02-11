@@ -84,6 +84,7 @@ public class SpawnerBlock {
         return this.entityToSpawn;
     }
 
+    //TODO сделать общий таймер
     private void func_loop() {
         Scheduler.timer(new BukkitRunnable() {
             @Override
@@ -93,12 +94,12 @@ public class SpawnerBlock {
                     for (Player p : SpawnerBlock.this.block.getWorld().getPlayers()) {
                         if (p.getLocation().distance(SpawnerBlock.this.block.getLocation()) <= (double) SpawnerBlock.this.range) {
                             SpawnerBlock.this.activate();
-                            cancel();
+                            Scheduler.cancelTask(this);
                         }
                     }
                 } else {
                     SpawnerBlock.this.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 100, 10);

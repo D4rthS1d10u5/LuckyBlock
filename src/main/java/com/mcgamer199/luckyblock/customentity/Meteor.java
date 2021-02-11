@@ -30,7 +30,7 @@ public class Meteor {
                 if (ball.isValid()) {
                     ball.getWorld().spawnParticle(Particle.FLAME, ball.getLocation(), 120, 1.0D, 1.0D, 1.0D, 0.0D);
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);

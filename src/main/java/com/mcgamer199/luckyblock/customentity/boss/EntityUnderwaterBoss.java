@@ -159,7 +159,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
                         tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 3.0F, false, false);
                     }
 
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 20, 20);
@@ -330,7 +330,7 @@ public class EntityUnderwaterBoss extends CustomEntity implements EntityLBBoss {
                     EntityUnderwaterBoss.this.shootBeam(target, 220, 0.32D);
                     --this.t;
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 5, 30);

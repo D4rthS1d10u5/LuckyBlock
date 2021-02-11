@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class LuckyTrap extends Structure {
+
     public LuckyTrap() {
     }
 

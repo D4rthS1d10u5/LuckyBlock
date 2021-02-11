@@ -77,7 +77,7 @@ public class Detector {
     public void addBlock(Block block) {
         for (int x = 0; x < this.blocks.length; ++x) {
             if (this.blocks[x] == null) {
-                this.blocks[x] = LuckyBlock.blockToString(block);
+                this.blocks[x] = LocationUtils.asString(block.getLocation());
                 x = this.blocks.length;
             }
         }
@@ -168,7 +168,7 @@ public class Detector {
                 @Override
                 public void run() {
                     if (this.x == Detector.this.range.getX() && this.y == Detector.this.range.getY() && this.z == Detector.this.range.getZ()) {
-                        cancel();
+                        Scheduler.cancelTask(this);
                     } else {
                         Detector.this.checkBlock(0, 0, 0);
                         Detector.this.getLB(0, 0, 0);
@@ -227,7 +227,7 @@ public class Detector {
 
                     if (this.finish) {
                         searcher.sendMessage("Total: " + this.total);
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 3, 5);

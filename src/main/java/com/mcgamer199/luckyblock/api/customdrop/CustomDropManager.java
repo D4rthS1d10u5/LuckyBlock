@@ -9,6 +9,7 @@ import java.util.List;
 
 @UtilityClass
 public class CustomDropManager {
+
     private static final List<CustomDrop> customdrops = new ArrayList();
 
     public static void registerDrop(CustomDrop customdrop) {

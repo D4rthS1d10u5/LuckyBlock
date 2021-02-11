@@ -10,12 +10,15 @@ import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.enums.PlacingSource;
 import com.mcgamer199.luckyblock.customentity.nametag.EntityLBNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.tags.BlockTags;
+import com.mcgamer199.luckyblock.util.JsonUtils;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +51,7 @@ public class LuckyBlock {
     @Getter @Setter
     public BlockFace facing;
     private Block block;
+    private World world;
     private int luck;
     @Getter
     public UUID owner;
@@ -91,6 +95,24 @@ public class LuckyBlock {
         LuckyBlockAPI.saveLBFile();
     }
 
+    public static int startTimer() {
+        return Scheduler.timer(() -> {
+            luckyBlockStorage.values().stream()
+                    .filter(LuckyBlock::isActive)
+                    .filter(luckyBlock -> luckyBlock.getBlock().getRelative(BlockFace.UP).getType().equals(Material.FIRE))
+                    .forEach(luckyBlock -> {
+                        LBType type = luckyBlock.getType();
+                        if(type.hasProperty(BlockProperty.EXPLODE_ON_FIRE)) {
+                            luckyBlock.explode();
+                        } else if(type.hasProperty(BlockProperty.REMOVE_ON_FIRE)) {
+                            luckyBlock.remove();
+                        } else if(type.hasProperty(BlockProperty.FIRE_RESISTANCE)) {
+                            luckyBlock.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);
+                        }
+                    });
+        }, 5, 5).getTaskId();
+    }
+
     public static Map<Location, LuckyBlock> getStorage() {
         return Collections.unmodifiableMap(luckyBlockStorage);
     }
@@ -126,7 +148,9 @@ public class LuckyBlock {
     }
 
     public static void saveAll() {
-        LuckyBlockAPI.lbs.set("LuckyBlocks", luckyBlockStorage.values().stream().map(LuckyBlock::toString).collect(Collectors.toList()));
+        LuckyBlockAPI.lbs.set("LuckyBlocks", luckyBlockStorage.values().stream()
+                .map(luckyBlock -> JsonUtils.toJsonString(luckyBlock, LuckyBlock.class))
+                .collect(Collectors.toList()));
         LuckyBlockAPI.saveLBFile();
     }
 
@@ -148,15 +172,6 @@ public class LuckyBlock {
         }
     }
 
-    public static String blockToString(Block block) {
-        if (block.getWorld() != null) {
-            String world = block.getWorld().getName();
-            return world + "," + block.getX() + "," + block.getY() + "," + block.getZ();
-        } else {
-            return null;
-        }
-    }
-
     @SuppressWarnings("rawtypes")
     public void init(LBType type, Block block, int luck, Object placedBy, boolean saveAll, boolean random) {
         if(luckyBlockStorage.containsKey(block.getLocation())) {
@@ -164,6 +179,7 @@ public class LuckyBlock {
         }
 
         this.block = block;
+        this.world = block.getWorld();
         this.type = type;
         this.luck = luck;
 
@@ -198,7 +214,6 @@ public class LuckyBlock {
             }
         }
 
-        LBLoops.loop(this);
         this.save(saveAll);
         if (type.isNameVisible() && random) {
             EntityLBNameTag ent1;
@@ -239,6 +254,10 @@ public class LuckyBlock {
                 ent1.spawn(this, 1);
             }
         }
+    }
+
+    public boolean isActive() {
+        return world.isChunkLoaded(block.getX() >> 4, block.getZ() >> 4);
     }
 
     public Object getWhoPlaced() {
@@ -335,7 +354,7 @@ public class LuckyBlock {
 
     }
 
-    public void reloadOptions() {
+    public void reloadOptions() { //TODO починить загрузку данных из файла
         if (this.luckyBlockDrop != null || this.customDrop != null) {
             String player = dropOptions.getString("Player");
             dropOptions.clear();
@@ -359,10 +378,8 @@ public class LuckyBlock {
 
                         if (s.equalsIgnoreCase("TreeType")) {
                             dropOptions.putEnum("TreeType", TreeType.valueOf(obj[0].toString().toUpperCase()));
-                            //this.dropOptions.add(new DropOption(s, new TreeType[]{TreeType.valueOf(obj[0].toString().toUpperCase())}));
                         } else if (!s.equalsIgnoreCase("DropName") && !s.equalsIgnoreCase("Chance")) {
                             dropOptions.putString(s, Arrays.toString(obj));
-                            //this.dropOptions.add(new DropOption(s, obj));
                         }
                     }
 
@@ -474,7 +491,7 @@ public class LuckyBlock {
     }
 
     public void save(boolean saveAll) {
-        luckyBlockStorage.replace(getBlock().getLocation(), this);
+        luckyBlockStorage.put(getBlock().getLocation(), this);
 
         if (saveAll) {
             saveAll();
@@ -526,14 +543,14 @@ public class LuckyBlock {
                     --this.times;
                 } else {
                     LuckyBlock.this.block.getWorld().createExplosion(LuckyBlock.this.block.getLocation(), 3.0F);
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 3, 3);
     }
 
     public String blockToString() {
-        return blockToString(this.block);
+        return LocationUtils.asString(this.block.getLocation());
     }
 
     public void setOwner(UUID owner) {
@@ -566,33 +583,7 @@ public class LuckyBlock {
         return s;
     }
 
-    private String getPlacedByClass_1() {
-        String s = null;
-        if (this.placedBy != null) {
-            if (this.placedBy.toString().startsWith("pl=")) {
-                s = this.placedBy.toString();
-            } else if (this.placedBy.toString().startsWith("a=")) {
-                s = this.placedBy.toString();
-            } else {
-                String[] d = this.placedBy.getClass().getName().replace(".", "_").split("_");
-                s = d[d.length - 1];
-            }
-        }
-
-        return s;
-    }
-
     public boolean hasOwner() {
         return this.owner != null;
-    }
-
-    private String addVal(String s1, String s2, boolean first) {
-        if (first) {
-            s1 = s1 + s2;
-        } else {
-            s1 = s1 + "/s/" + s2;
-        }
-
-        return s1;
     }
 }

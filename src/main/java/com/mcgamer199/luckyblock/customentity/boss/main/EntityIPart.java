@@ -92,7 +92,7 @@ public class EntityIPart extends CustomEntity {
                     Location loc = EntityIPart.this.attachedEntity.getLocation();
                     EntityIPart.this.a.teleport(loc.add(EntityIPart.this.offset[0], EntityIPart.this.offset[1], EntityIPart.this.offset[2]));
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                     EntityIPart.this.remove();
                 }
             }

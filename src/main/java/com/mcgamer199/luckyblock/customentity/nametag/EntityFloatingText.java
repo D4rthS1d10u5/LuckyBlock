@@ -55,7 +55,7 @@ public class EntityFloatingText extends CustomEntity {
                         this.i -= 4;
                     }
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1,1);
@@ -73,7 +73,7 @@ public class EntityFloatingText extends CustomEntity {
                     a.teleport(a.getLocation().add(this.iX / 20.0D, 0.1D, 0.0D));
                     ++this.i;
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);
@@ -87,7 +87,7 @@ public class EntityFloatingText extends CustomEntity {
                     --EntityFloatingText.this.age;
                 } else {
                     EntityFloatingText.this.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);

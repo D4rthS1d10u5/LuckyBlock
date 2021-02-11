@@ -7,17 +7,16 @@ package com.mcgamer199.luckyblock.engine;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.api.customdrop.impl.DropInventoryDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.EffectsDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.FakeTntDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.RandomBlockDrop;
-import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.title.ITitle;
 import com.mcgamer199.luckyblock.api.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.customentity.CustomEntityEvents;
 import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
@@ -46,8 +45,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -58,7 +55,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -269,22 +265,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void Loops(final LuckyBlock luckyBlock) {
-        final Block block = luckyBlock.getBlock();
-        Scheduler.timer(new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (block.getRelative(BlockFace.UP).getType() == Material.FIRE) {
-                    if (luckyBlock.getType().getProperties().contains(BlockProperty.FIRE_RESISTANCE)) {
-                        block.getRelative(BlockFace.UP).setType(Material.AIR);
-                    } else {
-                        cancel();
-                    }
-                }
-            }
-        }, 2, 3);
     }
 
     public void LuckyBlockConfig() {

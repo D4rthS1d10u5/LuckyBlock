@@ -63,6 +63,7 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
 
             Block block = LocationUtils.blockFromString(blockData);
             if((block == null || block.getType().equals(Material.AIR)) || lbType == null) {
+                System.out.println(String.format("block = %s type = %s lbType = %s", block, block != null ? block.getType() : Material.BEDROCK, lbType));
                 return null;
             }
 
@@ -120,6 +121,8 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
             }
 
             return luckyBlock;
+        } else {
+            System.out.println("json is not obj");
         }
         return null;
     }

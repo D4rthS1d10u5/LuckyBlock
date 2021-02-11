@@ -1,6 +1,9 @@
 package com.mcgamer199.luckyblock.structures;
 
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.MyObject;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,42 +13,45 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Structure {
 
-    static File structureF = new File(LuckyBlockPlugin.d() + "Data/structures.yml");
-    static FileConfiguration structure;
-    private static final List<Structure> structures = new ArrayList();
+    private static final List<Structure> structures = new ArrayList<>();
+    private static final File structuresFile = new File(LuckyBlockPlugin.d() + "Data/structures.yml");
+    private static final FileConfiguration structuresConfig = YamlConfiguration.loadConfiguration(structuresFile);
 
-    static {
-        structure = YamlConfiguration.loadConfiguration(structureF);
-    }
-
-    protected Random random = new Random();
     private int id;
-    private Location loc;
+    private Location location;
 
-    public Structure() {
+    public Structure() {}
+
+    public static Treasure getRandomTreasure() {
+        Structure structure = RandomUtils.getRandomObject(structures);
+
+        return structure.getId() == 15 ? (Treasure) structure : null;
     }
 
-    public static boolean isStructure(String clss) {
-        try {
-            Class c = null;
-            if (clss.startsWith("LB_")) {
-                String[] d = clss.split("LB_");
-                c = Class.forName("com.LuckyBlock.World.Structures." + d[1]);
-            } else {
-                c = Class.forName(clss);
-            }
-
-            if (Structure.class.isAssignableFrom(c)) {
-                return true;
-            }
-        } catch (Exception var3) {
+    public static boolean buildStructure(String className, Location location) {
+        Structure structure = getStructure(className);
+        if (structure != null) {
+            structure.build(location);
+            return true;
         }
 
         return false;
+    }
+
+    private static Structure getStructure(String className) {
+        try {
+            Class<?> structureClass = Class.forName(className.replace("LB_", "com.mcgamer199.luckyblock.structures"));
+
+            if (Structure.class.isAssignableFrom(structureClass)) {
+                return MyObject.wrap(structureClass).newInstance().getObject();
+            }
+        } catch (Exception ignored) {
+        }
+
+        return null;
     }
 
     public static List<Structure> getStructures() {
@@ -53,10 +59,10 @@ public class Structure {
     }
 
     public static void loadStructures() {
-        List<String> list = Structure.structure.getStringList("Structures");
+        List<String> list = Structure.structuresConfig.getStringList("Structures");
         if (list != null && list.size() > 0) {
-            for (int x = 0; x < list.size(); ++x) {
-                String[] d = list.get(x).split(",");
+            for (String s : list) {
+                String[] d = s.split(",");
                 int id = Integer.parseInt(d[0]);
                 String world = d[1];
                 int xx = Integer.parseInt(d[2]);
@@ -66,7 +72,6 @@ public class Structure {
                 if (id == 15) {
                     Treasure treasure = new Treasure();
                     treasure.setLocation(l);
-                    treasure.s();
                     treasure.add();
                 } else {
                     Structure structure = new Structure();
@@ -76,7 +81,7 @@ public class Structure {
             }
         }
 
-        List<String> baseblocks = Structure.structure.getStringList("BaseBlocks");
+        List<String> baseblocks = Structure.structuresConfig.getStringList("BaseBlocks");
         BossDungeon.baseBlocks = baseblocks;
     }
 
@@ -85,42 +90,45 @@ public class Structure {
     }
 
     public void build(Location loc) {
-        this.loc = loc;
+        this.location = loc;
         structures.add(this);
         this.save();
     }
 
     public Location getLocation() {
-        return this.loc;
+        return this.location;
     }
 
     public void setLocation(Location loc) {
-        this.loc = loc;
+        this.location = loc;
     }
 
     protected void add() {
         structures.add(this);
     }
 
-    public boolean saveAble() {
+    public boolean canSave() {
         return false;
     }
 
-    public final void save() {
-        List<String> list = new ArrayList();
+    public boolean isValidLocation() {
+        return getLocation() != null && getLocation().getWorld() != null;
+    }
 
-        for (int x = 0; x < structures.size(); ++x) {
-            Structure s = structures.get(x);
-            if (s.saveAble() && s.getLocation() != null && s.getLocation().getWorld() != null) {
-                list.add(s.getId() + "," + s.getLocation().getWorld().getName() + "," + s.getLocation().getBlockX() + "," + s.getLocation().getBlockY() + "," + s.getLocation().getBlockZ());
+    public final void save() {
+        List<String> list = new ArrayList<>();
+
+        for (Structure structure : structures) {
+            if (structure.canSave() && structure.isValidLocation()) {
+                list.add(String.format("%d,%s", id, LocationUtils.asString(structure.getLocation())));
             }
         }
 
-        structure.set("BaseBlocks", BossDungeon.baseBlocks);
-        structure.set("Structures", list);
+        structuresConfig.set("BaseBlocks", BossDungeon.baseBlocks);
+        structuresConfig.set("Structures", list);
 
         try {
-            structure.save(structureF);
+            structuresConfig.save(structuresFile);
         } catch (IOException var4) {
             var4.printStackTrace();
         }

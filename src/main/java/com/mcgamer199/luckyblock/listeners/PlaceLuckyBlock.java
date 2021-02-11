@@ -2,13 +2,12 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
-import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.DebugData;
@@ -189,17 +188,8 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                     }
                 }
 
-                if (type.getProperties().size() > 0 && type.getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
-                    LuckyBlockPlugin.instance.Loops(luckyBlock);
-                }
-
                 if (o != null) {
-                    s = o.split("Protected: ");
-                    if (s.length > 1 && s[1].equalsIgnoreCase(green + "true")) {
-                        if (placedBy != null && placedBy instanceof Player) {
-                            luckyBlock.owner = ((Player) placedBy).getUniqueId();
-                        }
-                    } else if (owner != null) {
+                    if (owner != null) {
                         luckyBlock.owner = owner;
                     }
                 } else {
@@ -349,7 +339,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
 
     @EventHandler
     public void breakDetector(BlockBreakEvent event) {
-        String dim = LuckyBlock.blockToString(event.getBlock());
+        String dim = LocationUtils.asString(event.getBlock().getLocation());
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.CREATIVE && player.getInventory().getItemInMainHand() != null) {
             ItemStack item = player.getInventory().getItemInMainHand();

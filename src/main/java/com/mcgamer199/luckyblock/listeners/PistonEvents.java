@@ -100,7 +100,7 @@ public class PistonEvents implements Listener {
                     }
 
                     luckyBlock.unfreeze();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);

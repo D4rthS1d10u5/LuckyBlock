@@ -1,6 +1,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.SoundUtils;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
@@ -24,38 +25,38 @@ public class PortalEvents extends ColorsClass implements Listener {
 
     public static void removePortal(Block block) {
         boolean t = false;
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.UP)))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.UP)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.UP).getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.UP).getLocation()));
             block.getRelative(BlockFace.UP).setType(Material.AIR);
             t = true;
         }
 
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.EAST)))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.EAST)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.EAST).getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.EAST).getLocation()));
             block.getRelative(BlockFace.EAST).setType(Material.AIR);
             t = true;
         }
 
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.WEST)))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.WEST)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.WEST).getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.WEST).getLocation()));
             block.getRelative(BlockFace.WEST).setType(Material.AIR);
             t = true;
         }
 
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.DOWN)))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.DOWN)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.DOWN).getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.DOWN).getLocation()));
             block.getRelative(BlockFace.DOWN).setType(Material.AIR);
             t = true;
         }
 
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.SOUTH)))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.SOUTH)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.SOUTH).getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.SOUTH).getLocation()));
             block.getRelative(BlockFace.SOUTH).setType(Material.AIR);
             t = true;
         }
 
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.NORTH)))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.NORTH)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.NORTH).getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.NORTH).getLocation()));
             block.getRelative(BlockFace.NORTH).setType(Material.AIR);
             t = true;
         }
@@ -197,7 +198,7 @@ public class PortalEvents extends ColorsClass implements Listener {
                 for (y = 0; y < 3; ++y) {
                     b.getLocation().add(z, y, 0.0D).getBlock().setType(Material.STAINED_GLASS);
                     b.getLocation().add(z, y, 0.0D).getBlock().setData((byte) 10);
-                    LuckyBlockAPI.lbwblocks.add(LuckyBlock.blockToString(b.getLocation().add(z, y, 0.0D).getBlock()));
+                    LuckyBlockAPI.lbwblocks.add(LocationUtils.asString(b.getLocation().add(z, y, 0.0D).getBlock().getLocation()));
                 }
             }
         } else if (face == BlockFace.WEST) {
@@ -205,7 +206,7 @@ public class PortalEvents extends ColorsClass implements Listener {
                 for (y = 0; y < 3; ++y) {
                     b.getLocation().add(z, y, 0.0D).getBlock().setType(Material.STAINED_GLASS);
                     b.getLocation().add(z, y, 0.0D).getBlock().setData((byte) 10);
-                    LuckyBlockAPI.lbwblocks.add(LuckyBlock.blockToString(b.getLocation().add(z, y, 0.0D).getBlock()));
+                    LuckyBlockAPI.lbwblocks.add(LocationUtils.asString(b.getLocation().add(z, y, 0.0D).getBlock().getLocation()));
                 }
             }
         } else if (face == BlockFace.NORTH) {
@@ -213,7 +214,7 @@ public class PortalEvents extends ColorsClass implements Listener {
                 for (y = 0; y < 3; ++y) {
                     b.getLocation().add(0.0D, y, z).getBlock().setType(Material.STAINED_GLASS);
                     b.getLocation().add(0.0D, y, z).getBlock().setData((byte) 10);
-                    LuckyBlockAPI.lbwblocks.add(LuckyBlock.blockToString(b.getLocation().add(0.0D, y, z).getBlock()));
+                    LuckyBlockAPI.lbwblocks.add(LocationUtils.asString(b.getLocation().add(0.0D, y, z).getBlock().getLocation()));
                 }
             }
         } else if (face == BlockFace.SOUTH) {
@@ -221,7 +222,7 @@ public class PortalEvents extends ColorsClass implements Listener {
                 for (y = 0; y < 3; ++y) {
                     b.getLocation().add(0.0D, y, z).getBlock().setType(Material.STAINED_GLASS);
                     b.getLocation().add(0.0D, y, z).getBlock().setData((byte) 10);
-                    LuckyBlockAPI.lbwblocks.add(LuckyBlock.blockToString(b.getLocation().add(0.0D, y, z).getBlock()));
+                    LuckyBlockAPI.lbwblocks.add(LocationUtils.asString(b.getLocation().add(0.0D, y, z).getBlock().getLocation()));
                 }
             }
         }
@@ -230,7 +231,7 @@ public class PortalEvents extends ColorsClass implements Listener {
 
     @EventHandler
     private void onRightClickPortal(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() != Material.AIR && LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(event.getClickedBlock()))) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() != Material.AIR && LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(event.getClickedBlock().getLocation()))) {
             Player player = event.getPlayer();
             if (player.hasPermission("lb.useportal")) {
                 player.playSound(player.getLocation(), SoundUtils.getSound("portal_teleport"), 100.0F, 1.0F);
@@ -256,40 +257,40 @@ public class PortalEvents extends ColorsClass implements Listener {
     @EventHandler
     public void onBreakPortal(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block))) {
-            LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block));
-            if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.UP)))) {
-                LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.UP)));
+        if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getLocation()))) {
+            LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getLocation()));
+            if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.UP).getLocation()))) {
+                LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.UP).getLocation()));
                 block.getRelative(BlockFace.UP).setType(Material.AIR);
                 removePortal(block.getRelative(BlockFace.UP));
             }
 
-            if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.EAST)))) {
-                LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.EAST)));
+            if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.EAST).getLocation()))) {
+                LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.EAST).getLocation()));
                 block.getRelative(BlockFace.EAST).setType(Material.AIR);
                 removePortal(block.getRelative(BlockFace.EAST));
             }
 
-            if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.WEST)))) {
-                LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.WEST)));
+            if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.WEST).getLocation()))) {
+                LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.WEST).getLocation()));
                 block.getRelative(BlockFace.WEST).setType(Material.AIR);
                 removePortal(block.getRelative(BlockFace.WEST));
             }
 
-            if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.DOWN)))) {
-                LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.DOWN)));
+            if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.DOWN).getLocation()))) {
+                LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.DOWN).getLocation()));
                 block.getRelative(BlockFace.DOWN).setType(Material.AIR);
                 removePortal(block.getRelative(BlockFace.DOWN));
             }
 
-            if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.SOUTH)))) {
-                LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.SOUTH)));
+            if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.SOUTH).getLocation()))) {
+                LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.SOUTH).getLocation()));
                 block.getRelative(BlockFace.SOUTH).setType(Material.AIR);
                 removePortal(block.getRelative(BlockFace.SOUTH));
             }
 
-            if (LuckyBlockAPI.lbwblocks.contains(LuckyBlock.blockToString(block.getRelative(BlockFace.NORTH)))) {
-                LuckyBlockAPI.lbwblocks.remove(LuckyBlock.blockToString(block.getRelative(BlockFace.NORTH)));
+            if (LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(block.getRelative(BlockFace.NORTH).getLocation()))) {
+                LuckyBlockAPI.lbwblocks.remove(LocationUtils.asString(block.getRelative(BlockFace.NORTH).getLocation()));
                 block.getRelative(BlockFace.NORTH).setType(Material.AIR);
                 removePortal(block.getRelative(BlockFace.NORTH));
             }
@@ -302,7 +303,7 @@ public class PortalEvents extends ColorsClass implements Listener {
     private void onPlacePortal(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType() != Material.AIR && player.getInventory().getItemInMainHand().getType() == Material.STAINED_GLASS && player.getInventory().getItemInMainHand().getDurability() == 2 && player.getInventory().getItemInMainHand().hasItemMeta() && player.getInventory().getItemInMainHand().getItemMeta().hasDisplayName() && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "Lucky Block Portal")) {
-            LuckyBlockAPI.lbwblocks.add(LuckyBlock.blockToString(event.getBlock()));
+            LuckyBlockAPI.lbwblocks.add(LocationUtils.asString(event.getBlock().getLocation()));
             player.sendMessage(ChatColor.GREEN + "Placed lucky block portal!");
         }
 

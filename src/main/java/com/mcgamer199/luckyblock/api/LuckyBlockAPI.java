@@ -1,7 +1,6 @@
 package com.mcgamer199.luckyblock.api;
 
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
@@ -10,7 +9,6 @@ import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.util.JsonUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
-import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.Location;
@@ -41,6 +39,7 @@ public class LuckyBlockAPI {
     static File portalsF;
     static FileConfiguration portals;
     private static boolean loaded;
+    private static int luckyBlockTimerId;
 
     static {
         lbsF = new File(LuckyBlockPlugin.instance.getDataFolder() + File.separator + "LuckyBlocks.yml");
@@ -75,6 +74,7 @@ public class LuckyBlockAPI {
             }
 
             log.info(MyTasks.val("log.lb.found", false).replace("%total%", String.valueOf(total)));
+            luckyBlockTimerId = LuckyBlock.startTimer();
         }
     }
 
@@ -160,13 +160,6 @@ public class LuckyBlockAPI {
                     }
                 }
             }
-
-            Scheduler.later(() -> {
-                luckyBlock.playEffects();
-                if(luckyBlock.getType().getProperties().contains(BlockProperty.EXPLOSION_RESISTANCE)) {
-                    LuckyBlockPlugin.instance.Loops(luckyBlock);
-                }
-            }, 10L);
         }
     }
 

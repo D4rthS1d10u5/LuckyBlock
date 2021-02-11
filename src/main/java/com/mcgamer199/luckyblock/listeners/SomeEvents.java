@@ -216,7 +216,7 @@ public class SomeEvents extends ColorsClass implements Listener {
 
                     for (int var8 = 0; var8 < var9; ++var8) {
                         String s = var10[var8];
-                        if (s != null && LuckyBlock.blockToString(LocationUtils.blockFromString(s)).equalsIgnoreCase(LuckyBlock.blockToString(block))) {
+                        if (s != null && LocationUtils.asString(LocationUtils.blockFromString(s).getLocation()).equalsIgnoreCase(LocationUtils.asString(block.getLocation()))) {
                             detector = det;
                         }
                     }
@@ -242,8 +242,8 @@ public class SomeEvents extends ColorsClass implements Listener {
     @EventHandler
     private void onBreakBaseBlock(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (BossDungeon.baseBlocks.contains(LuckyBlock.blockToString(block))) {
-            BossDungeon.baseBlocks.remove(LuckyBlock.blockToString(block));
+        if (BossDungeon.baseBlocks.contains(LocationUtils.asString(block.getLocation()))) {
+            BossDungeon.baseBlocks.remove(LocationUtils.asString(block.getLocation()));
 
             for (int i = -40; i < 1; ++i) {
                 for (int x = -6; x < 7; ++x) {

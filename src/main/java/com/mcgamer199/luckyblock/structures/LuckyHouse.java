@@ -1,10 +1,12 @@
 package com.mcgamer199.luckyblock.structures;
 
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class LuckyHouse extends Structure {
+
     public LuckyHouse() {
     }
 
@@ -14,7 +16,7 @@ public class LuckyHouse extends Structure {
 
     public void build(Location loc) {
         Block block = loc.getBlock();
-        byte data = (byte) this.random.nextInt(4);
+        byte data = (byte) RandomUtils.nextInt(4);
 
         int z;
         int y;

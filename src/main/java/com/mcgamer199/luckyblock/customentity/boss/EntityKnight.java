@@ -121,7 +121,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                         fb.getLocation().getBlock().setType(Material.AIR);
                     }
 
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);
@@ -358,7 +358,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                             EntityKnight.this.func_a(arrow);
                             --this.x;
                         } else {
-                            cancel();
+                            Scheduler.cancelTask(this);
                         }
                     }
                 }
@@ -374,7 +374,7 @@ public class EntityKnight extends CustomEntity implements EntityLBBoss {
                     p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getLocation(), 3, 0.1D, 0.1D, 0.1D, 0.0D);
                 } else {
                     p.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);

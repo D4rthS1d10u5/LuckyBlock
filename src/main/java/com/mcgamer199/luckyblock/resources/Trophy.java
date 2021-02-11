@@ -86,13 +86,14 @@ public class Trophy {
 
     }
 
+    //TODO сделать общий таймер
     private void func_loop() {
         Scheduler.timer(new BukkitRunnable() {
             @Override
             public void run() {
                 if(block.getType() != Material.SKULL) {
                     remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 20, 20);

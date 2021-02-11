@@ -12,6 +12,7 @@ import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
+import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
 import com.mcgamer199.luckyblock.tags.EntityTags;
@@ -347,7 +348,7 @@ public enum LuckyBlockDrop {
                 if (this.times > 0) {
                     Location loc = new Location(armorStand.getWorld(), armorStand.getLocation().getX(), armorStand.getLocation().getY() + 1.0D, armorStand.getLocation().getZ());
                     if (loc.getBlock().getType().isSolid() || loc.getBlock().getRelative(BlockFace.UP).getType().isSolid()) {
-                        cancel();
+                        Scheduler.cancelTask(this);
                         armorStand.getWorld().createExplosion(armorStand.getLocation(), 7.0F, true);
                         armorStand.remove();
                     }
@@ -363,7 +364,7 @@ public enum LuckyBlockDrop {
 
                     --this.times;
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                     armorStand.getWorld().spawnParticle(Particle.FLAME, armorStand.getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
                     armorStand.remove();
                 }
@@ -396,9 +397,9 @@ public enum LuckyBlockDrop {
             player.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().setType(Material.WATER);
         }
     }),
-    LB_STRUCTURE(true, (luckyBlock, player) -> { //TODO переделать строительство структур
+    LB_STRUCTURE(true, (luckyBlock, player) -> {
         if (luckyBlock.hasDropOption("Class")) {
-            TemporaryUtils.b(luckyBlock.getDropOptions().getString("Class"), luckyBlock.getBlock().getLocation());
+            Structure.buildStructure(luckyBlock.getDropOptions().getString("Class"), luckyBlock.getBlock().getLocation());
         }
     }),
     LAVA_POOL(true, (luckyBlock, player) -> {
@@ -466,11 +467,11 @@ public enum LuckyBlockDrop {
                                                 block.setType(mat);
                                                 block.setData(block.getData());
                                             }, 360);
-                                            cancel();
+                                            Scheduler.cancelTask(this);
                                         }
                                     }
                                 } else {
-                                    cancel();
+                                    Scheduler.cancelTask(this);
                                 }
                             }
                         }, 10, 10);
@@ -483,7 +484,7 @@ public enum LuckyBlockDrop {
                         fallingBlock.getWorld().createExplosion(fallingBlock.getLocation().getBlockX(), fallingBlock.getLocation().getBlockY(), fallingBlock.getLocation().getBlockZ(), 15F, setFire, breakBlocks);
 
                         fallingBlock.remove();
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 3, 3);
@@ -635,7 +636,7 @@ public enum LuckyBlockDrop {
                 } else if (this.loop == 1) {
                     FallingBlock fallingBlock = block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, Material.DIAMOND_BLOCK, (byte) 0);
                     Scheduler.later(() -> fallingBlock.getLocation().getWorld().strikeLightning(fallingBlock.getLocation()), 3);
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 6, 6);
@@ -683,11 +684,11 @@ public enum LuckyBlockDrop {
                                                 block.setType(mat);
                                                 block.setData(block.getData());
                                             }, 360);
-                                            cancel();
+                                            Scheduler.cancelTask(this);
                                         }
                                     }
                                 } else {
-                                    cancel();
+                                    Scheduler.cancelTask(this);
                                 }
                             }
                         }, 10, 10);
@@ -700,7 +701,7 @@ public enum LuckyBlockDrop {
                         fallingBlock.getWorld().createExplosion(fallingBlock.getLocation().getBlockX(), fallingBlock.getLocation().getBlockY(), fallingBlock.getLocation().getBlockZ(), explosionPower, setFire, breakBlocks);
 
                         fallingBlock.remove();
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 3, 3);
@@ -962,7 +963,7 @@ public enum LuckyBlockDrop {
                         MaterialData d = new MaterialData(fallingBlock.getMaterial(), fallingBlock.getBlockData());
                         fallingBlock.getWorld().spawnParticle(Particle.BLOCK_CRACK, fallingBlock.getLocation(), 100, 0.3D, 0.1D, 0.3D, 0.0D, d);
                         SoundUtils.playFixedSound(fallingBlock.getLocation(), SoundUtils.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 0, 2);
@@ -1274,7 +1275,7 @@ public enum LuckyBlockDrop {
     }),
     EXPLOSIVE_CHEST(true, new Properties().putInt("Ticks", 50).putBoolean("ClearInventory", true), (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
-        block.setType(Material.CHEST);
+        block.setType(Material.CHEST, true);
         int times = MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Ticks", 50), 0, 1024);
         String path = luckyBlock.getDropOptions().getString("Path", "Chests");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
@@ -1323,7 +1324,7 @@ public enum LuckyBlockDrop {
                             luckyBlock.playEffects();
                         }
 
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 5, 5);

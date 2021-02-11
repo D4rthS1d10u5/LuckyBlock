@@ -181,7 +181,7 @@ public class CustomEntity {
                         }
                     } else {
                         CustomEntity.this.remove();
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 30, 30);
@@ -207,10 +207,10 @@ public class CustomEntity {
                                 }
                             }
                         } else {
-                            cancel();
+                            Scheduler.cancelTask(this);
                         }
                     } else {
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, 40, 40);

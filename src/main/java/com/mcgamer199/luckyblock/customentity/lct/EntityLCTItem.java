@@ -52,7 +52,7 @@ public class EntityLCTItem extends CustomEntity {
                     }
                 } else {
                     EntityLCTItem.this.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 20, 2);

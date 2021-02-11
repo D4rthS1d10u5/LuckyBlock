@@ -56,11 +56,11 @@ public class LBEffects {
                         Scheduler.later(() -> {
                             if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {
                                 luckyBlock.remove();
-                                cancel();
+                                Scheduler.cancelTask(this);
                             }
                         }, 1);
                     } else {
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
 

@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 public class BossPalace extends Structure {
+
     static final ItemStack[] items;
     static final int[] chances;
 

@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -12,7 +13,7 @@ import org.bukkit.block.BlockFace;
  */
 public final class LocationUtils {
 
-    public static long getChunkKey(int chunkX, int chunkZ) {
+    public static long getChunkKey(long chunkX, long chunkZ) {
         return (chunkX << 31 | chunkZ & 0xFFFFFFFFL);
     }
 
@@ -60,8 +61,7 @@ public final class LocationUtils {
     }
 
     public static String asString(Location location) {
-        location = location.toBlockLocation();
-        return String.format("%s,%s,%s,%s", location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
+        return String.format("%s,%s,%s,%s", location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public static Location locationFromString(String code) {
@@ -80,9 +80,9 @@ public final class LocationUtils {
             return null;
         }
 
-        int x = Integer.parseInt(data[1]);
-        int y = Integer.parseInt(data[2]);
-        int z = Integer.parseInt(data[3]);
+        int x = Integer.parseInt(StringUtils.substringBefore(data[1], "."));
+        int y = Integer.parseInt(StringUtils.substringBefore(data[2], "."));
+        int z = Integer.parseInt(StringUtils.substringBefore(data[3], "."));
 
         return world.getBlockAt(x, y, z);
     }

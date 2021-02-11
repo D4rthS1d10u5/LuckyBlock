@@ -29,7 +29,7 @@ public class CustomEntityEvents implements Listener {
                     if (customEntity.entity != null && !customEntity.entity.isDead()) {
                         customEntity.onTick();
                     } else {
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, customEntity.getTickTime(), customEntity.getTickTime());

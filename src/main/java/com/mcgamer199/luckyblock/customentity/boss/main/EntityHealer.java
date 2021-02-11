@@ -97,7 +97,7 @@ public class EntityHealer extends CustomEntity {
                         }
                     } else {
                         EntityHealer.this.remove();
-                        cancel();
+                        Scheduler.cancelTask(this);
                     }
                 }
             }, delay, delay);
@@ -112,7 +112,7 @@ public class EntityHealer extends CustomEntity {
                     EntityHealer.this.ender.setBeamTarget(EntityHealer.this.healEntity.getLocation());
                 } else {
                     EntityHealer.this.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 20, 10);
@@ -138,7 +138,7 @@ public class EntityHealer extends CustomEntity {
                         }
                     }
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 20, 15);

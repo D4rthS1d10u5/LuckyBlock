@@ -7,7 +7,7 @@ main: com.mcgamer199.luckyblock.engine.LuckyBlockPlugin
 version: 2.2.5
 authors: [MCGamer199, Lokha, Merkja, D4rth_]
 
-load: STARTUP
+load: POSTWORLD
 
 commands:
    lb:

@@ -202,7 +202,7 @@ public class EntityBossWitch extends CustomEntity implements EntityLBBoss {
 
                     --this.times;
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }).predicate(() -> !EntityBossWitch.this.w.isDead() && EntityBossWitch.this.w.getTarget() != null).timer(5, 3);

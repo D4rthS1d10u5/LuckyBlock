@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,7 +15,7 @@ public class PumpkinTower extends Structure {
 
     public void build(Location loc) {
         Block block = loc.getBlock();
-        int r = this.random.nextInt(5) + 3;
+        int r = RandomUtils.nextInt(5) + 3;
         int s = 0;
 
         for (int y = 0; y < r; ++y) {

@@ -48,11 +48,11 @@ public class LBShootEvent implements Listener {
                 if (projectile.isOnGround()) {
                     LBShootEvent.this.place(projectile.getLocation(), target);
                     projectile.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
 
                 if (!projectile.isValid()) {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 2, 2);

@@ -8,12 +8,10 @@ import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
-import com.mcgamer199.luckyblock.structures.Structure;
 import lombok.experimental.UtilityClass;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Здесь будет временный код утилит,
@@ -23,16 +21,11 @@ import org.bukkit.inventory.ItemStack;
 public class TemporaryUtils {
 
     public static void spawnLB(LuckyBlock luckyBlock, final Location bloc) {
-        String s = null;
-        if (luckyBlock.customDrop != null) {
-            s = luckyBlock.customDrop.getName();
-        } else if (luckyBlock.getLuckyBlockDrop() != null) {
-            s = luckyBlock.getLuckyBlockDrop().name();
-        }
+        String s = luckyBlock.getCustomDrop() != null ? luckyBlock.getCustomDrop().getName() :
+                luckyBlock.getLuckyBlockDrop() != null ? luckyBlock.getLuckyBlockDrop().name() : null;
 
-        final ItemStack it = luckyBlock.getType().toItemStack(luckyBlock.getLuck(), null, s);
         Scheduler.later(() -> {
-            bloc.getWorld().dropItem(bloc, it);
+            bloc.getWorld().dropItem(bloc, luckyBlock.getType().toItemStack(luckyBlock.getLuck(), null, s));
             bloc.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, bloc, 150, 0.3D, 0.3D, 0.3D, 0.0D);
         }, 3);
     }
@@ -75,32 +68,6 @@ public class TemporaryUtils {
                     }
                 }
             }
-        }
-    }
-
-    private static Object getStructure(String clss) {
-        try {
-            Class c = null;
-            if (clss.startsWith("LB_")) {
-                String[] d = clss.split("LB_");
-                c = Class.forName("com.LuckyBlock.World.Structures." + d[1]);
-            } else {
-                c = Class.forName(clss);
-            }
-
-            if (Structure.class.isAssignableFrom(c)) {
-                return c.newInstance();
-            }
-        } catch (Exception ignored) {}
-
-        return null;
-    }
-
-    public static void b(String clss, Location loc) {
-        Object str = getStructure(clss);
-        if (str != null) {
-            Structure s = (Structure) str;
-            s.build(loc);
         }
     }
 

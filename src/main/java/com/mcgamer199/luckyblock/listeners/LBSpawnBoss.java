@@ -102,7 +102,7 @@ public class LBSpawnBoss implements Listener {
 
                     FileStructure.generateWitchDungeon(loc);
                     SoundUtils.playFixedSound(loc, SoundUtils.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 20, 10);

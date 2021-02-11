@@ -126,7 +126,7 @@ public class EntityLBNameTag extends CustomEntity {
     }
 
     protected void onSave(ConfigurationSection c) {
-        c.set("LB_Block", LuckyBlock.blockToString(this.luckyBlock.getBlock()));
+        c.set("LB_Block", LocationUtils.asString(this.luckyBlock.getBlock().getLocation()));
         c.set("Loc1", this.a_[0]);
         c.set("Loc2", this.a_[1]);
         c.set("Loc3", this.a_[2]);

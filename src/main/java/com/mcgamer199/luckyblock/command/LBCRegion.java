@@ -203,7 +203,7 @@ public class LBCRegion extends LBCommand {
                     boolean changeX = true;
                     boolean changeZ = true;
                     if (!LuckyBlock.canSaveMore()) {
-                        cancel();
+                        Scheduler.cancelTask(this);
                     } else {
                         if (!LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
                             LuckyBlock.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
@@ -237,7 +237,7 @@ public class LBCRegion extends LBCommand {
                             String a = LBCRegion.val("command.region.action1.success", false);
                             a = a.replace("%total%", String.valueOf(this.total));
                             LBCRegion.send_2(player, a);
-                            cancel();
+                            Scheduler.cancelTask(this);
                         }
 
                     }
@@ -309,7 +309,7 @@ public class LBCRegion extends LBCommand {
                         LBCRegion.send(player, "command.region.no_changes");
                     }
 
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
 
             }

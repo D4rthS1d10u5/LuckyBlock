@@ -1,7 +1,8 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -9,24 +10,9 @@ import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class Treasure extends Structure {
-    public static List<Treasure> treasures = new ArrayList();
 
-    public Treasure() {
-    }
-
-    public static Treasure getRandomTreasure() {
-        if (treasures.size() > 0) {
-            int x = (new Random()).nextInt(treasures.size());
-            return treasures.get(x);
-        } else {
-            return null;
-        }
-    }
+    public Treasure() {}
 
     public void build(Location loc) {
         Block block = loc.getBlock();
@@ -72,23 +58,18 @@ public class Treasure extends Structure {
         block.getLocation().add(0.0D, 1.0D, -2.0D).getBlock().setType(Material.CHEST);
         this.fillChest((Chest) block.getLocation().add(0.0D, 1.0D, -2.0D).getBlock().getState());
         super.build(loc);
-        this.s();
     }
 
-    public boolean saveAble() {
+    public boolean canSave() {
         return true;
     }
 
-    protected void s() {
-        treasures.add(this);
-    }
-
     private void fillChest(Chest chest) {
-        int r = this.random.nextInt(6) + 5;
+        int r = RandomUtils.nextInt(6) + 5;
 
         for (int x = 0; x < r; ++x) {
-            int i = this.random.nextInt(10) + 1;
-            ItemStack item = new ItemStack(Material.DIAMOND_BLOCK, this.random.nextInt(3) + 2);
+            int i = RandomUtils.nextInt(10) + 1;
+            ItemStack item = new ItemStack(Material.DIAMOND_BLOCK, RandomUtils.nextInt(3) + 2);
             if (i == 2) {
                 item = new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1);
             } else if (i == 3) {
@@ -105,14 +86,13 @@ public class Treasure extends Structure {
             } else if (i == 8) {
                 item = ItemStackUtils.addEnchants(new ItemStack(Material.DIAMOND_BOOTS), new int[]{4}, Enchantment.PROTECTION_ENVIRONMENTAL);
             } else if (i == 9) {
-                item = new ItemStack(Material.EMERALD_BLOCK, this.random.nextInt(3) + 1);
+                item = new ItemStack(Material.EMERALD_BLOCK, RandomUtils.nextInt(3) + 1);
             } else if (i == 10) {
-                item = new ItemStack(Material.GOLD_BLOCK, this.random.nextInt(4) + 3);
+                item = new ItemStack(Material.GOLD_BLOCK, RandomUtils.nextInt(4) + 3);
             }
 
-            chest.getInventory().setItem(this.random.nextInt(27), item);
+            chest.getInventory().setItem(RandomUtils.nextInt(27), item);
         }
-
     }
 
     public int getId() {

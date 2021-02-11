@@ -1,8 +1,9 @@
 package com.mcgamer199.luckyblock.structures;
 
 import com.mcgamer199.luckyblock.customentity.EntityGuardian;
-import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,10 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BossDungeon extends LuckyDungeon {
-    public static List<String> baseBlocks = new ArrayList();
 
-    public BossDungeon() {
-    }
+    public static List<String> baseBlocks = new ArrayList<>();
+    private static final Material[] blocks = new Material[] {Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK};
+
+    public BossDungeon() {}
 
     public void build(Location loc) {
         EntityGuardian b = new EntityGuardian();
@@ -51,18 +53,8 @@ public class BossDungeon extends LuckyDungeon {
             --a;
         }
 
-        r = this.random.nextInt(4) + 1;
-        Material mat = Material.IRON_BLOCK;
-        if (r == 2) {
-            mat = Material.GOLD_BLOCK;
-        } else if (r == 3) {
-            mat = Material.DIAMOND_BLOCK;
-        } else if (r == 4) {
-            mat = Material.EMERALD_BLOCK;
-        }
-
-        block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock().setType(mat);
-        baseBlocks.add(LuckyBlock.blockToString(block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock()));
+        block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock().setType(RandomUtils.getRandomObject(blocks));
+        baseBlocks.add(LocationUtils.asString(block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock().getLocation()));
         super.build(loc);
         b.spawn(loc);
     }

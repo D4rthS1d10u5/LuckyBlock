@@ -86,7 +86,7 @@ public class EntityNameTag extends CustomEntity {
                     EntityNameTag.this.armorStand.teleport(l);
                 } else {
                     EntityNameTag.this.remove();
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, 1, 1);

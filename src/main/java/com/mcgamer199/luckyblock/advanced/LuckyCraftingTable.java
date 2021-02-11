@@ -281,7 +281,7 @@ public class LuckyCraftingTable extends ColorsClass {
                 public void run() {
                     if (LuckyCraftingTable.this.running) {
                         if (!LuckyCraftingTable.this.isValid()) {
-                            cancel();
+                            Scheduler.cancelTask(this);
                             return;
                         }
 
@@ -326,7 +326,7 @@ public class LuckyCraftingTable extends ColorsClass {
                             }
                         } else if (this.working == 1) {
                             SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
-                            cancel();
+                            Scheduler.cancelTask(this);
                             LuckyCraftingTable.this.running = false;
                             LuckyCraftingTable.this.save(true);
                         } else {
@@ -334,7 +334,7 @@ public class LuckyCraftingTable extends ColorsClass {
                                 SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             }
 
-                            cancel();
+                            Scheduler.cancelTask(this);
                             LuckyCraftingTable.this.running = false;
                         }
                     }
@@ -429,7 +429,7 @@ public class LuckyCraftingTable extends ColorsClass {
                         SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                     }
                 } else {
-                    cancel();
+                    Scheduler.cancelTask(this);
                 }
             }
         }, u_fuel[0], u_fuel[0]);
@@ -584,18 +584,11 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     private void func_loop() {
-        Scheduler.timer(new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (LuckyCraftingTable.this.isValid()) {
-                    if (LuckyCraftingTable.this.inv.getViewers().size() > 0) {
-                        MyTasks.playEffects(Particle.ENCHANTMENT_TABLE, LuckyCraftingTable.this.block.getLocation().add(0.5D, 0.5D, 0.5D), 45, new double[]{0.3D, 0.3D, 0.3D}, 1.0F);
-                    }
-                } else {
-                    cancel();
-                }
+        Scheduler.create(() -> {
+            if (LuckyCraftingTable.this.inv.getViewers().size() > 0) {
+                MyTasks.playEffects(Particle.ENCHANTMENT_TABLE, LuckyCraftingTable.this.block.getLocation().add(0.5D, 0.5D, 0.5D), 45, new double[]{0.3D, 0.3D, 0.3D}, 1.0F);
             }
-        }, 20, 20);
+        }).predicate(this::isValid).timer(20, 20);
     }
 
     public void remove() {
