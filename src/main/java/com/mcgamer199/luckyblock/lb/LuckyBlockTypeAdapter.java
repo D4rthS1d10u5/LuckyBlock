@@ -19,7 +19,7 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
     @Override
     public JsonElement serialize(LuckyBlock luckyBlock, Type type, JsonSerializationContext jsonSerializationContext) {
         JsonObject serialized = new JsonObject();
-        serialized.addProperty("block", LocationUtils.asString(luckyBlock.getBlock().getLocation()));
+        serialized.addProperty("block", LocationUtils.asString(luckyBlock.getLocation()));
         serialized.addProperty("lucky_block_type", luckyBlock.getType().getId());
         serialized.addProperty("luck", luckyBlock.getLuck());
 
@@ -44,7 +44,7 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
 
         serialized.addProperty("facing", luckyBlock.getFacing().name());
 
-        serialized.addProperty("locked", luckyBlock.isFreezed());
+        serialized.addProperty("locked", luckyBlock.isLocked());
 
         if(!luckyBlock.getDropOptions().isEmpty()) {
             serialized.add("options", luckyBlock.getDropOptions().getJsonParams());
@@ -103,7 +103,7 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
             luckyBlock.setOwner(ownerUuid);
 
             if(locked) {
-                luckyBlock.freeze();
+                luckyBlock.lock();
             }
 
             luckyBlock.setFacing(BlockFace.valueOf(facingName));

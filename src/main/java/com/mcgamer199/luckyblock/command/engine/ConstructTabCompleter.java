@@ -3,11 +3,11 @@ package com.mcgamer199.luckyblock.command.engine;
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
+import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -219,25 +219,13 @@ public class ConstructTabCompleter extends com.mcgamer199.luckyblock.command.eng
                                     }
                                 } else if (args[0].equalsIgnoreCase("spawnegg")) {
                                     if (args.length == 2) {
-                                        List<String> ents = new ArrayList();
-                                        var18 = CustomEntity.classes.iterator();
-
-                                        while (var18.hasNext()) {
-                                            CustomEntity e = (CustomEntity) var18.next();
-                                            ents.add(e.getClass().getName().replace("com.LuckyBlock.customentity.", "LB_").replace(".", "-"));
-                                        }
+                                        List<String> classNames = new ArrayList<>();
+                                        CustomEntityManager.entityClasses().forEach(entityClass -> classNames.add(entityClass.getName().replace("com.mcgamer199.luckyblock.customentity", "LB_")));
 
                                         if (args[1] == null) {
-                                            list = ents;
+                                            list = classNames;
                                         } else {
-                                            var18 = ents.iterator();
-
-                                            while (var18.hasNext()) {
-                                                stringProsto = (String) var18.next();
-                                                if (stringProsto.toUpperCase().startsWith(args[1].toUpperCase())) {
-                                                    list.add(stringProsto);
-                                                }
-                                            }
+                                            classNames.stream().filter(name -> name.toUpperCase().startsWith(args[1].toUpperCase())).forEach(list::add);
                                         }
                                     }
                                 } else if (args[0].equalsIgnoreCase("placelb")) {

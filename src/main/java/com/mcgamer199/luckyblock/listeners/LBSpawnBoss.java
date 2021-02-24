@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.listeners;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.util.Scheduler;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.newstr.FileStructure;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -90,7 +90,7 @@ public class LBSpawnBoss implements Listener {
             public void run() {
                 if (this.i > 0) {
                     MyTasks.playEffects(Particle.CLOUD, loc, 110, new double[]{1.0D, 0.0D, 1.0D}, 0.5F);
-                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("ritual_witch_particles"), 1.0F, 0.0F, 59);
+                    EffectUtils.playFixedSound(loc, EffectUtils.getSound("ritual_witch_particles"), 1.0F, 0.0F, 59);
                     --this.i;
                 } else {
                     for (int x = -1; x < 2; ++x) {
@@ -101,7 +101,7 @@ public class LBSpawnBoss implements Listener {
                     }
 
                     FileStructure.generateWitchDungeon(loc);
-                    SoundUtils.playFixedSound(loc, SoundUtils.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
+                    EffectUtils.playFixedSound(loc, EffectUtils.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
                     Scheduler.cancelTask(this);
                 }
             }

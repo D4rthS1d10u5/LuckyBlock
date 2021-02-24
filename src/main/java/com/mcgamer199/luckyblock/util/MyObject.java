@@ -1,5 +1,9 @@
 package com.mcgamer199.luckyblock.util;
 
+import com.mcgamer199.luckyblock.api.base.ThrowingPredicate;
+import com.mcgamer199.luckyblock.api.base.ThrowingRunnable;
+import com.mcgamer199.luckyblock.api.base.ThrowingSupplier;
+
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Map;
@@ -315,7 +319,7 @@ public class MyObject {
      * @param <T>      type result
      * @return result
      */
-    public static <T> T unchecked(SupplierThrows<T> supplier) {
+    public static <T> T unchecked(ThrowingSupplier<T> supplier) {
         try {
             return supplier.get();
         } catch (Exception e) {
@@ -329,7 +333,7 @@ public class MyObject {
      *
      * @param runnable code
      */
-    public static void unchecked(RunnableThrows runnable) {
+    public static void unchecked(ThrowingRunnable runnable) {
         try {
             runnable.run();
         } catch (Exception e) {
@@ -343,7 +347,7 @@ public class MyObject {
      *
      * @param predicate code
      */
-    public static <T> Predicate<T> unchecked(PredicateThrows<T> predicate) {
+    public static <T> Predicate<T> unchecked(ThrowingPredicate<T> predicate) {
         return t -> {
             try {
                 return predicate.test(t);
@@ -357,20 +361,5 @@ public class MyObject {
     @SuppressWarnings("unchecked")
     private static <E extends Exception> void doThrow0(Exception e) throws E {
         throw (E) e;
-    }
-
-    public interface SupplierThrows<T> {
-
-        T get() throws Exception;
-    }
-
-    public interface RunnableThrows {
-
-        void run() throws Exception;
-    }
-
-    public interface PredicateThrows<T> {
-
-        boolean test(T val) throws Exception;
     }
 }

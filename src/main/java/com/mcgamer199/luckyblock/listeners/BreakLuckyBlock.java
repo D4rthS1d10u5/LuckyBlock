@@ -6,7 +6,7 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
+import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityFloatingText;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -16,7 +16,7 @@ import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.TemporaryUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.mcgamer199.luckyblock.yottaevents.YottaEvents;
@@ -84,7 +84,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                     pit = Float.parseFloat(s[2]);
                 } catch (NumberFormatException ignored) {}
 
-                SoundUtils.playFixedSound(bloc, sound, vol, pit, 30);
+                EffectUtils.playFixedSound(bloc, sound, vol, pit, 30);
             }
 
             luckyBlock.remove();
@@ -130,13 +130,12 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
             luck = max;
         }
 
-        EntityFloatingText f = new EntityFloatingText();
-        f.age = 20;
-        f.mode = 1;
-        f.b = 100;
-        f.text = ChatColor.BLUE + "+" + total + "%";
-        f.spawn(luckyBlock.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
-        LuckyBlockAPI.spawnLuckyBlockItem(luckyBlock, luck, luckyBlock.getBlock().getLocation());
+        CustomEntityFloatingText text = new CustomEntityFloatingText();
+        text.setAge(20);
+        text.setShiftCount(100);
+        text.setText("§9+" + total + "%");
+        text.spawn(luckyBlock.getLocation().add(0.5D, 1.0D, 0.5D));
+        LuckyBlockAPI.spawnLuckyBlockItem(luckyBlock, luck, luckyBlock.getLocation());
     }
 
     private void injectYottaEvents() {
@@ -277,10 +276,10 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                         Player pl = (Player) p;
                         if (r == 1) {
                             send_no(pl, "drops.well.lucky");
-                            pl.playSound(pl.getLocation(), SoundUtils.getSound("lb_stwell_lucky"), 1.0F, 1.0F);
+                            pl.playSound(pl.getLocation(), EffectUtils.getSound("lb_stwell_lucky"), 1.0F, 1.0F);
                         } else {
                             send_no(pl, "drops.well.unlucky");
-                            pl.playSound(pl.getLocation(), SoundUtils.getSound("lb_stwell_unlucky"), 1.0F, 1.0F);
+                            pl.playSound(pl.getLocation(), EffectUtils.getSound("lb_stwell_unlucky"), 1.0F, 1.0F);
                         }
                     }
                 }

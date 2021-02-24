@@ -6,6 +6,7 @@ import com.mcgamer199.luckyblock.events.LBPreGenerateEvent;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -65,7 +66,7 @@ public class WorldGenerateLB extends ColorsClass implements Listener {
                     LBPreGenerateEvent e = new LBPreGenerateEvent(b, world, event.getChunk(), type);
                     Bukkit.getPluginManager().callEvent(e);
                     if (!e.isCancelled() && !type.defaultBlock) {
-                        LuckyBlock luckyBlock = LuckyBlock.placeLB(b.getLocation(), type, null, "a=Naturally", null, LBType.getRandomP(type.generateWithLuck[0], type.generateWithLuck[1]));
+                        LuckyBlock luckyBlock = LuckyBlock.placeLB(b.getLocation(), type, null, "a=Naturally", null, RandomUtils.nextInt(type.generateWithLuck[0], type.generateWithLuck[1]));
                         LBGenerateEvent e1 = new LBGenerateEvent(luckyBlock, world, event.getChunk());
                         Bukkit.getPluginManager().callEvent(e1);
                     }

@@ -112,7 +112,7 @@ public class TemporaryUtils {
                     new DebugData("Player", player != null ? player.getName() : "none"),
                     new DebugData("Location", LocationUtils.asString(bloc)),
                     new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())),
-                    new DebugData("Placed By", luckyBlock.getPlacedByClass()),
+                    new DebugData("Placed By", luckyBlock.getPlacementInfo()),
                     new DebugData("Title", ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "unknown")))),
                     new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()),
                     new DebugData("Luck", String.valueOf(luckyBlock.getLuck())),

@@ -1,12 +1,14 @@
 package com.mcgamer199.luckyblock.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.Objects;
 
 public class ArrayUtils {
 
     @SafeVarargs
-    public static <T> T[] concat(T[] first, T[]... others) {
+    public static <T> T[] concat(@NotNull T[] first, T[]... others) {
         if(others == null || others.length == 0) {
             return first;
         }
@@ -26,9 +28,17 @@ public class ArrayUtils {
         return result;
     }
 
-    public static <T> T[] concat(T[] first, T[] second) {
+    public static <T> T[] concat(@NotNull T[] first, @NotNull T[] second) {
         T[] result = Arrays.copyOf(first, first.length + second.length);
         System.arraycopy(second, 0, result, first.length, second.length);
         return result;
+    }
+
+    public static <T> T getLast(@NotNull T[] array) {
+        if(array.length == 0) {
+            return null;
+        }
+
+        return array[array.length - 1];
     }
 }

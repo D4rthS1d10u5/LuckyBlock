@@ -12,8 +12,9 @@ import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.Detector;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -150,7 +151,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                     }
                 }
 
-                SoundUtils.playFixedSound(block.getLocation(), sound, vol, pit, 30);
+                EffectUtils.playFixedSound(block.getLocation(), sound, vol, pit, 30);
             }
 
             if (!LBType.getFolder(type).exists() && placedBy != null && placedBy instanceof Player) {
@@ -197,10 +198,17 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 }
 
                 if (LuckyBlockPlugin.isDebugEnabled()) {
-                    Debug("Lucky block placed", new DebugData("Location", LocationUtils.asString(block.getLocation())), new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())), new DebugData("Placed By", luckyBlock.getPlacedByClass()), new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull"))) : "unknown"), new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()), new DebugData("Luck", String.valueOf(luckyBlock.getLuck())), new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
+                    Debug("Lucky block placed",
+                            new DebugData("Location", LocationUtils.asString(block.getLocation())),
+                            new DebugData("LBType", luckyBlock.getType().getId() + ", " + ChatColor.stripColor(luckyBlock.getType().getName())),
+                            new DebugData("Placed By", luckyBlock.getPlacementInfo()),
+                            new DebugData("Title", luckyBlock.hasDropOption("Title") ? ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull"))) : "unknown"),
+                            new DebugData("Drop Type", luckyBlock.customDrop != null ? luckyBlock.customDrop.getName() : luckyBlock.getLuckyBlockDrop().name()),
+                            new DebugData("Luck", String.valueOf(luckyBlock.getLuck())),
+                            new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
                 }
 
-                luckyBlock.save(true);
+                luckyBlock.save();
                 return luckyBlock;
             }
         }
@@ -310,7 +318,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 Block block = event.getBlock();
                 Player player = event.getPlayer();
                 if (isEnoughSpace(block.getLocation(), new int[]{2, 1, 2})) {
-                    Detector d = new Detector(LuckyBlockPlugin.randoms.nextInt(99999) + 1);
+                    Detector d = new Detector(RandomUtils.nextInt(99999) + 1);
                     d.setLoc(block.getLocation());
                     block.setType(Material.OBSIDIAN);
                     d.addBlock(block);

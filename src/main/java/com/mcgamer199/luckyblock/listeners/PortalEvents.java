@@ -1,12 +1,15 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.util.LocationUtils;
-import com.mcgamer199.luckyblock.util.SoundUtils;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import org.bukkit.*;
+import com.mcgamer199.luckyblock.util.EffectUtils;
+import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -93,16 +96,16 @@ public class PortalEvents extends ColorsClass implements Listener {
                                 if (player.hasPermission("lb.createportal")) {
                                     if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.EAST).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.EAST, player);
-                                        SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
+                                        EffectUtils.playFixedSound(block.getLocation(), EffectUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
                                     } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.WEST).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.WEST, player);
-                                        SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
+                                        EffectUtils.playFixedSound(block.getLocation(), EffectUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
                                     } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.SOUTH, player);
-                                        SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
+                                        EffectUtils.playFixedSound(block.getLocation(), EffectUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
                                     } else if (LuckyBlock.isLuckyBlock(block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP)) && LuckyBlock.getByBlock(block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP)).getType().isPortal()) {
                                         this.a(block, BlockFace.NORTH, player);
-                                        SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
+                                        EffectUtils.playFixedSound(block.getLocation(), EffectUtils.getSound("portal_activate"), 1.0F, 1.0F, 22);
                                     }
 
                                     LuckyBlockAPI.savePortals();
@@ -234,11 +237,11 @@ public class PortalEvents extends ColorsClass implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() != Material.AIR && LuckyBlockAPI.lbwblocks.contains(LocationUtils.asString(event.getClickedBlock().getLocation()))) {
             Player player = event.getPlayer();
             if (player.hasPermission("lb.useportal")) {
-                player.playSound(player.getLocation(), SoundUtils.getSound("portal_teleport"), 100.0F, 1.0F);
+                player.playSound(player.getLocation(), EffectUtils.getSound("portal_teleport"), 100.0F, 1.0F);
                 if (!LuckyBlockWorld.equals(player.getWorld().getGenerator())) {
                     LuckyBlockAPI.addLocation(player, player.getLocation());
                     World world = LuckyBlockWorld.getWorld(Arrays.asList(WorldOptions.NORMAL));
-                    player.teleport(new Location(world, LuckyBlockPlugin.randoms.nextInt(1000) - 500, world.getSpawnLocation().getY(), LuckyBlockPlugin.randoms.nextInt(1000) - 500));
+                    player.teleport(new Location(world, RandomUtils.nextInt(1000) - 500, world.getSpawnLocation().getY(), RandomUtils.nextInt(1000) - 500));
                     send(player, "event.portal.teleport");
                     LuckyBlockAPI.savePortals();
                 } else {

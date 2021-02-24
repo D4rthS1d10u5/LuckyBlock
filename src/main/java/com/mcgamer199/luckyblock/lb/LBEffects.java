@@ -51,7 +51,7 @@ public class LBEffects {
                             }
                         } catch (Exception ignored) {}
                     }
-                } else if (!luckyBlock.isFreezed()) {
+                } else if (!luckyBlock.isLocked()) {
                     if (LuckyBlock.getStorage().containsValue(luckyBlock)) {
                         Scheduler.later(() -> {
                             if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {

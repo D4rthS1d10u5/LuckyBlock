@@ -1,6 +1,6 @@
 package com.mcgamer199.newstr;
 
-import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
+import com.mcgamer199.luckyblock.customentity.boss.CustomEntityBossWitch;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.Schematic;
@@ -25,10 +25,6 @@ public class FileStructure {
             String[] d = l.split(",");
             BlockTags.buildStructure(file.getConfigurationSection(d[0]).getConfigurationSection(d[1]), loc);
         }
-
-    }
-
-    static void _generateLBBossDungeon(Location loc) {
     }
 
     public static void generateWitchDungeon(Location loc) {
@@ -59,8 +55,8 @@ public class FileStructure {
         filler.chest = chest4;
         filler.loc1 = "ItemsChest";
         filler.fill();
-        EntityBossWitch w = new EntityBossWitch();
-        w.spawn(loc.add(0.0D, 8.0D, 0.0D));
+        CustomEntityBossWitch witch = new CustomEntityBossWitch();
+        witch.spawn(loc.add(0.0D, 8.0D, 0.0D));
     }
 }
 

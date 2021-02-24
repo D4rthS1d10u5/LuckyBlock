@@ -14,6 +14,7 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.resources.CItem;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -111,11 +112,9 @@ public class LBType {
 
     public static LBType fromMaterial(Material mat) {
         LBType type = null;
-        Iterator var3 = lbs.iterator();
 
-        while (var3.hasNext()) {
-            LBType t = (LBType) var3.next();
-            if (t.getType() == mat) {
+        for (LBType t : lbs) {
+            if (t.getType().equals(mat)) {
                 type = t;
             }
         }
@@ -214,11 +213,6 @@ public class LBType {
         return t;
     }
 
-    public static int getRandomP(int min, int max) {
-        int p = (new Random()).nextInt(max - min + 1) + min;
-        return p;
-    }
-
     public static LBType getRandomType() {
         return lbs.size() > 0 ? lbs.get((new Random()).nextInt(lbs.size())) : null;
     }
@@ -236,7 +230,7 @@ public class LBType {
             if (d.length == 2) {
                 if (d[1].startsWith("O")) {
                     LBType type = fromItem(item);
-                    return getRandomP(type.random_luck[0], type.random_luck[1]);
+                    return RandomUtils.nextInt(type.random_luck[0], type.random_luck[1]);
                 }
 
                 return Integer.parseInt(d[1]);
@@ -1158,7 +1152,7 @@ public class LBType {
     }
 
     public int getRandomP() {
-        return getRandomP(this.minLuck, this.maxLuck);
+        return RandomUtils.nextInt(this.minLuck, this.maxLuck);
     }
 
     public String[] getAdditionalBlocks() {

@@ -51,7 +51,7 @@ public class LBCSetDrop extends LBCommand {
 
                             luckyBlock.customDrop = d;
                             luckyBlock.refreshCustomDrop();
-                            luckyBlock.save(true);
+                            luckyBlock.save();
                         }
 
                         if (args.length == 3) {

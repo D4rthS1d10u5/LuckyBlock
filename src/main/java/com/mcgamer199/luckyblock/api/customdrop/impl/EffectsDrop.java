@@ -38,7 +38,7 @@ public class EffectsDrop implements CustomDrop {
         if(particles.length > 0) {
             Scheduler.create(() -> {
                 Particle particle = Particle.valueOf(RandomUtils.getRandomObject(particles));
-                luckyBlock.getBlock().getWorld().spawnParticle(particle, luckyBlock.getBlock().getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
+                luckyBlock.getBlock().getWorld().spawnParticle(particle, luckyBlock.getLocation(), 100, 0.3D, 0.3D, 0.3D, 0.0D);
             }).count(10).timer(5, 5);
         }
     }

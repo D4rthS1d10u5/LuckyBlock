@@ -32,7 +32,7 @@ public class FakeTntDrop implements CustomDrop {
     }
 
     public void execute(LuckyBlock luckyBlock, Player player) {
-        TNTPrimed tnt = (TNTPrimed) luckyBlock.getBlock().getWorld().spawnEntity(luckyBlock.getBlock().getLocation().add(0.0D, 1.0D, 0.0D), EntityType.PRIMED_TNT);
+        TNTPrimed tnt = (TNTPrimed) luckyBlock.getBlock().getWorld().spawnEntity(luckyBlock.getLocation().add(0.0D, 1.0D, 0.0D), EntityType.PRIMED_TNT);
         tnt.setFuseTicks(35);
         tnt.setYield(0.0F);
     }

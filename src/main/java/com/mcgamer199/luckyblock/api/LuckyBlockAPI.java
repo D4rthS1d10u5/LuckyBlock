@@ -132,7 +132,7 @@ public class LuckyBlockAPI {
                         luckyBlock.facing = BlockFace.valueOf(partData[1].toUpperCase());
                     } else if (partData[0].equalsIgnoreCase("Freezed")) {
                         if (partData[1].equalsIgnoreCase("true")) {
-                            luckyBlock.freeze();
+                            luckyBlock.lock();
                         }
                     } else if (partData[0].equalsIgnoreCase("Options")) {
                         String p = partData[1].replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("'", "");

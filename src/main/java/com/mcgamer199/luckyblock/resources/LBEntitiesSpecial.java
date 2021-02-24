@@ -1,9 +1,9 @@
 package com.mcgamer199.luckyblock.resources;
 
+import com.mcgamer199.luckyblock.customentity.CustomEntityElementalCreeper;
+import com.mcgamer199.luckyblock.customentity.CustomEntityLuckyVillager;
+import com.mcgamer199.luckyblock.customentity.CustomEntitySuperSlime;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.customentity.EntityElementalCreeper;
-import com.mcgamer199.luckyblock.customentity.EntityLuckyVillager;
-import com.mcgamer199.luckyblock.customentity.EntitySuperSlime;
 import com.mcgamer199.luckyblock.tags.EntityTags;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -130,29 +130,26 @@ public class LBEntitiesSpecial {
     }
 
     public static void spawnElementalCreeper(Location loc, boolean noAI) {
-        EntityElementalCreeper e = new EntityElementalCreeper();
-        e.spawn(loc);
-        if (noAI) {
-            ((Creeper) e.getEntity()).setAI(false);
+        CustomEntityElementalCreeper creeper = new CustomEntityElementalCreeper();
+        creeper.spawn(loc);
+        if(noAI) {
+            ((Creeper) creeper.getLinkedEntity()).setAI(false);
         }
-
     }
 
     public static void spawnLuckyVillager(Location loc, boolean noAI) {
-        EntityLuckyVillager v = new EntityLuckyVillager();
-        v.spawn(loc);
-        if (noAI) {
-            ((Villager) v.getEntity()).setAI(false);
+        CustomEntityLuckyVillager villager = new CustomEntityLuckyVillager();
+        villager.spawn(loc);
+        if(noAI) {
+            ((Villager) villager.getLinkedEntity()).setAI(false);
         }
-
     }
 
     public static void spawnSuperSlime(Location loc, boolean noAI) {
-        EntitySuperSlime s = new EntitySuperSlime();
-        s.spawn(loc);
-        if (noAI) {
-            ((Slime) s.getEntity()).setAI(false);
+        CustomEntitySuperSlime superSlime = new CustomEntitySuperSlime();
+        superSlime.spawn(loc);
+        if(noAI) {
+            ((Slime) superSlime.getLinkedEntity()).setAI(false);
         }
-
     }
 }

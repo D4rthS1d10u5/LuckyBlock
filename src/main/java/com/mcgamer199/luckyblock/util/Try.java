@@ -1,5 +1,10 @@
 package com.mcgamer199.luckyblock.util;
 
+import com.mcgamer199.luckyblock.api.base.ThrowableHandler;
+import com.mcgamer199.luckyblock.api.base.ThrowingPredicate;
+import com.mcgamer199.luckyblock.api.base.ThrowingRunnable;
+import com.mcgamer199.luckyblock.api.base.ThrowingSupplier;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -8,6 +13,7 @@ import java.util.function.Predicate;
  * @author Lokha
  */
 public class Try {
+
     public static ThrowableHandler throwableHandler = Throwable::printStackTrace;
 
     /**
@@ -16,7 +22,7 @@ public class Try {
      * @param <T>      type result
      * @return result
      */
-    public static <T> T unchecked(SupplierThrows<T> supplier) {
+    public static <T> T unchecked(ThrowingSupplier<T> supplier) {
         try {
             return supplier.get();
         } catch(Exception e) {
@@ -29,7 +35,7 @@ public class Try {
      * Игрорировать проверяемое исключение (если проверяемое исключение возникнет, оно будет в обертке RuntimeException)
      * @param runnable code
      */
-    public static void unchecked(RunnableThrows runnable) {
+    public static void unchecked(ThrowingRunnable runnable) {
         try {
             runnable.run();
         } catch(Exception e) {
@@ -42,7 +48,7 @@ public class Try {
      * Игрорировать проверяемое исключение (если проверяемое исключение возникнет, оно будет в обертке RuntimeException)
      * @param predicate code
      */
-    public static <T> Predicate<T> unchecked(PredicateThrows<T> predicate) {
+    public static <T> Predicate<T> unchecked(ThrowingPredicate<T> predicate) {
         return t -> {
             try {
                 return predicate.test(t);
@@ -60,7 +66,7 @@ public class Try {
      * @param def      дефотное значение, если возникнет исключение
      * @return result
      */
-    public static <T> T ignore(SupplierThrows<T> supplier, T def) {
+    public static <T> T ignore(ThrowingSupplier<T> supplier, T def) {
         try {
             return supplier.get();
         } catch(Exception e) {
@@ -73,7 +79,7 @@ public class Try {
      * Игнорировать исключения целиком и полностью (если исключение воникнет, тогда исключение передаётся в обработчик)
      * @param runnable code
      */
-    public static Optional<Exception> ignore(RunnableThrows runnable) {
+    public static Optional<Exception> ignore(ThrowingRunnable runnable) {
         try {
             runnable.run();
         } catch(Exception e) {
@@ -87,7 +93,7 @@ public class Try {
      * Игнорировать исключения целиком и полностью (если исключение воникнет, тогда исключение передаётся в обработчик)
      * @param runnable code
      */
-    public static Optional<Exception> ignore(RunnableThrows runnable, Consumer<Exception> consumer) {
+    public static Optional<Exception> ignore(ThrowingRunnable runnable, Consumer<Exception> consumer) {
         try {
             runnable.run();
         } catch(Exception e) {
@@ -104,7 +110,7 @@ public class Try {
      * @param <T>       type result
      * @param def       дефотное значение, если возникнет исключение
      */
-    public static <T> Predicate<T> ignore(PredicateThrows<T> predicate, boolean def) {
+    public static <T> Predicate<T> ignore(ThrowingPredicate<T> predicate, boolean def) {
         return t -> {
             try {
                 return predicate.test(t);
@@ -118,25 +124,5 @@ public class Try {
     @SuppressWarnings("unchecked")
     private static <E extends Exception> void doThrow0(Exception e) throws E {
         throw (E) e;
-    }
-
-    public interface SupplierThrows<T> {
-
-        T get() throws Exception;
-    }
-
-    public interface RunnableThrows {
-
-        void run() throws Exception;
-    }
-
-    public interface PredicateThrows<T> {
-
-        boolean test(T val) throws Exception;
-    }
-
-    public interface ThrowableHandler {
-
-        void handle(Throwable throwable);
     }
 }

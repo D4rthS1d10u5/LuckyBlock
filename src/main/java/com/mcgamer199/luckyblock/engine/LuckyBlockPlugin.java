@@ -12,16 +12,12 @@ import com.mcgamer199.luckyblock.api.customdrop.impl.DropInventoryDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.EffectsDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.FakeTntDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.RandomBlockDrop;
+import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
 import com.mcgamer199.luckyblock.api.title.ITitle;
 import com.mcgamer199.luckyblock.api.title.Title_1_12_R1;
 import com.mcgamer199.luckyblock.command.engine.ConstructTabCompleter;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.customentity.CustomEntityEvents;
-import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.customentity.EntitySuperWitherSkeleton;
-import com.mcgamer199.luckyblock.customentity.boss.EntityBossWitch;
 import com.mcgamer199.luckyblock.enchantments.Glow;
 import com.mcgamer199.luckyblock.enchantments.Lightning;
 import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
@@ -58,7 +54,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
 
 public class LuckyBlockPlugin extends JavaPlugin {
 
@@ -197,19 +196,13 @@ public class LuckyBlockPlugin extends JavaPlugin {
         pm.registerEvents(new SpawnEggEvents(), this);
         Structure.loadStructures();
         EntityTags.load();
-        this.loadCustomEntities();
+        CustomEntityManager.initDefaults();
+        CustomEntityManager.loadEntities();
         this.loadDetectors();
         LuckyBlockAPI.loadLuckyBlocks();
     }
 
     public void onDisable() {
-        Iterator var2 = CustomEntity.entities.iterator();
-
-        while (var2.hasNext()) {
-            CustomEntity c = (CustomEntity) var2.next();
-            c.hideBar(false);
-        }
-
         LuckyDB.checkSave();
         this.getLogger().info("LuckyBlock, 2.2.5 Disabled.");
     }
@@ -303,24 +296,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
     public void loadWorlds() {
     }
 
-    private void loadCustomEntities() {
-        CustomEntity.classes.clear();
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntityElementalCreeper());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntityKillerSkeleton());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntityGuardian());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntityLuckyVillager());
-        CustomEntity.classes.add(new EntitySuperWitherSkeleton());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntitySoldier());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntitySuperSlime());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.boss.EntityKnight());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.EntityTalkingZombie());
-        CustomEntity.classes.add(new EntityBossWitch());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.boss.EntityMC());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.boss.EntityUnderwaterBoss());
-        CustomEntity.classes.add(new com.mcgamer199.luckyblock.customentity.boss.EntityFootballPlayer());
-        this.loadCustomEntities1();
-    }
-
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new LuckyBlockWorld();
     }
@@ -408,9 +383,5 @@ public class LuckyBlockPlugin extends JavaPlugin {
         }
 
         return title != null;
-    }
-
-    private void loadCustomEntities1() {
-        Scheduler.later(CustomEntityLoader::load, 3);
     }
 }

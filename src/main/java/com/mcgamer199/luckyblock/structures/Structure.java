@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Structure {
 
@@ -26,9 +27,7 @@ public class Structure {
     public Structure() {}
 
     public static Treasure getRandomTreasure() {
-        Structure structure = RandomUtils.getRandomObject(structures);
-
-        return structure.getId() == 15 ? (Treasure) structure : null;
+        return (Treasure) RandomUtils.getRandomObject(structures.stream().filter(structure -> structure.getId() == 15).collect(Collectors.toList()));
     }
 
     public static boolean buildStructure(String className, Location location) {

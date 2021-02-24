@@ -16,6 +16,7 @@ import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.structures.BossDungeon;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
 import com.mcgamer199.luckyblock.util.LocationUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -60,7 +61,7 @@ public class SomeEvents extends ColorsClass implements Listener {
         Player player = event.getPlayer();
         if (player.getInventory().getItemInMainHand().getType() == Material.STAINED_CLAY && player.getInventory().getItemInMainHand().hasItemMeta() && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName() != null && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(darkred + "Exploding Block")) {
             Block block = event.getBlock();
-            this.BombBlock(block, LuckyBlockPlugin.randoms.nextInt(100) + 200);
+            this.BombBlock(block, RandomUtils.nextInt(100) + 200);
         }
 
     }
@@ -88,9 +89,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                         luck = luckyBlock.getLuck();
                         player.sendMessage(blue + "Lucky Block : " + green + "true");
                         player.sendMessage(luckyBlock.getType().getLuckString(luck));
-                        if (luckyBlock.getPlacedByClass() != null) {
-                            player.sendMessage(yellow + val("command.lbs.data.placedby") + ": " + gold + luckyBlock.getPlacedByClass());
-                        }
+                        player.sendMessage(yellow + val("command.lbs.data.placedby") + ": " + gold + luckyBlock.getPlacementInfo());
 
                         if ((luckyBlock.getLuckyBlockDrop() != null || luckyBlock.customDrop != null) && luckyBlock.hasDropOption("Title")) {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull")));
@@ -136,7 +135,7 @@ public class SomeEvents extends ColorsClass implements Listener {
                     }
 
                     if (uuids.size() > 0) {
-                        int thing = LuckyBlockPlugin.randoms.nextInt(uuids.size());
+                        int thing = RandomUtils.nextInt(uuids.size());
                         Iterator var7 = player.getNearbyEntities(20.0D, 20.0D, 20.0D).iterator();
 
                         while (var7.hasNext()) {
@@ -312,7 +311,7 @@ public class SomeEvents extends ColorsClass implements Listener {
     }
 
     private void spawnItem(LuckyBlock luckyBlock) {
-        luckyBlock.getBlock().getWorld().dropItem(luckyBlock.getBlock().getLocation(), luckyBlock.getType().toItemStack(luckyBlock.getLuck()));
+        luckyBlock.getBlock().getWorld().dropItem(luckyBlock.getLocation(), luckyBlock.getType().toItemStack(luckyBlock.getLuck()));
     }
 
     public void BombBlock(final Block block, int i) {

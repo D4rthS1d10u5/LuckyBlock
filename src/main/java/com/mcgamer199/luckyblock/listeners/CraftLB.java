@@ -5,9 +5,9 @@ import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Click;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityFloatingText;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
-import com.mcgamer199.luckyblock.customentity.nametag.EntityFloatingText;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBCraftEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -239,13 +239,12 @@ public class CraftLB extends ColorsClass implements Listener {
         return luck;
     }
 
-    private static void TestSend(Player player, String path) {
+    private static void trySendTitle(Player player, String path) {
         if (LuckyBlockPlugin.action_bar_messages()) {
             TitleSender.send_1(player, path);
         } else {
             send_no(player, path);
         }
-
     }
 
     @EventHandler
@@ -259,7 +258,7 @@ public class CraftLB extends ColorsClass implements Listener {
                     if (player.hasPermission("lb.viewlct")) {
                         LuckyCraftingTable.getByBlock(block).open(player);
                     } else {
-                        TestSend(player, "lct.view.no_permission");
+                        trySendTitle(player, "lct.view.no_permission");
                     }
                 }
             }
@@ -326,11 +325,11 @@ public class CraftLB extends ColorsClass implements Listener {
                         } else {
                             player.closeInventory();
                             if (a.equalsIgnoreCase("invalid_items")) {
-                                TestSend(player, "lct.error4");
+                                trySendTitle(player, "lct.error4");
                             } else if (a.equalsIgnoreCase("no_item_found")) {
-                                TestSend(player, "lct.error3");
+                                trySendTitle(player, "lct.error3");
                             } else if (a.equalsIgnoreCase("more_than_one")) {
-                                TestSend(player, "lct.error2");
+                                trySendTitle(player, "lct.error2");
                             }
                         }
                     }
@@ -384,10 +383,10 @@ public class CraftLB extends ColorsClass implements Listener {
                                 }
                             } else if (craftResult.equalsIgnoreCase("invalid_items")) {
                                 player.closeInventory();
-                                TestSend(player, "lct.error4");
+                                trySendTitle(player, "lct.error4");
                             } else if (craftResult.equalsIgnoreCase("no_item_found")) {
                                 player.closeInventory();
-                                TestSend(player, "lct.error3");
+                                trySendTitle(player, "lct.error3");
                             }
                         } else if (name.equalsIgnoreCase(green + val("lct.gui.itemextract.name", false))) {
                             event.setCancelled(true);
@@ -402,7 +401,7 @@ public class CraftLB extends ColorsClass implements Listener {
                                             cr.run();
                                         } else {
                                             player.closeInventory();
-                                            TestSend(player, "lct.error5");
+                                            trySendTitle(player, "lct.error5");
                                         }
                                     } else {
                                         player.closeInventory();
@@ -411,22 +410,22 @@ public class CraftLB extends ColorsClass implements Listener {
                                         }
 
                                         if (s.equalsIgnoreCase("null")) {
-                                            TestSend(player, "lct.error1");
+                                            trySendTitle(player, "lct.error1");
                                         } else if (s.equalsIgnoreCase("more_than_one")) {
-                                            TestSend(player, "lct.error2");
+                                            trySendTitle(player, "lct.error2");
                                         } else if (s.equalsIgnoreCase("invalid_lb")) {
-                                            TestSend(player, "lct.error6");
+                                            trySendTitle(player, "lct.error6");
                                         } else if (s.equalsIgnoreCase("other")) {
-                                            TestSend(player, "lct.error7");
+                                            trySendTitle(player, "lct.error7");
                                         }
                                     }
                                 } else {
                                     player.closeInventory();
-                                    TestSend(player, "lct.no_fuel");
+                                    trySendTitle(player, "lct.no_fuel");
                                 }
                             } else {
                                 player.closeInventory();
-                                TestSend(player, "lct.running");
+                                trySendTitle(player, "lct.running");
                             }
                         }
                     }
@@ -519,24 +518,14 @@ public class CraftLB extends ColorsClass implements Listener {
         c.setStoredLuck(n, true);
         removeItems(inv);
         c.save(true);
-        EntityFloatingText e = new EntityFloatingText();
-        e.mode = 1;
-        String s = null;
-        if (total > 0) {
-            s = ChatColor.GREEN + "+" + total;
-        } else {
-            s = "" + ChatColor.RED + total;
-        }
+        CustomEntityFloatingText floatingText = new CustomEntityFloatingText();
+        floatingText.setText(total > 0 ? "§a+" : "§c" + total);
+        floatingText.spawn(c.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
 
-        e.text = s;
-        e.spawn(c.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
-        Iterator var8 = inv.getViewers().iterator();
-
-        while (var8.hasNext()) {
-            HumanEntity h = (HumanEntity) var8.next();
+        for (HumanEntity h : inv.getViewers()) {
             if (h instanceof Player) {
                 Player p = (Player) h;
-                p.playSound(p.getLocation(), SoundUtils.getSound("lct_insert"), 0.4F, 2.0F);
+                p.playSound(p.getLocation(), EffectUtils.getSound("lct_insert"), 0.4F, 2.0F);
                 c.open(p);
             }
         }
@@ -600,7 +589,7 @@ public class CraftLB extends ColorsClass implements Listener {
                                 for (z = -1; z < 2; ++z) {
                                     if ((x != 0 || z != 0 || y != 0) && block.getLocation().add(x, y, z).getBlock().getType() != Material.AIR) {
                                         event.setCancelled(true);
-                                        TestSend(player, "lct.place.no_place");
+                                        trySendTitle(player, "lct.place.no_place");
                                         return;
                                     }
                                 }
@@ -609,10 +598,10 @@ public class CraftLB extends ColorsClass implements Listener {
 
                         LuckyCraftingTable lc = new LuckyCraftingTable(block, player.getName(), true);
                         lc.save(true);
-                        TestSend(player, "lct.place.success");
+                        trySendTitle(player, "lct.place.success");
                     } else {
                         event.setCancelled(true);
-                        TestSend(player, "lct.place.no_permission");
+                        trySendTitle(player, "lct.place.no_permission");
                     }
                 } else if (item.getItemMeta().getDisplayName().equalsIgnoreCase(yellow + "Lucky Crafting Table " + ChatColor.GOLD + "[Data]")) {
                     if (player.hasPermission("lb.placelct")) {
@@ -636,13 +625,13 @@ public class CraftLB extends ColorsClass implements Listener {
                             lc.setFuel(fuel);
                             lc.setStoredLuck(stored, false);
                             lc.save(true);
-                            TestSend(player, "lct.place.success");
+                            trySendTitle(player, "lct.place.success");
                         } else {
                             event.setCancelled(true);
                         }
                     } else {
                         event.setCancelled(true);
-                        TestSend(player, "lct.place.no_permission");
+                        trySendTitle(player, "lct.place.no_permission");
                     }
                 }
             }
@@ -659,7 +648,7 @@ public class CraftLB extends ColorsClass implements Listener {
             Player player = event.getPlayer();
             event.setCancelled(true);
             if (!player.hasPermission("lb.breaklct")) {
-                TestSend(player, "lct.break.no_permission");
+                trySendTitle(player, "lct.break.no_permission");
                 return;
             }
 
@@ -700,7 +689,7 @@ public class CraftLB extends ColorsClass implements Listener {
             }
 
             craftingTable.remove();
-            TestSend(player, "lct.break.success");
+            trySendTitle(player, "lct.break.success");
         }
 
     }
@@ -718,22 +707,21 @@ public class CraftLB extends ColorsClass implements Listener {
                             table.setLevel((byte) (table.getLevel() + 1));
                             table.save(true);
                             table.refresh();
-                            SoundUtils.playFixedSound(table.getBlock().getLocation(), SoundUtils.getSound("lct_upgrade"), 1.0F, 0.0F, 7);
-                            EntityFloatingText e = new EntityFloatingText();
-                            e.mode = 1;
-                            e.text = val("lct.level_up");
-                            e.spawn(table.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
-                            TestSend(player, "lct.upgrade.success");
+                            EffectUtils.playFixedSound(table.getBlock().getLocation(), EffectUtils.getSound("lct_upgrade"), 1.0F, 0.0F, 7);
+                            CustomEntityFloatingText text = new CustomEntityFloatingText();
+                            text.setText(val("lct.level_up"));
+                            text.spawn(table.getBlock().getLocation().add(0.5D, 1.0D, 0.5D));
+                            trySendTitle(player, "lct.upgrade.success");
                             if (event.getItem().getAmount() > 8) {
                                 event.getItem().setAmount(event.getItem().getAmount() - 8);
                             } else {
                                 player.getInventory().removeItem(event.getItem());
                             }
                         } else {
-                            TestSend(player, "lct.upgrade.max_level");
+                            trySendTitle(player, "lct.upgrade.max_level");
                         }
                     } else {
-                        TestSend(player, "lct.upgrade.no_permission");
+                        trySendTitle(player, "lct.upgrade.no_permission");
                     }
                 }
             }
@@ -760,7 +748,7 @@ public class CraftLB extends ColorsClass implements Listener {
                                 player.getInventory().removeItem(event.getItem());
                             }
                         } else {
-                            TestSend(player, "lct.charge.no_permission");
+                            trySendTitle(player, "lct.charge.no_permission");
                         }
                     }
                 }

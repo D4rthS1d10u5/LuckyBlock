@@ -9,6 +9,7 @@ import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
+import com.mcgamer199.luckyblock.util.EntityUtils;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -32,13 +33,13 @@ public class YottaEvents implements Listener {
     public void checkVeryFast(LBBreakEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("lb.break.cooldown.bypass")) {
-            Long last = PlayerData.getOrSet(player, "last.open", -1L);
+            Long last = EntityUtils.getOrSetMeta(player, "last.open", -1L);
             long current = System.currentTimeMillis();
             if (current - last < 2000L) {
                 player.sendMessage("§cНельзя так часто открывать лаки блоки.");
                 event.setCancelled(true);
             } else {
-                PlayerData.set(player, "last.open", current);
+                EntityUtils.set(player, "last.open", current);
             }
 
         }

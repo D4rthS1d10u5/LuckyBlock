@@ -1,9 +1,10 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.structures.*;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -284,7 +285,7 @@ public class LuckyBlockWorld extends ChunkGenerator implements Listener {
             } else if (event.getEntity() instanceof Skeleton) {
                 if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
                     event.setCancelled(true);
-                    if (LuckyBlockPlugin.randoms.nextInt(100) + 1 > 90) {
+                    if (RandomUtils.nextInt(100) + 1 > 90) {
                         IronGolem golem = (IronGolem) world.spawnEntity(event.getLocation(), EntityType.IRON_GOLEM);
                         golem.setPlayerCreated(false);
                     }

@@ -1,16 +1,10 @@
 package com.mcgamer199.luckyblock.api.enums;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonPrimitive;
-import com.mcgamer199.luckyblock.util.JsonUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public enum PlacingSource {
 
@@ -28,21 +22,8 @@ public enum PlacingSource {
 
             return ((Player) object).getName();
         }
-
-        @Override
-        public String read(@NotNull JsonElement element) {
-            return element.getAsString();
-        }
-
-        @Override
-        public JsonElement write(@NotNull Object object) {
-            if(!(object instanceof Player)) {
-                return null;
-            }
-
-            return new JsonPrimitive(((Player) object).getName());
-        }
-    }, ENTITY {
+    },
+    ENTITY {
         @Override
         public String getDescription() {
             return "Entity with uuid";
@@ -56,21 +37,8 @@ public enum PlacingSource {
 
             return ((Entity) object).getUniqueId().toString();
         }
-
-        @Override
-        public String read(@NotNull JsonElement element) {
-            return element.getAsString();
-        }
-
-        @Override
-        public JsonElement write(@NotNull Object object) {
-            if(!(object instanceof Entity)) {
-                return null;
-            }
-
-            return JsonUtils.serialize(((Entity) object).getUniqueId(), UUID.class);
-        }
-    }, BLOCK {
+    },
+    BLOCK {
         @Override
         public String getDescription() {
             return "Block at coordinates";
@@ -84,20 +52,6 @@ public enum PlacingSource {
 
             return LocationUtils.asString(((Block) object).getLocation());
         }
-
-        @Override
-        public String read(@NotNull JsonElement element) {
-            return String.format("[%s]", element.getAsString());
-        }
-
-        @Override
-        public JsonElement write(@NotNull Object object) {
-            if(!(object instanceof Block)) {
-                return null;
-            }
-
-            return new JsonPrimitive(LocationUtils.asString(((Block) object).getLocation()));
-        }
     },
     NONE {
         @Override
@@ -109,16 +63,6 @@ public enum PlacingSource {
         public String fromObject(@NotNull Object object) {
             return "NONE";
         }
-
-        @Override
-        public String read(@NotNull JsonElement element) {
-            return "NONE";
-        }
-
-        @Override
-        public JsonElement write(@NotNull Object object) {
-            return JsonNull.INSTANCE;
-        }
     };
 
     private static final PlacingSource[] values = values();
@@ -128,10 +72,6 @@ public enum PlacingSource {
     public abstract String getDescription();
 
     public abstract String fromObject(@NotNull Object object);
-
-    public abstract String read(@NotNull JsonElement element);
-
-    public abstract JsonElement write(@NotNull Object object);
 
     public static PlacingSource getByName(String name) {
         for (PlacingSource value : values) {

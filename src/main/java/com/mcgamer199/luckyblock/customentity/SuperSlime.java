@@ -1,36 +1,35 @@
 package com.mcgamer199.luckyblock.customentity;
 
+import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class SuperSlime {
 
-    private com.mcgamer199.luckyblock.customentity.EntitySuperSlime[] slimes = new com.mcgamer199.luckyblock.customentity.EntitySuperSlime[64];
+    @Getter
+    private final List<CustomEntitySuperSlime> slimes = new ArrayList<>();
 
-    public SuperSlime(com.mcgamer199.luckyblock.customentity.EntitySuperSlime... slimes) {
-        this.slimes = slimes;
+    public SuperSlime(CustomEntitySuperSlime... slimes) {
+        this.slimes.addAll(Arrays.asList(slimes));
     }
 
-    public SuperSlime() {
-    }
+    public SuperSlime() {}
 
     public void ride() {
-        for (int x = 0; x < this.slimes.length; ++x) {
-            if (this.slimes[x] != null && this.slimes.length > x + 1 && this.slimes[x + 1] != null) {
-                this.slimes[x].getEntity().setPassenger(this.slimes[x + 1].getEntity());
+        for (int i = 0; i < slimes.size(); i++) {
+            if(slimes.size() > (i+1)) {
+                CustomEntitySuperSlime vehicle = slimes.get(i);
+                CustomEntitySuperSlime passenger = slimes.get(i+1);
+                if(vehicle.isValid() && passenger.isValid()) {
+                    vehicle.getLinkedEntity().addPassenger(passenger.getLinkedEntity());
+                }
             }
         }
-
     }
 
-    public void add(com.mcgamer199.luckyblock.customentity.EntitySuperSlime slime) {
-        for (int x = 0; x < this.slimes.length; ++x) {
-            if (this.slimes[x] == null) {
-                this.slimes[x] = slime;
-                x = this.slimes.length;
-            }
-        }
-
-    }
-
-    public EntitySuperSlime[] getSlimes() {
-        return this.slimes;
+    public void add(CustomEntitySuperSlime slime) {
+        slimes.add(slime);
     }
 }

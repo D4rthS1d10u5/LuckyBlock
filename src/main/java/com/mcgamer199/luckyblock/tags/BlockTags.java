@@ -8,7 +8,7 @@ import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.Pattern;
@@ -300,7 +300,7 @@ public class BlockTags extends HTag {
                     luck = getRandomNumber(c1.getString(t).split(":"));
                     if (LuckyBlock.getByBlock(block) != null) {
                         LuckyBlock.getByBlock(block).setLuck(luck);
-                        LuckyBlock.getByBlock(block).save(true);
+                        LuckyBlock.getByBlock(block).save();
                     }
                 }
 
@@ -310,10 +310,10 @@ public class BlockTags extends HTag {
                         LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                         if (LuckyBlockDrop.isValid(drop)) {
                             luckyBlock.setDrop(LuckyBlockDrop.valueOf(drop.toUpperCase()), true, true);
-                            luckyBlock.save(true);
+                            luckyBlock.save();
                         } else if (CustomDropManager.getByName(drop) != null) {
                             luckyBlock.customDrop = CustomDropManager.getByName(drop);
-                            luckyBlock.save(true);
+                            luckyBlock.save();
                         }
                     }
                 }
@@ -329,7 +329,7 @@ public class BlockTags extends HTag {
                         List<String> list = c2.getStringList("Values");
                         if (luckyBlock != null && name != null && list != null && list.size() > 0) {
                             luckyBlock.getDropOptions().putStringArray(name, list.toArray(new String[0]));
-                            luckyBlock.save(true);
+                            luckyBlock.save();
                         }
                     }
                 }
@@ -364,7 +364,7 @@ public class BlockTags extends HTag {
 
     protected static void playSound(ConfigurationSection c, Location location) {
         if (c.getString("Sound") != null) {
-            SoundUtils.playFixedSound(location, Sound.valueOf(c.getString("Sound").toUpperCase()), 1.0F, 1.0F, 15);
+            EffectUtils.playFixedSound(location, Sound.valueOf(c.getString("Sound").toUpperCase()), 1.0F, 1.0F, 15);
         }
 
     }

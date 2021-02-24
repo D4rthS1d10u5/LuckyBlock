@@ -1,15 +1,14 @@
 package com.mcgamer199.luckyblock.engine;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.events.LanguageChangedEvent;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
+import com.mcgamer199.luckyblock.util.EffectUtils;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,7 +39,7 @@ public class IObjects {
     private static boolean MISSING_SOUNDS = false;
 
     static {
-        ITEM_SPAWN_ENTITY = ItemStackUtils.createItem(Material.MONSTER_EGG, 1, 0, ChatColor.GREEN + "Spawn Entity");
+        ITEM_SPAWN_ENTITY = ItemStackUtils.createItem(Material.MONSTER_EGG, 1, 0,"§aSpawn Entity");
     }
 
     public static Object getValue(String key) {
@@ -117,7 +116,7 @@ public class IObjects {
             objects.add(new com.mcgamer199.luckyblock.command.LBCBook());
             objects.add(new com.mcgamer199.luckyblock.command.LBCSaveItem());
             objects.add(new LBCRecDeleted());
-            SoundUtils.loadSounds();
+            EffectUtils.loadSounds();
             loadStrings();
         }
     }

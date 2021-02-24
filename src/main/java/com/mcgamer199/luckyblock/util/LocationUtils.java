@@ -117,5 +117,30 @@ public final class LocationUtils {
     public static BlockFace[] vertical() {
         return new BlockFace[] {BlockFace.UP, BlockFace.DOWN};
     }
+
+    /**
+     * Если ли указанная дистанция между локациями
+     * @param to       локация 1
+     * @param from     локация 2
+     * @param distance дистанция
+     * @return true, если да
+     */
+    public static boolean hasDistance(Location to, Location from, double distance) {
+        return !to.getWorld().equals(from.getWorld()) ||
+                (Math.abs(to.getX() - from.getX()) >= distance
+                        || Math.abs(to.getY() - from.getY()) >= distance
+                        || Math.abs(to.getZ() - from.getZ()) >= distance);
+    }
+
+    public static boolean hasDistance(Location to, double x, double y, double z, double distance) {
+        return Math.abs(to.getX() - x) >= distance
+                || Math.abs(to.getY() - y) >= distance
+                || Math.abs(to.getZ() - z) >= distance;
+    }
+
+    public static boolean hasDistance2D(double x1, double z1, double x2, double z2, double distance) {
+        return Math.abs(x1 - x2) >= distance
+                || Math.abs(z1 - z2) >= distance;
+    }
 }
 

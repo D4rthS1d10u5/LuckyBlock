@@ -1,11 +1,10 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.customentity.CustomEntityLoader;
-import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
+import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
+import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
-import org.bukkit.ChatColor;
+import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,15 +18,24 @@ import org.bukkit.inventory.ItemStack;
 
 public class SpawnEggEvents extends ColorsClass implements Listener {
 
-    public SpawnEggEvents() {
-    }
+    public SpawnEggEvents() {}
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onUseCustomSpawnEgg(PlayerInteractEvent event) {
-        if ((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) && event.getItem() != null) {
+        if (event.hasItem() && (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR)) {
             ItemStack item = event.getItem();
-            if (compareItems(item, IObjects.ITEM_SPAWN_ENTITY)) {
-                Player player = event.getPlayer();
+            Player player = event.getPlayer();
+
+            NBTCompoundWrapper<?> itemTag = ItemStackUtils.getItemTag(item);
+            String entityClass = itemTag.getString("EntityClass");
+
+            if(entityClass != null) {
+                CustomEntity customEntity = CustomEntityManager.createCustomEntity(entityClass);
+                if(customEntity == null) {
+                    player.sendMessage("§cInvalid Entity!");
+                    return;
+                }
+
                 Location loc;
                 if (event.getAction() == Action.RIGHT_CLICK_AIR) {
                     Block b = player.getTargetBlock(null, 6);
@@ -53,24 +61,10 @@ public class SpawnEggEvents extends ColorsClass implements Listener {
                         loc = loc.add(0.5D, 0.0D, 1.5D);
                     }
                 }
-
-                event.setCancelled(true);
-
-                String entityClass = ItemStackUtils.getItemTag(item).getString("EntityClass");
-                if (entityClass == null) {
-                    player.sendMessage(ChatColor.RED + "Invalid Entity!");
-                    return;
-                }
-
-                Object o = CustomEntityLoader.getCustomEntity(entityClass);
-                if (o != null) {
-                    CustomEntity c = (CustomEntity) o;
-                    c.spawn(loc);
-                } else {
-                    player.sendMessage(ChatColor.RED + "Invalid Entity!");
-                }
+                customEntity.spawn(loc);
+            } else {
+                player.sendMessage("§cInvalid Entity!");
             }
         }
-
     }
 }

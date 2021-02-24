@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.advanced;
 
-import com.mcgamer199.luckyblock.customentity.lct.EntityLCTItem;
-import com.mcgamer199.luckyblock.customentity.lct.EntityLCTNameTag;
+import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTItem;
+import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTNameTag;
 import com.mcgamer199.luckyblock.engine.IObjects;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -11,7 +11,7 @@ import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
-import com.mcgamer199.luckyblock.util.SoundUtils;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,6 +24,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,16 +80,16 @@ public class LuckyCraftingTable extends ColorsClass {
         this.inv.setItem(this.inv.getSize() - 16, ItemStackUtils.createItem(Material.REDSTONE, 1, 0, green + val("lct.gui.iteminsert.name", false), Arrays.asList("", gray + val("lct.gui.iteminsert.lore", false))));
         this.inv.setItem(this.inv.getSize() - 18, ItemStackUtils.createItem(Material.REDSTONE, 1, 0, green + val("lct.gui.itemextract.name", false), Arrays.asList("", gray + val("lct.gui.itemextract.lore"))));
         if (first && IObjects.getValue("lct_nameVisible").toString().equalsIgnoreCase("true")) {
-            EntityLCTNameTag e = new EntityLCTNameTag();
-            e.spawn(this);
+            CustomEntityLCTNameTag tag = new CustomEntityLCTNameTag();
+            tag.spawn(this);
             this.func_loop();
             this.spawn_items();
         }
 
     }
 
-    public static LuckyCraftingTable getByBlock(Block block) {
-        return craftingTables.get(block.getLocation());
+    public static LuckyCraftingTable getByBlock(@Nullable Block block) {
+        return block == null ? null : craftingTables.get(block.getLocation());
     }
 
     public static LuckyCraftingTable getById(int id) {
@@ -193,7 +194,7 @@ public class LuckyCraftingTable extends ColorsClass {
     public void stop() {
         if (this.running) {
             this.running = false;
-            SoundUtils.playFixedSound(this.block.getLocation(), SoundUtils.getSound("lct_stop"), 1.0F, 0.0F, 8);
+            EffectUtils.playFixedSound(this.block.getLocation(), EffectUtils.getSound("lct_stop"), 1.0F, 0.0F, 8);
         }
 
     }
@@ -217,8 +218,8 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     private void spawn_items() {
-        EntityLCTItem e1 = new EntityLCTItem(this);
-        e1.spawn(this.block.getLocation().add(0.5D, -0.9D, 0.5D));
+        CustomEntityLCTItem item = new CustomEntityLCTItem();
+        item.spawn(this);
     }
 
     public void dropItem(int slot) {
@@ -258,7 +259,7 @@ public class LuckyCraftingTable extends ColorsClass {
             HumanEntity h = (HumanEntity) var2.next();
             if (h instanceof Player) {
                 Player player = (Player) h;
-                player.playSound(player.getLocation(), SoundUtils.getSound("lct_run"), 1.0F, 2.0F);
+                player.playSound(player.getLocation(), EffectUtils.getSound("lct_run"), 1.0F, 2.0F);
             }
         }
 
@@ -325,13 +326,13 @@ public class LuckyCraftingTable extends ColorsClass {
                                 }
                             }
                         } else if (this.working == 1) {
-                            SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                            EffectUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), EffectUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             Scheduler.cancelTask(this);
                             LuckyCraftingTable.this.running = false;
                             LuckyCraftingTable.this.save(true);
                         } else {
                             if (this.changed) {
-                                SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                                EffectUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), EffectUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                             }
 
                             Scheduler.cancelTask(this);
@@ -426,7 +427,7 @@ public class LuckyCraftingTable extends ColorsClass {
                         st.setItemMeta(stM);
                     } else {
                         LuckyCraftingTable.this.running = false;
-                        SoundUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), SoundUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
+                        EffectUtils.playFixedSound(LuckyCraftingTable.this.block.getLocation(), EffectUtils.getSound("lct_finish"), 1.0F, 2.0F, 10);
                     }
                 } else {
                     Scheduler.cancelTask(this);

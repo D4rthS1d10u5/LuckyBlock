@@ -40,7 +40,7 @@ public class PistonEvents implements Listener {
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_THROWN) && event.getDirection() == BlockFace.UP && block.getRelative(BlockFace.DOWN).getType() == Material.SLIME_BLOCK) {
                     Scheduler.later(() -> {
-                        luckyBlock.freeze();
+                        luckyBlock.lock();
                         block.getRelative(BlockFace.UP).setType(Material.AIR);
                         FallingBlock fb = block.getWorld().spawnFallingBlock(block.getLocation().add(0.5D, 0.0D, 0.5D), luckyBlock.getType().getType(), (byte) luckyBlock.getType().getData());
                         fb.setVelocity(new Vector(0.0D, 1.2D, 0.0D));
@@ -49,9 +49,9 @@ public class PistonEvents implements Listener {
                 }
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
-                    luckyBlock.freeze();
+                    luckyBlock.lock();
                     luckyBlock.changeBlock(block.getRelative(event.getDirection()));
-                    luckyBlock.unfreeze();
+                    luckyBlock.unlock();
                 }
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
@@ -78,9 +78,9 @@ public class PistonEvents implements Listener {
                 }
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.CAN_BE_PUSHED)) {
-                    luckyBlock.freeze();
+                    luckyBlock.lock();
                     luckyBlock.changeBlock(block.getRelative(event.getDirection()));
-                    luckyBlock.unfreeze();
+                    luckyBlock.unlock();
                 }
 
                 if (luckyBlock.getType().hasProperty(BlockProperty.RUN_ON_PUSH)) {
@@ -99,7 +99,7 @@ public class PistonEvents implements Listener {
                         luckyBlock.changeBlock(fb.getLocation().getBlock());
                     }
 
-                    luckyBlock.unfreeze();
+                    luckyBlock.unlock();
                     Scheduler.cancelTask(this);
                 }
             }

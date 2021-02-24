@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.customentity.nametag.EntityTrophyNameTag;
+import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityTrophyNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -44,11 +44,11 @@ public class Trophy {
     }
 
     public static void place(Block block, ItemStack itemToDrop) {
-        Trophy t = new Trophy(block, itemToDrop);
-        t.save(true);
-        t.func_loop();
-        EntityTrophyNameTag tr = new EntityTrophyNameTag();
-        tr.spawn(t);
+        Trophy trophy = new Trophy(block, itemToDrop);
+        trophy.save(true);
+        trophy.func_loop();
+        CustomEntityTrophyNameTag trophyNameTag = new CustomEntityTrophyNameTag();
+        trophyNameTag.spawn(trophy);
     }
 
     public static Trophy getByBlock(Block block) {

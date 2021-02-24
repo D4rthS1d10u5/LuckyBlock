@@ -161,6 +161,16 @@ public class Scheduler {
     }
 
     /**
+     * Задать логику отмены таска
+     * @param command код, который должен выполнится,
+     *                когда таск был завершен
+     */
+    public Scheduler onCancel(Runnable command) {
+        this.schedule.onCancel = command;
+        return this;
+    }
+
+    /**
      * Запустить таймер
      *
      * @param delay  через сколько первое срабатывание
@@ -181,6 +191,23 @@ public class Scheduler {
      */
     public Scheduler timer(long delay, long period) {
         this.schedule.runTaskTimer(plugin, delay, period);
+        return this;
+    }
+
+    /**
+     * Запустить таймер асинхронно
+     *
+     * @param delay  через сколько первое срабатывание
+     * @param period период между запусками
+     * @return this
+     */
+    public Scheduler timerAsync(long delay, long period, TimeUnit time) {
+        this.schedule.runTaskTimerAsynchronously(plugin, toTicks(delay, time), toTicks(period, time));
+        return this;
+    }
+
+    public Scheduler timerAsync(long delay, long period) {
+        this.schedule.runTaskTimerAsynchronously(plugin, delay, period);
         return this;
     }
 
@@ -279,6 +306,7 @@ public class Scheduler {
         private int count = -1;
         private int i = 0;
         private boolean timer = false;
+        private Runnable onCancel;
 
         SchedulerRunnable(Runnable runnable) {
             this.runnable = runnable;
@@ -311,6 +339,18 @@ public class Scheduler {
         public synchronized BukkitTask runTaskTimer(Plugin plugin, long delay, long period) throws IllegalArgumentException, IllegalStateException {
             this.timer = true;
             return super.runTaskTimer(plugin, delay, period);
+        }
+
+        @Override
+        public synchronized BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period) throws IllegalArgumentException, IllegalStateException {
+            this.timer = true;
+            return super.runTaskTimerAsynchronously(plugin, delay, period);
+        }
+
+        @Override
+        public synchronized void cancel() throws IllegalStateException {
+            onCancel.run();
+            super.cancel();
         }
 
         public Runnable getRunnable() {

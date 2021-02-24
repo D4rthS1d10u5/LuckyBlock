@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.customentity.EntityGuardian;
+import com.mcgamer199.luckyblock.customentity.CustomEntityGuardian;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
@@ -19,8 +19,8 @@ public class BossDungeon extends LuckyDungeon {
     public BossDungeon() {}
 
     public void build(Location loc) {
-        EntityGuardian b = new EntityGuardian();
-        b.type = LBType.getRandomType();
+        CustomEntityGuardian guardian = new CustomEntityGuardian();
+        guardian.setLuckyBlockType(LBType.getRandomType());
         Block block = loc.getBlock();
         int a = 6;
 
@@ -56,7 +56,7 @@ public class BossDungeon extends LuckyDungeon {
         block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock().setType(RandomUtils.getRandomObject(blocks));
         baseBlocks.add(LocationUtils.asString(block.getLocation().add(0.0D, 35.0D, 0.0D).getBlock().getLocation()));
         super.build(loc);
-        b.spawn(loc);
+        guardian.spawn(loc);
     }
 
     public int getId() {

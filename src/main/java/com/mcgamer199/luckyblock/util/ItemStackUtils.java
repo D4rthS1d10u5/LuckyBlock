@@ -487,6 +487,10 @@ public class ItemStackUtils {
         return item == null || item.getType() == Material.AIR;
     }
 
+    public static boolean equalsType(ItemStack stack, Material check) {
+        return !isNullOrAir(stack) && stack.getType().equals(check);
+    }
+
     public static ItemStack setMetadata(ItemStack stack, String metadata) {
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
@@ -505,6 +509,10 @@ public class ItemStackUtils {
     public static boolean hasMetadata(ItemStack stack, String metadata) {
         ItemMeta meta = stack.getItemMeta();
         return meta != null && metadata.equals(meta.getLocalizedName());
+    }
+
+    public static boolean hasEnchantment(ItemStack stack, Enchantment enchantment, int minLevel) {
+        return !isNullOrAir(stack) && stack.containsEnchantment(enchantment) && stack.getEnchantmentLevel(enchantment) >= minLevel;
     }
 
     private static boolean has(String text, String data) {

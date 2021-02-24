@@ -4,6 +4,7 @@ import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.util.LocationUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -19,9 +20,9 @@ public class LBCLbs extends LBCommand {
         String luckyBlockTitle = luckyBlock.getDropOptions().getString("Title", "&cnull");
 
         component.addText(String.format("§6§lLB §9(%s§9)", val("command.lbs.data.hover", false)), Hover.show_text, String.format("§a%s\n§b%s: §d%s\n§b%s: §9%s\n§b%s: §6%s\n§b%s: %s",
-                luckyBlock.blockToString(),
+                LocationUtils.asString(luckyBlock.getLocation()),
                 val("command.lbs.data.drop", false), luckyBlockTitle,
-                val("command.lbs.data.placedby", false), luckyBlock.getPlacedByClass(),
+                val("command.lbs.data.placedby", false), luckyBlock.getPlacementInfo(),
                 val("command.lbs.data.luck", false), luckyBlock.getType().getLuckString(luckyBlock.getLuck()),
                 val("command.lbs.data.type", false), luckyBlock.getType().getName()));
         component.send(sender);

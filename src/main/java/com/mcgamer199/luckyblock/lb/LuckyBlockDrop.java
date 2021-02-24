@@ -13,12 +13,8 @@ import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
 import com.mcgamer199.luckyblock.structures.Structure;
-import com.mcgamer199.luckyblock.tags.BlockTags;
-import com.mcgamer199.luckyblock.tags.ChestFiller;
-import com.mcgamer199.luckyblock.tags.EntityTags;
-import com.mcgamer199.luckyblock.tags.ItemStackTags;
+import com.mcgamer199.luckyblock.tags.*;
 import com.mcgamer199.luckyblock.util.*;
-import com.mcgamer199.luckyblock.yottaevents.PlayerData;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
@@ -69,9 +65,9 @@ public enum LuckyBlockDrop {
         String path = luckyBlock.getDropOptions().getString("Path", "Entities");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
         if (path1 == null) {
-            EntityTags.spawnRandomEntity(file.getConfigurationSection(path), luckyBlock.getBlock().getLocation(), player);
+            EntityTags.spawnRandomEntity(file.getConfigurationSection(path), luckyBlock.getLocation(), player);
         } else {
-            EntityTags.spawnEntity(file.getConfigurationSection(path).getConfigurationSection(path1), luckyBlock.getBlock().getLocation(), file.getConfigurationSection(path), true, player);
+            EntityTags.spawnEntity(file.getConfigurationSection(path).getConfigurationSection(path1), luckyBlock.getLocation(), file.getConfigurationSection(path), true, player);
         }
     }),
     LAVA(true, (luckyBlock, player) -> {
@@ -129,14 +125,14 @@ public enum LuckyBlockDrop {
         }).count(RandomUtils.nextInt(5) + 4).timer(1, 1);
     }),
     SLIMES(true, (luckyBlock, player) -> {
-        Location blockLocation = luckyBlock.getBlock().getLocation();
+        Location blockLocation = luckyBlock.getLocation();
         int slimeSize = RandomUtils.nextInt(3) + 1;
         int slimeCount = RandomUtils.nextInt(3) + 3;
         SuperSlime superSlime = new SuperSlime();
         for (int i = 0; i < slimeCount; i++) {
-            EntitySuperSlime entitySuperSlime = new EntitySuperSlime();
-            entitySuperSlime.setSize(slimeSize); entitySuperSlime.spawn(blockLocation);
-            superSlime.add(entitySuperSlime);
+            CustomEntitySuperSlime slime = new CustomEntitySuperSlime();
+            slime.setSize(slimeSize); slime.spawn(blockLocation);
+            superSlime.add(slime);
         }
         superSlime.ride();
     }),
@@ -157,8 +153,8 @@ public enum LuckyBlockDrop {
             bat.getWorld().dropItem(bat.getLocation(), luckyBlock.getType().toItemStack(RandomUtils.nextInt(0, 20)));
         }, 20);
     }),
-    SOLDIER(true, (luckyBlock, player) -> new EntitySoldier().spawn(luckyBlock.getBlock().getLocation())),
-    LB_ITEM(true, (luckyBlock, player) -> luckyBlock.getBlock().getWorld().dropItem(luckyBlock.getBlock().getLocation(), luckyBlock.getType().toItemStack(RandomUtils.nextInt(-10, 10)))),
+    SOLDIER(true, (luckyBlock, player) -> new CustomEntitySoldier().spawn(luckyBlock.getLocation())),
+    LB_ITEM(true, (luckyBlock, player) -> luckyBlock.getBlock().getWorld().dropItem(luckyBlock.getLocation(), luckyBlock.getType().toItemStack(RandomUtils.nextInt(-10, 10)))),
     BEDROCK(true, (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
         Scheduler.later(() -> {
@@ -273,7 +269,7 @@ public enum LuckyBlockDrop {
         if (locationType.equalsIgnoreCase("PLAYER") && player != null) {
             BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), player.getLocation());
         } else {
-            BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), luckyBlock.getBlock().getLocation());
+            BlockTags.buildStructure(file.getConfigurationSection(path).getConfigurationSection(path1), luckyBlock.getLocation());
         }
     }),
     RANDOM_ITEM(true, (luckyBlock, player) -> {
@@ -281,18 +277,18 @@ public enum LuckyBlockDrop {
         String path = luckyBlock.getDropOptions().getString("Path", "RandomItems");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
         String key = path1 != null ? path1 : BlockTags.getRandomL(file, path);
-        EntityRandomItem entityRandomItem = new EntityRandomItem();
+        CustomEntityRandomItem entityRandomItem = new CustomEntityRandomItem();
 
         for (String g : file.getConfigurationSection(path + "." + key + ".Items").getKeys(false)) {
-            entityRandomItem.items.add(com.mcgamer199.luckyblock.tags.ItemStackGetter.getItemStack(file, path + "." + key + ".Items." + g));
+            entityRandomItem.addItem(ItemStackGetter.getItemStack(file, path + "." + key + ".Items." + g));
         }
 
-        entityRandomItem.spawn(luckyBlock.getBlock().getLocation());
+        entityRandomItem.spawn(luckyBlock.getLocation());
     }),
     ZOMBIE_TRAP(true, (luckyBlock, player) -> {
         if (player != null) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 70, 100));
-            Zombie zombie = (Zombie) player.getWorld().spawnEntity(luckyBlock.getBlock().getLocation(), EntityType.ZOMBIE);
+            Zombie zombie = (Zombie) player.getWorld().spawnEntity(luckyBlock.getLocation(), EntityType.ZOMBIE);
             zombie.setMaxHealth(300.0D);
             zombie.setHealth(300.0D);
             zombie.getEquipment().setItemInMainHand(ItemStackUtils.addEnchant(new ItemStack(Material.DIAMOND_SWORD), Enchantment.DAMAGE_ALL, 200));
@@ -331,7 +327,7 @@ public enum LuckyBlockDrop {
         villager.setRecipes(recipes);
     }),
     ROCKET(true, (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(new Location(location.getWorld(), location.getX(), location.getY() - 1.0D, location.getZ()), EntityType.ARMOR_STAND);
         armorStand.teleport(location);
         armorStand.setMetadata("hrocket", new FixedMetadataValue(LuckyBlockPlugin.instance, armorStand.getUniqueId().toString()));
@@ -371,9 +367,9 @@ public enum LuckyBlockDrop {
             }
         }, 1, 1);
     }),
-    TALKING_ZOMBIE(true, (luckyBlock, player) -> new EntityTalkingZombie().spawn(luckyBlock.getBlock().getLocation())),
-    BOB(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnBob(luckyBlock.getBlock().getLocation(), false)),
-    PETER(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnPeter(luckyBlock.getBlock().getLocation(), false)),
+    TALKING_ZOMBIE(true, (luckyBlock, player) -> new CustomEntityTalkingZombie().spawn(luckyBlock.getLocation())),
+    BOB(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnBob(luckyBlock.getLocation(), false)),
+    PETER(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnPeter(luckyBlock.getLocation(), false)),
     KILL(true, (luckyBlock, player) -> {
         if(player != null) {
             player.setHealth(0);
@@ -399,7 +395,7 @@ public enum LuckyBlockDrop {
     }),
     LB_STRUCTURE(true, (luckyBlock, player) -> {
         if (luckyBlock.hasDropOption("Class")) {
-            Structure.buildStructure(luckyBlock.getDropOptions().getString("Class"), luckyBlock.getBlock().getLocation());
+            Structure.buildStructure(luckyBlock.getDropOptions().getString("Class"), luckyBlock.getLocation());
         }
     }),
     LAVA_POOL(true, (luckyBlock, player) -> {
@@ -412,7 +408,7 @@ public enum LuckyBlockDrop {
         }
     }),
     LUCKY_WELL(true, (luckyBlock, player) -> {
-        new LuckyWell().build(luckyBlock.getBlock().getLocation());
+        new LuckyWell().build(luckyBlock.getLocation());
         if (player != null) {
             ItemStack item = ItemStackUtils.addEnchant(ItemStackUtils.createItem(Material.GOLD_NUGGET, 1, 0, "§6§lCoin", Collections.singletonList("§7Drop it in the well")), Enchantment.DURABILITY, 1);
             ItemMeta itemM = item.getItemMeta();
@@ -421,10 +417,10 @@ public enum LuckyBlockDrop {
             player.getInventory().addItem(item);
         }
     }),
-    KARL(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnKarl(player, luckyBlock.getBlock().getLocation(), false)),
-    HELL_HOUND(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnHellHound(player, luckyBlock.getBlock().getLocation(), false)),
+    KARL(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnKarl(player, luckyBlock.getLocation(), false)),
+    HELL_HOUND(true, (luckyBlock, player) -> LBEntitiesSpecial.spawnHellHound(player, luckyBlock.getLocation(), false)),
     METEORS_1(true, (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         Scheduler.create(() -> {
             FallingBlock fallingBlock = location.getWorld().spawnFallingBlock(location.add(0.0D, 1.0D, 0.0D), Material.COBBLESTONE, (byte) 0);
             fallingBlock.setDropItem(false);
@@ -503,15 +499,15 @@ public enum LuckyBlockDrop {
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
         double height = luckyBlock.getDropOptions().getDouble("Height", 10D);
         if (path1 == null) {
-            BlockTags.spawnRandomFallingBlock(file, path, luckyBlock.getBlock().getLocation().add(0.5D, height, 0.5D));
+            BlockTags.spawnRandomFallingBlock(file, path, luckyBlock.getLocation().add(0.5D, height, 0.5D));
         } else {
-            BlockTags.spawnFallingBlock(file, path, path1, luckyBlock.getBlock().getLocation().add(0.5D, height, 0.5D));
+            BlockTags.spawnFallingBlock(file, path, path1, luckyBlock.getLocation().add(0.5D, height, 0.5D));
         }
     }),
     VILLAGER(true, new Properties().putInt("Seconds", 4), (luckyBlock, player) -> {
-        EntityLuckyVillager villager = new EntityLuckyVillager();
-        villager.seconds = MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Seconds", 4), 0, 1000);
-        villager.spawn(luckyBlock.getBlock().getLocation());
+        CustomEntityLuckyVillager luckyVillager = new CustomEntityLuckyVillager();
+        luckyVillager.setSeconds(MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Seconds", 4), 0, 1000));
+        luckyVillager.spawn(luckyBlock.getLocation());
     }),
     SPLASH_POTION(true, new Properties().putStringArray("Effects", new String[] {"SPEED%200%0"}), (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
@@ -591,7 +587,7 @@ public enum LuckyBlockDrop {
                     item.setCustomNameVisible(true);
                 }
 
-                SoundUtils.playFixedSound(block.getLocation(), SoundUtils.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 50);
+                EffectUtils.playFixedSound(block.getLocation(), EffectUtils.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 50);
             }).predicate(iterator::hasNext).timer(5, 5);
         } else {
             for (ItemStack itemStack : items) {
@@ -607,8 +603,8 @@ public enum LuckyBlockDrop {
     }),
     STUCK(true, new Properties().putInt("Duration", 15), (luckyBlock, player) -> { //TODO сделать слушатель
         if (player != null) {
-            PlayerData.set(player, "stuck", true);
-            Scheduler.later(() -> PlayerData.remove(player, "stuck"), luckyBlock.getDropOptions().getInt("Duration", 10) * 10);
+            EntityUtils.set(player, "stuck", true);
+            Scheduler.later(() -> EntityUtils.remove(player, "stuck"), luckyBlock.getDropOptions().getInt("Duration", 10) * 10);
         }
     }),
     DAMAGE(true, new Properties().putInt("Value", 5), (luckyBlock, player) -> {
@@ -709,9 +705,10 @@ public enum LuckyBlockDrop {
     }),
     ELEMENTAL_CREEPER(true, new Properties().putEnum("BlockMaterial", Material.DIRT).putByte("BlockData", (byte) 0), (luckyBlock, player) -> {
         Properties dropOptions = luckyBlock.getDropOptions();
-        EntityElementalCreeper elementalCreeper = new EntityElementalCreeper();
-        elementalCreeper.spawn(luckyBlock.getBlock().getLocation());
-        elementalCreeper.changeMaterial(dropOptions.getEnum("BlockMaterial", Material.class, Material.DIRT), dropOptions.getByte("BlockData"));
+        CustomEntityElementalCreeper elementalCreeper = new CustomEntityElementalCreeper();
+        elementalCreeper.setBlockMaterial(dropOptions.getEnum("BlockMaterial", Material.class, Material.DIRT));
+        elementalCreeper.setBlockData(dropOptions.getByte("BlockData"));
+        elementalCreeper.spawn(luckyBlock.getLocation());
     }),
     JAIL(true, new Properties().putInt("Ticks", 70), (luckyBlock, player) -> {
         if (player != null) {
@@ -849,7 +846,7 @@ public enum LuckyBlockDrop {
             }
 
             if (repairCount.get() > 0) {
-                SoundUtils.playFixedSound(player.getLocation(), SoundUtils.getSound("lb_drop_repair"), 1.0F, 1.0F, 20);
+                EffectUtils.playFixedSound(player.getLocation(), EffectUtils.getSound("lb_drop_repair"), 1.0F, 1.0F, 20);
                 player.sendMessage(ColorsClass.val("drops.repair.2").replace("%total%", String.valueOf(repairCount.get())));
             }
         }
@@ -871,7 +868,7 @@ public enum LuckyBlockDrop {
         }
     }),
     XP(true, new Properties().putInt("XPAmount", 75), (luckyBlock, player) -> {
-        Location blockLocation = luckyBlock.getBlock().getLocation();
+        Location blockLocation = luckyBlock.getLocation();
         ExperienceOrb exp = (ExperienceOrb) blockLocation.getWorld().spawnEntity(blockLocation, EntityType.EXPERIENCE_ORB);
         exp.setExperience(luckyBlock.getDropOptions().getInt("XPAmount", 75));
     }),
@@ -898,17 +895,17 @@ public enum LuckyBlockDrop {
     }),
     PERFORM_ACTION(true, new Properties().putEnum("ObjType", ColorsClass.ObjectType.NONE).putString("ActionName", null)),
     TNT_RAIN(true, new Properties().putInt("Times", 20).putInt("Fuse", 60), (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         int fuse = luckyBlock.getDropOptions().getInt("Fuse", 60);
         Scheduler.create(() -> {
             TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
             tnt.setFuseTicks(fuse);
             tnt.setVelocity(new Vector((RandomUtils.nextInt(4) - 2) / 10.D, 1.0D, (RandomUtils.nextInt(4) - 2) / 10.D));
-            SoundUtils.playFixedSound(location, SoundUtils.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
+            EffectUtils.playFixedSound(location, EffectUtils.getSound("lb_drop_tntrain"), 1.0F, 0.0F, 50);
         }).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(5, 5);
     }),
     ITEM_RAIN(true, new Properties().putInt("Times", 20).putStringArray("ItemMaterials", new String[]{"EMERALD", "DIAMOND", "IRON_INGOT", "GOLD_INGOT", "GOLD_NUGGET"}).putShortArray("ItemsData", new Short[] {0}), (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         Material[] materials = new Material[64];
         Short[] itemsData = luckyBlock.getDropOptions().getShortArray("ItemsData", new Short[] {0});
 
@@ -930,7 +927,7 @@ public enum LuckyBlockDrop {
             Material itemMaterial = iterator.next();
             Item item = location.getWorld().dropItem(location, new ItemStack(itemMaterial, 1, itemData));
             item.setVelocity(new Vector(0.0D, 0.8D, 0.0D));
-            SoundUtils.playFixedSound(location, SoundUtils.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 20);
+            EffectUtils.playFixedSound(location, EffectUtils.getSound("lb_drop_itemrain"), 1.0F, 0.0F, 20);
         }).predicate(iterator::hasNext).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(2, 2);
     }),
     BLOCK_RAIN(true, new Properties().putInt("Times", 20).putStringArray("BlockMaterials", new String[]{"EMERALD_BLOCK", "GOLD_BLOCK", "LAPIS_BLOCK", "DIAMOND_BLOCK", "IRON_BLOCK"}), (luckyBlock, player) -> {
@@ -949,12 +946,12 @@ public enum LuckyBlockDrop {
         Iterator<Material> iterator = Arrays.asList(materials).iterator();
         Iterators.removeIf(iterator, Objects::isNull);
         Material used = RandomUtils.getRandomObject(iterator);
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         Scheduler.create(() -> {
             FallingBlock fallingBlock = location.getWorld().spawnFallingBlock(location, used, (byte) 0);
             fallingBlock.setDropItem(false);
             fallingBlock.setVelocity(new Vector((RandomUtils.nextInt(4) - 2) / 5.0D, 1.0D, (RandomUtils.nextInt(4) - 2) / 5.0D));
-            SoundUtils.playFixedSound(location, SoundUtils.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
+            EffectUtils.playFixedSound(location, EffectUtils.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
 
             Scheduler.timer(new BukkitRunnable() {
                 @Override
@@ -962,7 +959,7 @@ public enum LuckyBlockDrop {
                     if (!fallingBlock.isValid()) {
                         MaterialData d = new MaterialData(fallingBlock.getMaterial(), fallingBlock.getBlockData());
                         fallingBlock.getWorld().spawnParticle(Particle.BLOCK_CRACK, fallingBlock.getLocation(), 100, 0.3D, 0.1D, 0.3D, 0.0D, d);
-                        SoundUtils.playFixedSound(fallingBlock.getLocation(), SoundUtils.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
+                        EffectUtils.playFixedSound(fallingBlock.getLocation(), EffectUtils.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
                         Scheduler.cancelTask(this);
                     }
                 }
@@ -970,7 +967,7 @@ public enum LuckyBlockDrop {
         }).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(3, 3);
     }),
     ARROW_RAIN(true, new Properties().putInt("Times", 20).putBoolean("Critical", true).putBoolean("Bounce", true), (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation().add(0.5, 0, 0.5);
+        Location location = luckyBlock.getLocation().add(0.5, 0, 0.5);
         boolean critical = luckyBlock.getDropOptions().getBoolean("Critical", true);
         boolean bounce = luckyBlock.getDropOptions().getBoolean("Bounce", true);
         Scheduler.create(() -> {
@@ -978,7 +975,7 @@ public enum LuckyBlockDrop {
             a.setVelocity(new Vector((RandomUtils.nextInt(16) - 8) / 50.0D, 1.2D, (RandomUtils.nextInt(16) - 8) / 50.0D));
             a.setCritical(critical);
             a.setBounce(bounce);
-            SoundUtils.playFixedSound(location, SoundUtils.getSound("lb_drop_arrowrain"), 1.0F, 1.0F, 50);
+            EffectUtils.playFixedSound(location, EffectUtils.getSound("lb_drop_arrowrain"), 1.0F, 1.0F, 50);
         }).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(1, 1);
     }),
     SET_NEARBY_BLOCKS(true, new Properties().putString("BlockMaterial", "DIAMOND_BLOCK").putByte("BlockData", (byte) 0).putInt("Range", 10).putInt("Delay", 8).putString("Mode", "SURFACE"), (luckyBlock, player) -> {
@@ -992,7 +989,7 @@ public enum LuckyBlockDrop {
             if (mode.equalsIgnoreCase("all") && times > 32) {
                 times = 32;
             }
-            Location location = luckyBlock.getBlock().getLocation();
+            Location location = luckyBlock.getLocation();
             Runnable surface = new Runnable() {
                 private int g = 1;
                 @Override
@@ -1043,11 +1040,11 @@ public enum LuckyBlockDrop {
         if (listenerType.equalsIgnoreCase("player") && player != null) {
             player.playSound(player.getLocation(), sound, 1.0F, 1.0F);
         } else if (listenerType.equalsIgnoreCase("nearby")) {
-            SoundUtils.playFixedSound(luckyBlock.getBlock().getLocation(), sound, 1.0F, 1.0F, 30);
+            EffectUtils.playFixedSound(luckyBlock.getLocation(), sound, 1.0F, 1.0F, 30);
         }
     }),
     XP_RAIN(true, new Properties().putInt("Times", 32), (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         Scheduler.create(() -> {
             ThrownExpBottle xp = (ThrownExpBottle) location.getWorld().spawnEntity(location, EntityType.THROWN_EXP_BOTTLE);
             xp.setVelocity(new Vector((RandomUtils.nextInt(8) - 4) / 50.0D, 0.9D, (RandomUtils.nextInt(8) - 4) / 60.0D));
@@ -1064,7 +1061,7 @@ public enum LuckyBlockDrop {
         }
     }),
     FALLING_ANVILS(true, new Properties().putInt("Height", 20).putByte("AnvilData", (byte) 0).putString("LocationType", "PLAYER"), (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         byte blockType = luckyBlock.getDropOptions().getByte("AnvilData");
         int height = luckyBlock.getDropOptions().getInt("Height", 20);
 
@@ -1136,7 +1133,7 @@ public enum LuckyBlockDrop {
         }
     }),
     FIRE(true, new Properties().putInt("Range", 6), (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         Scheduler.create(new Runnable() {
             private int g = 1;
 
@@ -1156,7 +1153,7 @@ public enum LuckyBlockDrop {
             }
         }).count(MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Range", 10), 0, 50)).timer(3, 20);
     }),
-    EXPLOSION(true, new Properties().putFloat("ExplosionPower", 4.0F), (luckyBlock, player) -> luckyBlock.getBlock().getLocation().getWorld().createExplosion(luckyBlock.getBlock().getLocation(), luckyBlock.getDropOptions().getFloat("ExplosionPower", 4.0F))),
+    EXPLOSION(true, new Properties().putFloat("ExplosionPower", 4.0F), (luckyBlock, player) -> luckyBlock.getLocation().getWorld().createExplosion(luckyBlock.getLocation(), luckyBlock.getDropOptions().getFloat("ExplosionPower", 4.0F))),
     LAVA_HOLE(true, new Properties().putByte("Radius", (byte) 2).putBoolean("WithWebs", true).putEnum("BordersMaterial", Material.STONE).putByte("BordersData", (byte) 0).putStringArray("Texts", new String[]{"Say goodbye :)"}), (luckyBlock, player) -> {
         if (player != null) {
             int playerX = player.getLocation().getBlockX();
@@ -1305,14 +1302,14 @@ public enum LuckyBlockDrop {
         }
     }),
     LB_RAIN(true, (luckyBlock, player) -> {
-        Location location = luckyBlock.getBlock().getLocation();
+        Location location = luckyBlock.getLocation();
         LBType type = luckyBlock.getType();
 
         Scheduler.create(() -> {
             FallingBlock fallingBlock = location.getWorld().spawnFallingBlock(location, type.getType(), (byte) type.getData());
             fallingBlock.setDropItem(false);
             fallingBlock.setVelocity(new Vector((RandomUtils.nextInt(4) - 2) / 5.0D, 1.0D, (RandomUtils.nextInt(4) - 2) / 5.0D));
-            SoundUtils.playFixedSound(location, SoundUtils.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
+            EffectUtils.playFixedSound(location, EffectUtils.getSound("lb_drop_lbrain"), 1.0F, 1.0F, 50);
 
             Scheduler.timer(new BukkitRunnable() {
                 @Override
@@ -1341,7 +1338,7 @@ public enum LuckyBlockDrop {
                 if (locationType.equalsIgnoreCase("PLAYER") && player != null) {
                     location = player.getLocation();
                 } else if (locationType.equalsIgnoreCase("BLOCK")) {
-                    location = luckyBlock.getBlock().getLocation();
+                    location = luckyBlock.getLocation();
                 }
 
                 if (location != null) {
@@ -1396,7 +1393,7 @@ public enum LuckyBlockDrop {
     LAVA_JAIL(true, new Properties().putInt("Ticks", 55), (luckyBlock, player) -> {
         if (player != null) {
             TemporaryUtils.jail(player.getLocation().getBlock());
-            Scheduler.later(() -> luckyBlock.getBlock().getLocation().getBlock().setType(Material.LAVA), luckyBlock.getDropOptions().getInt("Ticks", 55));
+            Scheduler.later(() -> luckyBlock.getLocation().getBlock().setType(Material.LAVA), luckyBlock.getDropOptions().getInt("Ticks", 55));
         }
     }),
     RIP(false, new Properties().putBoolean("ClearInventory", true), (luckyBlock, player) -> {
