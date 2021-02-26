@@ -179,7 +179,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
         this.getCommand(command_main).setTabCompleter(new ConstructTabCompleter());
         pm.registerEvents(new PlaceLuckyBlock(), this);
         pm.registerEvents(new BreakLuckyBlock(), this);
-        pm.registerEvents(new SomeEvents(), this);
+        pm.registerEvents(new LuckyBlockEvents(), this);
         pm.registerEvents(new Gui(), this);
         pm.registerEvents(new LuckyBlockWorld(), this);
         pm.registerEvents(new InteractLB(), this);
@@ -193,7 +193,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
         pm.registerEvents(new LBBossEvents(), this);
         pm.registerEvents(new WorldGenerateLB(), this);
         pm.registerEvents(new CustomEntityEvents(), this);
-        pm.registerEvents(new SpawnEggEvents(), this);
         Structure.loadStructures();
         EntityTags.load();
         CustomEntityManager.initDefaults();

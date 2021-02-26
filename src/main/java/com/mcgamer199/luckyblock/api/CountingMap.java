@@ -4,6 +4,7 @@ import com.google.common.collect.ForwardingMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,12 @@ public class CountingMap<K, V> extends ForwardingMap<K, V> {
     private BiConsumer<Set<Entry<K, V>>, Boolean> limitReached = (map, forced) -> {};
     private CountingKeySet keys;
     private CountingValues values;
+    /**
+     * Делать ли подсчет изменений в карте
+     * {@code true}, если да.
+     * Значение инорируется, если в метод
+     * {@link #processReachedLimit(boolean)} был передан {@code true}
+     */
     @Setter @Getter
     private boolean countChanges;
 
@@ -115,8 +122,14 @@ public class CountingMap<K, V> extends ForwardingMap<K, V> {
     public void processReachedLimit(boolean force) {
         if(force || countChanges) {
             if(force || bufferCounter.incrementAndGet() == bufferLimit) {
-                bufferCounter.set(0);
-                limitReached.accept(Collections.unmodifiableSet(entrySet()), force);
+                try {
+                    limitReached.accept(Collections.unmodifiableSet(entrySet()), force);
+                } catch (Exception e) {
+                    Bukkit.getLogger().info("Ошибка выполнения обработчика лимита");
+                    throw e;
+                } finally {
+                    bufferCounter.set(0);
+                }
             }
         }
     }

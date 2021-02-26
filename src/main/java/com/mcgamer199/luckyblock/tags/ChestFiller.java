@@ -18,18 +18,6 @@ public class ChestFiller {
         this.chest = chest;
     }
 
-    static boolean listContains(List<String> list, String s) {
-        if (list.size() > 0) {
-            for (int x = 0; x < list.size(); ++x) {
-                if (list.get(x).equalsIgnoreCase(s)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public ItemStack[] getRandomChestItems(ConfigurationSection c) {
         ItemStack[] items = new ItemStack[this.inventory_size];
         if (c != null) {
@@ -55,12 +43,10 @@ public class ChestFiller {
                     if (f.getStringList("Disabled") != null && f.getStringList("Disabled").size() > 0) {
                         List<String> list = f.getStringList("Disabled");
 
-                        for (int a = 0; a < list.size(); ++a) {
-                            disabledItems.add(list.get(a));
-                        }
+                        disabledItems.addAll(list);
                     }
 
-                    if (slot < this.inventory_size && !listContains(disabledItems, s)) {
+                    if (slot < this.inventory_size && !disabledItems.contains(s)) {
                         ConfigurationSection j = c.getConfigurationSection(i).getConfigurationSection(s);
                         ItemStack item = ItemStackGetter.getItemStack(j);
                         if (item != null) {

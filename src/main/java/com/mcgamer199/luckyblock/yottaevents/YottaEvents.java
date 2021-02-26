@@ -39,7 +39,7 @@ public class YottaEvents implements Listener {
                 player.sendMessage("§cНельзя так часто открывать лаки блоки.");
                 event.setCancelled(true);
             } else {
-                EntityUtils.set(player, "last.open", current);
+                EntityUtils.setMetadata(player, "last.open", current);
             }
 
         }

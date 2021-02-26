@@ -56,6 +56,8 @@ public class LuckyBlockAPI {
         if (!loaded) {
             loaded = true;
             LuckyBlockPlugin.instance.getLogger().info(MyTasks.val("log.lb.loading", false));
+            LuckyBlock.setPersistent(lbs.getBoolean("persistent", true));
+
             int total = 0;
 
             List<String> luckyBlocks = lbs.getStringList("LuckyBlocks");

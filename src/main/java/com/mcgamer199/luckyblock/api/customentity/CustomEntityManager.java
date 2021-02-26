@@ -12,10 +12,7 @@ import com.mcgamer199.luckyblock.util.*;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -178,7 +175,7 @@ public class CustomEntityManager {
 
             return createCustomEntity((Class<T>) entityClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.info(String.format("Не удается создать сущность с классом %s", className));
             return null;
         }
     }

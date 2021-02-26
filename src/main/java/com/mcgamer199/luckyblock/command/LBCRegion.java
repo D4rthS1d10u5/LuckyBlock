@@ -107,7 +107,7 @@ public class LBCRegion extends LBCommand {
                         }
                     } else {
                         String action3;
-                        int y;//TODO это что-то с чем-то -_-
+                        int y;
                         if (args[1].equalsIgnoreCase("clear")) {
                             for (int minX = s.getMinimumPoint().getBlockX(); minX < s.getMaximumPoint().getBlockX() + 1; ++minX) {
                                 for (minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {

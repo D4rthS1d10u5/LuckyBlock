@@ -40,6 +40,8 @@ public abstract class CustomEntity {
     public void spawn(Location location) {
         if(linkedEntity == null) {
             init(summonEntity(location));
+            startTickTimer();
+            startCustomNamesTimer();
         }
     }
 

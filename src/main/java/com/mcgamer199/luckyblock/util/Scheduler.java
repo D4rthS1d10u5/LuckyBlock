@@ -349,7 +349,13 @@ public class Scheduler {
 
         @Override
         public synchronized void cancel() throws IllegalStateException {
-            onCancel.run();
+            if(onCancel != null) {
+                try {
+                    onCancel.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             super.cancel();
         }
 

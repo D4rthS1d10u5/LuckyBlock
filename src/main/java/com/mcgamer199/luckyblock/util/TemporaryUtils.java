@@ -71,11 +71,10 @@ public class TemporaryUtils {
         }
     }
 
-    //wake up, wake up
     public static void run(final Block block, LuckyBlock luckyBlock, Player player, LuckyBlockDrop drop, CustomDrop customDrop, boolean first) {
         Location bloc = block.getLocation();
         if (player != null && luckyBlock.hasDropOption("Message")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Title", "&cnull")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', luckyBlock.getDropOptions().getString("Message", "")));
         }
 
         String[] particles = luckyBlock.getDropOptions().getStringArray("IParticles");
@@ -122,7 +121,7 @@ public class TemporaryUtils {
         if (customDrop == null && drop != null) {
             drop.execute(luckyBlock, player);
         } else {
-            luckyBlock.customDrop.execute(luckyBlock, player);
+            luckyBlock.getCustomDrop().execute(luckyBlock, player);
         }
     }
 }

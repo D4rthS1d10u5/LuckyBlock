@@ -56,7 +56,7 @@ public enum LuckyBlockDrop {
 
         String path = luckyBlock.getDropOptions().getString("Path", "Chests");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
-        ChestFiller chestFiller = new com.mcgamer199.luckyblock.tags.ChestFiller(luckyBlock.getFile().getConfigurationSection(path), chest);
+        ChestFiller chestFiller = new ChestFiller(luckyBlock.getFile().getConfigurationSection(path), chest);
         chestFiller.loc1 = path1;
         chestFiller.fill();
     }),
@@ -601,10 +601,10 @@ public enum LuckyBlockDrop {
             }
         }
     }),
-    STUCK(true, new Properties().putInt("Duration", 15), (luckyBlock, player) -> { //TODO сделать слушатель
+    STUCK(true, new Properties().putInt("Duration", 15), (luckyBlock, player) -> {
         if (player != null) {
-            EntityUtils.set(player, "stuck", true);
-            Scheduler.later(() -> EntityUtils.remove(player, "stuck"), luckyBlock.getDropOptions().getInt("Duration", 10) * 10);
+            EntityUtils.setMetadata(player, "stuck", true);
+            Scheduler.later(() -> EntityUtils.removeMetadata(player, "stuck"), luckyBlock.getDropOptions().getInt("Duration", 10) * 10);
         }
     }),
     DAMAGE(true, new Properties().putInt("Value", 5), (luckyBlock, player) -> {
@@ -620,22 +620,13 @@ public enum LuckyBlockDrop {
         int[] i1 = TemporaryUtils.tower_rblock(type);
         block.getWorld().spawnFallingBlock(loc.add(0.0D, 10.0D, 0.0D), i1[0], (byte) i1[1]).setDropItem(false);
 
-        Scheduler.timer(new BukkitRunnable() {
-            private int loop = RandomUtils.nextInt(4) + 6;
-
-            @Override
-            public void run() {
-                if (this.loop > 1) {
-                    int[] i2 = TemporaryUtils.tower_rblock(type);
-                    block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, i2[0], (byte) i2[1]).setDropItem(false);
-                    --this.loop;
-                } else if (this.loop == 1) {
-                    FallingBlock fallingBlock = block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, Material.DIAMOND_BLOCK, (byte) 0);
-                    Scheduler.later(() -> fallingBlock.getLocation().getWorld().strikeLightning(fallingBlock.getLocation()), 3);
-                    Scheduler.cancelTask(this);
-                }
-            }
-        }, 6, 6);
+        Scheduler.create(() -> {
+            int[] i2 = TemporaryUtils.tower_rblock(type);
+            block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, i2[0], (byte) i2[1]).setDropItem(false);
+        }).count(RandomUtils.nextInt(4) + 6).onCancel(() -> {
+            FallingBlock fallingBlock = block.getWorld().getHighestBlockAt(loc).getWorld().spawnFallingBlock(loc, Material.DIAMOND_BLOCK, (byte) 0);
+            Scheduler.later(() -> fallingBlock.getLocation().getWorld().strikeLightning(fallingBlock.getLocation()), 3);
+        }).timer(6, 6);
     }),
     METEORS(true, new Properties().putFloat("ExplosionPower", 11F), (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
@@ -664,7 +655,6 @@ public enum LuckyBlockDrop {
                             @Override
                             public void run() {
                                 if (item.isValid()) {
-
                                     for (Entity e : item.getNearbyEntities(7.0D, 7.0D, 7.0D)) {
                                         if (e instanceof LivingEntity) {
                                             e.setFireTicks(600);
@@ -931,39 +921,28 @@ public enum LuckyBlockDrop {
         }).predicate(iterator::hasNext).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(2, 2);
     }),
     BLOCK_RAIN(true, new Properties().putInt("Times", 20).putStringArray("BlockMaterials", new String[]{"EMERALD_BLOCK", "GOLD_BLOCK", "LAPIS_BLOCK", "DIAMOND_BLOCK", "IRON_BLOCK"}), (luckyBlock, player) -> {
-        Material[] materials = new Material[64];
+        List<Material> materials = new ArrayList<>();
 
         if (luckyBlock.hasDropOption("BlockMaterials")) {
             String[] obj = luckyBlock.getDropOptions().getStringArray("BlockMaterials");
-            materials = new Material[obj.length];
-            for (int i = 0; i < obj.length; i++) {
-                if(obj[i] != null) {
-                    materials[i] = Material.getMaterial(obj[i].toString());
+            for (String s : obj) {
+                if (s != null) {
+                    Material material = Material.getMaterial(s);
+                    if (material != null) {
+                        materials.add(material);
+                    }
                 }
             }
         }
 
-        Iterator<Material> iterator = Arrays.asList(materials).iterator();
-        Iterators.removeIf(iterator, Objects::isNull);
-        Material used = RandomUtils.getRandomObject(iterator);
+        Material used = RandomUtils.getRandomObject(materials);
         Location location = luckyBlock.getLocation();
         Scheduler.create(() -> {
             FallingBlock fallingBlock = location.getWorld().spawnFallingBlock(location, used, (byte) 0);
             fallingBlock.setDropItem(false);
             fallingBlock.setVelocity(new Vector((RandomUtils.nextInt(4) - 2) / 5.0D, 1.0D, (RandomUtils.nextInt(4) - 2) / 5.0D));
             EffectUtils.playFixedSound(location, EffectUtils.getSound("lb_drop_blockrain_launch"), 1.0F, 1.0F, 50);
-
-            Scheduler.timer(new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!fallingBlock.isValid()) {
-                        MaterialData d = new MaterialData(fallingBlock.getMaterial(), fallingBlock.getBlockData());
-                        fallingBlock.getWorld().spawnParticle(Particle.BLOCK_CRACK, fallingBlock.getLocation(), 100, 0.3D, 0.1D, 0.3D, 0.0D, d);
-                        EffectUtils.playFixedSound(fallingBlock.getLocation(), EffectUtils.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
-                        Scheduler.cancelTask(this);
-                    }
-                }
-            }, 0, 2);
+            EntityUtils.setMetadata(fallingBlock, "block_rain", true);
         }).count(luckyBlock.getDropOptions().getInt("Times", 10)).timer(3, 3);
     }),
     ARROW_RAIN(true, new Properties().putInt("Times", 20).putBoolean("Critical", true).putBoolean("Bounce", true), (luckyBlock, player) -> {
@@ -1221,7 +1200,7 @@ public enum LuckyBlockDrop {
     VOID_HOLE(true, new Properties().putByte("Radius", (byte) 2).putEnum("BordersMaterial", Material.AIR).putByte("BordersData", (byte) 0), (luckyBlock, player) -> {
         if (player != null) {
             byte rad = (byte) MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Radius", 2), 2, 48);
-            Material material = luckyBlock.getDropOptions().getEnum("BordersMaterial", Material.class, Material.AIR);//Material.AIR;
+            Material material = luckyBlock.getDropOptions().getEnum("BordersMaterial", Material.class, Material.AIR);
             byte data = luckyBlock.getDropOptions().getByte("BordersData");
 
             int playerX = player.getLocation().getBlockX();
@@ -1272,18 +1251,21 @@ public enum LuckyBlockDrop {
     }),
     EXPLOSIVE_CHEST(true, new Properties().putInt("Ticks", 50).putBoolean("ClearInventory", true), (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
-        block.setType(Material.CHEST, true);
         int times = MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Ticks", 50), 0, 1024);
         String path = luckyBlock.getDropOptions().getString("Path", "Chests");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
 
+        block.setType(Material.CHEST, true);
         if (path != null && path1 != null) {
+            System.out.println("filler created");
             ChestFiller chestFiller = new ChestFiller(luckyBlock.getFile().getConfigurationSection(path), (Chest) block.getState());
             chestFiller.loc1 = path1;
             chestFiller.fill();
         }
 
+        //TODO java.lang.ClassCastException: org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockState cannot be cast to org.bukkit.block.Chest
         Scheduler.later(() -> {
+            System.out.println("block.getState() = " + block.getState());
             if (luckyBlock.getDropOptions().getBoolean("ClearInventory", true)) {
                 ((Chest) block.getState()).getBlockInventory().clear();
             }
@@ -1431,10 +1413,8 @@ public enum LuckyBlockDrop {
     private static final LuckyBlockDrop[] values = values();
     private static final TreeMap<String, LuckyBlockDrop> BY_NAME = new TreeMap<>();
 
-    LuckyBlockDrop(boolean visible, Properties dropOptions, BiConsumer<LuckyBlock, Player> onBreakFunction) {
+    LuckyBlockDrop(boolean visible) {
         this.visible = visible;
-        this.dropOptions = dropOptions;
-        this.onBreakFunction = onBreakFunction;
     }
 
     LuckyBlockDrop(boolean visible, Properties dropOptions) {
@@ -1442,18 +1422,25 @@ public enum LuckyBlockDrop {
         this.dropOptions = dropOptions;
     }
 
-    LuckyBlockDrop(boolean visible) {
-        this.visible = visible;
-    }
-
     LuckyBlockDrop(boolean visible, BiConsumer<LuckyBlock, Player> onBreakFunction) {
         this.visible = visible;
         this.onBreakFunction = onBreakFunction;
     }
 
+    LuckyBlockDrop(boolean visible, Properties dropOptions, BiConsumer<LuckyBlock, Player> onBreakFunction) {
+        this.visible = visible;
+        this.dropOptions = dropOptions;
+        this.onBreakFunction = onBreakFunction;
+    }
+
     public void execute(LuckyBlock luckyBlock, @Nullable Player player) {
         if(onBreakFunction != null) {
-            onBreakFunction.accept(luckyBlock, player);
+            try {
+                onBreakFunction.accept(luckyBlock, player);
+            } catch (Exception e) {
+                Bukkit.getLogger().severe("Ошибка выдачи награды из лакиблока: \n" + luckyBlock.getDropOptions().toString());
+                e.printStackTrace();
+            }
         }
     }
 

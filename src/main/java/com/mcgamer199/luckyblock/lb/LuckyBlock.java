@@ -5,6 +5,7 @@
 
 package com.mcgamer199.luckyblock.lb;
 
+import com.google.common.collect.Iterables;
 import com.mcgamer199.luckyblock.LBOption;
 import com.mcgamer199.luckyblock.api.CountingMap;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
@@ -47,9 +48,8 @@ public class LuckyBlock {
     public static Map<LBType, FileConfiguration> cache = new HashMap<>();
 
     private static final CountingMap<Location, LuckyBlock> storage = new CountingMap<>(new HashMap<>(), 500, (entries, forced) -> {
-        if(persistent) {
-            List<LuckyBlock> values = entries.stream().map(Map.Entry::getValue).collect(Collectors.toList());
-            LuckyBlockAPI.lbs.set("LuckyBlocks", values.stream().map(luckyBlock -> JsonUtils.toJsonString(luckyBlock, LuckyBlock.class)).collect(Collectors.toList()));
+        if(persistent && !entries.isEmpty()) {
+            LuckyBlockAPI.lbs.set("LuckyBlocks", entries.stream().map(Map.Entry::getValue).map(luckyBlock -> JsonUtils.toJsonString(luckyBlock, LuckyBlock.class)).collect(Collectors.toList()));
             LuckyBlockAPI.saveLBFile();
         }
     });
@@ -81,7 +81,7 @@ public class LuckyBlock {
     private String placedBy;
     private FileConfiguration file;
     private FileConfiguration customFile;
-    private String floc; //TODO продебажить это поле, вообще неясно что оно значит
+    private String dropName;
     private final String folder = "Drops";
     private boolean locked;
     private CustomEntityLuckyBlockNameTag dropDisplay;
@@ -322,7 +322,7 @@ public class LuckyBlock {
             if (this.file.getConfigurationSection("Drops") != null) {
                 String g = BlockTags.getRandomL(this.file, "Drops");
                 if (g != null) {
-                    this.floc = g;
+                    this.dropName = g;
                     ConfigurationSection c = this.file.getConfigurationSection("Drops").getConfigurationSection(g);
                     String dropName = c.getString("DropName");
                     if (dropName != null) {
@@ -337,10 +337,9 @@ public class LuckyBlock {
 
             this.reloadOptions();
         }
-
     }
 
-    public void reloadOptions() { //TODO починить загрузку данных из файла
+    public void reloadOptions() {
         if (this.luckyBlockDrop != null || this.customDrop != null) {
             String player = dropOptions.getString("Player");
             dropOptions.clear();
@@ -348,35 +347,43 @@ public class LuckyBlock {
                 dropOptions.putString("Player", player);
             }
 
-            if (this.floc != null) {
-                ConfigurationSection c = this.file.getConfigurationSection("Drops").getConfigurationSection(this.floc);
+            if (this.dropName != null) {
+                ConfigurationSection c = this.file.getConfigurationSection("Drops").getConfigurationSection(this.dropName);
                 if (c != null) {
-
-                    for (String s : c.getKeys(false)) {
-                        String loc = "Drops." + this.floc + "." + s;
-                        Object[] obj = this.getValue(loc);
-
-                        for (int x = 0; x < obj.length; ++x) {
-                            if (obj[x] instanceof String) {
-                                obj[x] = obj[x].toString().replace("%s%", "'");
-                            }
-                        }
-
-                        if (s.equalsIgnoreCase("TreeType")) {
-                            dropOptions.putEnum("TreeType", TreeType.valueOf(obj[0].toString().toUpperCase()));
-                        } else if (!s.equalsIgnoreCase("DropName") && !s.equalsIgnoreCase("Chance")) {
-                            dropOptions.putString(s, Arrays.toString(obj));
-                        }
+                    for (String key : c.getKeys(false)) {
+                        String propertyPath = "Drops." + this.dropName + "." + key;
+                        parseProperty(key, file.get(propertyPath));
                     }
 
                     dropOptions.merge(luckyBlockDrop.getDropOptions(), false);
-                    if(dropOptions.has("Title")) {
+                    if(!dropOptions.has("Title")) {
                         dropOptions.putString("Title", "§c" + luckyBlockDrop.name());
                     }
                 }
             } else {
                 dropOptions.merge(luckyBlockDrop.getDropOptions(), true);
                 dropOptions.putString("Title", "§c" + luckyBlockDrop.name());
+            }
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void parseProperty(String propertyKey, Object property) {
+        if(property != null) {
+            System.out.println("key = " + propertyKey + " obj = " + property + " class = " + property.getClass().getName());
+            if(property instanceof Integer) {
+                dropOptions.putInt(propertyKey, (int) property);
+            } else if(property instanceof String) {
+                dropOptions.putString(propertyKey, ((String) property).replace("%key%", "'"));
+            } else if(property instanceof Double) {
+                dropOptions.putDouble(propertyKey, ((Double) property));
+            } else if(property instanceof Collection) {
+                Object source = Iterables.getFirst(((Collection) property), null);
+                if(source instanceof Integer) {
+                    dropOptions.putIntArray(propertyKey, Iterables.toArray(((Collection<Integer>) property), Integer.class));
+                } else if(source instanceof String) {
+                    dropOptions.putStringArray(propertyKey, Iterables.toArray(((Collection<String>) property), String.class));
+                }
             }
         }
     }
@@ -415,14 +422,14 @@ public class LuckyBlock {
             for (Iterator<String> var7 = this.file.getConfigurationSection("Drops").getKeys(false).iterator(); var7.hasNext(); ++x) {
                 String a = var7.next();
                 if (x < this.file.getConfigurationSection("Drops").getKeys(false).size() && this.file.getString("Drops." + a + ".DropName") != null && this.luckyBlockDrop.name().equalsIgnoreCase(this.file.getString("Drops." + a + ".DropName"))) {
-                    this.floc = a;
+                    this.dropName = a;
                     h = true;
                 }
             }
         }
 
         if (!h) {
-            this.floc = null;
+            this.dropName = null;
         }
 
         if (reload) {

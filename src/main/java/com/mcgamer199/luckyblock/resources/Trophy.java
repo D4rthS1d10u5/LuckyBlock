@@ -4,34 +4,36 @@ import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityTrophyNameTag;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
+import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Trophy {
-    public static List<Trophy> trophies;
-    static File fileF = new File(LuckyBlockPlugin.d() + "data/trophies.yml");
-    static FileConfiguration file;
+
+    private static final Map<Location, Trophy> trophies = new HashMap<>();
+    private static final File fileF = new File(LuckyBlockPlugin.d() + "data/trophies.yml");
+    private static final FileConfiguration file = YamlConfiguration.loadConfiguration(fileF);
     private static boolean loaded = false;
 
-    static {
-        file = YamlConfiguration.loadConfiguration(fileF);
-        trophies = new ArrayList();
+    static  {
+        Scheduler.timer(Trophy::purgeInvalidBlocks, 20, 20);
     }
 
     private UUID uuid = UUID.randomUUID();
+    @Getter
     private final Block block;
+    @Getter
     private final ItemStack itemToDrop;
 
     private Trophy(Block block, ItemStack itemToDrop) {
@@ -46,30 +48,19 @@ public class Trophy {
     public static void place(Block block, ItemStack itemToDrop) {
         Trophy trophy = new Trophy(block, itemToDrop);
         trophy.save(true);
-        trophy.func_loop();
         CustomEntityTrophyNameTag trophyNameTag = new CustomEntityTrophyNameTag();
         trophyNameTag.spawn(trophy);
     }
 
     public static Trophy getByBlock(Block block) {
-        for (int x = 0; x < trophies.size(); ++x) {
-            String b = LocationUtils.asString(trophies.get(x).block.getLocation());
-            if (b.equalsIgnoreCase(LocationUtils.asString(block.getLocation()))) {
-                return trophies.get(x);
-            }
-        }
-
-        return null;
+        return trophies.get(block.getLocation());
     }
 
     public static void load() {
         if (!loaded) {
             loaded = true;
             if (file.getConfigurationSection("Trophies") != null) {
-                Iterator var1 = file.getConfigurationSection("Trophies").getKeys(false).iterator();
-
-                while (var1.hasNext()) {
-                    String s = (String) var1.next();
+                for (String s : file.getConfigurationSection("Trophies").getKeys(false)) {
                     ConfigurationSection c = file.getConfigurationSection("Trophies").getConfigurationSection(s);
                     if (c != null) {
                         String b = c.getString("Block");
@@ -78,60 +69,27 @@ public class Trophy {
                         Trophy t = new Trophy(LocationUtils.blockFromString(b), i);
                         t.uuid = u;
                         t.save(false);
-                        t.func_loop();
                     }
                 }
             }
         }
-
-    }
-
-    //TODO сделать общий таймер
-    private void func_loop() {
-        Scheduler.timer(new BukkitRunnable() {
-            @Override
-            public void run() {
-                if(block.getType() != Material.SKULL) {
-                    remove();
-                    Scheduler.cancelTask(this);
-                }
-            }
-        }, 20, 20);
     }
 
     private void save(boolean saveToFile) {
-        for (int x = 0; x < trophies.size(); ++x) {
-            Trophy t = trophies.get(x);
-            String s = LocationUtils.asString(t.getBlock().getLocation());
-            if (s.equalsIgnoreCase(LocationUtils.asString(this.block.getLocation()))) {
-                trophies.remove(t);
-            }
-        }
+        trophies.put(this.block.getLocation(), this);
 
-        trophies.add(this);
         if (saveToFile) {
             this.saveFile();
         }
-
     }
 
     public void remove() {
-        for (int x = 0; x < trophies.size(); ++x) {
-            Trophy t = trophies.get(x);
-            String b = LocationUtils.asString(t.block.getLocation());
-            if (b.equalsIgnoreCase(LocationUtils.asString(this.block.getLocation()))) {
-                trophies.remove(t);
-            }
-        }
-
         file.set("Trophies.Trophy" + this.uuid.toString(), null);
-
         try {
             file.save(fileF);
         } catch (IOException var4) {
             var4.printStackTrace();
         }
-
     }
 
     private void saveFile() {
@@ -147,15 +105,18 @@ public class Trophy {
 
     }
 
-    public Block getBlock() {
-        return this.block;
-    }
-
-    public ItemStack getItemToDrop() {
-        return this.itemToDrop;
-    }
-
     public boolean isValid() {
-        return getByBlock(this.block) != null;
+        return getByBlock(this.block) != null && block.getType().equals(Material.SKULL);
+    }
+
+    private static void purgeInvalidBlocks() {
+        trophies.values().removeIf(trophy -> {
+           if(!trophy.getBlock().getType().equals(Material.SKULL)) {
+               trophy.remove();
+               return true;
+           }
+
+           return false;
+        });
     }
 }

@@ -133,14 +133,12 @@ public class CustomEntitySoldier extends CustomEntity {
         }
 
         xp += deltaXP;
-        //TODO save
     }
 
     public void onKillPlayer(EntityDamageByEntityEvent event) {
         Player player = (Player) event.getEntity();
         if (!this.skulls.contains(player.getName())) {
             this.skulls.add(player.getName());
-           //TODO save
         }
     }
 

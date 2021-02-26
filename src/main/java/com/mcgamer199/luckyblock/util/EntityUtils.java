@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"unchecked", "unused"})
+@SuppressWarnings({"unchecked", "unused", "UnusedReturnValue"})
 @UtilityClass
 public class EntityUtils {
 
@@ -47,11 +47,15 @@ public class EntityUtils {
         return (V) getMetadata(entity).computeIfAbsent(key, (s) -> def);
     }
 
-    public static <V> V set(Entity entity, String key, V val) {
+    public static <V> V getOrDefault(Entity entity, String key, V def) {
+        return (V) getMetadata(entity).getOrDefault(key, def);
+    }
+
+    public static <V> V setMetadata(Entity entity, String key, V val) {
         return (V) getMetadata(entity).put(key, val);
     }
 
-    public static <V> V remove(Entity entity, String key) {
+    public static <V> V removeMetadata(Entity entity, String key) {
         return (V) getMetadata(entity).remove(key);
     }
 

@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
@@ -15,15 +16,14 @@ import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.structures.BossDungeon;
 import com.mcgamer199.luckyblock.tags.ChestFiller;
+import com.mcgamer199.luckyblock.util.EffectUtils;
+import com.mcgamer199.luckyblock.util.EntityUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -32,14 +32,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.*;
 
-public class SomeEvents extends ColorsClass implements Listener {
+public class LuckyBlockEvents extends ColorsClass implements Listener {
 
-    public SomeEvents() {
-    }
+    public LuckyBlockEvents() {}
 
     @EventHandler
     public void onPlaceRandomChest(BlockPlaceEvent event) {
@@ -53,7 +54,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 c.fill();
             }
         }
-
     }
 
     @EventHandler
@@ -63,7 +63,6 @@ public class SomeEvents extends ColorsClass implements Listener {
             Block block = event.getBlock();
             this.BombBlock(block, RandomUtils.nextInt(100) + 200);
         }
-
     }
 
     @EventHandler
@@ -113,7 +112,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
             }
         }
-
     }
 
     @EventHandler
@@ -157,7 +155,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                     }
                 }
             }
-
         }
     }
 
@@ -169,7 +166,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 event.blockList().remove(x);
             }
         }
-
     }
 
     @EventHandler
@@ -198,7 +194,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
             }
         }
-
     }
 
     @EventHandler
@@ -235,7 +230,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
             }
         }
-
     }
 
     @EventHandler
@@ -252,7 +246,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
             }
         }
-
     }
 
     @EventHandler
@@ -274,7 +267,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
             }
         }
-
     }
 
     @EventHandler
@@ -307,7 +299,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 }
             }
         }
-
     }
 
     private void spawnItem(LuckyBlock luckyBlock) {
@@ -348,7 +339,6 @@ public class SomeEvents extends ColorsClass implements Listener {
                 event.setCancelled(true);
             }
         }
-
     }
 
     @EventHandler
@@ -367,14 +357,37 @@ public class SomeEvents extends ColorsClass implements Listener {
 
     }
 
-    @EventHandler(
-            ignoreCancelled = true
-    )
+    @EventHandler(ignoreCancelled = true)
     private void onTakeLuckyBlock(LBInteractEvent event) {
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
         if (item != null && item.getType() != Material.AIR && compareItems(item, LBItem.LB_REMOVER.getItem())) {
             event.getLB().remove(true);
         }
+    }
 
+    @EventHandler
+    public void onEntityRemove(EntityRemoveFromWorldEvent event) {
+        if (event.getEntityType().equals(EntityType.FALLING_BLOCK)) {
+            FallingBlock entity = (FallingBlock) event.getEntity();
+            if(EntityUtils.getOrDefault(entity, "block_rain", false)) {
+                MaterialData d = new MaterialData(entity.getMaterial(), entity.getBlockData());
+                entity.getWorld().spawnParticle(Particle.BLOCK_CRACK, entity.getLocation(), 100, 0.3D, 0.1D, 0.3D, 0.0D, d);
+                EffectUtils.playFixedSound(entity.getLocation(), EffectUtils.getSound("lb_drop_blockrain_land"), 1.0F, 1.0F, 60);
+            } else if(EntityUtils.getOrDefault(entity, "knight_bomb", false)) {
+                if(entity.getLocation().getBlock().getType().equals(Material.COAL_BLOCK)) {
+                    entity.getLocation().getBlock().setType(Material.AIR);
+                }
+
+                boolean angry = EntityUtils.getOrDefault(entity, "angry", false);
+                entity.getWorld().createExplosion(entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), angry ? 12.0F : 7F, false, false);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if(EntityUtils.getOrDefault(event.getPlayer(), "stuck", false)) {
+            event.setCancelled(true);
+        }
     }
 }

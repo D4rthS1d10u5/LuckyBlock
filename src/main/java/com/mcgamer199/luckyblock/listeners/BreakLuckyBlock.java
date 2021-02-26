@@ -5,8 +5,6 @@
 
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityFloatingText;
 import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
@@ -14,9 +12,9 @@ import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.logic.ColorsClass;
 import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
-import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.TemporaryUtils;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.mcgamer199.luckyblock.yottaevents.YottaEvents;
@@ -117,25 +115,6 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
         } catch (Exception var14) {
             throw new Error("An unexpected error occured while trying to spawn particles!");
         }
-    }
-
-    public static void changeLBLuck(LuckyBlock luckyBlock, int level) {
-        int luck = luckyBlock.getLuck();
-        int max = luckyBlock.getType().getMaxLuck();
-        int a = max / 2 / 3;
-        int total = level * a;
-        total += random.nextInt(14) + 3;
-        luck += total;
-        if (luck > max) {
-            luck = max;
-        }
-
-        CustomEntityFloatingText text = new CustomEntityFloatingText();
-        text.setAge(20);
-        text.setShiftCount(100);
-        text.setText("§9+" + total + "%");
-        text.spawn(luckyBlock.getLocation().add(0.5D, 1.0D, 0.5D));
-        LuckyBlockAPI.spawnLuckyBlockItem(luckyBlock, luck, luckyBlock.getLocation());
     }
 
     private void injectYottaEvents() {
@@ -251,10 +230,8 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
         if (event.getBlock().getType() == Material.IRON_PLATE && LuckyWell.isValid(event.getBlock())) {
             LuckyWell.blocks.remove(LocationUtils.asString(event.getBlock().getLocation()));
             Entity l = null;
-            Iterator var4 = event.getBlock().getLocation().getWorld().getNearbyEntities(event.getBlock().getLocation(), 1.0D, 1.0D, 1.0D).iterator();
 
-            while (var4.hasNext()) {
-                Entity e = (Entity) var4.next();
+            for (Entity e : event.getBlock().getLocation().getWorld().getNearbyEntities(event.getBlock().getLocation(), 1.0D, 1.0D, 1.0D)) {
                 if (e instanceof Item) {
                     Item item = (Item) e;
                     if (item.getItemStack() != null) {
@@ -268,10 +245,8 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
 
             if (l != null) {
                 int r = random.nextInt(2) + 1;
-                Iterator var12 = l.getNearbyEntities(7.0D, 7.0D, 7.0D).iterator();
 
-                while (var12.hasNext()) {
-                    Entity p = (Entity) var12.next();
+                for (Entity p : l.getNearbyEntities(7.0D, 7.0D, 7.0D)) {
                     if (p instanceof Player) {
                         Player pl = (Player) p;
                         if (r == 1) {

@@ -221,7 +221,6 @@ public class CustomEntityBossWitch extends CustomEntity implements CustomEntityB
             } else if ((event.getCause() == DamageCause.ENTITY_EXPLOSION || event.getCause() == DamageCause.BLOCK_EXPLOSION) && this.fireDamage < 67) {
                 this.fireDamage += 2;
                 MyTasks.playEffects(Particle.FLAME, this.witch.getLocation(), 34, new double[]{0.5D, 0.5D, 0.5D}, 0.0F);
-                //TODO тут сохранение зачем-то
             }
 
             if (!event.isCancelled()) {

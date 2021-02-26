@@ -61,6 +61,19 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
         chestplate1 = ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.BLACK);
         leggings1 = ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), Color.BLACK);
         boots1 = ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), Color.BLACK);
+
+        Scheduler.timerAsync(() -> { //эффект стрел босса "Рыцарь"
+            for (World world : Bukkit.getWorlds()) {
+                world.getEntitiesByClass(Arrow.class).stream().filter(arrow -> EntityUtils.getOrDefault(arrow, "knight_arrow", false))
+                        .forEach(arrow -> {
+                            if(arrow.isValid() && !arrow.isOnGround()) {
+                                arrow.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, arrow.getLocation(), 3, 0.1D, 0.1D, 0.1D, 0.0D);
+                            } else {
+                                arrow.remove();
+                            }
+                        });
+            }
+        }, 10, 10);
     }
 
     private WitherSkeleton witherSkeleton;
@@ -132,8 +145,9 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
                     switch (status) {
                         case SPAWNING_BOMB: {
                             FallingBlock fallingBlock = witherSkeleton.getWorld().spawnFallingBlock(target.getLocation().add(0.0D, 6.0D, 0.0D), new MaterialData(Material.COAL_BLOCK));
-                            //TODO слушатель EntityRemoveFromWorldEvent для блоков с этой метой
-                            EntityUtils.set(fallingBlock, "knight_bomb", true);
+                            EntityUtils.setMetadata(fallingBlock, "knight_bomb", true);
+                            EntityUtils.setMetadata(fallingBlock, "angry", angry);
+
                             fallingBlock.setCustomName(ChatColor.RED + "Bomb");
                             fallingBlock.setCustomNameVisible(true);
                             break;
@@ -246,12 +260,11 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
     public void onShootBow(final EntityShootBowEvent event) {
         if (event.getProjectile() != null && event.getProjectile() instanceof Projectile) {
             Projectile projectile = (Projectile) event.getProjectile();
-            //TODO: глобальный таймер, который будет проигрывать частицы для стрел с этой метой
-            EntityUtils.set(projectile, "knight_arrow", true);
+            EntityUtils.setMetadata(projectile, "knight_arrow", true);
             Vector sourceVelocity = projectile.getVelocity();
             Scheduler.create(() -> {
                 Arrow arrow = event.getEntity().launchProjectile(Arrow.class);
-                EntityUtils.set(arrow, "knight_arrow", true);
+                EntityUtils.setMetadata(arrow, "knight_arrow", true);
                 arrow.setShooter(witherSkeleton);
                 arrow.setVelocity(new Vector(sourceVelocity.getX() + (RandomUtils.nextInt(20) - 10) / 70D, sourceVelocity.getY() + (RandomUtils.nextInt(20) - 10) / 70D, sourceVelocity.getZ() + (RandomUtils.nextInt(20) - 10) / 70D));
                 arrow.setBounce(true);
@@ -358,7 +371,6 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
         witherSkeleton.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100.0D);
         witherSkeleton.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(100.0D);
         witherSkeleton.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3D);
-        //TODO здесь зачем-то сохранение
     }
 
     @SuppressWarnings("SameParameterValue")
