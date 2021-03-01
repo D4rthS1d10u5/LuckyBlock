@@ -79,7 +79,7 @@ public class CustomEntityTalkingZombie extends CustomEntity {
                 }
 
                 if (hasArmor) {
-                    player.sendMessage("§c§l[§3§lZombie§c§l] §r: §cNow give me your armour!");
+                    player.sendMessage("§c§l[§3§lZombie§c§l]§r: §cNow give me your armour!");
                 }
             }
         }
@@ -130,7 +130,7 @@ public class CustomEntityTalkingZombie extends CustomEntity {
         double distance = 5;
         if(RandomUtils.nextPercent(60)) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if(LocationUtils.hasDistance(linkedEntity.getLocation(), player.getLocation(), distance + 1)) {
+                if(linkedEntity.getLocation().distance(player.getLocation()) <= distance + 1) {
                     player.sendMessage("§c§l[§3§lZombie§c§l]§r: " + RandomUtils.getRandomObject(texts));
                 }
             }

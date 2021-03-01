@@ -123,7 +123,6 @@ public class CustomEntityManager {
                         customEntity.setEntityUuid(uuid);
                         Entity linked = null;
                         for (World world : Bukkit.getWorlds()) {
-                            System.out.println("world.getEntities() = " + world.getEntities());
                             for (Entity entity : world.getEntities()) {
                                 if(entity.getUniqueId().equals(uuid)) {
                                     linked = entity;
@@ -221,7 +220,7 @@ public class CustomEntityManager {
     }
 
     private static void startBasicTimers() {
-        Scheduler.timerAsync(() -> System.out.println(customEntities.values()), 0, 20 * 10);
+        //Scheduler.timerAsync(() -> System.out.println(customEntities.values()), 0, 20 * 10);
 
         Scheduler.timerAsync(() -> customEntities.values().stream().filter(customEntity -> customEntity instanceof CustomEntityBoss).map(CustomEntityBoss.class::cast).forEach(customEntity -> {
             if(customEntity.hasBossBar() && customEntity.getBossBarRange() > 0 && customEntity.getBossBarRange() < 225) {

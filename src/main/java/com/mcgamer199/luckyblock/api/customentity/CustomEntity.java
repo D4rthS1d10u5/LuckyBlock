@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -91,18 +90,6 @@ public abstract class CustomEntity {
 
     public boolean isAttackingNearbyEntities() {
         return false;
-    }
-
-    public boolean isSpawnsNaturally() {
-        return false;
-    }
-
-    public int getSpawnChance() {
-        return 0;
-    }
-
-    public Biome[] getSpawnBiomes() {
-        return Biome.values();
     }
 
     public int getCustomNamesTickDelay() {

@@ -456,6 +456,7 @@ public class CustomEntityEvents implements Listener {
         CustomEntity customEntity = CustomEntityManager.getCustomEntity(entity.getUniqueId());
         if(customEntity != null) {
             System.out.println("FOUND CustomEntity by uuid " + entity.getUniqueId());
+            CustomEntityManager.removeCustomEntity(customEntity);
         }
     }
 }

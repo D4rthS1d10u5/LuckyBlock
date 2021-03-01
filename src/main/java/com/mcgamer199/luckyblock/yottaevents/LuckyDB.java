@@ -55,7 +55,6 @@ public class LuckyDB {
                 }
             });
         }
-
     }
 
     public static void loadConfig() {

@@ -113,7 +113,7 @@ public class LBCRegion extends LBCommand {
                                 for (minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {
                                     for (y = s.getMinimumPoint().getBlockZ(); y < s.getMaximumPoint().getBlockZ() + 1; ++y) {
                                         if (LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(minX, minX, y))) {
-                                            LuckyBlock.getByBlock(s.getWorld().getBlockAt(minX, minX, y)).remove(false);
+                                            LuckyBlock.getByBlock(s.getWorld().getBlockAt(minX, minX, y)).remove(false, false);
                                             ++total;
                                         }
                                     }

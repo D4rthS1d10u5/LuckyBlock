@@ -292,7 +292,7 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
             block = blks.get(x);
             if (LuckyBlock.isLuckyBlock(block)) {
                 luckyBlock = LuckyBlock.getByBlock(block);
-                luckyBlock.remove(false);
+                luckyBlock.remove(false, false);
                 block.setType(Material.AIR);
                 if (luckyBlock.getType().hasProperty(BlockProperty.DROP_ON_EXPLODE)) {
                     this.spawnItem(luckyBlock);
@@ -361,7 +361,7 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
     private void onTakeLuckyBlock(LBInteractEvent event) {
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
         if (item != null && item.getType() != Material.AIR && compareItems(item, LBItem.LB_REMOVER.getItem())) {
-            event.getLB().remove(false);
+            event.getLB().remove(true, false);
         }
     }
 
@@ -380,6 +380,12 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
 
                 boolean angry = EntityUtils.getOrDefault(entity, "angry", false);
                 entity.getWorld().createExplosion(entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), angry ? 12.0F : 7F, false, false);
+            } else if(EntityUtils.getOrDefault(entity, "luckyBlockRain", false)) {
+                Material material = EntityUtils.getOrDefault(entity, "lbType", null);
+                byte data = EntityUtils.getOrDefault(entity, "lbData", (byte) -1);
+                if(material != null && data != -1) {
+                    new LuckyBlock(LBType.fromMaterialAndData(material, data), entity.getLocation().getBlock(), 0, null, true).playEffects();
+                }
             }
         }
     }

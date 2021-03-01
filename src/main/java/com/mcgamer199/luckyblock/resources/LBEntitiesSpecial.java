@@ -126,7 +126,6 @@ public class LBEntitiesSpecial {
         if (noAI) {
             hellHund.setAI(false);
         }
-
     }
 
     public static void spawnElementalCreeper(Location loc, boolean noAI) {

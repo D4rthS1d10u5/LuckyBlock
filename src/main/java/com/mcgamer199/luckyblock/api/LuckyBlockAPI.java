@@ -109,7 +109,7 @@ public class LuckyBlockAPI {
             LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, false);
 
             if (block.getType() == Material.AIR) {
-                luckyBlock.remove(false);
+                luckyBlock.remove(false, false);
                 return;
             }
 

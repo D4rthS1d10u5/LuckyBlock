@@ -66,7 +66,7 @@ public class LBSpawnBoss implements Listener {
                         }
 
                         if (a > 4) {
-                            luckyBlock.remove(false);
+                            luckyBlock.remove(true, false);
 
                             for (Item i : item) {
                                 i.remove();

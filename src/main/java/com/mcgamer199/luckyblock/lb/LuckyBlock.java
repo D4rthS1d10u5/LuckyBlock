@@ -6,27 +6,31 @@
 package com.mcgamer199.luckyblock.lb;
 
 import com.google.common.collect.Iterables;
-import com.mcgamer199.luckyblock.api.enums.LBOption;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.api.CountingMap;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.api.enums.BlockProperty;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
 import com.mcgamer199.luckyblock.api.enums.PlacingSource;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityLuckyBlockNameTag;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityLuckyBlockNameTag.DisplayType;
-import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.JsonUtils;
+import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -131,7 +135,7 @@ public class LuckyBlock {
                             .timer(3, 3);
                     return true;
                 } else if(type.hasProperty(BlockProperty.REMOVE_ON_FIRE)) {
-                    luckyBlock.remove(true);
+                    luckyBlock.remove(true, true);
                     return true;
                 } else if(type.hasProperty(BlockProperty.FIRE_RESISTANCE)) {
                     luckyBlock.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);
@@ -294,7 +298,12 @@ public class LuckyBlock {
 
     public void playEffects() {
         if (this.tickDelay < 1) {
-            this.tickDelay = (new Random()).nextInt(this.type.a_random[1]) + this.type.a_random[0];
+            try {
+                this.tickDelay = RandomUtils.nextInt(type.a_random[1]) + this.type.a_random[0];
+            } catch (Exception e) {
+                System.out.println("error with building new tick delay");
+                tickDelay = 2;
+            }
         }
 
         LBEffects.testEffects(this);
@@ -473,8 +482,10 @@ public class LuckyBlock {
         dropOptions.remove(dropOption);
     }
 
-    public void remove(boolean alreadyNotStored) {
-        this.block.setType(Material.AIR);
+    public void remove(boolean removeBlock, boolean alreadyNotStored) {
+        if(removeBlock) {
+            this.block.setType(Material.AIR);
+        }
 
         if (lastDeleted.size() > 100) {
             lastDeleted.remove(0);

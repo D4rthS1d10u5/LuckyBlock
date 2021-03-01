@@ -47,15 +47,9 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
             if (player != null) {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && player.getGameMode() != GameMode.CREATIVE) {
-                    if (luckyBlock.getType().getPermission("SilkTouch") == null) {
+                    if (luckyBlock.getType().getPermission("SilkTouch") == null || player.hasPermission(luckyBlock.getType().getPermission("SilkTouch"))) {
                         TemporaryUtils.spawnLB(luckyBlock, bloc);
-                        luckyBlock.remove(false);
-                        return;
-                    }
-
-                    if (player.hasPermission(luckyBlock.getType().getPermission("SilkTouch"))) {
-                        TemporaryUtils.spawnLB(luckyBlock, bloc);
-                        luckyBlock.remove(false);
+                        luckyBlock.remove(false, false);
                         return;
                     }
                 }
@@ -65,7 +59,6 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 }
             }
 
-            block.setType(Material.AIR);
             if (types.allowbreaksound && types.breaksound != null) {
                 Sound sound = null;
                 float vol = 100.0F;
@@ -84,7 +77,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 EffectUtils.playFixedSound(bloc, sound, vol, pit, 30);
             }
 
-            luckyBlock.remove(false);
+            luckyBlock.remove(false, false);
             PortalEvents.removePortal(block.getRelative(BlockFace.UP));
             PortalEvents.removePortal(block.getRelative(BlockFace.EAST));
             PortalEvents.removePortal(block.getRelative(BlockFace.DOWN));
