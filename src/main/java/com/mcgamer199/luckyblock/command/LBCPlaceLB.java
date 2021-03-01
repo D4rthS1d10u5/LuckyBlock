@@ -100,7 +100,12 @@ public class LBCPlaceLB extends LBCommand {
                 }
 
                 if (LuckyBlock.getByBlock(l.getBlock()) == null) {
-                    LuckyBlock.placeLB(l, type, null, b);
+                    String drop = null;
+                    if(args.length >= 5) {
+                        drop = args[5];
+                    }
+
+                    LuckyBlock.placeLB(l, type, null, b, drop, 0);
                     sendMessage(sender, "command.placelb.success");
                     return true;
                 }
@@ -120,7 +125,7 @@ public class LBCPlaceLB extends LBCommand {
     }
 
     public int[] getRequiredArgs() {
-        return new int[]{4, 5};
+        return new int[]{4, 5, 6};
     }
 
     public String getDescription() {

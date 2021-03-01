@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock.logic;
+package com.mcgamer199.luckyblock.api;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;

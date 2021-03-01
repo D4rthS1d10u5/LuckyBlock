@@ -5,7 +5,7 @@
 
 package com.mcgamer199.luckyblock.yottaevents;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import org.bukkit.Bukkit;

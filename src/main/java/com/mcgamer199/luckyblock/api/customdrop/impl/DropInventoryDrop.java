@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.api.customdrop.impl;
 import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ public class DropInventoryDrop implements CustomDrop {
     }
 
     public String getDescription() {
-        return MyTasks.val("desc.drop.drop_inventory", false);
+        return ColorsClass.val("desc.drop.drop_inventory", false);
     }
 
     public boolean isEnabledByCommands() {

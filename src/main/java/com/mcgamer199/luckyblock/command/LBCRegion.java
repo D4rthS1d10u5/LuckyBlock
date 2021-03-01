@@ -1,10 +1,10 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.LBOption;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
@@ -113,7 +113,7 @@ public class LBCRegion extends LBCommand {
                                 for (minX = s.getMinimumPoint().getBlockY(); minX < s.getMaximumPoint().getBlockY() + 1; ++minX) {
                                     for (y = s.getMinimumPoint().getBlockZ(); y < s.getMaximumPoint().getBlockZ() + 1; ++y) {
                                         if (LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(minX, minX, y))) {
-                                            LuckyBlock.getByBlock(s.getWorld().getBlockAt(minX, minX, y)).remove();
+                                            LuckyBlock.getByBlock(s.getWorld().getBlockAt(minX, minX, y)).remove(false);
                                             ++total;
                                         }
                                     }
@@ -270,7 +270,7 @@ public class LBCRegion extends LBCommand {
                         luckyBlock.changed();
                         ++this.total;
                     } else if (drop != null) {
-                        luckyBlock.setDrop(drop, false, true);
+                        luckyBlock.setDrop(drop, true);
                         luckyBlock.changed();
                         ++this.total;
                     }

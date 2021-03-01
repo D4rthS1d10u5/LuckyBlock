@@ -1,10 +1,9 @@
 package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import com.mcgamer199.luckyblock.util.EffectUtils;
-import com.mcgamer199.newstr.FileStructure;
+import com.mcgamer199.luckyblock.util.TemporaryUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -67,7 +66,7 @@ public class LBSpawnBoss implements Listener {
                         }
 
                         if (a > 4) {
-                            luckyBlock.remove(true);
+                            luckyBlock.remove(false);
 
                             for (Item i : item) {
                                 i.remove();
@@ -89,7 +88,7 @@ public class LBSpawnBoss implements Listener {
             @Override
             public void run() {
                 if (this.i > 0) {
-                    MyTasks.playEffects(Particle.CLOUD, loc, 110, new double[]{1.0D, 0.0D, 1.0D}, 0.5F);
+                    EffectUtils.playEffects(Particle.CLOUD, loc, 110, new double[]{1.0D, 0.0D, 1.0D}, 0.5F);
                     EffectUtils.playFixedSound(loc, EffectUtils.getSound("ritual_witch_particles"), 1.0F, 0.0F, 59);
                     --this.i;
                 } else {
@@ -100,7 +99,7 @@ public class LBSpawnBoss implements Listener {
                         }
                     }
 
-                    FileStructure.generateWitchDungeon(loc);
+                    TemporaryUtils.generateWitchDungeon(loc);
                     EffectUtils.playFixedSound(loc, EffectUtils.getSound("ritual_witch_spawn"), 1.0F, 0.0F, 26);
                     Scheduler.cancelTask(this);
                 }

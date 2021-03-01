@@ -41,7 +41,7 @@ public class LBCSetDrop extends LBCommand {
                         }
 
                         if (!x) {
-                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(args[1].toUpperCase()), true, true);
+                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(args[1].toUpperCase()), true);
                         } else {
                             CustomDrop d = CustomDropManager.getByName(args[1]);
                             if (!d.isEnabledByCommands()) {
@@ -51,7 +51,6 @@ public class LBCSetDrop extends LBCommand {
 
                             luckyBlock.customDrop = d;
                             luckyBlock.refreshCustomDrop();
-                            luckyBlock.save();
                         }
 
                         if (args.length == 3) {

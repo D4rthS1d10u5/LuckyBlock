@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;

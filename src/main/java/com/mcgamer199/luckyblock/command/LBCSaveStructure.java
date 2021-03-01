@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.tags.StructureSaver;
 import org.bukkit.Location;
 import org.bukkit.command.Command;

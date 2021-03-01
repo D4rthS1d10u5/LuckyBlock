@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.PluginConstants;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.LuckyBlockWorld;
 import com.mcgamer199.luckyblock.structures.Structure;
@@ -123,7 +123,7 @@ public class CustomEntityGuardian extends CustomEntity {
 
     @Override
     public void onDamage(EntityDamageEvent event) {
-        EntityEquipment equipment = ((Wither) linkedEntity).getEquipment();
+        EntityEquipment equipment = ((WitherSkeleton) linkedEntity).getEquipment();
         if(RandomUtils.nextPercent(90) && LBType.fromMaterial(equipment.getHelmet().getType()) != null) {
             linkedEntity.getWorld().dropItem(linkedEntity.getLocation(), luckyBlockType.toItemStack(RandomUtils.nextInt(-50, 50)));
         }
@@ -138,10 +138,12 @@ public class CustomEntityGuardian extends CustomEntity {
         }
     }
 
+    @Override
     public void onSave(ConfigurationSection section) {
         section.set("Type", this.luckyBlockType.getId());
     }
 
+    @Override
     public void onLoad(ConfigurationSection section) {
         if (section.getInt("Types") > 0) {
             this.luckyBlockType = LBType.fromId(section.getInt("Type"));
@@ -169,14 +171,14 @@ public class CustomEntityGuardian extends CustomEntity {
             }
 
             if (total > 0) {
-                Wither wither = (Wither) linkedEntity;
+                WitherSkeleton wither = (WitherSkeleton) linkedEntity;
                 wither.setHealth((wither.getHealth() + total) < wither.getMaxHealth() ? wither.getHealth() + total : wither.getMaxHealth());
                 linkedEntity.getWorld().spawnParticle(Particle.HEART, linkedEntity.getLocation(), total / 2, 0.4D, 0.4D, 0.4D, 0.0D);
             }
         }).predicate(() -> PluginConstants.CUSTOM_ENTITY_VALID.test(this)).timer(10, 60);
 
         Scheduler.create(() -> { //army spawner
-            LivingEntity target = ((Wither) linkedEntity).getTarget();
+            LivingEntity target = ((WitherSkeleton) linkedEntity).getTarget();
             if(target != null) {
                 int livingEntityCount = 0;
                 for (Entity e : linkedEntity.getNearbyEntities(10.0D, 10.0D, 10.0D)) {

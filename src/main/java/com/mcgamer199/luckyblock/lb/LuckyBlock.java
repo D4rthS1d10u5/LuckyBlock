@@ -6,7 +6,7 @@
 package com.mcgamer199.luckyblock.lb;
 
 import com.google.common.collect.Iterables;
-import com.mcgamer199.luckyblock.LBOption;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
 import com.mcgamer199.luckyblock.api.CountingMap;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.Properties;
@@ -16,10 +16,10 @@ import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.enums.PlacingSource;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityLuckyBlockNameTag;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityLuckyBlockNameTag.DisplayType;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.tags.BlockTags;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.JsonUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
@@ -47,9 +47,13 @@ public class LuckyBlock {
     public static final List<String> hiddenOptions = Arrays.asList("title", "player");
     public static Map<LBType, FileConfiguration> cache = new HashMap<>();
 
-    private static final CountingMap<Location, LuckyBlock> storage = new CountingMap<>(new HashMap<>(), 500, (entries, forced) -> {
-        if(persistent && !entries.isEmpty()) {
-            LuckyBlockAPI.lbs.set("LuckyBlocks", entries.stream().map(Map.Entry::getValue).map(luckyBlock -> JsonUtils.toJsonString(luckyBlock, LuckyBlock.class)).collect(Collectors.toList()));
+    private static final CountingMap<Location, LuckyBlock> storage = new CountingMap<>(new HashMap<>(), 30, (entries, forced) -> {
+        System.out.println(String.format("Trying to save %d luckyblocks. Persistance enabled %s, forced %s", entries.size(), persistent, forced));
+        if(persistent) {
+            LuckyBlockAPI.lbs.set("LuckyBlocks", entries.stream().map(Map.Entry::getValue).map(luckyBlock -> {
+                System.out.println(String.format("valid = %s", luckyBlock.isValid()));
+                return JsonUtils.toJsonString(luckyBlock, LuckyBlock.class);
+            }).collect(Collectors.toList()));
             LuckyBlockAPI.saveLBFile();
         }
     });
@@ -90,13 +94,17 @@ public class LuckyBlock {
         this.facing = BlockFace.EAST;
     }
 
-    public LuckyBlock(LBType type, Block block, int luck, Object placedBy, boolean saveAll, boolean random) {
+    public LuckyBlock(LBType type, Block block, int luck, Object placedBy, boolean random) {
         this.facing = BlockFace.EAST;
         if (getByBlock(block) == null) {
             if (canSaveMore()) {
-                init(type, block, luck, placedBy, saveAll, random);
+                init(type, block, luck, placedBy, random);
             }
         }
+    }
+
+    public static void setCountingChanges(boolean countingChanges) {
+        storage.setCountChanges(countingChanges);
     }
 
     public static void clearStorage(boolean removeBlock) {
@@ -104,27 +112,34 @@ public class LuckyBlock {
             storage.values().forEach(luckyBlock -> luckyBlock.getBlock().setType(Material.AIR));
         }
 
-        storage.setCountChanges(false);
+        setCountingChanges(false);
         storage.clear();
         LuckyBlockAPI.lbs.set("LuckyBlocks", null);
         LuckyBlockAPI.saveLBFile();
-        storage.setCountChanges(true);
+        setCountingChanges(true);
     }
 
     public static int startTimer() {
-        return Scheduler.timer(() -> storage.values().stream()
-                .filter(LuckyBlock::isActive)
-                .filter(luckyBlock -> luckyBlock.getBlock().getRelative(BlockFace.UP).getType().equals(Material.FIRE))
-                .forEach(luckyBlock -> {
-                    LBType type = luckyBlock.getType();
-                    if(type.hasProperty(BlockProperty.EXPLODE_ON_FIRE)) {
-                        luckyBlock.explode();
-                    } else if(type.hasProperty(BlockProperty.REMOVE_ON_FIRE)) {
-                        luckyBlock.remove();
-                    } else if(type.hasProperty(BlockProperty.FIRE_RESISTANCE)) {
-                        luckyBlock.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);
-                    }
-                }), 5, 5).getTaskId();
+        return Scheduler.timer(() -> storage.values().removeIf(luckyBlock -> {
+            if(luckyBlock.isActive() && luckyBlock.getBlock().getRelative(BlockFace.UP).getType().equals(Material.FIRE)) {
+                LBType type = luckyBlock.getType();
+                if(type.hasProperty(BlockProperty.EXPLODE_ON_FIRE)) {
+                    Location location = luckyBlock.block.getLocation().add(0.4D, 0.6D, 0.4D);
+                    Scheduler.create(() -> luckyBlock.block.getWorld().spawnParticle(Particle.SPELL, location, 50, 0.3D, 0.7D, 0.3D, 0.0D))
+                            .count(10)
+                            .onCancel(() -> luckyBlock.block.getWorld().createExplosion(luckyBlock.block.getLocation(), 3.0F))
+                            .timer(3, 3);
+                    return true;
+                } else if(type.hasProperty(BlockProperty.REMOVE_ON_FIRE)) {
+                    luckyBlock.remove(true);
+                    return true;
+                } else if(type.hasProperty(BlockProperty.FIRE_RESISTANCE)) {
+                    luckyBlock.getBlock().getRelative(BlockFace.UP).setType(Material.AIR);
+                    return false;
+                }
+            }
+            return false;
+        }), 5, 5).getTaskId();
     }
 
     public static Map<Location, LuckyBlock> getStorage() {
@@ -153,7 +168,7 @@ public class LuckyBlock {
                 luck = LBType.getLuck(item);
             }
 
-            return PlaceLuckyBlock.place(lbType, loc.getBlock(), placedBy, PlaceLuckyBlock.dropToString(drop), luck, item, true, null, options);
+            return PlaceLuckyBlock.place(lbType, loc.getBlock(), placedBy, PlaceLuckyBlock.dropToString(drop), luck, item, drop != null, null, options);
         }
     }
 
@@ -184,7 +199,7 @@ public class LuckyBlock {
     }
 
     @SuppressWarnings("rawtypes")
-    public void init(LBType type, Block block, int luck, Object placedBy, boolean saveAll, boolean random) {
+    public void init(LBType type, Block block, int luck, Object placedBy, boolean random) {
         if(storage.containsKey(block.getLocation())) {
             return;
         }
@@ -225,7 +240,6 @@ public class LuckyBlock {
             }
         }
 
-        this.save();
         if (type.isNameVisible() && random) {
             CustomEntityLuckyBlockNameTag typeDisplay = new CustomEntityLuckyBlockNameTag();
             typeDisplay.spawn(this, type.hasNameOffset() ? type.getOffset(0) : new double[3], DisplayType.LUCKY_BLOCK_TYPE);
@@ -237,6 +251,8 @@ public class LuckyBlock {
                 this.dropDisplay = dropDisplay;
             }
         }
+
+        storage.put(getBlock().getLocation(), this);
     }
 
     public boolean isActive() {
@@ -388,10 +404,6 @@ public class LuckyBlock {
         }
     }
 
-    private Object[] getValue(String loc) {
-        return this.file.getStringList(loc) != null && this.file.getStringList(loc).size() > 0 ? this.file.getStringList(loc).toArray() : new Object[]{this.file.get(loc)};
-    }
-
     public void setLuck(int luck) {
         this.luck = luck;
         if (this.luck > this.type.getMaxLuck()) {
@@ -405,12 +417,12 @@ public class LuckyBlock {
 
     public void changed() {
         if (this.isValid()) {
-            MyTasks.playEffects(Particle.NOTE, this.block.getLocation().add(0.5D, 1.0D, 0.5D), 5, new double[]{0.0D, 0.5D, 0.0D}, 0.0F);
+            EffectUtils.playEffects(Particle.NOTE, this.block.getLocation().add(0.5D, 1.0D, 0.5D), 5, new double[]{0.0D, 0.5D, 0.0D}, 0.0F);
         }
 
     }
 
-    public void setDrop(LuckyBlockDrop drop, boolean s, boolean reload) {
+    public void setDrop(LuckyBlockDrop drop, boolean reload) {
         if (this.luckyBlockDrop != null && this.luckyBlockDrop != drop && hasDropOption("Title")) {
             this.removeDropOption("Title");
         }
@@ -461,25 +473,18 @@ public class LuckyBlock {
         dropOptions.remove(dropOption);
     }
 
-    public void save() {
-        storage.put(getBlock().getLocation(), this);
-    }
+    public void remove(boolean alreadyNotStored) {
+        this.block.setType(Material.AIR);
 
-    public void remove(boolean removeBlock) {
-        if (removeBlock) {
-            this.block.setType(Material.AIR);
-        }
-
-        this.remove();
-    }
-
-    public void remove() {
         if (lastDeleted.size() > 100) {
             lastDeleted.remove(0);
         }
 
         lastDeleted.add(this);
-        storage.values().remove(this);
+
+        if(!alreadyNotStored) { //костыль, чтобы в таймере не бросало ConcurrentModificationException, LuckyBlock#startTimer()
+            storage.remove(getLocation());
+        }
     }
 
     public boolean isValid() {
@@ -493,15 +498,6 @@ public class LuckyBlock {
         }
 
         return false;
-    }
-
-    public void explode() {
-        this.remove();
-        final Location location = this.block.getLocation().add(0.4D, 0.6D, 0.4D);
-        Scheduler.create(() -> block.getWorld().spawnParticle(Particle.SPELL, location, 50, 0.3D, 0.7D, 0.3D, 0.0D))
-                .count(10)
-                .onCancel(() -> block.getWorld().createExplosion(block.getLocation(), 3.0F))
-                .timer(3, 3);
     }
 
     public void changeBlock(Block block) {

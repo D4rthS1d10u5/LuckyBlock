@@ -5,8 +5,8 @@ import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityFloatingText;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityHealthTag;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityHealthTag.HealthDisplayMode;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
@@ -22,6 +22,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -45,6 +46,7 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
     private ElderGuardian elderGuardian;
     private int power = 1;
     private final BossBar bossBar = Bukkit.createBossBar("§6§lGuardian of the castle", BarColor.BLUE, BarStyle.SEGMENTED_6);
+    private CustomEntityHealthTag healthTag;
 
     public CustomEntityUnderwaterBoss() {
         registerDropItem(LBItem.KEY_4.getItem(), 100);
@@ -84,9 +86,10 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
         this.elderGuardian = elder;
         CustomEntityHealthTag healthTag = new CustomEntityHealthTag();
         healthTag.attachEntity(elder, new double[]{0.0D, 2.5D, 0.0D});
-        healthTag.setMode(CustomEntityHealthTag.HealthDisplayMode.CUSTOM_HEARTS);
+        healthTag.setMode(HealthDisplayMode.CUSTOM_HEARTS);
         healthTag.setHeartsAmount(5);
         healthTag.spawn(elder.getLocation());
+        this.healthTag = healthTag;
         startTimers();
         return elder;
     }
@@ -178,6 +181,11 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
     }
 
     @Override
+    public void onDeath(EntityDeathEvent event) {
+        CustomEntityManager.removeCustomEntity(healthTag);
+    }
+
+    @Override
     public void onLoad(ConfigurationSection c) {
         this.elderGuardian = (ElderGuardian) this.linkedEntity;
         this.power = c.getInt("Power");
@@ -216,7 +224,7 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
         Scheduler.create(() -> {
             for (Squid squid : elderGuardian.getWorld().getNearbyEntitiesByType(Squid.class, elderGuardian.getLocation(), 7, 7, 7)) {
                 squid.damage(60);
-                MyTasks.playEffects(Particle.FLAME, squid.getLocation(), 20, new double[]{0.5D, 0.5D, 0.5D}, 0.1F);
+                EffectUtils.playEffects(Particle.FLAME, squid.getLocation(), 20, new double[]{0.5D, 0.5D, 0.5D}, 0.1F);
                 if (power < 20 && RandomUtils.nextPercent(58)) {
                     power++;
                 }
@@ -296,7 +304,7 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
 
     private void shootBeam(LivingEntity target, int maxDistance, double power) {
         if (this.elderGuardian.getLocation().getBlock().getType() == Material.WATER || this.elderGuardian.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
-            MyTasks.playEffects(Particle.WATER_BUBBLE, this.elderGuardian.getLocation().add(0.0D, 1.0D, 0.0D), 75, new double[]{1.0D, 1.5D, 1.0D}, 1.0F);
+            EffectUtils.playEffects(Particle.WATER_BUBBLE, this.elderGuardian.getLocation().add(0.0D, 1.0D, 0.0D), 75, new double[]{1.0D, 1.5D, 1.0D}, 1.0F);
         }
 
         EffectUtils.shootBeam(this, this.elderGuardian, target, maxDistance, power, new EffectUtils.ParticleHelper(Particle.CRIT, 1, new double[]{0.0D, 0.0D, 0.0D}, 0.0F));

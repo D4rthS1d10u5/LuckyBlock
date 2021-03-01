@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
 import com.mcgamer199.luckyblock.listeners.LBGui;

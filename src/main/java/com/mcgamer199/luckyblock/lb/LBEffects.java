@@ -55,7 +55,7 @@ public class LBEffects {
                     if (LuckyBlock.getStorage().containsValue(luckyBlock)) {
                         Scheduler.later(() -> {
                             if (!luckyBlock.isValid() || block.getType() != luckyBlock.getType().type) {
-                                luckyBlock.remove();
+                                luckyBlock.remove(false);
                                 Scheduler.cancelTask(this);
                             }
                         }, 1);

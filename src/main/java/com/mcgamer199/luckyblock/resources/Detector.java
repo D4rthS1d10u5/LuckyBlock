@@ -1,9 +1,8 @@
 package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.IRange;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.ChatColor;
@@ -12,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class Detector {
     private final int id;
     private String name;
     private final String[] blocks = new String[64];
-    private IRange range;
+    private Vector range;
     private Location loc;
     private final UUID uuid;
     private boolean running;
@@ -29,7 +29,7 @@ public class Detector {
     public Detector(int id) {
         this.id = id;
         this.uuid = UUID.randomUUID();
-        this.range = new IRange(7, 7, 7);
+        this.range = new Vector(7, 7, 7);
     }
 
     public int getId() {
@@ -54,11 +54,11 @@ public class Detector {
         this.range.setZ(this.range.getZ() + 1);
     }
 
-    public IRange getRange() {
+    public Vector getRange() {
         return this.range;
     }
 
-    public void setRange(IRange range) {
+    public void setRange(Vector range) {
         this.range = range;
     }
 
@@ -161,13 +161,13 @@ public class Detector {
         } else {
             this.running = true;
             Scheduler.timer(new BukkitRunnable() {
-                private final int x = Detector.this.range.getX() * -1;
-                private final int y = Detector.this.range.getY() * -1;
-                private final int z = Detector.this.range.getZ() * -1;
+                private final int x = (int) Detector.this.range.getX() * -1;
+                private final int y = (int) Detector.this.range.getY() * -1;
+                private final int z = (int) Detector.this.range.getZ() * -1;
 
                 @Override
                 public void run() {
-                    if (this.x == Detector.this.range.getX() && this.y == Detector.this.range.getY() && this.z == Detector.this.range.getZ()) {
+                    if (this.x == (int) Detector.this.range.getX() && this.y == (int) Detector.this.range.getY() && this.z == (int) Detector.this.range.getZ()) {
                         Scheduler.cancelTask(this);
                     } else {
                         Detector.this.checkBlock(0, 0, 0);
@@ -183,14 +183,14 @@ public class Detector {
             searcher.sendMessage(ChatColor.GREEN + "Already running!");
         } else {
             Scheduler.timer(new BukkitRunnable() {
-                int x = Detector.this.range.getX() * -1;
-                int y = Detector.this.range.getY() * -1;
-                int z = Detector.this.range.getZ() * -1;
-                final int x1 = Detector.this.range.getX() * -1;
-                final int z1 = Detector.this.range.getZ() * -1;
-                final int x2 = Detector.this.range.getX();
-                final int y2 = Detector.this.range.getY();
-                final int z2 = Detector.this.range.getZ();
+                int x = (int) Detector.this.range.getX() * -1;
+                int y = (int) Detector.this.range.getY() * -1;
+                int z = (int) Detector.this.range.getZ() * -1;
+                final int x1 = (int) Detector.this.range.getX() * -1;
+                final int z1 = (int) Detector.this.range.getZ() * -1;
+                final int x2 = (int) Detector.this.range.getX();
+                final int y2 = (int) Detector.this.range.getY();
+                final int z2 = (int) Detector.this.range.getZ();
                 int total = 0;
                 boolean finish = false;
 

@@ -1,10 +1,12 @@
 package com.mcgamer199.luckyblock.util;
 
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
 
+@UtilityClass
 public class ArrayUtils {
 
     @SafeVarargs

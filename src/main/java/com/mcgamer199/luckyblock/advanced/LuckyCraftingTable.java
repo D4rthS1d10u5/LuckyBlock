@@ -2,12 +2,11 @@ package com.mcgamer199.luckyblock.advanced;
 
 import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTNameTag;
-import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.IObjects;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.CraftLB;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -587,7 +586,7 @@ public class LuckyCraftingTable extends ColorsClass {
     private void func_loop() {
         Scheduler.create(() -> {
             if (LuckyCraftingTable.this.inv.getViewers().size() > 0) {
-                MyTasks.playEffects(Particle.ENCHANTMENT_TABLE, LuckyCraftingTable.this.block.getLocation().add(0.5D, 0.5D, 0.5D), 45, new double[]{0.3D, 0.3D, 0.3D}, 1.0F);
+                EffectUtils.playEffects(Particle.ENCHANTMENT_TABLE, this.block.getLocation().add(0.5D, 0.5D, 0.5D), 45, new double[]{0.3D, 0.3D, 0.3D}, 1.0F);
             }
         }).predicate(this::isValid).timer(20, 20);
     }

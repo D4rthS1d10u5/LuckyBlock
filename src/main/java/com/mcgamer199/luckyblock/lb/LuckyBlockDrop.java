@@ -7,8 +7,8 @@ import com.mcgamer199.luckyblock.api.chatcomponent.Click;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
 import com.mcgamer199.luckyblock.customentity.*;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import com.mcgamer199.luckyblock.resources.Schematic;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
@@ -1299,7 +1299,7 @@ public enum LuckyBlockDrop {
                     if (!fallingBlock.isValid()) {
                         org.bukkit.block.Block block = fallingBlock.getLocation().getBlock();
                         if (block.getType().equals(type.getType())) {
-                            LuckyBlock luckyBlock = new LuckyBlock(LBType.fromMaterialAndData(type.getType(), (byte) type.getData()), block, 0, null, true, true);
+                            LuckyBlock luckyBlock = new LuckyBlock(LBType.fromMaterialAndData(type.getType(), (byte) type.getData()), block, 0, null, true);
                             luckyBlock.playEffects();
                         }
 

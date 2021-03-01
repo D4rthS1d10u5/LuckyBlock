@@ -1,73 +1,40 @@
 package com.mcgamer199.luckyblock.api.customdrop;
 
-import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @UtilityClass
+@Log
 public class CustomDropManager {
 
-    private static final List<CustomDrop> customdrops = new ArrayList();
+    private static final Map<String, CustomDrop> customDrops = new HashMap<>();
 
-    public static void registerDrop(CustomDrop customdrop) {
-        String error = null;
-        if (customdrop.getName() == null) {
-            error = "n";
+    public static void registerDrop(@NotNull CustomDrop customDrop) {
+        String customDropName = customDrop.getName();
+        if(customDropName == null) {
+            throw new NullPointerException("Drop name cannot be null");
         }
 
-        if (error == null) {
-            for (int x = 0; x < customdrops.size(); ++x) {
-                if (customdrops.get(x).getName().equalsIgnoreCase(customdrop.getName())) {
-                    error = "d";
-                    break;
-                }
-            }
+        if(customDrops.containsKey(customDropName)) {
+            log.warning("Duplicated name of custom drop. Registration attempt was cancelled.");
+            return;
         }
 
-        if (error == null) {
-            LuckyBlockDrop[] var5;
-            int var4 = (var5 = LuckyBlockDrop.values()).length;
-
-            for (int var3 = 0; var3 < var4; ++var3) {
-                LuckyBlockDrop drop = var5[var3];
-                if (customdrop.getName().equalsIgnoreCase(drop.name())) {
-                    error = "d";
-                    break;
-                }
-            }
-        }
-
-        if (error != null) {
-            if (error.equalsIgnoreCase("d")) {
-                throw new Error("Could not register CustomDrop: " + customdrop.getName() + " (Name duplication exception)");
-            }
-
-            if (error.equalsIgnoreCase("n")) {
-                throw new NullPointerException("Drop name cannot be null!");
-            }
-        } else {
-            customdrops.add(customdrop);
-        }
+        customDrops.put(customDropName.toUpperCase(), customDrop);
     }
 
     public static List<CustomDrop> getCustomDrops() {
-        return Collections.unmodifiableList(customdrops);
+        return Collections.unmodifiableList(new ArrayList<>(customDrops.values()));
     }
 
-    public static com.mcgamer199.luckyblock.api.customdrop.CustomDrop getByName(String name) {
-        for (int x = 0; x < customdrops.size(); ++x) {
-            if (customdrops.get(x).getName().equalsIgnoreCase(name)) {
-                return customdrops.get(x);
-            }
-        }
-
-        return null;
+    public static CustomDrop getByName(String name) {
+        return customDrops.get(name);
     }
 
     public static boolean isValid(String name) {
-        return getByName(name) != null;
+        return name != null && customDrops.containsKey(name.toUpperCase());
     }
 }

@@ -1,11 +1,10 @@
 package com.mcgamer199.luckyblock.api;
 
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.util.JsonUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
@@ -55,11 +54,9 @@ public class LuckyBlockAPI {
     public static void loadLuckyBlocks() {
         if (!loaded) {
             loaded = true;
-            LuckyBlockPlugin.instance.getLogger().info(MyTasks.val("log.lb.loading", false));
-            LuckyBlock.setPersistent(lbs.getBoolean("persistent", true));
-
+            LuckyBlockPlugin.instance.getLogger().info(ColorsClass.val("log.lb.loading", false));
+            LuckyBlock.setCountingChanges(false);
             int total = 0;
-
             List<String> luckyBlocks = lbs.getStringList("LuckyBlocks");
             for (String luckyBlock : luckyBlocks) {
                 try {
@@ -75,7 +72,8 @@ public class LuckyBlockAPI {
                 }
             }
 
-            log.info(MyTasks.val("log.lb.found", false).replace("%total%", String.valueOf(total)));
+            log.info(ColorsClass.val("log.lb.found", false).replace("%total%", String.valueOf(total)));
+            LuckyBlock.setCountingChanges(true);
             luckyBlockTimerId = LuckyBlock.startTimer();
         }
     }
@@ -108,10 +106,10 @@ public class LuckyBlockAPI {
         }
 
         if (block != null && type != null) {
-            LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, false, false);
+            LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, false);
 
             if (block.getType() == Material.AIR) {
-                luckyBlock.remove();
+                luckyBlock.remove(false);
                 return;
             }
 
@@ -120,7 +118,7 @@ public class LuckyBlockAPI {
                 if (partData.length == 2) {
                     if (partData[0].equalsIgnoreCase("Drop")) {
                         if (LuckyBlockDrop.isValid(partData[1])) {
-                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(partData[1]), false, false);
+                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(partData[1]), false);
                         }
                     } else if (partData[0].equalsIgnoreCase("Tick_a")) {
                         luckyBlock.tickDelay = Integer.parseInt(partData[1]);

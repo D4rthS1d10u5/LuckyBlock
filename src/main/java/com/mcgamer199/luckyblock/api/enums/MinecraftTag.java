@@ -1,4 +1,4 @@
-package com.mcgamer199.luckyblock;
+package com.mcgamer199.luckyblock.api.enums;
 
 import lombok.Getter;
 

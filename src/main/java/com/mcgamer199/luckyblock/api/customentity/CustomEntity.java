@@ -1,9 +1,10 @@
 package com.mcgamer199.luckyblock.api.customentity;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.google.common.collect.Iterators;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Biome;
@@ -18,12 +19,16 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("unused")
 @Getter
+@ToString(of = "linkedEntity")
 public abstract class CustomEntity {
 
+    private int customNameTaskId = -1, tickTaskId = -1;
     protected Entity linkedEntity;
+    @Setter
     protected UUID entityUuid;
     private final EnumMap<EntityType, Integer> targetPriorities = new EnumMap<>(EntityType.class);
     private final Map<ItemStack, Integer> dropItemChances = new HashMap<>();
@@ -40,14 +45,14 @@ public abstract class CustomEntity {
     public void spawn(Location location) {
         if(linkedEntity == null) {
             init(summonEntity(location));
-            startTickTimer();
-            startCustomNamesTimer();
+            startBasicEntityTimers();
         }
     }
 
     public final void init(@NotNull Entity entity) {
         this.linkedEntity = entity;
         this.entityUuid = linkedEntity.getUniqueId();
+        CustomEntityManager.addCustomEntity(entityUuid, this);
     }
 
     public final void registerTargetPriority(EntityType target, int priority) {
@@ -62,20 +67,26 @@ public abstract class CustomEntity {
         return getLinkedEntity() != null && getLinkedEntity().isValid();
     }
 
-    public final void startCustomNamesTimer() {
-        List<String> customNames = getCustomNames();
-        if(!customNames.isEmpty() && getCustomNamesTickDelay() > 0) {
-            Iterator<String> names = Iterators.cycle(customNames);
-            Scheduler.create(() -> linkedEntity.setCustomName(names.next()))
-                    .predicate(() -> isValid() && names.hasNext())
-                    .timerAsync(1, getCustomNamesTickDelay());
+    public final void startBasicEntityTimers() {
+        if(customNameTaskId == -1 && !getCustomNames().isEmpty() && getCustomNamesTickDelay() > 0) {
+            AtomicReference<Iterator<String>> names = new AtomicReference<>(getCustomNames().iterator());
+            customNameTaskId = Scheduler.timerAsync(() -> {
+                if(!names.get().hasNext()) {
+                    names.set(getCustomNames().iterator());
+                } else {
+                    linkedEntity.setCustomName(names.get().next());
+                }
+            }, 1, getCustomNamesTickDelay()).getTaskId();
+        }
+
+        if(tickTaskId == -1 && getTickTime() > 0) {
+            tickTaskId = Scheduler.timer(this::onTick, getTickTime(), getTickTime()).getTaskId();
         }
     }
 
-    public final void startTickTimer() {
-        if(getTickTime() > 0) {
-            Scheduler.create(this::onTick).predicate(this::isValid).timer(getTickTime(), getTickTime());
-        }
+    public final void stopTimers() {
+        Scheduler.cancelTask(tickTaskId);
+        Scheduler.cancelTask(customNameTaskId);
     }
 
     public boolean isAttackingNearbyEntities() {

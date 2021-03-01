@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.resources;
 
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityTrophyNameTag;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
@@ -38,6 +38,7 @@ public class Trophy {
 
     private Trophy(Block block, ItemStack itemToDrop) {
         this.block = block;
+        System.out.println("block.getType() = " + block.getType());
         if (itemToDrop != null) {
             itemToDrop.setAmount(1);
         }
@@ -106,7 +107,7 @@ public class Trophy {
     }
 
     public boolean isValid() {
-        return getByBlock(this.block) != null && block.getType().equals(Material.SKULL);
+        return trophies.containsKey(block.getLocation());
     }
 
     private static void purgeInvalidBlocks() {

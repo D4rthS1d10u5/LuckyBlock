@@ -2,9 +2,9 @@ package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
+import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityHealthTag;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityHealthTag.HealthDisplayMode;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
@@ -41,6 +41,7 @@ public class CustomEntityBossWitch extends CustomEntity implements CustomEntityB
     private Witch witch;
     private final BossBar bossBar = Bukkit.createBossBar(ChatColor.LIGHT_PURPLE + "Witch", BarColor.BLUE, BarStyle.SOLID);
     private int fireDamage = 7;
+    private CustomEntityHealthTag healthTag;
 
     public CustomEntityBossWitch() {
         ItemStack potion = ItemStackUtils.createItem(Material.POTION, 1, 0, "" + ChatColor.RED + ChatColor.BOLD + "Super Potion");
@@ -87,6 +88,7 @@ public class CustomEntityBossWitch extends CustomEntity implements CustomEntityB
         healthTag.setMode(HealthDisplayMode.THREE_HEARTS);
         healthTag.attachEntity(witch, new double[]{0.0D, 2.5D, 0.0D});
         healthTag.spawn(witch.getLocation());
+        this.healthTag = healthTag;
         startTimers();
         return witch;
     }
@@ -220,7 +222,7 @@ public class CustomEntityBossWitch extends CustomEntity implements CustomEntityB
                 event.setDamage(event.getDamage() / 10.0D);
             } else if ((event.getCause() == DamageCause.ENTITY_EXPLOSION || event.getCause() == DamageCause.BLOCK_EXPLOSION) && this.fireDamage < 67) {
                 this.fireDamage += 2;
-                MyTasks.playEffects(Particle.FLAME, this.witch.getLocation(), 34, new double[]{0.5D, 0.5D, 0.5D}, 0.0F);
+                EffectUtils.playEffects(Particle.FLAME, this.witch.getLocation(), 34, new double[]{0.5D, 0.5D, 0.5D}, 0.0F);
             }
 
             if (!event.isCancelled()) {
@@ -239,6 +241,7 @@ public class CustomEntityBossWitch extends CustomEntity implements CustomEntityB
 
     @Override
     public void onDeath(EntityDeathEvent event) {
+        CustomEntityManager.removeCustomEntity(healthTag);
         EffectUtils.playFixedSound(witch.getLocation(), EffectUtils.getSound("boss_witch_death"), 1.0F, 0.0F, 20);
     }
 

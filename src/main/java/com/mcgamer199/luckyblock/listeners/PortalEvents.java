@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;

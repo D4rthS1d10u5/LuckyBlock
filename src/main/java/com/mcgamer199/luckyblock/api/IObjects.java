@@ -1,5 +1,6 @@
-package com.mcgamer199.luckyblock.engine;
+package com.mcgamer199.luckyblock.api;
 
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.command.LBCRecDeleted;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
@@ -406,7 +407,7 @@ public class IObjects {
         return missing;
     }
 
-    static void loadLuckyBlockFiles() {
+    public static void loadLuckyBlockFiles() {
         a("Drops/default/chests/chest1.yml");
         a("Drops/default/chests/chest2.yml");
         a("Drops/default/chests/chest3.yml");
@@ -459,6 +460,8 @@ public class IObjects {
     }
 
     private static void a(String a) {
-        LuckyBlockPlugin.instance.a(a);
+        if (!(new File(LuckyBlockPlugin.d() + a)).exists()) {
+            LuckyBlockPlugin.instance.saveResource(a, false);
+        }
     }
 }

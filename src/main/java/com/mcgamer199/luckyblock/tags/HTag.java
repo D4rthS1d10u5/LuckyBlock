@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.api.IObjects;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;

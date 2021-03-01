@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -74,7 +74,7 @@ public class LBShootEvent implements Listener {
         Block block = loc.getBlock();
         block.setType(type.getType());
         block.setData((byte) type.getData());
-        LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, entity, true, true);
+        LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, entity, true);
         luckyBlock.playEffects();
     }
 

@@ -4,7 +4,6 @@ import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
 import com.mcgamer199.luckyblock.resources.Trophy;
 import com.mcgamer199.luckyblock.util.LocationUtils;
-import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
@@ -30,7 +29,7 @@ public class CustomEntityTrophyNameTag extends CustomEntity {
         armorStand.setCustomNameVisible(true);
         armorStand.setMarker(true);
         armorStand.setGravity(false);
-        armorStand.setVisible(false);
+        armorStand.setVisible(true);
         return armorStand;
     }
 
@@ -53,13 +52,16 @@ public class CustomEntityTrophyNameTag extends CustomEntity {
     @Override
     public void onTick() {
         if(trophy == null || !trophy.isValid()) {
+            if(trophy != null) {
+                System.out.println("trophy.isValid() = " + trophy.isValid());
+            }
             CustomEntityManager.removeCustomEntity(this);
         }
     }
 
     @Override
     public int getTickTime() {
-        return -1;
+        return 1;
     }
 
     @Override
@@ -69,14 +71,15 @@ public class CustomEntityTrophyNameTag extends CustomEntity {
 
     @Override
     public void onLoad(final ConfigurationSection c) {
-        Scheduler.later(() -> {
-            String b = c.getString("Trophy_Block");
-            if(b != null) {
-                Trophy trophy = Trophy.getByBlock(LocationUtils.blockFromString(b));
-                if(trophy != null) {
-                    this.trophy = trophy;
-                }
+        String b = c.getString("Trophy_Block");
+        if(b != null) {
+            Trophy trophy = Trophy.getByBlock(LocationUtils.blockFromString(b));
+            System.out.println("trophy = " + trophy);
+            if(trophy != null) {
+                this.trophy = trophy;
+            } else {
+                CustomEntityManager.removeCustomEntity(this);
             }
-        }, 15);
+        }
     }
 }

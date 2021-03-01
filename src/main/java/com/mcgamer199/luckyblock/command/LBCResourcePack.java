@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.command;
 
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.api.IObjects;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

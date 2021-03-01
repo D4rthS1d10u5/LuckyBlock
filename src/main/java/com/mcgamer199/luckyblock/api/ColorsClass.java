@@ -1,11 +1,10 @@
-package com.mcgamer199.luckyblock.logic;
+package com.mcgamer199.luckyblock.api;
 
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Click;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.command.engine.ILBCmd;
-import com.mcgamer199.luckyblock.engine.IObjects;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.IDebug;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;

@@ -1,11 +1,11 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBGenerateEvent;
 import com.mcgamer199.luckyblock.events.LBPreGenerateEvent;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LBType;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.structures;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.MyObject;
 import com.mcgamer199.luckyblock.util.RandomUtils;

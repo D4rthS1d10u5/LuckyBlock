@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;

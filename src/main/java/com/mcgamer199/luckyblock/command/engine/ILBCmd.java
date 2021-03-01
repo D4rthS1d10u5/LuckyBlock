@@ -3,8 +3,8 @@ package com.mcgamer199.luckyblock.command.engine;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Click;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

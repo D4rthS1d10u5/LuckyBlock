@@ -5,12 +5,11 @@
 
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBBreakEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.structures.LuckyWell;
 import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
@@ -50,13 +49,13 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 if (item != null && item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && player.getGameMode() != GameMode.CREATIVE) {
                     if (luckyBlock.getType().getPermission("SilkTouch") == null) {
                         TemporaryUtils.spawnLB(luckyBlock, bloc);
-                        luckyBlock.remove(true);
+                        luckyBlock.remove(false);
                         return;
                     }
 
                     if (player.hasPermission(luckyBlock.getType().getPermission("SilkTouch"))) {
                         TemporaryUtils.spawnLB(luckyBlock, bloc);
-                        luckyBlock.remove(true);
+                        luckyBlock.remove(false);
                         return;
                     }
                 }
@@ -85,7 +84,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 EffectUtils.playFixedSound(bloc, sound, vol, pit, 30);
             }
 
-            luckyBlock.remove();
+            luckyBlock.remove(false);
             PortalEvents.removePortal(block.getRelative(BlockFace.UP));
             PortalEvents.removePortal(block.getRelative(BlockFace.EAST));
             PortalEvents.removePortal(block.getRelative(BlockFace.DOWN));
@@ -111,7 +110,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
             double lx = Double.parseDouble(part[6]);
             double ly = Double.parseDouble(part[7]);
             double lz = Double.parseDouble(part[8]);
-            loc.getWorld().spawnParticle(MyTasks.getParticle(part[0]), loc.add(lx, ly, lz), amount, rx, ry, rz, speed);
+            loc.getWorld().spawnParticle(EffectUtils.getParticle(part[0]), loc.add(lx, ly, lz), amount, rx, ry, rz, speed);
         } catch (Exception var14) {
             throw new Error("An unexpected error occured while trying to spawn particles!");
         }
@@ -166,7 +165,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 if (t.defaultBlock) {
                     if (type == t.getType()) {
                         if (!LuckyBlock.isLuckyBlock(block)) {
-                            luckyBlock = new LuckyBlock(LBType.getTypes().get(0), block, 0, player, false, true);
+                            luckyBlock = new LuckyBlock(LBType.getTypes().get(0), block, 0, player, true);
                         } else {
                             luckyBlock = LuckyBlock.getByBlock(block);
                         }
@@ -183,7 +182,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 if (findType != null) {
                     luckyBlock = new LuckyBlock();
                     int luck = ((Number) LuckyBlockPlugin.instance.getConfig().get("default-luck", 0)).intValue();
-                    luckyBlock.init(findType, block, luck, event.getPlayer(), false, true);
+                    luckyBlock.init(findType, block, luck, event.getPlayer(), true);
                 }
             }
 

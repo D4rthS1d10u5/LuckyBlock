@@ -30,6 +30,7 @@ public class CustomEntityHealthTag extends CustomEntity {
     @Getter @Setter
     private HealthDisplayMode mode;
     private int heartsAmount = 1;
+    private UUID attachedEntityUuid;
 
     @Override
     public EntityType entityType() {
@@ -44,13 +45,10 @@ public class CustomEntityHealthTag extends CustomEntity {
         armorStand.setVisible(false);
         this.armorStand = armorStand;
 
-        Scheduler.create(() -> {
-            if(attachedEntity != null && !attachedEntity.isDead()) {
-                armorStand.teleport(attachedEntity.getLocation().add(offset[0], offset[1], offset[1]));
-            } else {
-                CustomEntityManager.removeCustomEntity(this);
-            }
-        }).predicate(() -> !attachedEntity.isDead()).timer(1, 1);
+        Scheduler.create(() -> armorStand.teleport(attachedEntity.getLocation().add(offset[0], offset[1], offset[2])))
+                .predicate(() -> attachedEntity != null && !attachedEntity.isDead())
+                .onCancel(() -> CustomEntityManager.removeCustomEntity(this))
+                .timer(1, 1);
         Scheduler.later(() -> armorStand.setCustomNameVisible(true), 10);
         return armorStand;
     }
@@ -61,6 +59,7 @@ public class CustomEntityHealthTag extends CustomEntity {
 
     public void attachEntity(@NotNull LivingEntity attachedEntity, @NotNull double[] offset) {
         this.attachedEntity = attachedEntity;
+        this.attachedEntityUuid = attachedEntity.getUniqueId();
         this.offset = offset;
     }
 
@@ -81,24 +80,26 @@ public class CustomEntityHealthTag extends CustomEntity {
 
     @Override
     public void onTick() {
-        if(hideNameWhenInvisible && isInvisible()) {
-            armorStand.setCustomNameVisible(false);
-        } else {
-            armorStand.setCustomNameVisible(true);
-            float healthPercent = (float) (attachedEntity.getHealth() / attachedEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            String displayHealth;
-            if(mode.equals(HealthDisplayMode.PERCENT)) {
-                displayHealth = String.format("§a%.2f%%", healthPercent);
+        if(attachedEntity != null) {
+            if(hideNameWhenInvisible && isInvisible()) {
+                armorStand.setCustomNameVisible(false);
             } else {
-                int displayScale = mode.getDisplayScale();
-                if(mode.equals(HealthDisplayMode.CUSTOM_HEARTS)) {
-                    displayScale = 100 / heartsAmount;
+                armorStand.setCustomNameVisible(true);
+                float healthPercent = (float) (attachedEntity.getHealth() / attachedEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+                String displayHealth;
+                if(mode.equals(HealthDisplayMode.PERCENT)) {
+                    displayHealth = String.format("§a%.2f%%", healthPercent);
+                } else {
+                    int displayScale = mode.getDisplayScale();
+                    if(mode.equals(HealthDisplayMode.CUSTOM_HEARTS)) {
+                        displayScale = 100 / heartsAmount;
+                    }
+                    displayHealth = getPercentLine(healthPercent, displayScale);
                 }
-                displayHealth = getPercentLine(healthPercent, displayScale);
-            }
 
-            if(StringUtils.isNotEmpty(displayHealth)) {
-                armorStand.setCustomName(displayHealth);
+                if(StringUtils.isNotEmpty(displayHealth)) {
+                    armorStand.setCustomName(displayHealth);
+                }
             }
         }
     }
@@ -110,8 +111,12 @@ public class CustomEntityHealthTag extends CustomEntity {
 
     @Override
     public void onChunkLoad() {
+        if(attachedEntityUuid == null) {
+            CustomEntityManager.removeCustomEntity(this);
+        }
+
         for (LivingEntity entity : linkedEntity.getWorld().getEntitiesByClass(LivingEntity.class)) {
-            if (entity.getUniqueId().equals(this.attachedEntity.getUniqueId())) {
+            if (entity.getUniqueId().equals(attachedEntityUuid)) {
                 this.attachedEntity = entity;
                 break;
             }
@@ -120,7 +125,7 @@ public class CustomEntityHealthTag extends CustomEntity {
 
     @Override
     public final void onSave(ConfigurationSection c) {
-        c.set("attachedEntity", this.attachedEntity.getUniqueId().toString());
+        c.set("attachedEntity", attachedEntityUuid);
         c.set("Offset.X", this.offset[0]);
         c.set("Offset.Y", this.offset[1]);
         c.set("Offset.Z", this.offset[2]);
@@ -137,7 +142,10 @@ public class CustomEntityHealthTag extends CustomEntity {
         this.heartsAmount = c.getInt("Hearts");
         this.armorStand = (ArmorStand) this.linkedEntity;
 
-        Scheduler.later(() -> this.attachedEntity = (LivingEntity) CustomEntityManager.getCustomEntity(UUID.fromString(c.getString("attachedEntity"))).getLinkedEntity(), 15);
+        String attachedEntity = c.getString("attachedEntity");
+        if(attachedEntity != null) {
+            Scheduler.later(() -> this.attachedEntityUuid = UUID.fromString(attachedEntity), 15);
+        }
     }
 
     public enum HealthDisplayMode {

@@ -33,11 +33,11 @@ public class RandomUtils {
     }
 
     public static <T> T getRandomObject(T[] array) {
-        return array[nextInt(array.length)];
+        return array.length == 0 ? null : array[nextInt(array.length)];
     }
 
     public static <T> T getRandomObject(List<T> list) {
-        return list.get(nextInt(list.size()));
+        return list.isEmpty() ? null : list.get(nextInt(list.size()));
     }
 
     public static int nextInt(int min, int max) {

@@ -31,7 +31,7 @@ public class CountingMap<K, V> extends ForwardingMap<K, V> {
      * {@link #processReachedLimit(boolean)} был передан {@code true}
      */
     @Setter @Getter
-    private boolean countChanges;
+    private boolean countChanges = true;
 
     public CountingMap() {
         this.delegate = new HashMap<>();
@@ -167,6 +167,17 @@ public class CountingMap<K, V> extends ForwardingMap<K, V> {
                 }
             }
             return removed;
+        }
+
+        @Override
+        public boolean remove(@NotNull Object o) {
+            boolean remove = super.remove(o);
+
+            if(remove) {
+                processReachedLimit(false);
+            }
+
+            return remove;
         }
     }
 }

@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.listeners;
 
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.EffectUtils;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.LBEntitiesSpecial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

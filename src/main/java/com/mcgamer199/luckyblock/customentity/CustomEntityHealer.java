@@ -3,7 +3,6 @@ package com.mcgamer199.luckyblock.customentity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
 import com.mcgamer199.luckyblock.customentity.nametag.CustomEntityHealerTag;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -78,7 +77,7 @@ public class CustomEntityHealer extends CustomEntity {
                 this.health = (int) (event.getDamage() / 5D);
                 if(this.health < 0) this.health = 0;
 
-                MyTasks.playEffects(Particle.FLAME, enderCrystal.getLocation().add(0.0D, 0.5D, 0.0D), 30, new double[]{0.2D, 0.0D, 0.2D}, 1.0F);
+                EffectUtils.playEffects(Particle.FLAME, enderCrystal.getLocation().add(0.0D, 0.5D, 0.0D), 30, new double[]{0.2D, 0.0D, 0.2D}, 1.0F);
                 if (this.health < 1) {
                     for (int x = RandomUtils.nextInt(5) + 100; x > 0; --x) {
                         Item item = enderCrystal.getWorld().dropItem(enderCrystal.getLocation(), new ItemStack(Material.GLASS, 1));
@@ -101,7 +100,9 @@ public class CustomEntityHealer extends CustomEntity {
     @Override
     public void onSave(ConfigurationSection c) {
         c.set("HealValue", this.healValue);
-        c.set("HealEntity", this.healEntity.getUniqueId().toString());
+        if(healEntity != null) {
+            c.set("HealEntity", this.healEntity.getUniqueId().toString());
+        }
         c.set("Running", this.running);
         c.set("Delay", this.delay);
         c.set("DamageNearby", this.damageNearby);
@@ -117,7 +118,13 @@ public class CustomEntityHealer extends CustomEntity {
         this.damageNearby = c.getBoolean("DamageNearby");
         this.health = c.getInt("Health");
         Scheduler.later(() -> {
-            CustomEntity healingTarget = CustomEntityManager.getCustomEntity(UUID.fromString(c.getString("HealEntity")));
+            String healEntity = c.getString("HealEntity");
+            if(healEntity == null) {
+                CustomEntityManager.removeCustomEntity(this);
+                return;
+            }
+
+            CustomEntity healingTarget = CustomEntityManager.getCustomEntity(UUID.fromString(healEntity));
             this.healEntity = (LivingEntity) healingTarget.getLinkedEntity();
             if(running) {
                 enableHealing();
@@ -139,15 +146,15 @@ public class CustomEntityHealer extends CustomEntity {
                     }
 
                     EffectUtils.playFixedSound(enderCrystal.getLocation(), EffectUtils.getSound("boss_healer_heal"), 1.0F, 2.0F, 8);
-                    MyTasks.playEffects(Particle.HEART, enderCrystal.getLocation(), 5, new double[]{0.7D, 0.7D, 0.7D}, 0.0F);
+                    EffectUtils.playEffects(Particle.HEART, enderCrystal.getLocation(), 5, new double[]{0.7D, 0.7D, 0.7D}, 0.0F);
                 }
-            }).predicate(() -> healEntity.isValid() && this.isValid()).onCancel(() -> CustomEntityManager.removeCustomEntity(this)).timer(delay, delay);
+            }).predicate(() -> this.isValid() && healEntity != null && healEntity.isValid()).onCancel(() -> CustomEntityManager.removeCustomEntity(this)).timer(delay, delay);
         }
     }
 
     private void startTimers() {
         Scheduler.create(() -> enderCrystal.setBeamTarget(healEntity.getLocation()))
-                .predicate(() -> healEntity.isValid() && this.isValid())
+                .predicate(() -> this.isValid() && healEntity != null && healEntity.isValid())
                 .onCancel(() -> CustomEntityManager.removeCustomEntity(this))
                 .timer(20, 10);
 
@@ -155,7 +162,7 @@ public class CustomEntityHealer extends CustomEntity {
             if(damageNearby) {
                 Collection<Player> players = enderCrystal.getWorld().getNearbyPlayers(enderCrystal.getLocation(), 3, 2, 3);
                 if(!players.isEmpty()) {
-                    MyTasks.playEffects(Particle.CRIT, enderCrystal.getLocation(), 250, new double[]{1.5D, 0.0D, 1.5D}, 0.0F);
+                    EffectUtils.playEffects(Particle.CRIT, enderCrystal.getLocation(), 250, new double[]{1.5D, 0.0D, 1.5D}, 0.0F);
                     players.forEach(player -> player.damage(3));
                 }
             }

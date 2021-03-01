@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.api.customdrop.impl;
 import com.mcgamer199.luckyblock.api.Properties;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Particle;
@@ -26,7 +26,7 @@ public class EffectsDrop implements CustomDrop {
     }
 
     public String getDescription() {
-        return MyTasks.val("desc.drop.effects_drop", false);
+        return ColorsClass.val("desc.drop.effects_drop", false);
     }
 
     public Properties getDropOptions() {

@@ -3,7 +3,7 @@ package com.mcgamer199.luckyblock.customentity.lct;
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ public class CustomEntityLCTNameTag extends CustomEntity {
     @Override
     public @NotNull Entity summonEntity(@NotNull Location spawnLocation) {
         ArmorStand stand = (ArmorStand) spawnLocation.getBlock().getWorld().spawnEntity(spawnLocation, entityType());
-        stand.setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
+        stand.setCustomName(ChatColor.GREEN + ColorsClass.val("lct.display_name", false));
         stand.setCustomNameVisible(true);
         stand.setMarker(true);
         stand.setGravity(false);
@@ -62,7 +62,7 @@ public class CustomEntityLCTNameTag extends CustomEntity {
                 LuckyCraftingTable table = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(block));
                 if(table != null) {
                     this.luckyCraftingTable = table;
-                    linkedEntity.setCustomName(ChatColor.GREEN + MyTasks.val("lct.display_name", false));
+                    linkedEntity.setCustomName(ChatColor.GREEN + ColorsClass.val("lct.display_name", false));
                 }
             } else {
                 CustomEntityManager.removeCustomEntity(this);

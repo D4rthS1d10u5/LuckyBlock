@@ -6,7 +6,7 @@ import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.engine.IObjects;
+import com.mcgamer199.luckyblock.api.IObjects;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

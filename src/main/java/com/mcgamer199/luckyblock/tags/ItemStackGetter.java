@@ -5,7 +5,7 @@
 
 package com.mcgamer199.luckyblock.tags;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import org.bukkit.ChatColor;

@@ -61,6 +61,7 @@ public class CustomEntityElementalCreeper extends CustomEntity {
 
     @Override
     public void onExplode(EntityExplodeEvent event) {
+        CustomEntityManager.removeCustomEntity(this);
         List<Block> blocks = new ArrayList<>(event.blockList());
         event.blockList().clear();
         blocks.forEach(block -> {

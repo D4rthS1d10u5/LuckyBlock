@@ -1,6 +1,6 @@
 package com.mcgamer199.luckyblock.util;
 
-import com.mcgamer199.luckyblock.MinecraftTag;
+import com.mcgamer199.luckyblock.api.enums.MinecraftTag;
 import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.api.nbt.NBTListWrapper;

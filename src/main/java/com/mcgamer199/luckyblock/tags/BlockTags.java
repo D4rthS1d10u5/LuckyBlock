@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.tags;
 
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
@@ -290,7 +290,7 @@ public class BlockTags extends HTag {
                         if (!type.disabled) {
                             block.setType(LBType.fromId(luck).getType());
                             block.setData((byte) LBType.fromId(luck).getData());
-                            LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, null, true, true);
+                            LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, null, true);
                             luckyBlock.playEffects();
                         }
                     }
@@ -300,7 +300,6 @@ public class BlockTags extends HTag {
                     luck = getRandomNumber(c1.getString(t).split(":"));
                     if (LuckyBlock.getByBlock(block) != null) {
                         LuckyBlock.getByBlock(block).setLuck(luck);
-                        LuckyBlock.getByBlock(block).save();
                     }
                 }
 
@@ -309,11 +308,10 @@ public class BlockTags extends HTag {
                     if (LuckyBlock.getByBlock(block) != null) {
                         LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
                         if (LuckyBlockDrop.isValid(drop)) {
-                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(drop.toUpperCase()), true, true);
-                            luckyBlock.save();
+                            luckyBlock.setDrop(LuckyBlockDrop.valueOf(drop.toUpperCase()), true);
                         } else if (CustomDropManager.getByName(drop) != null) {
                             luckyBlock.customDrop = CustomDropManager.getByName(drop);
-                            luckyBlock.save();
+                            luckyBlock.refreshCustomDrop();
                         }
                     }
                 }
@@ -329,7 +327,6 @@ public class BlockTags extends HTag {
                         List<String> list = c2.getStringList("Values");
                         if (luckyBlock != null && name != null && list != null && list.size() > 0) {
                             luckyBlock.getDropOptions().putStringArray(name, list.toArray(new String[0]));
-                            luckyBlock.save();
                         }
                     }
                 }

@@ -4,7 +4,7 @@ import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.SkullData;
 import com.mcgamer199.luckyblock.util.*;

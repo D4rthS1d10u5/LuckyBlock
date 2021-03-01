@@ -1,5 +1,6 @@
 package com.mcgamer199.luckyblock.api.customentity;
 
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.api.CountingMap;
 import com.mcgamer199.luckyblock.api.nbt.NBTCompoundWrapper;
 import com.mcgamer199.luckyblock.customentity.*;
@@ -7,12 +8,14 @@ import com.mcgamer199.luckyblock.customentity.boss.*;
 import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTNameTag;
 import com.mcgamer199.luckyblock.customentity.nametag.*;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.*;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -35,8 +38,10 @@ public class CustomEntityManager {
     private static final File customEntitiesFile = new File(LuckyBlockPlugin.instance.getDataFolder(), "CustomEntities.yml");
     private static final YamlConfiguration customEntitiesConfig = YamlConfiguration.loadConfiguration(customEntitiesFile);
 
-    private static final CountingMap<UUID, CustomEntity> customEntities = new CountingMap<>(new ConcurrentHashMap<>(), 100, (entries, forced) -> {
+    private static final CountingMap<UUID, CustomEntity> customEntities = new CountingMap<>(new ConcurrentHashMap<>(), 30, (entries, forced) -> {
         customEntitiesConfig.set("CustomEntities", null);
+        System.out.println(String.format("Trying to save %d entities. Forced %s", entries.size(), forced));
+
         entries.forEach(entry -> {
             CustomEntity entity = entry.getValue();
             ConfigurationSection section = customEntitiesConfig.createSection(String.format("CustomEntities.Entity%s", entry.getKey()));
@@ -53,6 +58,14 @@ public class CustomEntityManager {
         }
     });
     private static final Map<Class<? extends CustomEntity>, Supplier<? extends CustomEntity>> factories = new HashMap<>();
+
+    public static void setCountingChanges(boolean countingChanges) {
+        customEntities.setCountChanges(countingChanges);
+    }
+
+    public static void saveAll() {
+        customEntities.processReachedLimit(true);
+    }
 
     public static void initDefaults() {
         registerCustomEntityFactory(CustomEntityElementalCreeper.class, CustomEntityElementalCreeper::new);
@@ -85,6 +98,7 @@ public class CustomEntityManager {
     @SuppressWarnings("unchecked")
     public static void loadEntities() {
         ConfigurationSection customEntities = customEntitiesConfig.getConfigurationSection("CustomEntities");
+        setCountingChanges(false);
         if(customEntities != null) {
             for (String key : customEntities.getKeys(false)) {
                 ConfigurationSection entitySection = customEntities.getConfigurationSection(key);
@@ -104,22 +118,26 @@ public class CustomEntityManager {
                             log.info(String.format("Не удалось загрузить сущность по имени класса %s", className));
                             return;
                         }
+
                         UUID uuid = UUID.fromString(entityUUID);
+                        customEntity.setEntityUuid(uuid);
                         Entity linked = null;
                         for (World world : Bukkit.getWorlds()) {
-                            Entity entity = world.getEntity(uuid);
-                            if(entity != null) {
-                                linked = entity;
-                                break;
+                            System.out.println("world.getEntities() = " + world.getEntities());
+                            for (Entity entity : world.getEntities()) {
+                                if(entity.getUniqueId().equals(uuid)) {
+                                    linked = entity;
+                                    break;
+                                }
                             }
                         }
 
+                        customEntity.onLoad(entitySection);
                         if(linked != null) {
                             customEntity.init(linked);
-                            customEntity.onLoad(entitySection);
-                            customEntity.startTickTimer();
-                            customEntity.startCustomNamesTimer();
-                            addCustomEntity(customEntity);
+                            customEntity.startBasicEntityTimers();
+                        } else {
+                            addCustomEntity(uuid, customEntity); //при загрузке чанков моб потом будет загружен
                         }
                     } catch (ClassNotFoundException | IllegalArgumentException e) {
                         log.severe(String.format("Ошибка загрузки сущности %s, UUID %s", className, entityUUID));
@@ -129,23 +147,23 @@ public class CustomEntityManager {
             }
         }
 
+        setCountingChanges(true);
         startBasicTimers();
     }
 
-    public static void addCustomEntity(@NotNull CustomEntity customEntity) {
-        customEntities.put(customEntity.getEntityUuid(), customEntity);
+    public static void addCustomEntity(@NotNull UUID uuid, @NotNull CustomEntity customEntity) {
+        customEntities.put(uuid, customEntity);
     }
 
     public static void removeCustomEntity(@NotNull CustomEntity customEntity) {
-        CustomEntity removed = customEntities.remove(customEntity.getEntityUuid());
-        if(removed != null) {
-            if(removed instanceof CustomEntityBoss) {
-                ((CustomEntityBoss) removed).getBossBar().removeAll();
-                ((CustomEntityBoss) removed).getBossBar().setVisible(false);
-            }
-            if(removed.getLinkedEntity() != null) {
-                removed.getLinkedEntity().remove();
-            }
+        customEntities.remove(customEntity.getEntityUuid());
+        customEntity.stopTimers();
+        if(customEntity instanceof CustomEntityBoss) {
+            ((CustomEntityBoss) customEntity).getBossBar().removeAll();
+            ((CustomEntityBoss) customEntity).getBossBar().setVisible(false);
+        }
+        if(customEntity.getLinkedEntity() != null) {
+            customEntity.getLinkedEntity().remove();
         }
     }
 
@@ -203,6 +221,8 @@ public class CustomEntityManager {
     }
 
     private static void startBasicTimers() {
+        Scheduler.timerAsync(() -> System.out.println(customEntities.values()), 0, 20 * 10);
+
         Scheduler.timerAsync(() -> customEntities.values().stream().filter(customEntity -> customEntity instanceof CustomEntityBoss).map(CustomEntityBoss.class::cast).forEach(customEntity -> {
             if(customEntity.hasBossBar() && customEntity.getBossBarRange() > 0 && customEntity.getBossBarRange() < 225) {
                 LivingEntity boss = customEntity.getBossEntity();
@@ -281,32 +301,37 @@ public class CustomEntityManager {
     }
 
     private static String replaceOldClassNames(String input) {
+        if(input.startsWith("com.mcgamer199.luckyblock.customentity")) {
+            return input;
+        }
+        System.out.println("replacing old class name = " + input);
+
         return input.replace("LB_", "com.mcgamer199.luckyblock.customentity")
                 .replace("com.LuckyBlock.customentity", "com.mcgamer199.luckyblock.customentity")
-                .replace("EntityElementalCreeper", "CustomEntityElementalCreeper")
-                .replace("EntityGuardian", "CustomEntityGuardian")
-                .replace("EntityKiller", "CustomEntityKillerSkeleton")
-                .replace("EntityKillerSkeleton", "CustomEntityKillerSkeleton")
-                .replace("EntityLuckyVillager", "CustomEntityLuckyVillager")
-                .replace("EntityRandomItem", "CustomEntityRandomItem")
-                .replace("EntitySoldier", "CustomEntitySoldier")
-                .replace("EntitySuperSlime", "CustomEntitySuperSlime")
-                .replace("EntitySuperWitherSkeleton", "CustomEntitySuperWitherSkeleton")
-                .replace("EntityTalkingZombie", "CustomEntityTalkingZombie")
-                .replace("EntityFloatingText", "CustomEntityFloatingText")
-                .replace("CustomEntityLBNameTag", "CustomEntityLuckyBlockNameTag")
-                .replace("INameTagHealth", "CustomEntityHealthTag")
-                .replace("EntityTagHealer", "CustomEntityTagHealer")
-                .replace("EntityTrophyNameTag", "CustomEntityTrophyNameTag")
-                .replace("EntityLCTItem", "CustomEntityLCTItem")
-                .replace("EntityLCTNameTag", "CustomEntityLCTNameTag")
-                .replace("EntityLBBlaze", "CustomEntityBlazeMinion")
-                .replace("EntityKnight", "CustomEntityBossKnight")
-                .replace("EntityBossWitch", "CustomEntityBossWitch")
-                .replace("EntityMC", "CustomEntityMC")
-                .replace("EntityUnderwaterBoss", "CustomEntityUnderwaterBoss")
-                .replace("EntityUnderwaterFollower", "CustomEntityUnderwaterMinion")
-                .replace("EntityFootballPlayer", "CustomEntityBaseballPlayer")
-                .replace("EntityHealer", "CustomEntityHealer");
+                .replaceAll("^EntityElementalCreeper$", "CustomEntityElementalCreeper")
+                .replaceAll("^EntityGuardian$", "CustomEntityGuardian")
+                .replaceAll("^EntityKiller$", "CustomEntityKillerSkeleton")
+                .replaceAll("^EntityKillerSkeleton$", "CustomEntityKillerSkeleton")
+                .replaceAll("^EntityLuckyVillager$", "CustomEntityLuckyVillager")
+                .replaceAll("^EntityRandomItem$", "CustomEntityRandomItem")
+                .replaceAll("^EntitySoldier$", "CustomEntitySoldier")
+                .replaceAll("^EntitySuperSlime$", "CustomEntitySuperSlime")
+                .replaceAll("^EntitySuperWitherSkeleton$", "CustomEntitySuperWitherSkeleton")
+                .replaceAll("^EntityTalkingZombie$", "CustomEntityTalkingZombie")
+                .replaceAll("^EntityFloatingText$", "CustomEntityFloatingText")
+                .replaceAll("^CustomEntityLBNameTag$", "CustomEntityLuckyBlockNameTag")
+                .replaceAll("^INameTagHealth$", "CustomEntityHealthTag")
+                .replaceAll("^EntityTagHealer$", "CustomEntityTagHealer")
+                .replaceAll("^EntityTrophyNameTag$", "CustomEntityTrophyNameTag")
+                .replaceAll("^EntityLCTItem$", "CustomEntityLCTItem")
+                .replaceAll("^EntityLCTNameTag$", "CustomEntityLCTNameTag")
+                .replaceAll("^EntityLBBlaze$", "CustomEntityBlazeMinion")
+                .replaceAll("^EntityKnight$", "CustomEntityBossKnight")
+                .replaceAll("^EntityBossWitch$", "CustomEntityBossWitch")
+                .replaceAll("^EntityMC$", "CustomEntityMC")
+                .replaceAll("^EntityUnderwaterBoss$", "CustomEntityUnderwaterBoss")
+                .replaceAll("^EntityUnderwaterFollower$", "CustomEntityUnderwaterMinion")
+                .replaceAll("^EntityFootballPlayer$", "CustomEntityBaseballPlayer")
+                .replaceAll("^EntityHealer$", "CustomEntityHealer");
     }
 }

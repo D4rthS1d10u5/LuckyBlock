@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.resources;
 
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import org.bukkit.entity.Player;
 
 public class TitleSender {
@@ -14,7 +14,7 @@ public class TitleSender {
     }
 
     public static void send_1(Player player, String loc) {
-        String msg = MyTasks.val(loc, true);
+        String msg = ColorsClass.val(loc, true);
         LuckyBlockPlugin.getTitle().sendActionBar(player, msg, 20, 50, 20);
     }
 }

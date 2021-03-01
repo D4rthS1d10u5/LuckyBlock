@@ -99,7 +99,7 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
                 options = new Properties(serialized.get("options").getAsJsonObject());
             }
 
-            LuckyBlock luckyBlock = new LuckyBlock(lbType, block, luck, placedBy, false, false);
+            LuckyBlock luckyBlock = new LuckyBlock(lbType, block, luck, placedBy, false);
             luckyBlock.setOwner(ownerUuid);
 
             if(locked) {
@@ -110,7 +110,7 @@ public class LuckyBlockTypeAdapter implements JsonSerializer<LuckyBlock>, JsonDe
             luckyBlock.setTickDelay(ticksDelay);
 
             if(LuckyBlockDrop.isValid(dropName)) {
-                luckyBlock.setDrop(LuckyBlockDrop.getByName(dropName), false, false);
+                luckyBlock.setDrop(LuckyBlockDrop.getByName(dropName), false);
             } else if(CustomDropManager.isValid(dropName)) {
                 luckyBlock.setCustomDrop(CustomDropManager.getByName(dropName));
                 luckyBlock.refreshCustomDrop();

@@ -2,7 +2,7 @@ package com.mcgamer199.luckyblock.customentity.boss;
 
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;

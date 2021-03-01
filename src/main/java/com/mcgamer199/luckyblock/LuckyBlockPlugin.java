@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package com.mcgamer199.luckyblock.engine;
+package com.mcgamer199.luckyblock;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
@@ -21,12 +21,11 @@ import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.enchantments.Glow;
 import com.mcgamer199.luckyblock.enchantments.Lightning;
 import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
+import com.mcgamer199.luckyblock.api.IObjects;
 import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.*;
-import com.mcgamer199.luckyblock.logic.IRange;
-import com.mcgamer199.luckyblock.logic.MyTasks;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.resources.Trophy;
@@ -51,6 +50,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -91,8 +91,8 @@ public class LuckyBlockPlugin extends JavaPlugin {
     }
 
     static boolean contains(String s) {
-        for (int x = 0; x < no_versions.size(); ++x) {
-            if (no_versions.get(x).equalsIgnoreCase(s)) {
+        for (String no_version : no_versions) {
+            if (no_version.equalsIgnoreCase(s)) {
                 return true;
             }
         }
@@ -115,7 +115,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
     }
 
     public static boolean reload_lang() {
-        return MyTasks.reloadLang();
+        return IObjects.changeLanguage();
     }
 
     public static ITitle getTitle() {
@@ -158,11 +158,11 @@ public class LuckyBlockPlugin extends JavaPlugin {
         if (this.config.getString("sounds_file") != null) {
             sounds_file = this.config.getString("sounds_file");
         }
-
+        LuckyBlock.setPersistent(config.getBoolean("persistent", true));
         allowLBGeneration = this.config.getBoolean("Allow.LBGeneration");
-        com.mcgamer199.luckyblock.api.customdrop.CustomDropManager.registerDrop(new EffectsDrop());
-        com.mcgamer199.luckyblock.api.customdrop.CustomDropManager.registerDrop(new FakeTntDrop());
-        com.mcgamer199.luckyblock.api.customdrop.CustomDropManager.registerDrop(new RandomBlockDrop());
+        CustomDropManager.registerDrop(new EffectsDrop());
+        CustomDropManager.registerDrop(new FakeTntDrop());
+        CustomDropManager.registerDrop(new RandomBlockDrop());
         CustomDropManager.registerDrop(new DropInventoryDrop());
         PluginManager pm = this.getServer().getPluginManager();
         this.loadFiles();
@@ -201,8 +201,11 @@ public class LuckyBlockPlugin extends JavaPlugin {
         LuckyBlockAPI.loadLuckyBlocks();
     }
 
+    @Override
     public void onDisable() {
-        LuckyDB.checkSave();
+        LuckyBlock.saveAll();
+        CustomEntityManager.saveAll();
+        //LuckyDB.checkSave();
         this.getLogger().info("LuckyBlock, 2.2.5 Disabled.");
     }
 
@@ -220,31 +223,29 @@ public class LuckyBlockPlugin extends JavaPlugin {
                         detector = new Detector(cs.getInt(s));
                     }
 
-                    int i;
-                    if (s.equalsIgnoreCase("Range")) {
-                        int dx = cs.getInt("Range.x");
-                        i = cs.getInt("Range.y");
-                        int dz = cs.getInt("Range.z");
-                        IRange range = new IRange(dx, i, dz);
-                        detector.setRange(range);
-                    }
-
-                    if (s.equalsIgnoreCase("Blocks")) {
-                        List<String> bs = cs.getStringList(s);
-
-                        for (i = 0; i < bs.size(); ++i) {
-                            detector.addBlock(bs.get(i));
-                        }
-                    }
-
                     if (detector != null) {
+                        int i;
+                        if (s.equalsIgnoreCase("Range")) {
+                            int dx = cs.getInt("Range.x");
+                            i = cs.getInt("Range.y");
+                            int dz = cs.getInt("Range.z");
+                            Vector range = new Vector(dx, i, dz);
+                            detector.setRange(range);
+                        }
+
+                        if (s.equalsIgnoreCase("Blocks")) {
+                            List<String> bs = cs.getStringList(s);
+
+                            for (i = 0; i < bs.size(); ++i) {
+                                detector.addBlock(bs.get(i));
+                            }
+                        }
+
                         LuckyBlockAPI.detectors.add(detector);
                     }
                 }
             }
-        } catch (Exception var11) {
-        }
-
+        } catch (Exception ignored) {}
     }
 
     @Override
@@ -284,8 +285,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
                 Enchantment.registerEnchantment(enchantment_glow);
                 Enchantment.registerEnchantment(enchantment_lightning);
                 Enchantment.registerEnchantment(enchantment_reflect_prot);
-            } catch (IllegalArgumentException var2) {
-            }
+            } catch (IllegalArgumentException ignored) {}
         } catch (Exception var4) {
             var4.printStackTrace();
         }
@@ -360,13 +360,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
 
         IObjects.loadLuckyBlockFiles();
         IObjects.load1();
-    }
-
-    void a(String a) {
-        if (!(new File(d() + a)).exists()) {
-            this.saveResource(a, false);
-        }
-
     }
 
     private boolean s_title() {

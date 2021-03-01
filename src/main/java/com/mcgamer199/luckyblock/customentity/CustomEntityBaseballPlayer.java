@@ -1,7 +1,7 @@
 package com.mcgamer199.luckyblock.customentity;
 
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.resources.SkullData;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
@@ -47,7 +47,7 @@ public class CustomEntityBaseballPlayer extends CustomEntity {
         husk.getEquipment().setHelmet(ItemStackUtils.createSkull(new ItemStack(Material.SKULL_ITEM, 1, (short) 3), skullData.getId(), skullData.getData()));
         Color equipmentColor = skullData == SkullData.FOOTBALL_PLAYER_1 ? Color.RED : Color.BLUE;
         husk.getEquipment().setChestplate(ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_CHESTPLATE), equipmentColor));
-        husk.getEquipment().setLeggings(ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.CHAINMAIL_LEGGINGS), equipmentColor));
+        husk.getEquipment().setLeggings(ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_LEGGINGS), equipmentColor));
         husk.getEquipment().setBoots(ItemStackUtils.setLeatherArmorColor(new ItemStack(Material.LEATHER_BOOTS), equipmentColor));
         husk.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(30.0D);
         husk.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(20.0D);

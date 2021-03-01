@@ -7,11 +7,11 @@ import com.mcgamer199.luckyblock.api.chatcomponent.ChatComponent;
 import com.mcgamer199.luckyblock.api.chatcomponent.Hover;
 import com.mcgamer199.luckyblock.api.enums.BlockProperty;
 import com.mcgamer199.luckyblock.api.enums.ItemProperty;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBInteractEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.resources.LBItem;
 import com.mcgamer199.luckyblock.structures.BossDungeon;
@@ -223,7 +223,7 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
 
                     send_no(player, "event.detector.search");
                     boolean i = false;
-                    detector.getRange().getTotal();
+                    detector.getRange().length();
                     if (!i) {
                         send_no(player, "event.detector.no_lb");
                     }
@@ -292,7 +292,7 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
             block = blks.get(x);
             if (LuckyBlock.isLuckyBlock(block)) {
                 luckyBlock = LuckyBlock.getByBlock(block);
-                luckyBlock.remove();
+                luckyBlock.remove(false);
                 block.setType(Material.AIR);
                 if (luckyBlock.getType().hasProperty(BlockProperty.DROP_ON_EXPLODE)) {
                     this.spawnItem(luckyBlock);
@@ -361,7 +361,7 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
     private void onTakeLuckyBlock(LBInteractEvent event) {
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
         if (item != null && item.getType() != Material.AIR && compareItems(item, LBItem.LB_REMOVER.getItem())) {
-            event.getLB().remove(true);
+            event.getLB().remove(false);
         }
     }
 

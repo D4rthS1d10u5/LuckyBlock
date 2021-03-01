@@ -1,15 +1,14 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.mcgamer199.luckyblock.LBOption;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.events.LBPlaceEvent;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
-import com.mcgamer199.luckyblock.logic.ColorsClass;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.resources.DebugData;
 import com.mcgamer199.luckyblock.resources.Detector;
 import com.mcgamer199.luckyblock.util.EffectUtils;
@@ -124,7 +123,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 double lx = Double.parseDouble(particleData[6]);
                 double ly = Double.parseDouble(particleData[7]);
                 double lz = Double.parseDouble(particleData[8]);
-                block.getWorld().spawnParticle(MyTasks.getParticle(particleData[0]), location.add(lx, ly, lz), amount, pit, ry, rz, speed);
+                block.getWorld().spawnParticle(EffectUtils.getParticle(particleData[0]), location.add(lx, ly, lz), amount, pit, ry, rz, speed);
             }
 
             String[] s;
@@ -158,7 +157,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                 send((Player) placedBy, "invalid_file");
                 return null;
             } else {
-                LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, true, r);
+                LuckyBlock luckyBlock = new LuckyBlock(type, block, luck, placedBy, r);
                 if (face != null) {
                     luckyBlock.facing = face;
                 }
@@ -167,7 +166,7 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                     particleData = drop.split(":");
                     if (particleData[0].equalsIgnoreCase("LBDrop")) {
                         if (LuckyBlockDrop.isValid(particleData[1])) {
-                            luckyBlock.setDrop(LuckyBlockDrop.getByName(particleData[1]), true, true);
+                            luckyBlock.setDrop(LuckyBlockDrop.getByName(particleData[1]), true);
                         }
                     } else if (particleData[0].equalsIgnoreCase("CustomDrop") && CustomDropManager.isValid(particleData[1])) {
                         luckyBlock.customDrop = CustomDropManager.getByName(particleData[1]);
@@ -208,7 +207,6 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                             new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
                 }
 
-                luckyBlock.save();
                 return luckyBlock;
             }
         }

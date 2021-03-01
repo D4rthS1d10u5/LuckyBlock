@@ -1,8 +1,7 @@
 package com.mcgamer199.luckyblock.util;
 
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.logic.MyTasks;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -112,7 +111,7 @@ public class EffectUtils {
 
                     ++this.a;
                     Location point = start.add(increase);
-                    MyTasks.playEffects(helper.particle, point, helper.amount, helper.doubles, helper.speed);
+                    playEffects(helper.particle, point, helper.amount, helper.doubles, helper.speed);
                     --this.m;
                     if (point.distance(target.getLocation()) < 1.0D) {
                         if (boss != null) {
@@ -129,12 +128,22 @@ public class EffectUtils {
         }, 0, 1);
     }
 
-    public enum LaserType {
-        CHASER,
-        STRAIGHT;
-
-        LaserType() {
+    public static Particle getParticle(String s) {
+        Particle p;
+        if (s.equalsIgnoreCase("spell_witch")) {
+            p = Particle.SPELL_WITCH;
+        } else {
+            p = Particle.valueOf(s.toUpperCase());
         }
+
+        return p;
+    }
+
+    public static void playEffects(Particle particle, Location loc, int amount, double[] r, float speed) {
+        if (r.length == 3) {
+            loc.getWorld().spawnParticle(particle, loc, amount, r[0], r[1], r[2], speed);
+        }
+
     }
 
     private static void addSound(ConfigurationSection section, String soundName, String path) {

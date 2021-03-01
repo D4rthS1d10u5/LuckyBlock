@@ -1,10 +1,10 @@
 package com.mcgamer199.luckyblock.command.engine;
 
-import com.mcgamer199.luckyblock.LBOption;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
-import com.mcgamer199.luckyblock.engine.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
