@@ -38,7 +38,6 @@ public class Trophy {
 
     private Trophy(Block block, ItemStack itemToDrop) {
         this.block = block;
-        System.out.println("block.getType() = " + block.getType());
         if (itemToDrop != null) {
             itemToDrop.setAmount(1);
         }

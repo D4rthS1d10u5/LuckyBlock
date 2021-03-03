@@ -130,6 +130,7 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
     @Override
     public void onChunkLoad() {
         this.elderGuardian = (ElderGuardian) this.linkedEntity;
+        startTimers();
     }
 
     @Override
@@ -189,7 +190,6 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
     public void onLoad(ConfigurationSection c) {
         this.elderGuardian = (ElderGuardian) this.linkedEntity;
         this.power = c.getInt("Power");
-        startTimers();
     }
 
     @Override
@@ -242,7 +242,6 @@ public class CustomEntityUnderwaterBoss extends CustomEntity implements CustomEn
         }).predicate(this::isValid).timer(256, 256);
 
         Scheduler.create(() -> {
-
             if (elderGuardian.getTarget() != null) {
                 TNTPrimed tnt = (TNTPrimed) elderGuardian.getWorld().spawnEntity(elderGuardian.getLocation(), EntityType.PRIMED_TNT);
                 tnt.setFuseTicks(2000);

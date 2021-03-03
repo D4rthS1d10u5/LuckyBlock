@@ -435,9 +435,12 @@ public class CraftLB extends ColorsClass implements Listener {
                         player.closeInventory();
                         cr = this.getLTable(inv.getItem(inv.getSize() - 17));
                         ChatComponent component = new ChatComponent();
-                        component.addText(String.format("§c=== [§b%s§c] ===\n", val("lct.data.settings", false)));
-                        component.addText(String.format("§b========= §5§b►§9§b %s §5§b◄§b=========\n", val("lct.data.stop.name", false)), Hover.show_text, String.format("§e%s", val("lct.data.stop.lore", false)), Click.run_command, String.format("/%s lctstop %s", ILBCmd.lcmd, cr.getId()));
-                        component.addText(String.format("§b========= §5§b>§9§b %s §5§b<§b =========\n", val("lct.data.exluck.name", false)), Hover.show_text, String.format("§e%s", val("lct.data.exluck.lore", false)), Click.run_command, String.format("/%s lctextra %s", ILBCmd.lcmd, cr.getId()));
+                        component.addText(String.format("§c=== [§l%s§c] ===\n", val("lct.data.settings", false)));
+                        component.addText(String.format("§b========= §5§l►§9§l %s §5§l◄§b=========\n",
+                                val("lct.data.stop.name", false)),
+                                Hover.show_text, String.format("§e%s", val("lct.data.stop.lore", false)),
+                                Click.run_command, String.format("/%s lctstop %s", ILBCmd.lcmd, cr.getId()));
+                        component.addText(String.format("§b========= §5§l►§9§l %s §5§l◄§b =========\n", val("lct.data.exluck.name", false)), Hover.show_text, String.format("§e%s", val("lct.data.exluck.lore", false)), Click.run_command, String.format("/%s lctextra %s", ILBCmd.lcmd, cr.getId()));
                         component.addText("§c======================================");
 
                         component.send(player);
@@ -502,9 +505,10 @@ public class CraftLB extends ColorsClass implements Listener {
 
     LuckyCraftingTable getLTable(ItemStack item) {
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(yellow + val("lct.display_name", false)) && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0) != null) {
-            String s = item.getItemMeta().getLore().get(0);
-            if (LocationUtils.blockFromString(s) != null) {
-                return LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(s));
+            String s = ChatColor.stripColor(item.getItemMeta().getLore().get(0));
+            Block block = LocationUtils.blockFromString(s);
+            if (block != null) {
+                return LuckyCraftingTable.getByBlock(block);
             }
         }
 

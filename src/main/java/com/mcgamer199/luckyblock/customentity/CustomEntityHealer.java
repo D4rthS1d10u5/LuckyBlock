@@ -38,6 +38,7 @@ public class CustomEntityHealer extends CustomEntity {
     private boolean running;
     @Setter
     private LivingEntity healEntity;
+    private UUID healEntityUuid;
     @Setter
     private boolean damageable = true;
 
@@ -61,6 +62,25 @@ public class CustomEntityHealer extends CustomEntity {
     @Override
     public int getTickTime() {
         return -1;
+    }
+
+    @Override
+    public void onChunkLoad() {
+        if(healEntityUuid != null) {
+            CustomEntity healingTarget = CustomEntityManager.getCustomEntity(healEntityUuid);
+            if(healingTarget != null) {
+                this.healEntity = (LivingEntity) healingTarget.getLinkedEntity();
+                enderCrystal = (EnderCrystal) linkedEntity;
+                startTimers();
+                if(running) {
+                    enableHealing();
+                }
+            } else {
+                CustomEntityManager.removeCustomEntity(this);
+            }
+        } else {
+            CustomEntityManager.removeCustomEntity(this);
+        }
     }
 
     @Override
@@ -100,8 +120,8 @@ public class CustomEntityHealer extends CustomEntity {
     @Override
     public void onSave(ConfigurationSection c) {
         c.set("HealValue", this.healValue);
-        if(healEntity != null) {
-            c.set("HealEntity", this.healEntity.getUniqueId().toString());
+        if(healEntityUuid != null) {
+            c.set("HealEntity", healEntityUuid);
         }
         c.set("Running", this.running);
         c.set("Delay", this.delay);
@@ -111,7 +131,6 @@ public class CustomEntityHealer extends CustomEntity {
 
     @Override
     public void onLoad(final ConfigurationSection c) {
-        enderCrystal = (EnderCrystal) linkedEntity;
         this.healValue = c.getDouble("HealValue");
         this.delay = c.getInt("Delay");
         this.running = c.getBoolean("Running");
@@ -120,17 +139,9 @@ public class CustomEntityHealer extends CustomEntity {
         Scheduler.later(() -> {
             String healEntity = c.getString("HealEntity");
             if(healEntity == null) {
-                CustomEntityManager.removeCustomEntity(this);
                 return;
             }
-
-            CustomEntity healingTarget = CustomEntityManager.getCustomEntity(UUID.fromString(healEntity));
-            this.healEntity = (LivingEntity) healingTarget.getLinkedEntity();
-            if(running) {
-                enableHealing();
-            }
-
-            startTimers();
+            this.healEntityUuid = UUID.fromString(healEntity);
         }, 15);
     }
 

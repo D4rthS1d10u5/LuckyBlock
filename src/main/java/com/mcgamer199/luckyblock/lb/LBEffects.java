@@ -65,7 +65,7 @@ public class LBEffects {
                         }
                     }
                 } else {
-                    System.out.println("type and block is null");
+                    Scheduler.cancelTask(this);
                 }
             }
         }, luckyBlock.tickDelay, luckyBlock.tickDelay);

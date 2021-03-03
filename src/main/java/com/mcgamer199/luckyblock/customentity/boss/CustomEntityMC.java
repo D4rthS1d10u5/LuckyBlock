@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.customentity.boss;
 
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
-import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -118,6 +117,8 @@ public class CustomEntityMC extends CustomEntity implements CustomEntityBoss {
                     }
                 }
             }
+
+            Scheduler.later(() -> this.damaged = false, 30);
         } else {
             event.setCancelled(true);
         }
@@ -129,7 +130,7 @@ public class CustomEntityMC extends CustomEntity implements CustomEntityBoss {
     }
 
     @Override
-    public void onLoad(final ConfigurationSection c) {
+    public void onChunkLoad() {
         this.wither = (Wither) linkedEntity;
         startTimers();
     }

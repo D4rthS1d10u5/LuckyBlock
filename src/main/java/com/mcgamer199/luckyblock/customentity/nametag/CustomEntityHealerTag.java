@@ -56,6 +56,11 @@ public class CustomEntityHealerTag extends CustomEntity {
     }
 
     @Override
+    public void onChunkLoad() {
+        this.armorStand = (ArmorStand) this.linkedEntity;
+    }
+
+    @Override
     public final void onSave(ConfigurationSection c) {
         c.set("Offset.X", this.offset[0]);
         c.set("Offset.Y", this.offset[1]);
@@ -70,7 +75,6 @@ public class CustomEntityHealerTag extends CustomEntity {
         this.offset[0] = c.getDouble("Offset.X");
         this.offset[1] = c.getDouble("Offset.Y");
         this.offset[2] = c.getDouble("Offset.Z");
-        this.armorStand = (ArmorStand) this.linkedEntity;
 
         if (c.getString("Source") != null) {
             final UUID uuid = UUID.fromString(c.getString("Source"));

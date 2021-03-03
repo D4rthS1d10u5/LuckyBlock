@@ -1,8 +1,8 @@
 package com.mcgamer199.luckyblock.command;
 
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
 import com.mcgamer199.luckyblock.command.engine.LBCommand;
-import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.BreakLuckyBlock;
 import com.mcgamer199.luckyblock.listeners.LBGui;
@@ -13,6 +13,9 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LBCOther extends LBCommand {
     public LBCOther() {
@@ -121,7 +124,8 @@ public class LBCOther extends LBCommand {
                         return false;
                     }
 
-                    LuckyBlock.getStorage().values().stream().limit(65).forEach(luckyBlock -> BreakLuckyBlock.openLB(luckyBlock, null));
+                    List<LuckyBlock> collect = LuckyBlock.getStorage().values().stream().limit(65).collect(Collectors.toList());
+                    collect.forEach(luckyBlock -> BreakLuckyBlock.openLB(luckyBlock, null));
 
                     send(sender, "command.runall.success");
                     return true;

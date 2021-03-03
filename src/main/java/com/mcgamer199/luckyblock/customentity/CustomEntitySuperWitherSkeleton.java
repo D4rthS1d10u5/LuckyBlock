@@ -82,5 +82,6 @@ public class CustomEntitySuperWitherSkeleton extends CustomEntity {
         if (c.getString("Owner") != null) {
             this.owner = UUID.fromString(c.getString("Owner"));
         }
+        Scheduler.later(() -> CustomEntityManager.removeCustomEntity(this), 225);
     }
 }

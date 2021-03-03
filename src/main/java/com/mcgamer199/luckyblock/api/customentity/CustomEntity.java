@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("unused")
 @Getter
-@ToString(of = "linkedEntity")
+@ToString(of = {"linkedEntity", "entityUuid"})
 public abstract class CustomEntity {
 
     private int customNameTaskId = -1, tickTaskId = -1;

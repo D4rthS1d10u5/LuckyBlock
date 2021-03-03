@@ -1,6 +1,5 @@
 package com.mcgamer199.luckyblock.listeners;
 
-import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityBoss;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
@@ -115,7 +114,6 @@ public class CustomEntityEvents implements Listener {
         LivingEntity entity = event.getEntity();
         CustomEntity customEntity = CustomEntityManager.getCustomEntity(entity.getUniqueId());
         if(customEntity != null) {
-            System.out.println("validation success");
             CustomEntityManager.removeCustomEntity(customEntity);
 
             customEntity.createDeathParticles().spawn();
@@ -129,7 +127,7 @@ public class CustomEntityEvents implements Listener {
                             .stream()
                             .filter(entry -> RandomUtils.nextPercent(entry.getValue()))
                             .map(Map.Entry::getKey).forEach(itemStack -> {
-                                Item item = world.dropItemNaturally(entity.getLocation(), itemStack);
+                        Item item = world.dropItemNaturally(entity.getLocation(), itemStack);
                                 if(boss) {
                                     item.setInvulnerable(true);
                                 }
@@ -436,8 +434,8 @@ public class CustomEntityEvents implements Listener {
             CustomEntity customEntity = CustomEntityManager.getCustomEntity(entity.getUniqueId());
             if(customEntity != null) {
                 customEntity.init(entity);
-                customEntity.startBasicEntityTimers();
                 customEntity.onChunkLoad();
+                customEntity.startBasicEntityTimers();
             }
         }
     }
@@ -447,16 +445,6 @@ public class CustomEntityEvents implements Listener {
         CustomEntity customEntity = CustomEntityManager.getCustomEntity(event.getEntity().getUniqueId());
         if(event.getEntity().getShooter() != null && event.getEntity().getShooter() instanceof Entity && customEntity != null && customEntity.isValid()) {
             customEntity.onShootProjectile(event);
-        }
-    }
-
-    @EventHandler
-    public void onRemoveFromWorld(EntityRemoveFromWorldEvent event) {
-        Entity entity = event.getEntity();
-        CustomEntity customEntity = CustomEntityManager.getCustomEntity(entity.getUniqueId());
-        if(customEntity != null) {
-            System.out.println("FOUND CustomEntity by uuid " + entity.getUniqueId());
-            CustomEntityManager.removeCustomEntity(customEntity);
         }
     }
 }

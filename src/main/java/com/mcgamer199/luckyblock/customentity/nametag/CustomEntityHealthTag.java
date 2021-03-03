@@ -115,6 +115,7 @@ public class CustomEntityHealthTag extends CustomEntity {
             CustomEntityManager.removeCustomEntity(this);
         }
 
+        this.armorStand = (ArmorStand) this.linkedEntity;
         for (LivingEntity entity : linkedEntity.getWorld().getEntitiesByClass(LivingEntity.class)) {
             if (entity.getUniqueId().equals(attachedEntityUuid)) {
                 this.attachedEntity = entity;
@@ -140,7 +141,6 @@ public class CustomEntityHealthTag extends CustomEntity {
         this.offset[2] = c.getDouble("Offset.Z");
         this.mode = HealthDisplayMode.valueOf(c.getString("ModeBase"));
         this.heartsAmount = c.getInt("Hearts");
-        this.armorStand = (ArmorStand) this.linkedEntity;
 
         String attachedEntity = c.getString("attachedEntity");
         if(attachedEntity != null) {

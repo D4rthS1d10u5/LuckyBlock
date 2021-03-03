@@ -38,9 +38,9 @@ public class CustomEntityManager {
     private static final File customEntitiesFile = new File(LuckyBlockPlugin.instance.getDataFolder(), "CustomEntities.yml");
     private static final YamlConfiguration customEntitiesConfig = YamlConfiguration.loadConfiguration(customEntitiesFile);
 
-    private static final CountingMap<UUID, CustomEntity> customEntities = new CountingMap<>(new ConcurrentHashMap<>(), 30, (entries, forced) -> {
+    private static final CountingMap<UUID, CustomEntity> customEntities = new CountingMap<>(new ConcurrentHashMap<>(), 250, (entries, forced) -> {
         customEntitiesConfig.set("CustomEntities", null);
-        System.out.println(String.format("Trying to save %d entities. Forced %s", entries.size(), forced));
+        log.info(String.format("Trying to save %d entities. Forced %s", entries.size(), forced));
 
         entries.forEach(entry -> {
             CustomEntity entity = entry.getValue();
@@ -220,8 +220,6 @@ public class CustomEntityManager {
     }
 
     private static void startBasicTimers() {
-        //Scheduler.timerAsync(() -> System.out.println(customEntities.values()), 0, 20 * 10);
-
         Scheduler.timerAsync(() -> customEntities.values().stream().filter(customEntity -> customEntity instanceof CustomEntityBoss).map(CustomEntityBoss.class::cast).forEach(customEntity -> {
             if(customEntity.hasBossBar() && customEntity.getBossBarRange() > 0 && customEntity.getBossBarRange() < 225) {
                 LivingEntity boss = customEntity.getBossEntity();
@@ -303,7 +301,6 @@ public class CustomEntityManager {
         if(input.startsWith("com.mcgamer199.luckyblock.customentity")) {
             return input;
         }
-        System.out.println("replacing old class name = " + input);
 
         return input.replace("LB_", "com.mcgamer199.luckyblock.customentity")
                 .replace("com.LuckyBlock.customentity", "com.mcgamer199.luckyblock.customentity")

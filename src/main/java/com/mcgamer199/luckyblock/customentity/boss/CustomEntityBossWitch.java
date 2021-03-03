@@ -252,8 +252,12 @@ public class CustomEntityBossWitch extends CustomEntity implements CustomEntityB
 
     @Override
     public void onLoad(ConfigurationSection c) {
-        this.witch = (Witch) this.linkedEntity;
         this.fireDamage = c.getInt("FireDamage");
+    }
+
+    @Override
+    public void onChunkLoad() {
+        this.witch = (Witch) this.linkedEntity;
         startTimers();
     }
 

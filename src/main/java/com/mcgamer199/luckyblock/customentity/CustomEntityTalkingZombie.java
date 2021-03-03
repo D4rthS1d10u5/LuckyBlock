@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -48,6 +47,7 @@ public class CustomEntityTalkingZombie extends CustomEntity {
         return zombie;
     }
 
+    @Override
     public void onTick() {
         this.zombie.setFireTicks(0);
         Entity target = zombie.getTarget();
@@ -88,6 +88,11 @@ public class CustomEntityTalkingZombie extends CustomEntity {
     @Override
     public int getTickTime() {
         return 2;
+    }
+
+    @Override
+    public void onChunkLoad() {
+        this.zombie = (Zombie) this.linkedEntity;
     }
 
     @Override
@@ -135,10 +140,5 @@ public class CustomEntityTalkingZombie extends CustomEntity {
                 }
             }
         }
-    }
-
-    @Override
-    public void onLoad(ConfigurationSection configurationSection) {
-        this.zombie = (Zombie) this.linkedEntity;
     }
 }

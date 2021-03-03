@@ -1,16 +1,16 @@
 package com.mcgamer199.luckyblock.advanced;
 
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.ColorsClass;
+import com.mcgamer199.luckyblock.api.IObjects;
 import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTItem;
 import com.mcgamer199.luckyblock.customentity.lct.CustomEntityLCTNameTag;
-import com.mcgamer199.luckyblock.api.IObjects;
-import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.listeners.CraftLB;
-import com.mcgamer199.luckyblock.api.ColorsClass;
+import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
 import com.mcgamer199.luckyblock.util.LocationUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
-import com.mcgamer199.luckyblock.util.EffectUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -84,7 +84,6 @@ public class LuckyCraftingTable extends ColorsClass {
             this.func_loop();
             this.spawn_items();
         }
-
     }
 
     public static LuckyCraftingTable getByBlock(@Nullable Block block) {
@@ -187,7 +186,7 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public boolean isValid() {
-        return getByBlock(this.block) != null;
+        return craftingTables.containsKey(block.getLocation());
     }
 
     public void stop() {
@@ -616,11 +615,10 @@ public class LuckyCraftingTable extends ColorsClass {
     }
 
     public void save(boolean saveToFile) {
-        craftingTables.replace(getBlock().getLocation(), this);
+        craftingTables.put(getBlock().getLocation(), this);
         if (saveToFile) {
             this.saveToFile();
         }
-
     }
 
     private void saveToFile() {

@@ -83,6 +83,5 @@ public class LBBossEvents implements Listener {
             t.remove();
             event.getBlock().setType(Material.AIR);
         }
-
     }
 }

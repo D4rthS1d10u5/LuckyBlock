@@ -6,7 +6,9 @@
 package com.mcgamer199.luckyblock;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
+import com.mcgamer199.luckyblock.api.IObjects;
 import com.mcgamer199.luckyblock.api.LuckyBlockAPI;
+import com.mcgamer199.luckyblock.api.PluginConstants;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
 import com.mcgamer199.luckyblock.api.customdrop.impl.DropInventoryDrop;
 import com.mcgamer199.luckyblock.api.customdrop.impl.EffectsDrop;
@@ -21,7 +23,6 @@ import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.enchantments.Glow;
 import com.mcgamer199.luckyblock.enchantments.Lightning;
 import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
-import com.mcgamer199.luckyblock.api.IObjects;
 import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
@@ -32,7 +33,6 @@ import com.mcgamer199.luckyblock.resources.Trophy;
 import com.mcgamer199.luckyblock.structures.Structure;
 import com.mcgamer199.luckyblock.tags.EntityTags;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
-import com.mcgamer199.luckyblock.util.Scheduler;
 import com.mcgamer199.luckyblock.yottaevents.LuckyDB;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -195,10 +195,10 @@ public class LuckyBlockPlugin extends JavaPlugin {
         pm.registerEvents(new CustomEntityEvents(), this);
         Structure.loadStructures();
         EntityTags.load();
+        LuckyBlockAPI.loadLuckyBlocks();
         CustomEntityManager.initDefaults();
         CustomEntityManager.loadEntities();
         this.loadDetectors();
-        LuckyBlockAPI.loadLuckyBlocks();
     }
 
     @Override
@@ -318,7 +318,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
         sh.setIngredient('b', Material.WORKBENCH);
         sh.setIngredient('c', Material.LAPIS_BLOCK);
         Bukkit.getServer().addRecipe(sh);
-        Scheduler.later(LuckyCraftingTable::load, 6);
         ItemStack adv = LBItem.A_LUCKY_TOOL.getItem();
         NamespacedKey k1 = new NamespacedKey(this, "advanced_lucky_tool");
         ShapedRecipe sh1 = new ShapedRecipe(k1, adv);
@@ -327,6 +326,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
         sh1.setIngredient('B', Material.NETHER_STAR);
         sh1.setIngredient('C', Material.SPONGE);
         Bukkit.getServer().addRecipe(sh1);
+        LuckyCraftingTable.load();
     }
 
     private void loadFiles() {
@@ -363,14 +363,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
     }
 
     private boolean s_title() {
-        String version;
-        try {
-            version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        } catch (ArrayIndexOutOfBoundsException var3) {
-            return false;
-        }
-
-        if (version.equals("v1_12_R1")) {
+        if (PluginConstants.VERSION.equals("v1_12_R1")) {
             title = new Title_1_12_R1();
         }
 

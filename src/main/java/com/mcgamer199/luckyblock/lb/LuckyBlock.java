@@ -25,6 +25,8 @@ import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
@@ -44,6 +46,8 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ToString(of = {"type", "luckyBlockDrop", "customDrop", "block", "luck", "owner", "dropOptions", "placingSource", "locked"})
+@Log
 public class LuckyBlock {
 
     @Getter @Setter
@@ -51,13 +55,10 @@ public class LuckyBlock {
     public static final List<String> hiddenOptions = Arrays.asList("title", "player");
     public static Map<LBType, FileConfiguration> cache = new HashMap<>();
 
-    private static final CountingMap<Location, LuckyBlock> storage = new CountingMap<>(new HashMap<>(), 30, (entries, forced) -> {
-        System.out.println(String.format("Trying to save %d luckyblocks. Persistance enabled %s, forced %s", entries.size(), persistent, forced));
+    private static final CountingMap<Location, LuckyBlock> storage = new CountingMap<>(new HashMap<>(), 500, (entries, forced) -> {
+        log.info(String.format("Trying to save %d luckyblocks. Persistance enabled %s, forced %s", entries.size(), persistent, forced));
         if(persistent) {
-            LuckyBlockAPI.lbs.set("LuckyBlocks", entries.stream().map(Map.Entry::getValue).map(luckyBlock -> {
-                System.out.println(String.format("valid = %s", luckyBlock.isValid()));
-                return JsonUtils.toJsonString(luckyBlock, LuckyBlock.class);
-            }).collect(Collectors.toList()));
+            LuckyBlockAPI.lbs.set("LuckyBlocks", entries.stream().map(Map.Entry::getValue).map(luckyBlock -> JsonUtils.toJsonString(luckyBlock, LuckyBlock.class)).collect(Collectors.toList()));
             LuckyBlockAPI.saveLBFile();
         }
     });
@@ -172,7 +173,7 @@ public class LuckyBlock {
                 luck = LBType.getLuck(item);
             }
 
-            return PlaceLuckyBlock.place(lbType, loc.getBlock(), placedBy, PlaceLuckyBlock.dropToString(drop), luck, item, drop != null, null, options);
+            return PlaceLuckyBlock.place(lbType, loc.getBlock(), placedBy, PlaceLuckyBlock.dropToString(drop), luck, item, drop == null, null, options);
         }
     }
 
@@ -301,7 +302,6 @@ public class LuckyBlock {
             try {
                 this.tickDelay = RandomUtils.nextInt(type.a_random[1]) + this.type.a_random[0];
             } catch (Exception e) {
-                System.out.println("error with building new tick delay");
                 tickDelay = 2;
             }
         }
@@ -395,7 +395,6 @@ public class LuckyBlock {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void parseProperty(String propertyKey, Object property) {
         if(property != null) {
-            System.out.println("key = " + propertyKey + " obj = " + property + " class = " + property.getClass().getName());
             if(property instanceof Integer) {
                 dropOptions.putInt(propertyKey, (int) property);
             } else if(property instanceof String) {

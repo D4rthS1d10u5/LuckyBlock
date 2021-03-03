@@ -33,6 +33,7 @@ public class CustomEntityLCTItem extends CustomEntity {
         armorStand.setSilent(true);
         armorStand.setVisible(false);
         this.armorStand = armorStand;
+        startTimer();
         return armorStand;
     }
 
@@ -67,11 +68,20 @@ public class CustomEntityLCTItem extends CustomEntity {
         }).predicate(() -> luckyCraftingTable != null && luckyCraftingTable.isValid()).timer(20, 2);
     }
 
-    public void onLoad(final ConfigurationSection c) {
+    @Override
+    public void onChunkLoad() {
         this.armorStand = (ArmorStand) this.linkedEntity;
-        Scheduler.later(() -> this.luckyCraftingTable = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(c.getString("LCT_Block"))), 10);
+        startTimer();
     }
 
+    @Override
+    public void onLoad(final ConfigurationSection c) {
+        LuckyCraftingTable block = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(c.getString("LCT_Block")));
+        System.out.println("block = " + block);
+        this.luckyCraftingTable = block;
+    }
+
+    @Override
     public void onSave(ConfigurationSection c) {
         c.set("LCT_Block", LocationUtils.asString(this.luckyCraftingTable.getBlock().getLocation()));
     }

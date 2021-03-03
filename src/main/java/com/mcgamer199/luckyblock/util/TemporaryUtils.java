@@ -125,10 +125,10 @@ public class TemporaryUtils {
                     new DebugData("Owner", luckyBlock.hasOwner() ? luckyBlock.owner.toString() : "none"));
         }
 
-        if (customDrop == null && drop != null) {
+        if(drop != null) {
             drop.execute(luckyBlock, player);
-        } else {
-            luckyBlock.getCustomDrop().execute(luckyBlock, player);
+        } else if(customDrop != null) {
+            customDrop.execute(luckyBlock, player);
         }
     }
 

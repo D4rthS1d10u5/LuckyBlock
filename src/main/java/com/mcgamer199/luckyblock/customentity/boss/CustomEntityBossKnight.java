@@ -77,7 +77,6 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
     }
 
     private WitherSkeleton witherSkeleton;
-    private ItemStack head;
     @Getter
     private UUID blazeUuid;
     @Getter
@@ -93,7 +92,6 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
         registerTargetPriority(EntityType.SNOWBALL, 10);
         registerTargetPriority(EntityType.HORSE, 10);
         registerDropItem(spellFortune, 100);
-        registerDropItem(head, 100);
         registerDropItem(LBItem.KEY_1.getItem(), 100);
         registerDropItem(new ItemStack(Material.SHIELD), 25);
     }
@@ -106,14 +104,15 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
     @Override
     public @NotNull Entity summonEntity(@NotNull Location spawnLocation) {
         SkullData sd = SkullData.getRandomSkullData("BOSS");
-        this.head = ItemStackUtils.createSkull(ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), sd.getId(), sd.getData());
+        ItemStack head = ItemStackUtils.createSkull(ItemStackUtils.createItem(Material.SKULL_ITEM, 1, 3, ChatColor.GOLD + "Trophy: " + ChatColor.GREEN + "Knight", Arrays.asList("", ChatColor.GRAY + "Obtained by killing lb bosses.", ChatColor.GREEN + "+2500 Luck")), sd.getId(), sd.getData());
+        registerDropItem(head, 100);
         WitherSkeleton skeleton = (WitherSkeleton) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.WITHER_SKELETON);
         skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(50.0D);
         skeleton.setHealth(50.0D);
         skeleton.setSilent(true);
         skeleton.setCustomName(ChatColor.DARK_PURPLE + "Knight");
         skeleton.setCustomNameVisible(true);
-        skeleton.getEquipment().setHelmet(this.head);
+        skeleton.getEquipment().setHelmet(head);
         skeleton.getEquipment().setItemInMainHand(bow);
         int armorIndex = RandomUtils.nextInt(chestplates.length);
         skeleton.getEquipment().setChestplate(chestplates[armorIndex]);
@@ -292,12 +291,16 @@ public class CustomEntityBossKnight extends CustomEntity implements CustomEntity
 
     @Override
     public void onLoad(ConfigurationSection c) {
-        this.witherSkeleton = (WitherSkeleton) linkedEntity;
         if (c.getString("blaze") != null) {
             this.blazeUuid = UUID.fromString(c.getString("blaze"));
         }
 
         this.angry = c.getBoolean("angry");
+    }
+
+    @Override
+    public void onChunkLoad() {
+        this.witherSkeleton = (WitherSkeleton) linkedEntity;
         startTimers();
     }
 

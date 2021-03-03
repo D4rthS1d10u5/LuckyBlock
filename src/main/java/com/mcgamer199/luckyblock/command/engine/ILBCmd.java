@@ -247,7 +247,7 @@ public class ILBCmd extends ColorsClass {
                     LBCommand command = LBCommand.getByName(commandName);
                     if(command != null) {
                         String commandText = String.format("/%s %s", cmd, allowedCommand);
-                        component.addText("§e" + commandText, Hover.show_text, String.format("%s\n%s", command.isDeprecated() ? "§cDeprecated" : "", val("command.help.4", false)), Click.suggest_command, commandText);
+                        component.addText("§e" + commandText + "\n", Hover.show_text, String.format("%s\n%s", command.isDeprecated() ? "§cDeprecated" : "", val("command.help.4", false)), Click.suggest_command, commandText);
                         onPageCommandCounter++;
                     }
                 }

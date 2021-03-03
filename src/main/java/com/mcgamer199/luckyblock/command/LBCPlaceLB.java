@@ -101,7 +101,7 @@ public class LBCPlaceLB extends LBCommand {
 
                 if (LuckyBlock.getByBlock(l.getBlock()) == null) {
                     String drop = null;
-                    if(args.length >= 5) {
+                    if(args.length >= 6) {
                         drop = args[5];
                     }
 

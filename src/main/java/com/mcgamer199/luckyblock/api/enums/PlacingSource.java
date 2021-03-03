@@ -75,7 +75,7 @@ public enum PlacingSource {
 
     public static PlacingSource getByName(String name) {
         for (PlacingSource value : values) {
-            if(value.name().equals(name.toLowerCase())) {
+            if(value.name().equals(name.toUpperCase())) {
                 return value;
             }
         }

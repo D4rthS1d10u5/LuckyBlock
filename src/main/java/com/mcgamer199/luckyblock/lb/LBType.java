@@ -5,12 +5,12 @@
 
 package com.mcgamer199.luckyblock.lb;
 
-import com.mcgamer199.luckyblock.api.enums.LBOption;
-import com.mcgamer199.luckyblock.api.enums.BlockProperty;
-import com.mcgamer199.luckyblock.api.enums.ItemProperty;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.LuckyBlockPlugin;
+import com.mcgamer199.luckyblock.api.enums.BlockProperty;
+import com.mcgamer199.luckyblock.api.enums.ItemProperty;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
 import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.resources.CItem;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;

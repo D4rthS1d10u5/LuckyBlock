@@ -141,8 +141,12 @@ public class CustomEntityBlazeMinion extends CustomEntity {
 
     @Override
     public void onLoad(ConfigurationSection c) {
-        this.blaze = (Blaze) linkedEntity;
         this.ai = c.getBoolean("ai");
+    }
+
+    @Override
+    public void onChunkLoad() {
+        this.blaze = (Blaze) linkedEntity;
         startTimers();
     }
 
@@ -161,17 +165,16 @@ public class CustomEntityBlazeMinion extends CustomEntity {
                     SmallFireball smallFireball = blaze.launchProjectile(SmallFireball.class, blaze.getLocation().getDirection());
 
                     for (int i = 0; i < 3; i++) {
-                        Scheduler.create(() -> {
-                            blaze.launchProjectile(SmallFireball.class,  smallFireball.getVelocity().clone()
-                                    .add(new Vector((RandomUtils.nextInt(20) - 10) / 70D,
-                                            (RandomUtils.nextInt(20) - 10) / 70D,
-                                            (RandomUtils.nextInt(20) - 10) / 70D)));
-                        }).count(RandomUtils.nextInt(5) + 25).timer(1, 1);
+                        Scheduler.create(() -> blaze.launchProjectile(SmallFireball.class,  smallFireball.getVelocity().clone()
+                                .add(new Vector((RandomUtils.nextInt(20) - 10) / 70D,
+                                        (RandomUtils.nextInt(20) - 10) / 70D,
+                                        (RandomUtils.nextInt(20) - 10) / 70D)))).count(RandomUtils.nextInt(5) + 25).timer(1, 1);
                     }
                 } else {
                     CustomEntityElementalCreeper elementalCreeper = new CustomEntityElementalCreeper();
                     elementalCreeper.setLife(85);
                     elementalCreeper.setBlockMaterial(Material.STONE);
+                    elementalCreeper.spawn(blaze.getLocation());
                     ((Creeper) elementalCreeper.getLinkedEntity()).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.38D);
                     ((Creeper) elementalCreeper.getLinkedEntity()).setTarget(target);
                 }

@@ -1,13 +1,13 @@
 package com.mcgamer199.luckyblock.command;
 
-import com.mcgamer199.luckyblock.api.enums.LBOption;
-import com.mcgamer199.luckyblock.command.engine.LBCommand;
+import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDrop;
 import com.mcgamer199.luckyblock.api.customdrop.CustomDropManager;
-import com.mcgamer199.luckyblock.LuckyBlockPlugin;
-import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
+import com.mcgamer199.luckyblock.api.enums.LBOption;
+import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
+import com.mcgamer199.luckyblock.lb.LuckyBlockDrop;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LBCRegion extends LBCommand {
     public LBCRegion() {
@@ -185,64 +187,121 @@ public class LBCRegion extends LBCommand {
         return val("desc.cmd.region");
     }
 
-    void action1(final Selection s, final Player player, final LBType type) {
-        Scheduler.timer(new BukkitRunnable() {
-                int x = s.getMinimumPoint().getBlockX();
-                int y = s.getMinimumPoint().getBlockY();
-                int z = s.getMinimumPoint().getBlockZ();
-                final int x1 = s.getMinimumPoint().getBlockX();
-                final int z1 = s.getMinimumPoint().getBlockZ();
-                final int x2 = s.getMaximumPoint().getBlockX();
-                final int y2 = s.getMaximumPoint().getBlockY();
-                final int z2 = s.getMaximumPoint().getBlockZ();
-                int total = 0;
-                boolean finish = false;
+    void action1(final Selection selection, final Player player, final LBType type) {
+        AtomicBoolean working = new AtomicBoolean(true);
+        AtomicInteger totalChanges = new AtomicInteger(0);
 
-                @Override
-                public void run() {
-                    boolean changeX = true;
-                    boolean changeZ = true;
-                    if (!LuckyBlock.canSaveMore()) {
-                        Scheduler.cancelTask(this);
-                    } else {
-                        if (!LuckyBlock.isLuckyBlock(s.getWorld().getBlockAt(this.x, this.y, this.z))) {
-                            LuckyBlock.placeLB(s.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
-                            ++this.total;
-                        }
+        Scheduler.create(new Runnable() {
 
-                        if (this.y == this.y2 && this.x == this.x2 && this.z == this.z2) {
-                            this.finish = true;
-                        }
+            private int x = selection.getMinimumPoint().getBlockX();
+            private int y = selection.getMinimumPoint().getBlockY();
+            private int z = selection.getMinimumPoint().getBlockZ();
 
-                        if (this.z == this.z2 && this.x == this.x2) {
-                            ++this.y;
-                            this.z = this.z1;
-                            changeZ = false;
-                        }
+            private final int x1 = selection.getMinimumPoint().getBlockX();
+            private final int z1 = selection.getMinimumPoint().getBlockZ();
 
-                        if (this.x == this.x2) {
-                            if (changeZ) {
-                                ++this.z;
-                            }
+            private final int x2 = selection.getMaximumPoint().getBlockX();
+            private final int y2 = selection.getMaximumPoint().getBlockY();
+            private final int z2 = selection.getMaximumPoint().getBlockZ();
 
-                            this.x = this.x1;
-                            changeX = false;
-                        }
+            @Override
+            public void run() {
+                boolean changeX = true;
+                boolean changeZ = true;
 
-                        if (changeX) {
-                            ++this.x;
-                        }
-
-                        if (this.finish) {
-                            String a = LBCRegion.val("command.region.action1.success", false);
-                            a = a.replace("%total%", String.valueOf(this.total));
-                            LBCRegion.send_2(player, a);
-                            Scheduler.cancelTask(this);
-                        }
-
+                if(LuckyBlock.canSaveMore()) {
+                    Block block = selection.getWorld().getBlockAt(this.x, this.y, this.z);
+                    if(!LuckyBlock.isLuckyBlock(block)) {
+                        LuckyBlock.placeLB(block.getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
+                        totalChanges.incrementAndGet();
                     }
+
+                    if(x == x2 && y == y2 && z == z2) {
+                        working.set(false);
+                    }
+
+                    if(x == x2 && z == z2) {
+                        y++;
+                        z = z1;
+                        changeZ = false;
+                    }
+
+                    if(x == x2) {
+                        if(changeZ) {
+                            z++;
+                        }
+                        x = x1;
+                        changeX = false;
+                    }
+
+                    if(changeX) {
+                        x++;
+                    }
+                }
             }
-        }, 5, 6);
+        }).predicate(working::get).onCancel(() -> {
+            String a = LBCRegion.val("command.region.action1.success", false);
+            a = a.replace("%total%", String.valueOf(totalChanges.get()));
+            LBCRegion.send_2(player, a);
+        }).timer(5, 6);
+
+//        Scheduler.timer(new BukkitRunnable() {
+//                int x = selection.getMinimumPoint().getBlockX();
+//                int y = selection.getMinimumPoint().getBlockY();
+//                int z = selection.getMinimumPoint().getBlockZ();
+//                final int x1 = selection.getMinimumPoint().getBlockX();
+//                final int z1 = selection.getMinimumPoint().getBlockZ();
+//                final int x2 = selection.getMaximumPoint().getBlockX();
+//                final int y2 = selection.getMaximumPoint().getBlockY();
+//                final int z2 = selection.getMaximumPoint().getBlockZ();
+//                int total = 0;
+//                boolean finish = false;
+//
+//                @Override
+//                public void run() {
+//                    boolean changeX = true;
+//                    boolean changeZ = true;
+//                    if (!LuckyBlock.canSaveMore()) {
+//                        Scheduler.cancelTask(this);
+//                    } else {
+//                        if (!LuckyBlock.isLuckyBlock(selection.getWorld().getBlockAt(this.x, this.y, this.z))) {
+//                            LuckyBlock.placeLB(selection.getWorld().getBlockAt(this.x, this.y, this.z).getLocation(), type, null, null, null, 0, LBOption.NO_SOUNDS);
+//                            ++this.total;
+//                        }
+//
+//                        if (this.y == this.y2 && this.x == this.x2 && this.z == this.z2) {
+//                            Scheduler.cancelTask(this);
+//                            this.finish = true;
+//                        }
+//
+//                        if (this.z == this.z2 && this.x == this.x2) {
+//                            ++this.y;
+//                            this.z = this.z1;
+//                            changeZ = false;
+//                        }
+//
+//                        if (this.x == this.x2) {
+//                            if (changeZ) {
+//                                ++this.z;
+//                            }
+//
+//                            this.x = this.x1;
+//                            changeX = false;
+//                        }
+//
+//                        if (changeX) {
+//                            ++this.x;
+//                        }
+//
+//                        if (this.finish) {
+//                            Scheduler.cancelTask(this);
+//                            String a = LBCRegion.val("command.region.action1.success", false);
+//                            a = a.replace("%total%", String.valueOf(this.total));
+//                            LBCRegion.send_2(player, a);
+//                        }
+//                    }
+//            }
+//        }, 5, 6);
     }
 
     void action2(final Selection s, final Player player, final LuckyBlockDrop drop, final CustomDrop cd) {
@@ -300,6 +359,8 @@ public class LBCRegion extends LBCommand {
                 }
 
                 if (this.finish) {
+                    System.out.println("finished");
+                    Scheduler.cancelTask(this);
                     if (this.total > 0) {
                         LuckyBlock.saveAll();
                         String a = LBCRegion.val("command.region.action2", false);
@@ -308,10 +369,7 @@ public class LBCRegion extends LBCommand {
                     } else {
                         LBCRegion.send(player, "command.region.no_changes");
                     }
-
-                    Scheduler.cancelTask(this);
                 }
-
             }
         }, 5, 3);
     }

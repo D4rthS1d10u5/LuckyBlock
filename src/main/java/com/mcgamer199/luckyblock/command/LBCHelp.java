@@ -12,8 +12,6 @@ public class LBCHelp extends LBCommand {
         if (args.length == 1) {
             this.send1(sender, lcmd, 1);
         } else if (args.length == 2) {
-            boolean var5 = false;
-
             byte page;
             try {
                 page = Byte.parseByte(args[1]);

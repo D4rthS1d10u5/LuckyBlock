@@ -29,7 +29,7 @@ public class CustomEntityTrophyNameTag extends CustomEntity {
         armorStand.setCustomNameVisible(true);
         armorStand.setMarker(true);
         armorStand.setGravity(false);
-        armorStand.setVisible(true);
+        armorStand.setVisible(false);
         return armorStand;
     }
 
@@ -52,9 +52,6 @@ public class CustomEntityTrophyNameTag extends CustomEntity {
     @Override
     public void onTick() {
         if(trophy == null || !trophy.isValid()) {
-            if(trophy != null) {
-                System.out.println("trophy.isValid() = " + trophy.isValid());
-            }
             CustomEntityManager.removeCustomEntity(this);
         }
     }
@@ -74,11 +71,8 @@ public class CustomEntityTrophyNameTag extends CustomEntity {
         String b = c.getString("Trophy_Block");
         if(b != null) {
             Trophy trophy = Trophy.getByBlock(LocationUtils.blockFromString(b));
-            System.out.println("trophy = " + trophy);
             if(trophy != null) {
                 this.trophy = trophy;
-            } else {
-                CustomEntityManager.removeCustomEntity(this);
             }
         }
     }

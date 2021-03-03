@@ -184,7 +184,7 @@ public class ColorsClass {
         String invalidCommand = getMessage("invalid_command");
         if(StringUtils.isNotEmpty(invalidCommand)) {
             ChatComponent component = new ChatComponent();
-            component.addText("§a[§e§lLB§a]: ", Hover.show_text, "§Lucky Block");
+            component.addText("§a[§e§lLB§a]: ", Hover.show_text, "§e§lLucky Block");
             String command = String.format("/%s help", ILBCmd.lcmd);
             component.addText(invalidCommand, Hover.show_text, command, Click.run_command, command);
             component.send(sender);

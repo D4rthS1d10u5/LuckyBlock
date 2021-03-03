@@ -1,11 +1,10 @@
 package com.mcgamer199.luckyblock.customentity.lct;
 
 import com.mcgamer199.luckyblock.advanced.LuckyCraftingTable;
+import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntity;
 import com.mcgamer199.luckyblock.api.customentity.CustomEntityManager;
-import com.mcgamer199.luckyblock.api.ColorsClass;
 import com.mcgamer199.luckyblock.util.LocationUtils;
-import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -46,27 +45,33 @@ public class CustomEntityLCTNameTag extends CustomEntity {
 
     @Override
     public void onTick() {
-        if(luckyCraftingTable != null && luckyCraftingTable.isValid()) {
+        if(luckyCraftingTable == null || !luckyCraftingTable.isValid()) {
             CustomEntityManager.removeCustomEntity(this);
         }
     }
 
+    @Override
+    public void onChunkLoad() {
+        if(luckyCraftingTable != null) {
+            linkedEntity.setCustomName(ChatColor.GREEN + ColorsClass.val("lct.display_name", false));
+        }
+    }
+
+    @Override
     public void onSave(ConfigurationSection c) {
         c.set("LCT_Block", LocationUtils.asString(this.luckyCraftingTable.getBlock().getLocation()));
     }
 
+    @Override
     public void onLoad(final ConfigurationSection c) {
-        Scheduler.later(() -> {
-            String block = c.getString("LCT_Block");
-            if (block != null) {
-                LuckyCraftingTable table = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(block));
-                if(table != null) {
-                    this.luckyCraftingTable = table;
-                    linkedEntity.setCustomName(ChatColor.GREEN + ColorsClass.val("lct.display_name", false));
-                }
-            } else {
-                CustomEntityManager.removeCustomEntity(this);
+        String block = c.getString("LCT_Block");
+        System.out.println("block(nametag) = " + block);
+        if (block != null) {
+            LuckyCraftingTable table = LuckyCraftingTable.getByBlock(LocationUtils.blockFromString(block));
+            System.out.println("table = " + table);
+            if(table != null) {
+                this.luckyCraftingTable = table;
             }
-        }, 15);
+        }
     }
 }

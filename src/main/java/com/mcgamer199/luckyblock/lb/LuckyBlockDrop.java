@@ -52,16 +52,14 @@ public enum LuckyBlockDrop {
     NONE(false),
     CHEST(true, (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
-        Scheduler.later(() -> {
-            block.setType(Material.CHEST, true);
-            Chest chest = (Chest) block.getState();
+        block.setType(Material.CHEST, true);
+        Chest chest = (Chest) block.getState();
 
-            String path = luckyBlock.getDropOptions().getString("Path", "Chests");
-            String path1 = luckyBlock.getDropOptions().getString("Path1", null);
-            ChestFiller chestFiller = new ChestFiller(luckyBlock.getFile().getConfigurationSection(path), chest);
-            chestFiller.loc1 = path1;
-            chestFiller.fill();
-        }, 1);
+        String path = luckyBlock.getDropOptions().getString("Path", "Chests");
+        String path1 = luckyBlock.getDropOptions().getString("Path1", null);
+        ChestFiller chestFiller = new ChestFiller(luckyBlock.getFile().getConfigurationSection(path), chest);
+        chestFiller.loc1 = path1;
+        chestFiller.fill();
     }),
     ENTITY(true, (luckyBlock, player) -> {
         FileConfiguration file = luckyBlock.getFile();
@@ -1254,7 +1252,7 @@ public enum LuckyBlockDrop {
     }),
     EXPLOSIVE_CHEST(true, new Properties().putInt("Ticks", 50).putBoolean("ClearInventory", true), (luckyBlock, player) -> {
         org.bukkit.block.Block block = luckyBlock.getBlock();
-        Scheduler.later(() -> block.setType(Material.CHEST, true), 1);
+        block.setType(Material.CHEST, true);
         int times = MathUtils.ensureRange(luckyBlock.getDropOptions().getInt("Ticks", 50), 0, 1024);
         String path = luckyBlock.getDropOptions().getString("Path", "Chests");
         String path1 = luckyBlock.getDropOptions().getString("Path1", null);
@@ -1266,7 +1264,7 @@ public enum LuckyBlockDrop {
         }
 
         Scheduler.later(() -> {
-            if (luckyBlock.getDropOptions().getBoolean("ClearInventory", true)) {
+            if (luckyBlock.getDropOptions().getBoolean("ClearInventory", true) && block.getState() instanceof Chest) {
                 ((Chest) block.getState()).getBlockInventory().clear();
             }
 
@@ -1370,25 +1368,23 @@ public enum LuckyBlockDrop {
     RIP(false, new Properties().putBoolean("ClearInventory", true), (luckyBlock, player) -> {
         if(player != null) {
             org.bukkit.block.Block block = luckyBlock.getBlock();
-            Scheduler.later(() -> {
-                block.setType(Material.SKULL);
-                block.setData((byte) 1);
-                block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
-                block.getRelative(BlockFace.DOWN).getRelative(BlockFace.SOUTH).setType(Material.DIRT);
-                block.getRelative(BlockFace.NORTH).setType(Material.STONE);
-                block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP).setType(Material.STONE);
-                block.getRelative(BlockFace.UP).setType(Material.WALL_SIGN);
-                block.getRelative(BlockFace.UP).setData((byte) 3);
-                Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
-                sign.setLine(0, "RIP");
-                sign.setLine(2, player.getName());
-                sign.update(true);
-                Skull skull = (Skull) block.getState();
-                skull.setSkullType(SkullType.PLAYER);
-                skull.setRotation(BlockFace.SOUTH);
-                skull.setOwningPlayer(player);
-                skull.update(true);
-            }, 1);
+            block.setType(Material.SKULL);
+            block.setData((byte) 1);
+            block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
+            block.getRelative(BlockFace.DOWN).getRelative(BlockFace.SOUTH).setType(Material.DIRT);
+            block.getRelative(BlockFace.NORTH).setType(Material.STONE);
+            block.getRelative(BlockFace.NORTH).getRelative(BlockFace.UP).setType(Material.STONE);
+            block.getRelative(BlockFace.UP).setType(Material.WALL_SIGN);
+            block.getRelative(BlockFace.UP).setData((byte) 3);
+            Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
+            sign.setLine(0, "RIP");
+            sign.setLine(2, player.getName());
+            sign.update(true);
+            Skull skull = (Skull) block.getState();
+            skull.setSkullType(SkullType.PLAYER);
+            skull.setRotation(BlockFace.SOUTH);
+            skull.setOwningPlayer(player);
+            skull.update(true);
         }
     }),
     //Отсутствует информация о коде
@@ -1426,12 +1422,14 @@ public enum LuckyBlockDrop {
 
     public void execute(LuckyBlock luckyBlock, @Nullable Player player) {
         if(onBreakFunction != null) {
-            try {
-                onBreakFunction.accept(luckyBlock, player);
-            } catch (Exception e) {
-                Bukkit.getLogger().severe("Ошибка выдачи награды из лакиблока: \n" + luckyBlock.getDropOptions().toString());
-                e.printStackTrace();
-            }
+            Scheduler.later(() -> {
+                try {
+                    onBreakFunction.accept(luckyBlock, player);
+                } catch (Exception e) {
+                    Bukkit.getLogger().severe("Ошибка выдачи награды из лакиблока: \n" + luckyBlock.getDropOptions().toString());
+                    e.printStackTrace();
+                }
+            }, 1);
         }
     }
 

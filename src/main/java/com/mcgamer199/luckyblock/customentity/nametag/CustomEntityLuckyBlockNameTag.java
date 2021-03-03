@@ -53,12 +53,18 @@ public class CustomEntityLuckyBlockNameTag extends CustomEntity {
 
     @Override
     public void onTick() {
-        this.armorStand.setCustomName(this.text);
         if (this.luckyBlock != null) {
-            this.linkedEntity.teleport(this.luckyBlock.getLocation().add(this.offset[0], this.offset[1], this.offset[2]));
+            if(armorStand != null) {
+                this.armorStand.setCustomName(this.text);
+                this.armorStand.teleport(this.luckyBlock.getLocation().add(this.offset[0], this.offset[1], this.offset[2]));
+            }
+
             if (!this.luckyBlock.isValid()) {
                 CustomEntityManager.removeCustomEntity(this);
             }
+        } else {
+            System.out.println("luckyblock == null");
+            CustomEntityManager.removeCustomEntity(this);
         }
     }
 
@@ -73,31 +79,39 @@ public class CustomEntityLuckyBlockNameTag extends CustomEntity {
     }
 
     @Override
+    public void onChunkLoad() {
+        this.armorStand = (ArmorStand) this.linkedEntity;
+    }
+
+    @Override
     public void onSave(ConfigurationSection c) {
-        c.set("LB_Block", LocationUtils.asString(this.luckyBlock.getLocation()));
-        c.set("Loc1", this.offset[0]);
-        c.set("Loc2", this.offset[1]);
-        c.set("Loc3", this.offset[2]);
-        c.set("DisplayType", type.name());
+        if(luckyBlock != null) {
+            c.set("LB_Block", LocationUtils.asString(this.luckyBlock.getLocation()));
+            c.set("Loc1", this.offset[0]);
+            c.set("Loc2", this.offset[1]);
+            c.set("Loc3", this.offset[2]);
+            c.set("DisplayType", type.name());
+        }
     }
 
     @Override
     public void onLoad(ConfigurationSection c) {
         String code = c.getString("LB_Block");
-        this.offset[0] = c.getDouble("Loc1");
-        this.offset[1] = c.getDouble("Loc2");
-        this.offset[2] = c.getDouble("Loc3");
-        this.armorStand = (ArmorStand) this.linkedEntity;
-        this.type = DisplayType.valueOf(c.getString("DisplayType"));
-        Block block = LocationUtils.blockFromString(code);
-        if (block != null) {
-            LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
-            if(luckyBlock != null) {
-                this.luckyBlock = luckyBlock;
+        if(code != null) {
+            this.offset[0] = c.getDouble("Loc1");
+            this.offset[1] = c.getDouble("Loc2");
+            this.offset[2] = c.getDouble("Loc3");
+            this.type = DisplayType.valueOf(c.getString("DisplayType"));
+            Block block = LocationUtils.blockFromString(code);
+            if (block != null) {
+                LuckyBlock luckyBlock = LuckyBlock.getByBlock(block);
+                if(luckyBlock != null) {
+                    this.luckyBlock = luckyBlock;
+                }
             }
-        }
 
-        this.reloadText();
+            this.reloadText();
+        }
     }
 
     public void setType(DisplayType type) {
