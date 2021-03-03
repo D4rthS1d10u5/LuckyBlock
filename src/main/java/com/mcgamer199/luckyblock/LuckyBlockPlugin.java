@@ -205,7 +205,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
     public void onDisable() {
         LuckyBlock.saveAll();
         CustomEntityManager.saveAll();
-        //LuckyDB.checkSave();
+        LuckyDB.checkSave(false);
         this.getLogger().info("LuckyBlock, 2.2.5 Disabled.");
     }
 
@@ -253,7 +253,7 @@ public class LuckyBlockPlugin extends JavaPlugin {
         LuckyBlock.cache.clear();
         super.reloadConfig();
         try {
-            LuckyDB.checkSave();
+            LuckyDB.checkSave(false);
             LuckyDB.loadConfig();
         } catch (Exception e) {
             e.printStackTrace();

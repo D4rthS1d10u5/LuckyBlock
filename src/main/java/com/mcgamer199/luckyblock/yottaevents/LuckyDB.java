@@ -8,6 +8,7 @@ package com.mcgamer199.luckyblock.yottaevents;
 import com.mcgamer199.luckyblock.LuckyBlockPlugin;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.util.ItemStackUtils;
+import com.mcgamer199.luckyblock.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,7 +29,7 @@ public class LuckyDB {
     static {
         dbFile = new File(LuckyBlockPlugin.instance.getDataFolder(), "anti-dupe-database.yml");
         toSave = false;
-        Bukkit.getScheduler().runTaskTimer(LuckyBlockPlugin.instance, LuckyDB::checkSave, 12000L, 12000L);
+        Bukkit.getScheduler().runTaskTimer(LuckyBlockPlugin.instance, () -> checkSave(false), 12000L, 12000L);
         loadConfig();
     }
 
@@ -36,10 +37,10 @@ public class LuckyDB {
     }
 
     //TODO org.bukkit.plugin.IllegalPluginAccessException: Plugin attempted to register task while disabled
-    public static void checkSave() {
+    public static void checkSave(boolean sync) {
         if (toSave) {
             toSave = false;
-            Bukkit.getScheduler().runTaskAsynchronously(LuckyBlockPlugin.instance, () -> {
+            Runnable execute = () -> {
                 YamlConfiguration dbConfig = new YamlConfiguration();
                 if (fixDupe == null) {
                     dbConfig.set("fix-dupe", true);
@@ -53,7 +54,12 @@ public class LuckyDB {
                 } catch (IOException var2) {
                     var2.printStackTrace();
                 }
-            });
+            };
+            if(sync) {
+                execute.run();
+            } else {
+                Scheduler.runAsync(execute);
+            }
         }
     }
 
