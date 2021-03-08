@@ -59,6 +59,7 @@ public class BreakLuckyBlock extends ColorsClass implements Listener {
                 }
             }
 
+            block.setType(Material.AIR);
             if (types.allowbreaksound && types.breaksound != null) {
                 Sound sound = null;
                 float vol = 100.0F;
