@@ -75,7 +75,6 @@ public class LBShootEvent implements Listener {
         block.setType(type.getType());
         block.setData((byte) type.getData());
         LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, entity, true);
-        luckyBlock.playEffects();
     }
 
     @EventHandler

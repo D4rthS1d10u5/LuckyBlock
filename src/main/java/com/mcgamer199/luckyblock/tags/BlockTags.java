@@ -290,8 +290,7 @@ public class BlockTags extends HTag {
                         if (!type.disabled) {
                             block.setType(LBType.fromId(luck).getType());
                             block.setData((byte) LBType.fromId(luck).getData());
-                            LuckyBlock luckyBlock = new LuckyBlock(type, block, 0, null, true);
-                            luckyBlock.playEffects();
+                            new LuckyBlock(type, block, 0, null, true);
                         }
                     }
                 }

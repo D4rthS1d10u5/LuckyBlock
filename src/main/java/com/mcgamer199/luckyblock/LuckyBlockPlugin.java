@@ -23,7 +23,6 @@ import com.mcgamer199.luckyblock.command.engine.LBCommand;
 import com.mcgamer199.luckyblock.enchantments.Glow;
 import com.mcgamer199.luckyblock.enchantments.Lightning;
 import com.mcgamer199.luckyblock.enchantments.ReflectProtectionEnchantment;
-import com.mcgamer199.luckyblock.lb.LBEffects;
 import com.mcgamer199.luckyblock.lb.LBType;
 import com.mcgamer199.luckyblock.lb.LuckyBlock;
 import com.mcgamer199.luckyblock.listeners.*;
@@ -55,7 +54,6 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -262,10 +260,6 @@ public class LuckyBlockPlugin extends JavaPlugin {
 
     public void LuckyBlockConfig() {
         this.detectors.options().copyDefaults(true);
-        Calendar calendar = Calendar.getInstance();
-        if (calendar.get(Calendar.MONTH) == Calendar.OCTOBER && calendar.get(Calendar.DATE) == 31 && LBType.getDefaultType() != null) {
-            LBEffects.md(LBType.getDefaultType(), Material.PUMPKIN, (short) 0);
-        }
 
         LBType.load();
         this.loadRecipes();

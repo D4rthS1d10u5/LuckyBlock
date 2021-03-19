@@ -21,7 +21,6 @@ import com.mcgamer199.luckyblock.listeners.PlaceLuckyBlock;
 import com.mcgamer199.luckyblock.tags.BlockTags;
 import com.mcgamer199.luckyblock.util.EffectUtils;
 import com.mcgamer199.luckyblock.util.JsonUtils;
-import com.mcgamer199.luckyblock.util.RandomUtils;
 import com.mcgamer199.luckyblock.util.Scheduler;
 import lombok.Getter;
 import lombok.Setter;
@@ -295,18 +294,6 @@ public class LuckyBlock {
 
     public boolean isLocked() {
         return this.locked;
-    }
-
-    public void playEffects() {
-        if (this.tickDelay < 1) {
-            try {
-                this.tickDelay = RandomUtils.nextInt(type.a_random[1]) + this.type.a_random[0];
-            } catch (Exception e) {
-                tickDelay = 2;
-            }
-        }
-
-        LBEffects.testEffects(this);
     }
 
     public Block getBlock() {

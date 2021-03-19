@@ -384,7 +384,7 @@ public class LuckyBlockEvents extends ColorsClass implements Listener {
                 Material material = EntityUtils.getOrDefault(entity, "lbType", null);
                 byte data = EntityUtils.getOrDefault(entity, "lbData", (byte) -1);
                 if(material != null && data != -1) {
-                    new LuckyBlock(LBType.fromMaterialAndData(material, data), entity.getLocation().getBlock(), 0, null, true).playEffects();
+                    new LuckyBlock(LBType.fromMaterialAndData(material, data), entity.getLocation().getBlock(), 0, null, true);
                 }
             }
         }

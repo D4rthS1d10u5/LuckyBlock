@@ -174,7 +174,6 @@ public class PlaceLuckyBlock extends ColorsClass implements Listener {
                     }
                 }
 
-                luckyBlock.playEffects();
                 String o = null;
                 UUID owner = null;
                 if (item != null && item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() > 0) {
